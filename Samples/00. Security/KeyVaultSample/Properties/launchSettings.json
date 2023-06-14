@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "KeyVaultSample": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

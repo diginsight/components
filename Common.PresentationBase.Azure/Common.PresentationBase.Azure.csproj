@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+	<PropertyGroup>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<UseWindowsForms>true</UseWindowsForms>
+		<UseWPF>true</UseWPF>
+		<TargetFrameworks>net462;net6.0-windows</TargetFrameworks>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>diginsight.snk</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Authors>diginsight</Authors>
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<PackageProjectUrl>https://github.com/diginsight/components</PackageProjectUrl>
+		<PackageIcon>common.components.png</PackageIcon>
+		<RepositoryUrl>https://github.com/diginsight/components.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\images\01. Project image\common.components.png" Link="common.components.png">
+			<PackagePath></PackagePath>
+			<Pack>True</Pack>
+		</None>
+		<None Include="..\LICENSE.md" Link="LICENSE.md">
+			<PackagePath></PackagePath>
+			<Pack>True</Pack>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Common.Diagnostics" Version="1.0.1.231" />
+		<!--<PackageReference Include="Common.Diagnostics.Log4net" Version="1.0.1.185" />-->
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Common.EntityBase\Common.EntityBase.csproj" />
+	  <ProjectReference Include="..\Common.PresentationBase\Common.PresentationBase.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="UserControl\SettingsAppInsightKeyControl.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	  </Page>
+	  <Page Update="UserControl\SettingsLogAnalyticsControl.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	  </Page>
+	</ItemGroup>
+
+</Project>

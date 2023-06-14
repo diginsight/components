@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	  <TargetFramework>netstandard2.0</TargetFramework>
+
+	  <RootNamespace>Common.PresentationBase.Abstractions</RootNamespace>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+	  <PackageProjectUrl>https://github.com/diginsight/components</PackageProjectUrl>
+	  <RepositoryUrl>https://github.com/diginsight/components.git</RepositoryUrl>
+	  <Authors>diginsight</Authors>
+	  <Description>Common.ComponentBase provides common components abstractions for WPF client applications</Description>
+	  <SignAssembly>true</SignAssembly>
+	  <AssemblyOriginatorKeyFile>diginsight.snk</AssemblyOriginatorKeyFile>
+	  <PackageIcon>common.components.png</PackageIcon>
+	  <RepositoryType>git</RepositoryType>
+	  <!--<LangVersion>8.0</LangVersion>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\images\01. Project image\common.components.png" Link="common.components.png">
+      <PackagePath></PackagePath>
+      <Pack>True</Pack>
+    </None>
+    <None Include="..\LICENSE.md" Link="LICENSE.md">
+      <PackagePath></PackagePath>
+      <Pack>True</Pack>
+    </None>
+  </ItemGroup>
+
+</Project>

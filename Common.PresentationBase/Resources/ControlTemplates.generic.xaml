@@ -1,0 +1,93 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:common="clr-namespace:Common"
+    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:wndBase="clr-namespace:System.Windows;assembly=WindowsBase"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images.generic.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Colors.generic.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Brushes.generic.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/CommonConversions.generic.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <ControlTemplate x:Key="validationTemplateNoBorder" >
+        <Grid x:Name="grdContainer"
+              common:AttachedProperties.Boolean0="{Binding RelativeSource={RelativeSource Self}, Path=(common:AttachedProperties.Integer0), Mode=OneWay, Converter={StaticResource lte}, ConverterParameter={common:Int32 2}}"
+            >
+            <common:AttachedProperties.Integer0>
+                <MultiBinding Converter="{StaticResource getValidationLevel}" FallbackValue="{common:Int32 1}" >
+                    <Binding ElementName="source" Path="AdornedElement.(Validation.Errors)" Mode="OneWay" />
+                    <Binding ElementName="source" Path="AdornedElement.(Validation.Errors).Count" Mode="OneWay" />
+                </MultiBinding>
+            </common:AttachedProperties.Integer0>
+
+                    <!--Visibility="{Binding RelativeSource={RelativeSource Self}, Path=(common:AttachedProperties.IsVisible0), Mode=OneWay, Converter={StaticResource booleanToVisibilityHidden}}"
+                    common:AttachedProperties.IsVisible0="{Binding ElementName=grdContainer, Path=(common:AttachedProperties.Boolean0), Mode=OneWay}"-->
+            <Border Name="bdOuter"
+                    Grid.Row="0" 
+                    
+                    BorderBrush="{Binding ElementName=grdContainer, Path=(common:AttachedProperties.Boolean0), Mode=OneWay, Converter={StaticResource if}, ConverterParameter=Red, FallbackValue=Green}" BorderThickness="0" 
+                    CornerRadius="{Binding Path=AdornedElement.CornerRadius, ElementName=source}" 
+                >
+                <AdornedElementPlaceholder x:Name="source" />
+            </Border>
+
+            <TextBlock Grid.Row="1" Text="{Binding [0].ErrorContent}" 
+                       Foreground="{Binding ElementName=grdContainer, Path=(common:AttachedProperties.Boolean0), Mode=OneWay, Converter={StaticResource if}, ConverterParameter=Red, FallbackValue=Green}"  
+                       Background="White" Margin="3,0"
+                       VerticalAlignment="Bottom" HorizontalAlignment="Left" 
+
+                       >
+            </TextBlock>
+
+            <Grid Width="15" Height="15" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                          Margin="-6,-6, 0,0" 
+                    Visibility="{Binding RelativeSource={RelativeSource Self}, Path=(common:AttachedProperties.IsVisible0), Mode=OneWay, Converter={StaticResource booleanToVisibility}}"
+                    common:AttachedProperties.IsVisible0="{Binding ElementName=grdContainer, Path=(common:AttachedProperties.Boolean0), Mode=OneWay}"
+                  >
+                <Ellipse x:Name="PART_ErrEllipse" StrokeThickness="1" 
+                         Fill="{Binding ElementName=bdOuter, Path=BorderBrush, Mode=OneWay}"
+                         VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Canvas.ZIndex="99" >
+                    <Ellipse.ToolTip>
+                        <MultiBinding Converter="{StaticResource getErrorContent}">
+                            <Binding ElementName="source" Path="AdornedElement.(Validation.Errors)" Mode="OneWay" />
+                            <Binding ElementName="source" Path="AdornedElement.(Validation.Errors).Count" Mode="OneWay" />
+                        </MultiBinding>
+                    </Ellipse.ToolTip>
+                    <Ellipse.Stroke>
+                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                            <GradientStop Color="{Binding ElementName=bdOuter, Path=BorderBrush, Mode=OneWay}" Offset="0" />
+                            <!--#FFFA0404-->
+                            <GradientStop Color="#FFC9C7C7" Offset="1" />
+                        </LinearGradientBrush>
+                    </Ellipse.Stroke>
+                </Ellipse>
+                <TextBlock x:Name="PART_ErrExclamation" Text="!" TextWrapping="Wrap" 
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                                   FontSize="14" FontWeight="Bold"   
+                                                   Canvas.ZIndex="99" Foreground="#FFFBFBFB" >
+                    <TextBlock.ToolTip>
+                        <MultiBinding Converter="{StaticResource getErrorContent}">
+                            <Binding ElementName="source" Path="AdornedElement.(Validation.Errors)" Mode="OneWay" />
+                            <Binding ElementName="source" Path="AdornedElement.(Validation.Errors).Count" Mode="OneWay" />
+                        </MultiBinding>
+                    </TextBlock.ToolTip>
+                </TextBlock>
+            </Grid>
+        </Grid>
+        <!--<Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
+                                    <Border Grid.Row="0" BorderBrush="Red" BorderThickness="0" CornerRadius="{Binding Path=AdornedElement.CornerRadius, ElementName=source}">
+                                        <AdornedElementPlaceholder x:Name="source" />
+                                    </Border>
+                                    <TextBlock Grid.Row="1" Text="{Binding [0].ErrorContent}" Foreground="Red"/>
+                                </Grid>-->
+    </ControlTemplate>
+
+</ResourceDictionary>
+

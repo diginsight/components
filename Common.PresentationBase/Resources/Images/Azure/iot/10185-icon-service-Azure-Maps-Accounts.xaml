@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This file is compatible with Silverlight-->
+<Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="a597878d75df4c17b48a8881b353adeb" Width="18" Height="18">
+  <Canvas.RenderTransform>
+    <TranslateTransform X="0" Y="0"/>
+  </Canvas.RenderTransform>
+  <Canvas.Resources>
+    <LinearGradientBrush xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Key="b708c95a-acf9-48dc-86e6-fd00deeb187d" MappingMode="Absolute" StartPoint="9,18" EndPoint="9,1">
+      <LinearGradientBrush.GradientStops>
+        <GradientStopCollection>
+          <GradientStop Color="#198AB3" Offset="0"/>
+          <GradientStop Color="#28B7DB" Offset="0.442"/>
+          <GradientStop Color="#32D4F5" Offset="0.775"/>
+        </GradientStopCollection>
+      </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+  </Canvas.Resources>
+  <!--Unknown tag: metadata-->
+  <!--Unknown tag: sodipodi:namedview-->
+  <Canvas Name="g18">
+    <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="0.5" Canvas.Top="0.5" Width="17" Height="17" Name="circle11" Fill="{StaticResource b708c95a-acf9-48dc-86e6-fd00deeb187d}"/>
+    <Canvas Name="g16">
+      <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="aea289900f7a41eab63096207e88670d" Fill="#FF9CEBFF" Data="M10.282 2.757 3.941 12.82 11.88 9.742Z"/>
+      <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="ab7613f7985d4b9ca222e520a3439041" Fill="#FFFFFFFF" Opacity="0.7" Data="M9 4.79l3.934 9.54L10.282 2.757Z"/>
+      <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="f5bebea79a6d4d44be76be804ddf602b" Fill="#FF32BEDD" Data="M8.772 10.947l2.386-.925 1.776 4.308Z"/>
+    </Canvas>
+  </Canvas>
+</Canvas>

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<RuntimeIdentifiers>win</RuntimeIdentifiers>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Common.Diagnostics" Version="1.0.1.231" />
+		<!--<PackageReference Include="Common.Diagnostics.AppInsights" Version="1.0.1.185" />
+    <PackageReference Include="Common.Diagnostics.Log4net" Version="1.0.1.185" />-->
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Common.EntityBase\Common.EntityBase.csproj" />
+		<ProjectReference Include="..\..\Common.PresentationBase\Common.PresentationBase.csproj" />
+	</ItemGroup>
+
+</Project>

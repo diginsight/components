@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This file is NOT compatible with Silverlight-->
+<Viewbox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Stretch="Uniform">
+  <Canvas Name="Layer_1" Canvas.Left="0" Canvas.Top="0" Width="280" Height="280">
+    <Canvas.RenderTransform>
+      <TranslateTransform X="0" Y="0"/>
+    </Canvas.RenderTransform>
+    <Canvas.Resources/>
+    <!--Unknown tag: metadata-->
+    <!--Unknown tag: sodipodi:namedview-->
+    <Canvas Name="g18">
+      <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path10" Fill="#FFEAE5E4">
+        <Path.Data>
+          <PathGeometry Figures="M183.679 4.634l91.683 91.683c6.178 6.178 6.178 16.207 0 22.385L118.695 275.359   c-6.178 6.187-16.207 6.187-22.385 0L4.637 183.676c-6.178-6.178-6.178-16.198 0-22.376L161.295 4.634   C167.482-1.545 177.501-1.545 183.679 4.634z" FillRule="NonZero"/>
+        </Path.Data>
+      </Path>
+      <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path12" Fill="#FF0096EA">
+        <Path.Data>
+          <PathGeometry Figures="M84.34 81.597L4.637 161.3c-6.178 6.178-6.178 16.198 0 22.376l91.683 91.683   c6.178 6.187 16.207 6.187 22.385 0l79.703-79.694L84.34 81.597z" FillRule="NonZero"/>
+        </Path.Data>
+      </Path>
+      <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path14" Fill="#FF0096EA">
+        <Path.Data>
+          <PathGeometry Figures="M40.585 125.352L4.637 161.3c-6.178 6.178-6.178 16.198 0 22.376l91.683 91.683   c6.178 6.187 16.207 6.187 22.385 0l35.949-35.94L40.585 125.352z" FillRule="NonZero"/>
+        </Path.Data>
+      </Path>
+      <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path16" Fill="#FFEAE5E4">
+        <Path.Data>
+          <PathGeometry Figures="M20.416 145.548l114.041 114.041l-10.555 10.555L9.861 156.103L20.416 145.548z" FillRule="NonZero"/>
+        </Path.Data>
+      </Path>
+    </Canvas>
+    <Canvas Name="g20"/>
+    <Canvas Name="g22"/>
+    <Canvas Name="g24"/>
+    <Canvas Name="g26"/>
+    <Canvas Name="g28"/>
+    <Canvas Name="g30"/>
+    <Canvas Name="g32"/>
+    <Canvas Name="g34"/>
+    <Canvas Name="g36"/>
+    <Canvas Name="g38"/>
+    <Canvas Name="g40"/>
+    <Canvas Name="g42"/>
+    <Canvas Name="g44"/>
+    <Canvas Name="g46"/>
+    <Canvas Name="g48"/>
+  </Canvas>
+</Viewbox>

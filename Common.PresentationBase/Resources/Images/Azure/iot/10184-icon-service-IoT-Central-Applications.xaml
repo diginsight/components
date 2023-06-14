@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This file is compatible with Silverlight-->
+<Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="b8a5deb0257d40299ed0a02518e9a519" Width="18" Height="18">
+  <Canvas.RenderTransform>
+    <TranslateTransform X="0" Y="0"/>
+  </Canvas.RenderTransform>
+  <Canvas.Resources/>
+  <!--Unknown tag: metadata-->
+  <!--Unknown tag: sodipodi:namedview-->
+  <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path4" Fill="#FFA3A3A3" Data="M9 0 1.15 4.49v3L4.2 9.34V7.54L2.6 6.62V5.38L9 1.68l6.4 3.71v7.18L9 16.27 1.15 11.78v1.68L9 18l7.85-4.49v-9Z"/>
+  <Polygon xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Points="9 0 9 0 1.15 4.49 2.6 5.38 9 1.68 9 1.68 15.4 5.38 16.85 4.49 9 0" Name="polygon6" FillRule="NonZero" Fill="#FF949494"/>
+  <Polygon xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Points="13.25 6.54 13.25 11.46 9 13.93 9 9.01 13.25 6.54" Name="polygon8" FillRule="NonZero" Fill="#FF32BEDD"/>
+  <Polygon xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Points="13.25 6.54 9 9.01 4.75 6.54 9 4.07 13.25 6.54" Name="polygon10" FillRule="NonZero" Fill="#FF9CEBFF"/>
+  <Polygon xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Points="9 9.01 9 13.93 4.75 11.46 4.75 6.54 9 9.01" Name="polygon12" FillRule="NonZero" Fill="#FF50E6FF"/>
+  <Polygon xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Points="4.75 11.46 9 9.01 9 13.93 4.75 11.46" Name="polygon14" FillRule="NonZero" Fill="#FF9CEBFF"/>
+  <Polygon xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Points="13.25 11.46 9 9.01 9 13.93 13.25 11.46" Name="polygon16" FillRule="NonZero" Fill="#FF50E6FF"/>
+</Canvas>

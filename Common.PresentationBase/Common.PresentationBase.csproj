@@ -1,0 +1,428 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+	<PropertyGroup>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<UseWindowsForms>true</UseWindowsForms>
+		<UseWPF>true</UseWPF>
+		<TargetFrameworks>net462;net6.0-windows</TargetFrameworks>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>diginsight.snk</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Authors>diginsight</Authors>
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<PackageProjectUrl>https://github.com/diginsight/components</PackageProjectUrl>
+		<PackageIcon>common.components.png</PackageIcon>
+		<RepositoryUrl>https://github.com/diginsight/components.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<LangVersion>8.0</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="Resources\Images\Azure\ai + machine learning\**" />
+		<Compile Remove="Resources\Images\Azure\ai + ml\**" />
+		<Compile Remove="Resources\Images\Azure\analytics\**" />
+		<Compile Remove="Resources\Images\Azure\app services\**" />
+		<Compile Remove="Resources\Images\Azure\azure ecosystem\**" />
+		<Compile Remove="Resources\Images\Azure\azure stack\**" />
+		<Compile Remove="Resources\Images\Azure\azure vmware solution\**" />
+		<Compile Remove="Resources\Images\Azure\blockchain\**" />
+		<Compile Remove="Resources\Images\Azure\compute\**" />
+		<Compile Remove="Resources\Images\Azure\containers\**" />
+		<Compile Remove="Resources\Images\Azure\databases\**" />
+		<Compile Remove="Resources\Images\Azure\devops\**" />
+		<Compile Remove="Resources\Images\Azure\general\**" />
+		<Compile Remove="Resources\Images\Azure\identity\**" />
+		<Compile Remove="Resources\Images\Azure\integration\**" />
+		<Compile Remove="Resources\Images\Azure\internet of things\**" />
+		<Compile Remove="Resources\Images\Azure\intune\**" />
+		<Compile Remove="Resources\Images\Azure\iot\**" />
+		<Compile Remove="Resources\Images\Azure\management + governance\**" />
+		<Compile Remove="Resources\Images\Azure\menu\**" />
+		<Compile Remove="Resources\Images\Azure\migrate\**" />
+		<Compile Remove="Resources\Images\Azure\mixed reality\**" />
+		<Compile Remove="Resources\Images\Azure\monitor\**" />
+		<Compile Remove="Resources\Images\Azure\networking\**" />
+		<Compile Remove="Resources\Images\Azure\new icons\**" />
+		<Compile Remove="Resources\Images\Azure\other\**" />
+		<Compile Remove="Resources\Images\Azure\security\**" />
+		<Compile Remove="Resources\Images\Azure\storage\**" />
+		<Compile Remove="Resources\Images\Azure\web\**" />
+		<Compile Remove="Resources\Images\BlackBar\**" />
+		<Compile Remove="Resources\Images\Buttons\**" />
+		<Compile Remove="Resources\Images\Configuration\**" />
+		<Compile Remove="Resources\Images\Controls\**" />
+		<Compile Remove="Resources\Images\Dashboard\**" />
+		<Compile Remove="Resources\Images\Device\**" />
+		<Compile Remove="Resources\Images\Dialog\**" />
+		<Compile Remove="Resources\Images\EkipEHub\**" />
+		<Compile Remove="Resources\Images\Form\**" />
+		<Compile Remove="Resources\Images\General\**" />
+		<Compile Remove="Resources\Images\History\**" />
+		<Compile Remove="Resources\Images\icons\**" />
+		<Compile Remove="Resources\Images\Layout\**" />
+		<Compile Remove="Resources\Images\MainArea\**" />
+		<Compile Remove="Resources\Images\Marketplace\**" />
+		<Compile Remove="Resources\Images\Messages\**" />
+		<Compile Remove="Resources\Images\Modules\**" />
+		<Compile Remove="Resources\Images\Pages\**" />
+		<Compile Remove="Resources\Images\Protections\**" />
+		<Compile Remove="Resources\Images\Reports\**" />
+		<Compile Remove="Resources\Images\RibbonForm\**" />
+		<Compile Remove="Resources\Images\Service\**" />
+		<Compile Remove="Resources\Images\SmartVision\**" />
+		<Compile Remove="Resources\Images\Theme\**" />
+		<Compile Remove="Resources\Images\Tools\**" />
+		<Compile Remove="Resources\Images\VisualStudio\2012\**" />
+		<Compile Remove="Resources\Images\VisualStudio\2013\**" />
+		<Compile Remove="Resources\Images\VisualStudio\2015\**" />
+		<Compile Remove="Resources\Images\VisualStudio\2017\**" />
+		<Compile Remove="Resources\Images\VisualStudio\2019\**" />
+		<Compile Remove="Resources\Images\VisualStudio\2022\**" />
+		<Compile Remove="Resources\Images\WarningAlarms\**" />
+		<Compile Remove="Resources\Images\WindowsUIView\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\ai + machine learning\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\ai + ml\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\analytics\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\app services\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\azure ecosystem\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\azure stack\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\azure vmware solution\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\blockchain\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\compute\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\containers\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\databases\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\devops\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\general\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\identity\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\integration\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\internet of things\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\intune\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\iot\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\management + governance\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\menu\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\migrate\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\mixed reality\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\monitor\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\networking\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\new icons\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\other\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\security\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\storage\**" />
+		<EmbeddedResource Remove="Resources\Images\Azure\web\**" />
+		<EmbeddedResource Remove="Resources\Images\BlackBar\**" />
+		<EmbeddedResource Remove="Resources\Images\Buttons\**" />
+		<EmbeddedResource Remove="Resources\Images\Configuration\**" />
+		<EmbeddedResource Remove="Resources\Images\Controls\**" />
+		<EmbeddedResource Remove="Resources\Images\Dashboard\**" />
+		<EmbeddedResource Remove="Resources\Images\Device\**" />
+		<EmbeddedResource Remove="Resources\Images\Dialog\**" />
+		<EmbeddedResource Remove="Resources\Images\EkipEHub\**" />
+		<EmbeddedResource Remove="Resources\Images\Form\**" />
+		<EmbeddedResource Remove="Resources\Images\General\**" />
+		<EmbeddedResource Remove="Resources\Images\History\**" />
+		<EmbeddedResource Remove="Resources\Images\icons\**" />
+		<EmbeddedResource Remove="Resources\Images\Layout\**" />
+		<EmbeddedResource Remove="Resources\Images\MainArea\**" />
+		<EmbeddedResource Remove="Resources\Images\Marketplace\**" />
+		<EmbeddedResource Remove="Resources\Images\Messages\**" />
+		<EmbeddedResource Remove="Resources\Images\Modules\**" />
+		<EmbeddedResource Remove="Resources\Images\Pages\**" />
+		<EmbeddedResource Remove="Resources\Images\Protections\**" />
+		<EmbeddedResource Remove="Resources\Images\Reports\**" />
+		<EmbeddedResource Remove="Resources\Images\RibbonForm\**" />
+		<EmbeddedResource Remove="Resources\Images\Service\**" />
+		<EmbeddedResource Remove="Resources\Images\SmartVision\**" />
+		<EmbeddedResource Remove="Resources\Images\Theme\**" />
+		<EmbeddedResource Remove="Resources\Images\Tools\**" />
+		<EmbeddedResource Remove="Resources\Images\VisualStudio\2012\**" />
+		<EmbeddedResource Remove="Resources\Images\VisualStudio\2013\**" />
+		<EmbeddedResource Remove="Resources\Images\VisualStudio\2015\**" />
+		<EmbeddedResource Remove="Resources\Images\VisualStudio\2017\**" />
+		<EmbeddedResource Remove="Resources\Images\VisualStudio\2019\**" />
+		<EmbeddedResource Remove="Resources\Images\VisualStudio\2022\**" />
+		<EmbeddedResource Remove="Resources\Images\WarningAlarms\**" />
+		<EmbeddedResource Remove="Resources\Images\WindowsUIView\**" />
+		<None Remove="Resources\Images\Azure\ai + machine learning\**" />
+		<None Remove="Resources\Images\Azure\ai + ml\**" />
+		<None Remove="Resources\Images\Azure\analytics\**" />
+		<None Remove="Resources\Images\Azure\app services\**" />
+		<None Remove="Resources\Images\Azure\azure ecosystem\**" />
+		<None Remove="Resources\Images\Azure\azure stack\**" />
+		<None Remove="Resources\Images\Azure\azure vmware solution\**" />
+		<None Remove="Resources\Images\Azure\blockchain\**" />
+		<None Remove="Resources\Images\Azure\compute\**" />
+		<None Remove="Resources\Images\Azure\containers\**" />
+		<None Remove="Resources\Images\Azure\databases\**" />
+		<None Remove="Resources\Images\Azure\devops\**" />
+		<None Remove="Resources\Images\Azure\general\**" />
+		<None Remove="Resources\Images\Azure\identity\**" />
+		<None Remove="Resources\Images\Azure\integration\**" />
+		<None Remove="Resources\Images\Azure\internet of things\**" />
+		<None Remove="Resources\Images\Azure\intune\**" />
+		<None Remove="Resources\Images\Azure\iot\**" />
+		<None Remove="Resources\Images\Azure\management + governance\**" />
+		<None Remove="Resources\Images\Azure\menu\**" />
+		<None Remove="Resources\Images\Azure\migrate\**" />
+		<None Remove="Resources\Images\Azure\mixed reality\**" />
+		<None Remove="Resources\Images\Azure\monitor\**" />
+		<None Remove="Resources\Images\Azure\networking\**" />
+		<None Remove="Resources\Images\Azure\new icons\**" />
+		<None Remove="Resources\Images\Azure\other\**" />
+		<None Remove="Resources\Images\Azure\security\**" />
+		<None Remove="Resources\Images\Azure\storage\**" />
+		<None Remove="Resources\Images\Azure\web\**" />
+		<None Remove="Resources\Images\BlackBar\**" />
+		<None Remove="Resources\Images\Buttons\**" />
+		<None Remove="Resources\Images\Configuration\**" />
+		<None Remove="Resources\Images\Controls\**" />
+		<None Remove="Resources\Images\Dashboard\**" />
+		<None Remove="Resources\Images\Device\**" />
+		<None Remove="Resources\Images\Dialog\**" />
+		<None Remove="Resources\Images\EkipEHub\**" />
+		<None Remove="Resources\Images\Form\**" />
+		<None Remove="Resources\Images\General\**" />
+		<None Remove="Resources\Images\History\**" />
+		<None Remove="Resources\Images\icons\**" />
+		<None Remove="Resources\Images\Layout\**" />
+		<None Remove="Resources\Images\MainArea\**" />
+		<None Remove="Resources\Images\Marketplace\**" />
+		<None Remove="Resources\Images\Messages\**" />
+		<None Remove="Resources\Images\Modules\**" />
+		<None Remove="Resources\Images\Pages\**" />
+		<None Remove="Resources\Images\Protections\**" />
+		<None Remove="Resources\Images\Reports\**" />
+		<None Remove="Resources\Images\RibbonForm\**" />
+		<None Remove="Resources\Images\Service\**" />
+		<None Remove="Resources\Images\SmartVision\**" />
+		<None Remove="Resources\Images\Theme\**" />
+		<None Remove="Resources\Images\Tools\**" />
+		<None Remove="Resources\Images\VisualStudio\2012\**" />
+		<None Remove="Resources\Images\VisualStudio\2013\**" />
+		<None Remove="Resources\Images\VisualStudio\2015\**" />
+		<None Remove="Resources\Images\VisualStudio\2017\**" />
+		<None Remove="Resources\Images\VisualStudio\2019\**" />
+		<None Remove="Resources\Images\VisualStudio\2022\**" />
+		<None Remove="Resources\Images\WarningAlarms\**" />
+		<None Remove="Resources\Images\WindowsUIView\**" />
+		<None Include="..\images\01. Project image\common.components.png">
+		  <Pack>True</Pack>
+		  <PackagePath></PackagePath>
+		</None>
+		<None Include="..\LICENSE.md">
+		  <Pack>True</Pack>
+		  <PackagePath></PackagePath>
+		</None>
+		<Page Remove="Resources\Images\Azure\ai + machine learning\**" />
+		<Page Remove="Resources\Images\Azure\ai + ml\**" />
+		<Page Remove="Resources\Images\Azure\analytics\**" />
+		<Page Remove="Resources\Images\Azure\app services\**" />
+		<Page Remove="Resources\Images\Azure\azure ecosystem\**" />
+		<Page Remove="Resources\Images\Azure\azure stack\**" />
+		<Page Remove="Resources\Images\Azure\azure vmware solution\**" />
+		<Page Remove="Resources\Images\Azure\blockchain\**" />
+		<Page Remove="Resources\Images\Azure\compute\**" />
+		<Page Remove="Resources\Images\Azure\containers\**" />
+		<Page Remove="Resources\Images\Azure\databases\**" />
+		<Page Remove="Resources\Images\Azure\devops\**" />
+		<Page Remove="Resources\Images\Azure\general\**" />
+		<Page Remove="Resources\Images\Azure\identity\**" />
+		<Page Remove="Resources\Images\Azure\integration\**" />
+		<Page Remove="Resources\Images\Azure\internet of things\**" />
+		<Page Remove="Resources\Images\Azure\intune\**" />
+		<Page Remove="Resources\Images\Azure\iot\**" />
+		<Page Remove="Resources\Images\Azure\management + governance\**" />
+		<Page Remove="Resources\Images\Azure\menu\**" />
+		<Page Remove="Resources\Images\Azure\migrate\**" />
+		<Page Remove="Resources\Images\Azure\mixed reality\**" />
+		<Page Remove="Resources\Images\Azure\monitor\**" />
+		<Page Remove="Resources\Images\Azure\networking\**" />
+		<Page Remove="Resources\Images\Azure\new icons\**" />
+		<Page Remove="Resources\Images\Azure\other\**" />
+		<Page Remove="Resources\Images\Azure\security\**" />
+		<Page Remove="Resources\Images\Azure\storage\**" />
+		<Page Remove="Resources\Images\Azure\web\**" />
+		<Page Remove="Resources\Images\BlackBar\**" />
+		<Page Remove="Resources\Images\Buttons\**" />
+		<Page Remove="Resources\Images\Configuration\**" />
+		<Page Remove="Resources\Images\Controls\**" />
+		<Page Remove="Resources\Images\Dashboard\**" />
+		<Page Remove="Resources\Images\Device\**" />
+		<Page Remove="Resources\Images\Dialog\**" />
+		<Page Remove="Resources\Images\EkipEHub\**" />
+		<Page Remove="Resources\Images\Form\**" />
+		<Page Remove="Resources\Images\General\**" />
+		<Page Remove="Resources\Images\History\**" />
+		<Page Remove="Resources\Images\icons\**" />
+		<Page Remove="Resources\Images\Layout\**" />
+		<Page Remove="Resources\Images\MainArea\**" />
+		<Page Remove="Resources\Images\Marketplace\**" />
+		<Page Remove="Resources\Images\Messages\**" />
+		<Page Remove="Resources\Images\Modules\**" />
+		<Page Remove="Resources\Images\Pages\**" />
+		<Page Remove="Resources\Images\Protections\**" />
+		<Page Remove="Resources\Images\Reports\**" />
+		<Page Remove="Resources\Images\RibbonForm\**" />
+		<Page Remove="Resources\Images\Service\**" />
+		<Page Remove="Resources\Images\SmartVision\**" />
+		<Page Remove="Resources\Images\Theme\**" />
+		<Page Remove="Resources\Images\Tools\**" />
+		<Page Remove="Resources\Images\VisualStudio\2012\**" />
+		<Page Remove="Resources\Images\VisualStudio\2013\**" />
+		<Page Remove="Resources\Images\VisualStudio\2015\**" />
+		<Page Remove="Resources\Images\VisualStudio\2017\**" />
+		<Page Remove="Resources\Images\VisualStudio\2019\**" />
+		<Page Remove="Resources\Images\VisualStudio\2022\**" />
+		<Page Remove="Resources\Images\WarningAlarms\**" />
+		<Page Remove="Resources\Images\WindowsUIView\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="UserControl\HamburgerMenuControl.xaml.cs" />
+		<Compile Remove="UserControl\NotificationBarControl.xaml.cs" />
+		<Compile Remove="Windows\ApplicationWindow.xaml.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\Images\Azure\Azure icons.url" />
+	  <None Remove="Resources\Images\Azure\Azure_Icons_FAQ.pdf" />
+	  <None Remove="Resources\Images\Azure\Microsoft_Terms_of_Use.pdf" />
+	  <None Remove="Resources\Images\VisualStudio\2015\VisualStudioImageLibrary2015_Concept.pdf" />
+	  <None Remove="Resources\Images\VisualStudio\2015\VisualStudioImageLibrary2015_Icons.pdf" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Remove="UserControl\HamburgerMenuControl.xaml" />
+		<Page Remove="UserControl\NotificationBarControl.xaml" />
+		<Page Remove="Windows\ApplicationWindow.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Resources\Images\Azure\security\10245-icon-service-Key-Vaults.png" />
+	  <Content Include="Resources\Images\BlackBar\Collapse.png" />
+	  <Content Include="Resources\Images\BlackBar\Expand.png" />
+	  <Resource Include="Resources\Images\icons\FontAwesome.otf" />
+	  <Resource Include="Resources\Images\icons\abb_icon_24.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Resource Include="Resources\Images\Pages\Collapse-16.png">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Images\Pages\Expand-16.png">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Images\Pages\Restart-24.png">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Images\Pages\Upload-24.png">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Resource Include="Resources\Images\MainArea\Idea.png" />
+		<Resource Include="Resources\Images\MainArea\User.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Binding\" />
+		<Folder Include="Resources\Images\VisualStudio\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Common.Diagnostics" Version="1.0.1.231" />
+		<PackageReference Include="SharpVectors" Version="1.8.1" />
+		<PackageReference Include="System.ComponentModel" Version="4.3.0" />
+		<!--<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />-->
+		<PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+		<PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
+		<PackageReference Include="System.IO.Packaging" Version="7.0.0" />
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />
+		<PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
+		<PackageReference Include="System.Private.DataContractSerialization" Version="4.3.0" />
+		<PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+		<PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
+		<PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
+		<PackageReference Include="System.Runtime.Serialization.Xml" Version="4.3.0" />
+		<PackageReference Include="System.Security.AccessControl" Version="6.0.0" />
+		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="7.0.1" />
+		<PackageReference Include="System.Text.Json" Version="7.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Include="Resources\Images\Azure\integration\10836-icon-service-Service-Bus.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\Azure\iot\00039-icon-service-Event-Hubs.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\Azure\iot\10182-icon-service-IoT-Hub.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\Azure\iot\10184-icon-service-IoT-Central-Applications.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\Azure\iot\10185-icon-service-Azure-Maps-Accounts.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\Azure\iot\10186-icon-service-IoT-Edge.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\Azure\iot\10188-icon-service-Time-Series-Insights-Event-Sources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\Azure\iot\10369-icon-service-Device-Provisioning-Services.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\Azure\security\10245-icon-service-Key-Vaults.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Common.ComponentBase\Common.ComponentBase.csproj" />
+		<ProjectReference Include="..\Common.EntityBase\Common.EntityBase.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Resources\Brushes.generic.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Resources\Canvas.generic.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Resources\Colors.generic.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Resources\CommonConversions.generic.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Resources\ControlTemplates.generic.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Resources\DataTemplates.generic.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Resources\DefaultSkin.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Resources\Images.generic.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Resources\Scroll.Color.generic.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Resources\Styles.button.generic.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Themes\Styles.window.generic.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	  </Page>
+	</ItemGroup>
+
+</Project>

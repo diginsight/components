@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="Common.NotificationBarControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:common="clr-namespace:Common"
+             mc:Ignorable="d" x:Name="ctlNotificationBarControl"
+             d:DesignHeight="30" 
+             d:DesignWidth="600" 
+             DataContext="{Binding ElementName=ctlExceptionControl, Mode=OneWay}" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Common.Presentation;component/Resources/DefaultSkin.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid x:Name="gdMessageDialog" ShowGridLines="False" Background="{StaticResource AbbGreen4}" Loaded="GdMessageDialog_Loaded">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="40"/>
+        </Grid.ColumnDefinitions>
+        <Grid.Triggers>
+            <EventTrigger RoutedEvent="Grid.Loaded">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Grid.Triggers>
+        <Button Grid.Column="0" Background="Transparent" Foreground="{StaticResource AbbGrey255}" BorderThickness="0" >
+            <Rectangle Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="14" Width="14" >
+                <Rectangle.Fill>
+                    <VisualBrush Visual="{StaticResource okCheckCanvas}" Stretch="Uniform" />
+                </Rectangle.Fill>
+            </Rectangle>
+        </Button>
+        <Label Grid.Column="0" Grid.ColumnSpan="3" Padding="100,0,100,0" FontFamily="Helvetica Neue eText Pro Light"
+               Content="{Binding DialogMessage, ElementName=ctlNotificationBarControl, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='empty message'}"
+               HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{StaticResource AbbGrey255}" FontSize="9"/>
+        <Button x:Name="btnCloseNotification" Grid.Column="2" Style="{StaticResource BasicIconsButtonTemplate}"  Click="BtnCloseNotification_Click">
+            <Rectangle Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="10" Width="10" >
+                <Rectangle.Fill>
+                    <VisualBrush Visual="{StaticResource exitCanvas}" Stretch="Uniform" />
+                </Rectangle.Fill>
+            </Rectangle>
+        </Button>
+    </Grid>
+</UserControl>

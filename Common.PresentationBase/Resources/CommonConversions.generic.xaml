@@ -1,0 +1,189 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:common="clr-namespace:Common"
+    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:wndBase="clr-namespace:System.Windows;assembly=WindowsBase"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
+
+
+    <BooleanToVisibilityConverter x:Key="booleanToVisibility" />
+
+    <common:BooleanToObjectConverter x:Key="booleanToVisibilityHidden" TrueValue="{x:Static Visibility.Visible}" FalseValue="{x:Static Visibility.Hidden}" />
+    <common:BooleanToObjectConverter x:Key="booleanToEnableDisable" TrueValue="true" FalseValue="false" />
+    <common:BooleanToObjectConverter x:Key="booleanToString" TrueValue="Yes" FalseValue="No" />
+    <common:Double2GridLengthConverter x:Key="double2GridLengthConverter" />
+    
+
+    <common:FormatConverter x:Key="format" />
+    <common:FormatConverter NullFormat="" x:Key="formatNN" />
+    <common:FormatConverter Format="{}{0:#,###.00}" x:Key="formatImporto" />
+    <common:FormatConverter Format="{}{0:dd-MM-yyyy}" x:Key="formatData" />
+
+    <common:ValueCompareConverter x:Key="isNull" Op="==" Value="{x:Null}" />
+    <common:ValueCompareConverter x:Key="isNaN" Op="==" Value="{x:Static sys:Double.NaN}" />
+    <common:ValueCompareConverter x:Key="isNotNull" Op="!=" Value="{x:Null}" />
+    <common:ValueCompareConverter Op="==" x:Key="isEqual" Value="{x:Null}" />
+    <common:ValueCompareConverter Op="!=" x:Key="isNotEqual" Value="{x:Null}" />
+    <common:ValueCompareConverter Op="&lt;" x:Key="lt" Value="{x:Null}" />
+    <common:ValueCompareConverter Op="&lt;=" x:Key="lte" Value="{x:Null}" />
+    <common:ValueCompareConverter Op="&gt;" x:Key="gt" Value="{x:Null}" />
+    <common:ValueCompareConverter Op="&gt;=" x:Key="gte" Value="{x:Null}" />
+
+    <common:BinaryOperatorConverter Operation="AND" x:Key="and" />
+    <common:BinaryOperatorConverter Operation="OR" x:Key="or" />
+    <common:BinaryOperatorConverter Operation="NAND" x:Key="nand" />
+    <common:BinaryOperatorConverter Operation="NOR" x:Key="nor" />
+    <common:BinaryOperatorConverter Operation="XOR" x:Key="xor" />
+    <common:BinaryOperatorConverter Operation="XNOR" x:Key="xnor" />
+    <common:NotConverter x:Key="not" />
+
+    <common:ReplaceObjectConverter StartValue="{common:Decimal 0}" ReplaceValue="{x:Null}" x:Key="zeroToNull" />
+    <common:ReplaceObjectConverter StartValue="{common:Decimal 0}" ReplaceValue="{x:Null}" x:Key="zeroDecimalToNull" />
+    <common:ReplaceObjectConverter StartValue="{common:Int16 0}" ReplaceValue="{x:Null}" x:Key="zeroShortToNull" />
+    <common:ReplaceObjectConverter StartValue="{common:Int32 0}" ReplaceValue="{x:Null}" x:Key="zeroIntToNull" />
+    <common:ReplaceObjectConverter StartValue="{common:Int64 0}" ReplaceValue="{x:Null}" x:Key="zeroLongToNull" />
+    <common:ReplaceObjectConverter StartValue="{common:Single 0}" ReplaceValue="{x:Null}" x:Key="zeroFloatToNull" />
+    <common:ReplaceObjectConverter StartValue="{common:Double 0}" ReplaceValue="{x:Null}" x:Key="zeroDoubleToNull" />
+    <common:ReplaceObjectConverter StartValue="" ReplaceValue="{x:Null}" x:Key="zeroStringToNull" />
+    <common:ReplaceObjectConverter StartValue="{x:Static sys:DateTime.MinValue}" ReplaceValue="{x:Null}" x:Key="minDateToNull" />
+    <common:ReplaceObjectConverter StartValue="{common:Int32 0}" ReplaceValue="-" x:Key="zeroIntToDash" />
+
+    <common:ReplaceObjectConverter StartValue="{x:Null}" ReplaceValue="{x:Static DependencyProperty.UnsetValue}" x:Key="nullToUnsetValue" />
+    <common:ReplaceObjectConverter StartValue="{x:Static sys:DateTime.MinValue}" ReplaceValue="{x:Static DependencyProperty.UnsetValue}" x:Key="minDateToUnsetValue" />
+
+    <common:ReplaceObjectConverter StartValue="{common:Int32 0}" ReplaceValue="{x:Static DependencyProperty.UnsetValue}" x:Key="zeroIntToUnsetValue" />
+    <common:ReplaceObjectConverter StartValue="{common:Decimal 0}" ReplaceValue="{x:Static DependencyProperty.UnsetValue}" x:Key="zeroDecimalToUnsetValue" />
+    <common:ReplaceObjectConverter StartValue="{common:Int64 0}" ReplaceValue="{x:Static DependencyProperty.UnsetValue}" x:Key="zeroLongToUnsetValue" />
+    <common:ReplaceObjectConverter StartValue="{common:DateTime 01-01-0001}" ReplaceValue="{x:Static DependencyProperty.UnsetValue}" x:Key="nulldateToUnsetValue" />
+    <common:WhiteSpaceToUnsetValueConverter x:Key="whiteSpaceToUnsetValue" />
+
+    <common:MathOperatorConverterDecimal Operation="+" x:Key="add" />
+    <common:MathOperatorConverterDecimal Operation="-" x:Key="sub" />
+    <common:MathOperatorConverterDecimal Operation="*" x:Key="mult" />
+    <common:MathOperatorConverterDecimal Operation=":" x:Key="div" />
+    <common:MathOperatorConverterInt32 Operation="+" x:Key="addInt32" />
+    <common:MathOperatorConverterInt32 Operation="-" x:Key="subInt32" />
+    <common:MathOperatorConverterInt32 Operation="*" x:Key="multInt32" />
+    <common:MathOperatorConverterInt32 Operation=":" x:Key="divInt32" />
+    <common:MathOperatorConverterInt64 Operation="+" x:Key="addInt64" />
+    <common:MathOperatorConverterInt64 Operation="-" x:Key="subInt64" />
+    <common:MathOperatorConverterInt64 Operation="*" x:Key="multInt64" />
+    <common:MathOperatorConverterInt64 Operation=":" x:Key="divInt64" />
+    <common:MathOperatorConverterDecimal Operation="+" x:Key="addDecimal" />
+    <common:MathOperatorConverterDecimal Operation="-" x:Key="subDecimal" />
+    <common:MathOperatorConverterDecimal Operation="*" x:Key="multDecimal" />
+    <common:MathOperatorConverterDecimal Operation=":" x:Key="divDecimal" />
+    <common:MathOperatorConverterSingle Operation="+" x:Key="addSingle" />
+    <common:MathOperatorConverterSingle Operation="-" x:Key="subSingle" />
+    <common:MathOperatorConverterSingle Operation="*" x:Key="multSingle" />
+    <common:MathOperatorConverterSingle Operation=":" x:Key="divSingle" />
+    <common:MathOperatorConverterDouble Operation="+" x:Key="addDouble" />
+    <common:MathOperatorConverterDouble Operation="-" x:Key="subDouble" />
+    <common:MathOperatorConverterDouble Operation="*" x:Key="multDouble" />
+    <common:MathOperatorConverterDouble Operation=":" x:Key="divDouble" />
+
+    <common:RndConverter x:Key="rnd" />
+    <common:RndDoubleConverter x:Key="rndDouble" />
+    
+    <common:AddDaysConverter x:Key="addDays" />
+    <common:AddDaysConverter x:Key="addWorkingDays" UseWorkingDays="True" />
+    <common:LastTickConverter x:Key="lastTick" />
+    <common:DateConverter x:Key="date" />
+
+    <common:CollectionConverter x:Key="cloneToCollection" />
+    <common:CollectionConverterString x:Key="cloneToCollectionString" />
+    <common:CollectionConverterInt16 x:Key="cloneToCollectionInt16" />
+    <common:CollectionConverterInt32 x:Key="cloneToCollectionInt32" />
+    <common:CollectionConverterInt64 x:Key="cloneToCollectionInt64" />
+    <common:CollectionConverterDecimal x:Key="cloneToCollectionDecimal" />
+    <common:CollectionConverterSingle x:Key="cloneToCollectionSingle" />
+    <common:CollectionConverterDouble x:Key="cloneToCollectionDouble" />
+
+    <common:ItemToCollectionConverter x:Key="itemToList" />
+
+    <common:IsInConverter x:Key="isIn" />
+
+    <common:OneWayReplaceConverter x:Key="replace" />
+    <common:ContainsConverter x:Key="contains" />
+    <common:ContainsConverter Negate="true" x:Key="doesNotContain" />
+    <common:SelectItemConverter x:Key="selectItem" />
+    <common:ChooseItemConverter x:Key="firstOrDefault" />
+    <common:IsCollectionNullOrEmpty x:Key="isCollectionNullOrEmpty" />
+    <common:IsCollectionNullOrEmpty Negate="true"  x:Key="isCollectionNotNullOrEmpty" />
+
+    <common:SelectDictionaryEntry x:Key="selectDictionaryEntry" />
+
+
+    <common:JoinConverter x:Key="join" />
+    <!--<common:ConcatenateConverter x:Key="concatenate" />-->
+    <common:TrimConverter x:Key="trim" />
+    <common:TrimEndConverter x:Key="trimEnd" />
+    <common:TrimEndConverter x:Key="trimStart" />
+    <common:IsNullOrEmptyConverter x:Key="isNullOrEmpty" />
+    <common:IsNotNullOrEmptyConverter x:Key="isNotNullOrEmpty" />
+    <common:IsNullOrWhiteSpaceConverter x:Key="isNullOrWhiteSpace" />
+    <common:IsNotNullOrWhiteSpaceConverter x:Key="isNotNullOrWhiteSpace" />
+    <common:ToUpperConverter x:Key="toUpper" />
+    <common:ToLowerConverter x:Key="toLower" />
+
+    <common:FindItemConverter x:Key="itemExists" />
+    <common:SumItemsConverter2 x:Key="sumItems" />
+    <common:ParameterConverter x:Key="parameter" />
+    <common:IdentityConverter x:Key="identity" />
+    <common:IdentityConverter x:Key="array" />
+    <common:ExceptionConverter x:Key="exception" />
+    <common:GetTypeConverter x:Key="getType" />
+    <common:GetTypeNameConverter x:Key="getTypeName" />
+    <common:GetTypeNamespaceConverter x:Key="getTypeNamespace" />
+    <common:GetAssemblyNameConverter x:Key="getTypeAssemblyName" />
+    <common:ToStringConverter x:Key="toString" />
+
+    <common:LogValueConverter Level="Error" x:Key="logError" />
+    <common:LogValueConverter Level="Warning" x:Key="logWarning" />
+    <common:LogValueConverter Level="Information" x:Key="logInformation" />
+    <common:LogValueConverter Level="Verbose" x:Key="logVerbose" />
+
+    <common:IsConverter x:Key="is" />
+    <common:IsNotConverter x:Key="isNot" />
+    <common:HasFlagConverter x:Key="hasFlag" />
+
+    <common:BooleanToObjectConverter x:Key="if" />
+    <common:BooleanToObjectConverter x:Key="?" />
+    <common:BooleanToObjectConverter x:Key="conditional" />
+    <!--<common:NullCoalesceConverter x:Key="??" />-->
+    <common:NullCoalesceConverter x:Key="nullCoalesce" />
+    <common:EmptyCoalesceConverter x:Key="emptyCoalesce" />
+
+    <!--<common:GetAzioneConditionConverter x:Key="getAzioneCondition" />-->
+
+    <common:GetErrorContentConverter x:Key="getErrorContent" />
+    <common:GetValidationErrorConverter x:Key="getValidationError" />
+    <common:GetValidationErrorLevelConverter x:Key="getValidationLevel" />
+    <!--<common:DelegateConverter x:Key="mergeExceptions" ConvertDelegate2="{x:Static common:ExceptionBase.MergeExceptionsConverterDelegate}" />-->
+
+    <!--<common:DelegateConverter x:Key="getFooterItems" ConvertDelegate2="{x:Static abc:ListView.GetFooterItemsDelegate}" />
+    <common:DelegateConverter x:Key="aggregateFooterRows" ConvertDelegate="{x:Static abc:ListView.AggregateFooterRowsDelegate}" />
+    <common:DelegateConverter x:Key="getFooterTitle" ConvertDelegate="{x:Static abc:ListView.GetFooterTitleDelegate}" />-->
+
+    <common:ThicknessConverter x:Key="thickness" />
+
+    <common:ApplyConverterConverter x:Key="applyConverter" />
+
+    <common:BrightnessConverter x:Key="brightnessConverter" />
+    <common:Color2BrushConverter x:Key="color2BrushConverter" />
+
+    <common:BooleanToModifyConverter x:Key="booleanToModifyConverter"/>
+    <common:ModifyToBooleanConverter x:Key="modifyToBooleanConverter"/>
+    <common:StringToDateTimeConverter2 x:Key="stringToDateTimeConverter"/>
+
+    <!--<common:AccessTypeToVisibilityConverter x:Key="accessTypeToVisibilityConverter"/>-->
+    <common:IntToBoolConverter x:Key="intToBoolConverter"/>
+
+    <common:LocalizeConverter x:Key="localize"/>
+
+    <common:IfInDesignModeConverter x:Key="ifInDesignMode"/>
+    <common:IfNotInDesignModeConverter x:Key="ifNotInDesignMode"/>
+
+</ResourceDictionary>
+

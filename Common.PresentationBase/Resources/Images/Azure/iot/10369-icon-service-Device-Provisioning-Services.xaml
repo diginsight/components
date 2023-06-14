@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This file is compatible with Silverlight-->
+<Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="e2354665da3e47dabdbfc0a061b5d0b5" Width="18" Height="18">
+  <Canvas.RenderTransform>
+    <TranslateTransform X="0" Y="0"/>
+  </Canvas.RenderTransform>
+  <Canvas.Resources>
+    <LinearGradientBrush xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Key="a2ce308d-2865-4d56-bfb4-da21e9e9e552" MappingMode="Absolute" StartPoint="9,17" EndPoint="9,0">
+      <LinearGradientBrush.GradientStops>
+        <GradientStopCollection>
+          <GradientStop Color="#B3B2B3" Offset="0"/>
+          <GradientStop Color="#9E9E9E" Offset="0.31"/>
+          <GradientStop Color="#949494" Offset="0.54"/>
+        </GradientStopCollection>
+      </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+  </Canvas.Resources>
+  <!--Unknown tag: metadata-->
+  <!--Unknown tag: sodipodi:namedview-->
+  <Canvas Name="g21">
+    <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="8.7" Canvas.Top="6.6" Width="2.9" Height="2.9" Name="circle11" Fill="#FFFFFFFF"/>
+    <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="11.4" Canvas.Top="11.2" Width="2.2" Height="2.2" Name="circle13" Fill="#FFFFFFFF"/>
+    <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="7.1" Canvas.Top="10.6" Width="1.9" Height="1.9" Name="circle15" Fill="#FFFFFFFF"/>
+    <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="6.1" Canvas.Top="3" Width="2.4" Height="2.4" Name="circle17" Fill="#FFFFFFFF"/>
+    <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="3.2" Canvas.Top="7.6" Width="1.9" Height="1.9" Name="circle19" Fill="#FFFFFFFF"/>
+  </Canvas>
+  <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path23" Fill="#FF989898" Data="M12.76 12.08 10.34 7.85l-.24.13.2-.14L7.56 3.94l-.5.36L9.49 7.75 4.11 8.2l.05.62 5.33-.45L7.72 11.31l.53.32 1.82-3.02 2.16 3.77.54-.3Z"/>
+  <Canvas Name="g35">
+    <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="8.7" Canvas.Top="6.6" Width="2.8" Height="2.8" Name="circle25" Fill="#FF32BEDD"/>
+    <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="6.1" Canvas.Top="3" Width="2.4" Height="2.4" Name="circle27" Fill="#FF32BEDD"/>
+    <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="3.2" Canvas.Top="7.6" Width="1.9" Height="1.9" Name="circle29" Fill="#FF32BEDD"/>
+    <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="7.1" Canvas.Top="10.6" Width="1.9" Height="1.9" Name="circle31" Fill="#FF32BEDD"/>
+    <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="11.4" Canvas.Top="11.2" Width="2.2" Height="2.2" Name="circle33" Fill="#FF32BEDD"/>
+  </Canvas>
+  <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="13.6" Canvas.Top="2.4" Width="2.8" Height="2.8" Name="circle37" Fill="#FF198AB3"/>
+  <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="1.8" Canvas.Top="2.4" Width="2.8" Height="2.8" Name="circle39" Fill="#FF198AB3"/>
+  <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="7.6" Canvas.Top="14.9" Width="2.8" Height="2.8" Name="circle41" Fill="#FF198AB3"/>
+  <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path43" Fill="{StaticResource a2ce308d-2865-4d56-bfb4-da21e9e9e552}" Data="M4.94 3.12a6.881 6.881 0 0 1 8.29.12 1.918 1.918 0 0 1 1-1.15A8.431 8.431 0 0 0 3.81 2 1.941 1.941 0 0 1 4.94 3.12ZM16.6 5a1.91 1.91 0 0 1-1.34.76 6.842 6.842 0 0 1 .67 3 6.92 6.92 0 0 1-5.22 6.7 1.871 1.871 0 0 1 .24.91 1.765 1.765 0 0 1-.13.65A8.45 8.45 0 0 0 16.59 5ZM7.1 16.32a1.95 1.95 0 0 1 .23-.9A6.909 6.909 0 0 1 2.77 5.73a2 2 0 0 1-1-.53 1.676 1.676 0 0 1-.3-.4A8.47 8.47 0 0 0 7.21 17a1.926 1.926 0 0 1-.12-.68Z"/>
+</Canvas>

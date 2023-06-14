@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<RuntimeIdentifiers>win</RuntimeIdentifiers>
+		<UseWPF>true</UseWPF>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>diginsight.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="appsettings.json" />
+		<None Remove="log4net.config" />
+		<None Remove="Resources\01. play.svg" />
+		<None Remove="Resources\01. play.vsdx" />
+		<None Remove="Resources\02. pause.svg" />
+		<None Remove="Resources\02. pause.vsdx" />
+		<None Remove="Resources\03. stop.svg" />
+		<None Remove="Resources\03. stop.vsdx" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Remove="Resources\01. play.xaml" />
+		<Page Remove="Resources\02. pause.xaml" />
+		<Page Remove="Resources\03. stop.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="log4net.config">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Common.Diagnostics" Version="1.0.1.231" />
+		<!--
+    <PackageReference Include="Common.Diagnostics.AppInsights" Version="1.0.1.53" />
+    <PackageReference Include="Common.Diagnostics.Log4net" Version="1.0.1.53" />
+	-->
+		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+		<PackageReference Include="log4net" Version="2.0.15" />
+		<!--<PackageReference Include="Microsoft.Azure.ApplicationInsights.Query" Version="1.0.0" />-->
+		<!--<PackageReference Include="Microsoft.Azure.OperationalInsights" Version="1.0.0" />-->
+		<PackageReference Include="Microsoft.Rest.ClientRuntime.Azure.Authentication" Version="2.4.1" />
+		<PackageReference Include="System.Text.Json" Version="7.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Common.AssemblyResolver\Common.AssemblyResolver.csproj" />
+		<ProjectReference Include="..\..\..\Common.ComponentBase\Common.ComponentBase.csproj" />
+		<ProjectReference Include="..\..\..\Common.EntityBase\Common.EntityBase.csproj" />
+		<ProjectReference Include="..\..\..\Common.PresentationBase.Azure\Common.PresentationBase.Azure.csproj" />
+		<ProjectReference Include="..\..\..\Common.PresentationBase\Common.PresentationBase.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="MainControl.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Models\" />
+		<Folder Include="Resources\" />
+	</ItemGroup>
+
+</Project>

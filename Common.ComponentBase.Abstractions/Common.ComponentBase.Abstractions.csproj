@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>Common.ComponentBase.Abstractions</RootNamespace>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<PackageProjectUrl>https://github.com/diginsight/components</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/diginsight/components.git</RepositoryUrl>
+		<Authors>diginsight</Authors>
+		<Description>Common.ComponentBase provides common components abstractions for client and server side</Description>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>diginsight.snk</AssemblyOriginatorKeyFile>
+		<PackageIcon>common.components.png</PackageIcon>
+		<RepositoryType>git</RepositoryType>
+		<!--<LangVersion>8.0</LangVersion>-->
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Include="..\images\01. Project image\common.components.png" Link="common.components.png">
+	    <PackagePath></PackagePath>
+	    <Pack>True</Pack>
+	  </None>
+	  <None Include="..\LICENSE.md" Link="LICENSE.md">
+	    <PackagePath></PackagePath>
+	    <Pack>True</Pack>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Common.EntityBase\Common.EntityBase.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,94 @@
+﻿<UserControl x:Class="Common.SettingsAboutControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:common="clr-namespace:Common"
+             mc:Ignorable="d" 
+             Name="ctlSettingsAboutControl"
+             d:DesignHeight="450" d:DesignWidth="280"  >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Common.PresentationBase;component/Resources/DefaultSkin.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <CommandBinding Command="{x:Static common:Commands.ToggleIsCollapsed}" CanExecute="ToggleIsCollapsedCanExecute" Executed="ToggleIsCollapsedCommand" />
+    </UserControl.CommandBindings>
+    <Grid Name="MenuGrid" 
+          Width="{Binding ElementName=ctlSettingsAboutControl, Path=IsCollapsed, Mode=OneWay, Converter={StaticResource if}, ConverterParameter=45, FallbackValue=280}"
+          Background="{StaticResource Grey38}"
+          DataContext="{Binding ElementName=ctlSettingsAboutControl, Mode=OneWay}"  >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="0"/>
+            <RowDefinition Height="0"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid HorizontalAlignment="Stretch" 
+              Grid.Row="0" Name="grdTitle" Height="45" 
+              Visibility="{Binding RelativeSource={RelativeSource Self}, Path=(common:AttachedProperties.IsVisible0), Mode=OneWay, Converter={StaticResource booleanToVisibility}}"
+              common:AttachedProperties.IsVisible0="{Binding Path=IsCollapsed, Mode=OneWay, Converter={StaticResource not}, FallbackValue=true}" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button common:AccessKeyScoper.IsAccessKeyScope="False" 
+                    Grid.Row="1" Grid.Column="0" 
+                    Command="{x:Static common:Commands.RemoveItem}" CommandParameter="{Binding ElementName=ctlSettingsAboutControl, Path=., Mode=OneWay}"
+                    VerticalAlignment="Center" 
+                    Style="{StaticResource SimpleButtonTemplate}" 
+                Margin="0,0,0,0"
+                Height="40" Width="40" IsEnabled="True" 
+                Visibility="Visible" HorizontalContentAlignment="Left" Focusable="False" >
+                <!--<Glyphs Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center" Fill="White" FontUri="/Common;component/Resources/Images/icons/abb_icon_24.ttf" FontRenderingEmSize="24" UnicodeString="&#xE958;" />-->
+            </Button>
+            <TextBlock Grid.Column="1" Padding="10,10,0,0" 
+                       Text="About" 
+                       common:Localization.Uid="{common:Localize Settings.About.Title, Property={x:Static TextBlock.TextProperty}}"
+                       Foreground="White" TextWrapping="Wrap" FontSize="20" FontFamily="Helvetica Neue eText Pro Light" />
+        </Grid>
+        <Grid Grid.Row="4" Name="grdBody" >
+            <common:AttachedProperties.Boolean0>
+                <MultiBinding Converter="{StaticResource and}" >
+                    <Binding ElementName="grdBody" Path="IsMouseOver" Mode="OneWay" />
+                    <Binding Path="IsCollapsed" Mode="OneWay" Converter="{StaticResource not}" />
+                </MultiBinding>
+            </common:AttachedProperties.Boolean0>
+            <ScrollViewer Name="scrollViewerDevices"
+                          HorizontalScrollBarVisibility="Disabled"
+                          ScrollViewer.VerticalScrollBarVisibility="{Binding ElementName=grdBody, Path=(common:AttachedProperties.Boolean0), Mode=OneWay, Converter={StaticResource if}, ConverterParameter=Auto, FallbackValue=Disabled}" >
+                <ItemsControl x:Name="ctrlCommands" 
+                              ItemsSource="{Binding Path=Commands, Mode=OneWay}" Padding="0" >
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Grid.Row="4" Height="36" 
+                                    Style="{StaticResource MenuButtonTemplate}" 
+                                    ToolTip="{Binding ElementName=pnlIdem, Path=(common:AttachedProperties.String0), Mode=OneWay}" >
+                                <StackPanel x:Name="pnlIdem"  Margin="10,0,0,0"  Orientation="Horizontal">
+                                    <common:AttachedProperties.String0>
+                                        <MultiBinding StringFormat="{}{0}&#x0d;&#x0a;{1}" >
+                                            <Binding Path="Name" Mode="OneWay" Converter="{StaticResource format}" ConverterParameter="Option: {0}" />
+                                            <Binding Path="Description" Mode="OneWay" Converter="{StaticResource format}" ConverterParameter="{}{0}" />
+                                        </MultiBinding>
+                                    </common:AttachedProperties.String0>
+                                    <!--<Glyphs VerticalAlignment="Center" Fill="White" FontUri="/Common;component/Resources/Images/icons/abb_icon_24.ttf"  FontRenderingEmSize="24" UnicodeString="&#xE977;" />-->
+                                    <Label VerticalAlignment="Center" FontSize="12" Foreground="White" Padding="10,0,0,0" Content="{Binding Name}" />
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

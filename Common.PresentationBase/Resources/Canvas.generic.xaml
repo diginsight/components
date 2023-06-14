@@ -1,0 +1,683 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:common="clr-namespace:Common"
+    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:wndBase="clr-namespace:System.Windows;assembly=WindowsBase"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Brushes.generic.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Colors.generic.xaml" />
+
+
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/Azure/integration/10836-icon-service-Service-Bus.xaml" />
+
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/Azure/iot/00039-icon-service-Event-Hubs.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/Azure/iot/10182-icon-service-IoT-Hub.xaml" />
+        <!--
+        10184-icon-service-IoT-Central-Applications
+        10185-icon-service-Azure-Maps-Accounts
+        10186-icon-service-IoT-Edge
+        10188-icon-service-Time-Series-Insights-Event-Sources
+        10369-icon-service-Device-Provisioning-Services
+        -->
+
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/Azure/security/10245-icon-service-Key-Vaults.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    <!--<Canvas x:Key="searchCanvas" Width="16" Height="16">
+    -->
+    <!--
+    <Canvas.RenderTransform>
+            <TranslateTransform X="0" Y="0"/>
+        </Canvas.RenderTransform>-->
+        <!--Unknown tag: metadata-->
+        <!--Unknown tag: sodipodi:namedview--><!--
+        <Polygon xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Points="15 2 1 2 6 8 6 14 10 11 10 8 15 2" FillRule="NonZero" Fill="#FF464646" />
+    </Canvas>-->
+
+    <!--
+    <Viewbox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Stretch="Uniform">
+    </Viewbox>
+    -->
+
+
+
+    <SolidColorBrush x:Key="logoABBWhite">#FFFFFFFF</SolidColorBrush>
+    <Canvas x:Key="logoABB" Width="88.2" Height="35">
+        <!--<Canvas.RenderTransform>
+            <TranslateTransform X="1" Y="1"/>
+        </Canvas.RenderTransform>-->
+        <!--<Canvas.Resources/>-->
+        <!--Unknown tag: metadata-->
+        <!--Unknown tag: sodipodi:namedview-->
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Fill="{StaticResource logoABBWhite}">
+            <Path.Data>
+                <PathGeometry Figures="M47 33h2c6-.3 10.2-5 10.2-10.6 0-1.9-.4-3.8-1.3-5.3H47V33z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+        <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="36" Canvas.Top="17" Width="10" Height="16" Fill="{StaticResource logoABBWhite}" />
+        <!--Name="rect12"-->
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Fill="{StaticResource logoABBWhite}">
+            <!--Name="path14"-->
+            <Path.Data>
+                <PathGeometry Figures="M57.3 16c-1-1.4-2.4-2.5-3.9-3.3 1.8-1.3 3-3.4 3-5.7 0-3.9-3.1-7-7-7H47v16h10.3z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+        <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="36" Width="10" Height="16" Fill="{StaticResource logoABBWhite}" />
+        <!--Name="rect16"-->
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Fill="{StaticResource logoABBWhite}">
+            <!--Name="path18"-->
+            <Path.Data>
+                <PathGeometry Figures="M74 33h2c6-.3 10.2-5 10.2-10.6 0-1.9-.4-3.8-1.3-5.3H74V33z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+        <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="63" Canvas.Top="17" Width="10" Height="16" Fill="{StaticResource logoABBWhite}" />
+        <!--Name="rect20"-->
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Fill="{StaticResource logoABBWhite}">
+            <!--Name="path22"-->
+            <Path.Data>
+                <PathGeometry Figures="M84.3 16c-1-1.4-2.4-2.5-3.9-3.3 1.8-1.3 3-3.4 3-5.7 0-3.9-3.1-7-7-7H74v16h10.3z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+        <!--Name="rect24"-->
+        <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="63" Width="10" Height="16" Fill="{StaticResource logoABBWhite}" />
+        <!--Name="polygon26"-->
+        <Polygon xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Points="5.7,17 0,33 8.3,33 10.7,26 16,26 16,17" FillRule="NonZero" Fill="{StaticResource logoABBWhite}" />
+        <!--Name="polygon28"-->
+        <Polygon xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Points="16,0 11.7,0 6,16 16,16" FillRule="NonZero" Fill="{StaticResource logoABBWhite}" />
+        <!--Name="polygon30"-->
+        <Polygon xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Points="17,26 22.3,26 24.7,33 33,33 27.3,17 17,17" FillRule="NonZero" Fill="{StaticResource logoABBWhite}" />
+        <!--Name="polygon32"-->
+        <Polygon xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Points="27,16 21.3,0 17,0 17,16" FillRule="NonZero" Fill="{StaticResource logoABBWhite}" />
+    </Canvas>
+    <Canvas x:Key="deviceCanvas" Width="24" Height="24">
+        <Path Stretch="Fill" StrokeThickness="0.01" Stroke="White" Fill="White">
+            <Path.Data>
+                <PathGeometry Figures="M2 8H4.5V18H3V9.5H2M22 8V17H14V18H7V17H6V8M10 10H8V13H10M13 10H11V13H13M20 10H15V15H20Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+    <Canvas x:Key="moreCanvas" Canvas.Left="0" Canvas.Top="0" Width="490" Height="490">
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Fill="{StaticResource Grey0}">
+            <Path.Data>
+                <PathGeometry Figures="M12 16A2 2 0 0 1 14 18A2 2 0 0 1 12 20A2 2 0 0 1 10 18A2 2 0 0 1 12 16M12 10A2 2 0 0 1 14 12A2 2 0 0 1 12 14A2 2 0 0 1 10 12A2 2 0 0 1 12 10M12 4A2 2 0 0 1 14 6A2 2 0 0 1 12 8A2 2 0 0 1 10 6A2 2 0 0 1 12 4Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+    <Canvas x:Key="deleteCanvas" Width="24" Height="24">
+        <Path Stretch="Fill" StrokeThickness="0.01" Stroke="{StaticResource Grey70}" Fill="{StaticResource Grey70}">
+            <Path.Data>
+                <PathGeometry Figures="M15 16H19V18H15V16M15 8H22V10H15V8M15 12H21V14H15V12M11 10V18H5V10H11M13 8H3V18A2 2 0 0 0 5 20H11A2 2 0 0 0 13 18V8M14 5H11L10 4H6L5 5H2V7H14V5Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+    
+    <Canvas x:Key="rubberCanvas" Canvas.Left="0" Canvas.Top="0" Width="280" Height="280">
+        <!--<Canvas.RenderTransform>
+            <TranslateTransform X="0" Y="0"/>
+        </Canvas.RenderTransform>-->
+        <!--Unknown tag: metadata-->
+        <!--Unknown tag: sodipodi:namedview-->
+        <!--Name="path10"-->
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Fill="#FFEAE5E4">
+            <Path.Data>
+                <PathGeometry Figures="M183.679 4.634l91.683 91.683c6.178 6.178 6.178 16.207 0 22.385L118.695 275.359   c-6.178 6.187-16.207 6.187-22.385 0L4.637 183.676c-6.178-6.178-6.178-16.198 0-22.376L161.295 4.634   C167.482-1.545 177.501-1.545 183.679 4.634z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+        <!--Name="path12"-->
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Fill="#FF0096EA">
+            <Path.Data>
+                <PathGeometry Figures="M84.34 81.597L4.637 161.3c-6.178 6.178-6.178 16.198 0 22.376l91.683 91.683   c6.178 6.187 16.207 6.187 22.385 0l79.703-79.694L84.34 81.597z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+        <!--Name="path14"-->
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Fill="#FF0096EA">
+            <Path.Data>
+                <PathGeometry Figures="M40.585 125.352L4.637 161.3c-6.178 6.178-6.178 16.198 0 22.376l91.683 91.683   c6.178 6.187 16.207 6.187 22.385 0l35.949-35.94L40.585 125.352z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+        <!--Name="path16"-->
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Fill="#FFEAE5E4">
+            <Path.Data>
+                <PathGeometry Figures="M20.416 145.548l114.041 114.041l-10.555 10.555L9.861 156.103L20.416 145.548z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+
+    <SolidColorBrush x:Key="playCanvasBackgroundColorBrush">#FFF0F0F0</SolidColorBrush>
+    <Canvas x:Key="playCanvas" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+            Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+        <Path Stretch="Fill" StrokeThickness="0.01" Stroke="{StaticResource Grey70}" Fill="{StaticResource Grey70}">
+            <Path.Data>
+                <PathGeometry Figures="M15 20A1 1 0 0 0 14 19H13V17H17A2 2 0 0 0 19 15V5A2 2 0 0 0 17 3H7A2 2 0 0 0 5 5V15A2 2 0 0 0 7 17H11V19H10A1 1 0 0 0 9 20H2V22H9A1 1 0 0 0 10 23H14A1 1 0 0 0 15 22H22V20H15M7 15V5H17V15H7M10 14V6L15 10L10 14Z" FillRule="NonZero" />
+            </Path.Data>
+
+        </Path>
+    </Canvas>
+
+    <Canvas x:Key="playCanvas1" >
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path72" Fill="{StaticResource Grey38}"><!--#000000-->
+            <Path.Data>
+                <PathGeometry Figures="M0 12.75 L0 83.62 L56.69 48.18 L0 12.75 Z" FillRule="NonZero"/>
+            </Path.Data>
+        </Path>
+    </Canvas>
+
+    <Canvas x:Key="pauseCanvas" >
+        <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="0" Width="22.9469" Canvas.Top="64.775" Height="70.8661" Name="rect98" Fill="{StaticResource Grey38}"/>
+        <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="47" Width="22.9469"  Canvas.Top="64.775" Height="70.8661" Name="rect99" Fill="{StaticResource Grey38}"/>
+    </Canvas>
+
+    <Canvas x:Key="stopCanvas" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+            >
+        <Path Stretch="Fill" StrokeThickness="0.01" Stroke="{StaticResource Grey70}" Fill="{StaticResource Grey70}">
+            <Path.Data>
+                <PathGeometry Figures="M15 20A1 1 0 0 0 14 19H13V17H17A2 2 0 0 0 19 15V5A2 2 0 0 0 17 3H7A2 2 0 0 0 5 5V15A2 2 0 0 0 7 17H11V19H10A1 1 0 0 0 9 20H2V22H9A1 1 0 0 0 10 23H14A1 1 0 0 0 15 22H22V20H15M7 15V5H17V15H7M15.54 12.12L13.41 10L15.53 7.87L14.12 6.46L12 8.59L9.88 6.46L8.47 7.87L10.59 10L8.47 12.13L9.88 13.54L12 11.41L14.12 13.54L15.54 12.12Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+
+    <Canvas x:Key="stopCanvas1" >
+        <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="0" Canvas.Top="64.775" Width="70.8661" Height="70.8661" Name="rect121" Fill="{StaticResource Grey38}"/>
+    </Canvas>
+
+    <Canvas x:Key="closeCanvas" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+            Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+        <Path Width="31.6666" Height="31.6667" Canvas.Left="22.1666" Canvas.Top="22.1667" Stretch="Fill" Fill="#FF000000" 
+              Data="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z " />
+    </Canvas>
+
+    <Canvas x:Key="expandCanvas" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+            Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+        <Path Width="40" Height="40" Canvas.Left="18" Canvas.Top="18" Stretch="Fill" Fill="#FF000000" 
+              Data="F1 M 30.25,58L 18,58L 18,45.75L 22,41.75L 22,50.75L 30,42.75L 33.25,46L 25.25,54L 34.25,54L 30.25,58 Z M 58,45.75L 58,58L 45.75,58L 41.75,54L 50.75,54L 42.75,46L 46,42.75L 54,50.75L 54,41.75L 58,45.75 Z M 45.75,18L 58,18L 58,30.25L 54,34.25L 54,25.25L 46,33.25L 42.75,30L 50.75,22L 41.75,22L 45.75,18 Z M 18,30.25L 18,18L 30.25,18L 34.25,22L 25.25,22L 33.25,30L 30,33.25L 22,25.25L 22,34.25L 18,30.25 Z " />
+    </Canvas>
+
+    <Canvas x:Key="collapseCanvas" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+            Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+        <Path Width="40.5" Height="40.5" Canvas.Left="17.75" Canvas.Top="17.7501" Stretch="Fill" Fill="#FF000000" 
+              Data="F1 M 54.2499,34L 42,34L 42,21.7501L 45.9999,17.7501L 45.9999,26.7501L 53.9999,18.7501L 57.2499,22.0001L 49.2499,30.0001L 58.2499,30.0001L 54.2499,34 Z M 34,21.7501L 34,34L 21.75,34L 17.75,30.0001L 26.75,30.0001L 18.75,22.0001L 22,18.7501L 30,26.7501L 30,17.7501L 34,21.7501 Z M 21.75,42L 34,42L 34,54.25L 30,58.25L 30,49.25L 22,57.25L 18.75,54L 26.75,46L 17.75,46L 21.75,42 Z M 42,54.25L 42,42L 54.2499,42L 58.2499,46L 49.2499,46.0001L 57.2499,54L 53.9999,57.25L 45.9999,49.25L 45.9999,58.25L 42,54.25 Z " />
+        <Canvas.Triggers>
+        </Canvas.Triggers>
+    </Canvas>
+    <Canvas x:Key="userCanvas" Width="16" Height="16">
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" StrokeThickness="1">
+            <Path.Data>
+                <PathGeometry Figures="m 11.87416 0.39680873 c 3.860267 0 6.989634 2.74105637 6.989634 6.98963407 0 3.8602682 -3.129367 6.9896342 -6.989634 6.9896342 -3.8602693 0 -6.9896351 -3.129366 -6.9896351 -6.9896342 0 -3.8602683 3.1293658 -6.98963407 6.9896351 -6.98963407 m 0 2.22755197 c -1.9301343 0 -4.7627737 1.0727824 -4.7627737 4.7620821 0 3.4379912 2.8326394 4.7624602 4.7627737 4.7624602 1.930132 0 4.694928 -1.222253 4.761627 -4.7624602 C 16.721867 2.8180435 11.87416 2.6246475 11.87416 2.6246475 M 23.63242 23.656 H 0.44595233 c 0 0 -0.0631742 -8.796745 11.42820767 -8.796894 C 23.667372 14.858953 23.63242 23.656 23.63242 23.656 Z m -2.26484 0 c 0 0 -0.111887 -6.483483 -9.49342 -6.520757 C 2.975639 17.099888 2.7540477 23.656 2.7540477 23.656 Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+    <Canvas x:Key="ideaCanvas" Width="32" Height="32">
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}">
+            <Path.Data>
+                <PathGeometry Figures="M20 11H23V13H20V11M1 11H4V13H1V11M13 1V4H11V1H13M4.92 3.5L7.05 5.64L5.63 7.05L3.5 4.93L4.92 3.5M16.95 5.63L19.07 3.5L20.5 4.93L18.37 7.05L16.95 5.63M12 6A6 6 0 0 1 18 12C18 14.22 16.79 16.16 15 17.2V19A1 1 0 0 1 14 20H10A1 1 0 0 1 9 19V17.2C7.21 16.16 6 14.22 6 12A6 6 0 0 1 12 6M14 21V22A1 1 0 0 1 13 23H11A1 1 0 0 1 10 22V21H14M11 18H13V15.87C14.73 15.43 16 13.86 16 12A4 4 0 0 0 12 8A4 4 0 0 0 8 12C8 13.86 9.27 15.43 11 15.87V18Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+
+    <Canvas x:Key="ledCanvas" Width="24" Height="24">
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Label}}">
+            <Path.Data>
+                <PathGeometry Figures="M12 2A10 10 0 0 1 22 12A10 10 0 0 1 12 22A10 10 0 0 1 2 12A10 10 0 0 1 12 2M12 4A8 8 0 0 0 4 12A8 8 0 0 0 12 20A8 8 0 0 0 20 12A8 8 0 0 0 12 4M12 19C10.1 19 8.3 18.2 7.1 16.9C5.9 15.6 5 13.9 5 12C5 10.1 5.8 8.3 7.1 7.1C8.4 5.9 10.1 5 12 5C13.9 5 15.7 5.8 16.9 7.1C18.1 8.4 19 10.1 19 12C19 13.9 18.2 15.7 16.9 16.9C15.6 18.1 13.9 19 12 19Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+
+    <Canvas x:Key="expandAllCanvas" Width="32" Height="32">
+        <Canvas.RenderTransform>
+            <TranslateTransform X="0" Y="0" />
+        </Canvas.RenderTransform>
+        <Canvas.Resources />
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Name="path524069" Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}">
+            <Path.Data>
+                <PathGeometry Figures="M 11.473175 30 H 2 v -9.473176 h 2.527906 l -0.0079 5.186544 7.157937 -7.178777 1.7875 1.787502 -7.164413 7.157937 5.172183 -0.0079 z m 8.519093 0 h 9.473175 v -9.473176 h -2.527906 l 0.0079 5.186544 L 19.7875 18.534591 18 20.322093 25.164413 27.48003 19.99223 27.47213 Z M 11.473175 2.5345913 2 2.5345911 V 12.007767 H 4.527906 L 4.520006 6.8212234 11.677943 14 l 1.7875 -1.787502 -7.164413 -7.1579368 5.172183 0.00794 z m 8.519093 2e-7 9.473175 -2e-7 V 12.007767 H 26.937537 L 26.945437 6.8212236 19.7875 14 18 12.212498 25.164413 5.0545614 19.99223 5.0625014 Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+    <Canvas x:Key="collapseAllCanvas" Width="32" Height="32">
+        <Canvas.RenderTransform>
+            <TranslateTransform X="0" Y="0" />
+        </Canvas.RenderTransform>
+        <Canvas.Resources />
+        <Canvas Name="g6487">
+            <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}">
+                <Path.Data>
+                    <PathGeometry Figures="m 3.992268 18.534591 h 9.473175 v 9.473176 h -2.527906 l 0.0079 -5.186544 L 3.7875 30 2 28.212498 9.164413 21.054561 3.99223 21.062461 Z m 23.480907 0 H 18 v 9.473176 h 2.527906 L 20.520006 22.821223 27.677943 30 l 1.7875 -1.787502 -7.164413 -7.157937 5.172183 0.0079 z M 3.992268 14 h 9.473175 V 4.5268241 h -2.527906 l 0.0079 5.1865436 L 3.7875 2.5345911 2 4.3220931 9.164413 11.48003 3.99223 11.47209 Z m 23.480907 0 H 18 V 4.5268243 h 2.527906 l -0.0079 5.1865434 7.157937 -7.1787764 1.7875 1.787502 -7.164413 7.1579367 5.172183 -0.0079 z" FillRule="NonZero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+    <Canvas x:Key="refreshCanvas" Width="16" Height="16">
+        <Canvas.RenderTransform>
+            <TranslateTransform X="0" Y="0" />
+        </Canvas.RenderTransform>
+        <Canvas.Resources />
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Name="path4" Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}">
+            <Path.Data>
+                <PathGeometry Figures="M 15 7 V 1 L 12.465424 3.6023729 C 7.6443886 -1.2196146 -0.04611551 2.4524595 1.0881292 9.1739095 2.2223739 15.895359 11.318296 17.197012 14.29 11.06 L 13.442542 10.737966 C 9.191077 16.883739 2.3490357 13.342135 1.9534144 8.72085 1.3820023 2.0461396 9.2439837 0.94029237 11.708983 4.3588136 L 9 7 Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+    <Canvas x:Key="applyCanvas" Width="16" Height="16">
+        <Canvas.RenderTransform>
+            <TranslateTransform X="0" Y="0" />
+        </Canvas.RenderTransform>
+        <Canvas.Resources />
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Name="path3735" Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}">
+            <Path.Data>
+                <PathGeometry Figures="M 13.005767 13.500255 12.994233 14.500074 3 14.500091 V 13.499909 Z M 4.5347546 6.6969697 7.5 4.5 v 8.2 h 1 V 4.5 L 11.403741 6.6767677 12 6 8 3 4 6" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+    <Canvas x:Key="upCanvas" Width="32" Height="32">
+        <Canvas.RenderTransform>
+            <TranslateTransform X="0" Y="0" />
+        </Canvas.RenderTransform>
+        <Canvas.Resources />
+        <!--Unknown tag: metadata-->
+        <!--Unknown tag: sodipodi:namedview-->
+        <Canvas Name="g6515">
+            <Canvas.RenderTransform>
+                <MatrixTransform Matrix="1.3333333 0 0 -1.3333333 0 32" />
+            </Canvas.RenderTransform>
+            <Canvas Name="g6517">
+                <Canvas.RenderTransform>
+                    <TranslateTransform X="18.4785" Y="7.0425" />
+                </Canvas.RenderTransform>
+                <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path6519" Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}">
+                    <Path.Data>
+                        <PathGeometry Figures="M 0 0 -6.479 6.911 -12.957 0 -15 1.915 -6.479 11.004 2.043 1.915 Z" FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Canvas>
+    <Canvas x:Key="downCanvas" Width="32" Height="32">
+        <Canvas.RenderTransform>
+            <TranslateTransform X="0" Y="0" />
+        </Canvas.RenderTransform>
+        <Canvas.Resources />
+        <!--Unknown tag: metadata-->
+        <!--Unknown tag: sodipodi:namedview-->
+        <Canvas Name="g6501">
+            <Canvas.RenderTransform>
+                <MatrixTransform Matrix="1.3333333 0 0 -1.3333333 0 32" />
+            </Canvas.RenderTransform>
+            <Canvas Name="g6503">
+                <Canvas.RenderTransform>
+                    <TranslateTransform X="12" Y="5.9531" />
+                </Canvas.RenderTransform>
+                <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path6505" Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}">
+                    <Path.Data>
+                        <PathGeometry Figures="M 0 0 -8.521 9.089 -6.479 11.005 0 4.094 6.479 11.005 8.521 9.089 Z" FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Canvas>
+    <Canvas x:Key="saveCanvas" Width="16" Height="16">
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Name="path3120" Fill="{StaticResource Blue4}">
+            <Path.Data>
+                <PathGeometry Figures="M11 10H5V9h6Zm0 1H5v1h6Zm4-7V15H1V1H12ZM4 2V6h8V2H11V5H9V2Zm9 6H3v5H13Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+    <Canvas x:Key="viewCanvas" Width="32" Height="32">
+        <Canvas.RenderTransform>
+            <TranslateTransform X="0" Y="0" />
+        </Canvas.RenderTransform>
+        <Canvas.Resources>
+            <PathGeometry xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Key="clipPath26" Figures="M 0 24 H 24 V 0 H 0 Z" FillRule="NonZero" />
+        </Canvas.Resources>
+        <!--Unknown tag: metadata-->
+        <!--Unknown tag: sodipodi:namedview-->
+        <Canvas Name="g18">
+            <Canvas.RenderTransform>
+                <MatrixTransform Matrix="1.3333333 0 0 -1.3333333 0 32" />
+            </Canvas.RenderTransform>
+            <Canvas Name="g20">
+                <Canvas Name="g22" Clip="{StaticResource clipPath26}">
+                    <Canvas Name="g28">
+                        <Canvas.RenderTransform>
+                            <TranslateTransform X="12.001" Y="8" />
+                        </Canvas.RenderTransform>
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path30" Fill="#FF464646">
+                            <Path.Data>
+                                <PathGeometry Figures="M 0 0 C -2.206 0 -4 1.794 -4 4 -4 6.206 -2.206 8 0 8 2.206 8 4 6.206 4 4 4 1.794 2.206 0 0 0" FillRule="NonZero" />
+                            </Path.Data>
+                        </Path>
+                    </Canvas>
+                    <Canvas Name="g32">
+                        <Canvas.RenderTransform>
+                            <TranslateTransform X="3.001" Y="12" />
+                        </Canvas.RenderTransform>
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path34" Fill="#FF464646">
+                            <Path.Data>
+                                <PathGeometry Figures="m 0 0 c 1.071 -1.32 4.754 -5.437 9 -5.437 4.256 0 7.93 4.115 9 5.437 C 16.929 1.32 13.246 5.437 9 5.437 4.744 5.437 1.07 1.322 0 0 M 9 -7 C 3.116 -7 -1.507 -0.684 -1.702 -0.414 L -2 0 -1.702 0.414 C -1.507 0.684 3.116 7 9 7 14.884 7 19.507 0.684 19.702 0.414 L 20 0 19.702 -0.414 C 19.507 -0.684 14.884 -7 9 -7" FillRule="NonZero" />
+                            </Path.Data>
+                        </Path>
+                    </Canvas>
+                </Canvas>
+            </Canvas>
+        </Canvas>
+    </Canvas>
+
+    <!--{StaticResource Grey38}-->
+    <SolidColorBrush x:Key="searchCanvasColorBrush">#FF262626</SolidColorBrush>
+    <Canvas x:Key="searchCanvas" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+            Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+        <Path Width="33.1464" Height="33.1465" Canvas.Left="21.8536" Canvas.Top="22" Stretch="Fill" Fill="{StaticResource searchCanvasColorBrush}" 
+              Data="F1 M 42.5,22C 49.4036,22 55,27.5964 55,34.5C 55,41.4036 49.4036,47 42.5,47C 40.1356,47 37.9245,46.3435 36,45.2426L 26.9749,54.2678C 25.8033,55.4393 23.9038,55.4393 22.7322,54.2678C 21.5607,53.0962 21.5607,51.1967 22.7322,50.0251L 31.7971,40.961C 30.6565,39.0755 30,36.8644 30,34.5C 30,27.5964 35.5964,22 42.5,22 Z M 42.5,26C 37.8056,26 34,29.8056 34,34.5C 34,39.1944 37.8056,43 42.5,43C 47.1944,43 51,39.1944 51,34.5C 51,29.8056 47.1944,26 42.5,26 Z " />
+    </Canvas>
+
+    <Canvas x:Key="minimizeCanvas" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+            Width="24" Height="24">
+
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Name="path2577" StrokeThickness="0.5"
+              Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}">
+            <Path.Data>
+                <PathGeometry Figures="M 19 12.8 H 5 v -1.5 h 14 z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+
+    </Canvas>
+    <Canvas x:Key="maximizeCanvas" Grid.Column="1"  
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+            Width="16" Height="16" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              StrokeThickness="0.5"
+              Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}">
+            <Path.Data>
+                <PathGeometry Figures="M 3 3 H 21 V 21 H 3 V 3 m 1.5 1.5 v 15 h 15 v -15 z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+
+    </Canvas>
+    <Canvas x:Key="restoreCanvas" Grid.Column="1"  
+            Width="24" Height="24">
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}">
+            <Path.Data>
+                <PathGeometry Figures="M 2.0932203 7.4152542 H 17.09322 V 22.415254 H 2.0932203 V 7.4152542 m 1.5 1.5 V 20.915254 H 15.59322 V 8.9152542 Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Name="path21" 
+              Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}">
+            <Path.Data>
+                <PathGeometry Figures="M 6.5000003 2.5 H 21.5 v 15 H 17.475 V 16 l 2.525 4e-6 V 4 H 8.0000003 L 8 7.085 H 6.5 Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+
+
+    </Canvas>
+    <Canvas x:Key="exitCanvas" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+            Width="76" Height="54" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+        <Canvas Name="g848" Background="Transparent">
+            <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="rect8275" StrokeThickness="0.1"
+                  Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}">
+                <Path.Data>
+                    <PathGeometry Figures="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" FillRule="NonZero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+    <Canvas x:Key="questionCanvas" Width="16" Height="16">
+        <Canvas.Resources />
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Name="path1975" Fill="White">
+            <Path.Data>
+                <PathGeometry Figures="M8 1A7 7 0 1 1 1 8 7 7 0 0 1 8 1M8 0a8 8 0 1 0 8 8A8 8 0 0 0 8 0ZM9 11H7v2H9Zm3-5.25C12 5.12 11.5 3 8.17 3 5.58 3 4.23 4.23 4.1 6H6c.1-1.27 1.7-1.33 2.19-1.33 1.1 0 2.06.45 2.06 1.21C10.31 7.62 7 7.5 7 7.5V10H9V8.75S12 8.56 12 5.75Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+
+    <Canvas x:Key="okCheckCanvas" Width="24" Height="24">
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}">
+            <Path.Data>
+                <PathGeometry Figures="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+
+    <Canvas x:Key="pencilCanvas" Width="16" Height="16">
+        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+              Name="path1723" Fill="{StaticResource Blue4}">
+            <Path.Data>
+                <PathGeometry Figures="M13.16 5.79 10.21 2.84 12.05 1 15 3.95ZM9.11 3.95 2.47 10.58 1 15l4.42-1.47 6.63-6.63Z" FillRule="NonZero" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+
+    <DrawingImage x:Key="protectDocument" xmlns:svg="http://sharpvectors.codeplex.com/runtime/">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V109 H85 V0 H0 Z">
+                <DrawingGroup Opacity="1" Transform="1,0,0,1,-671,-459">
+                    <DrawingGroup.ClipGeometry>
+                        <PathGeometry FillRule="EvenOdd" Figures="M671,459L756,459 756,568 671,568z" />
+                    </DrawingGroup.ClipGeometry>
+                    <DrawingGroup Opacity="1">
+                        <DrawingGroup.ClipGeometry>
+                            <PathGeometry FillRule="EvenOdd" Figures="M672,459L746,459 746,560 672,560z" />
+                        </DrawingGroup.ClipGeometry>
+                        <DrawingGroup Transform="1,0,0,1,672,459" Opacity="1">
+                            <ImageDrawing Rect="0,0,74,101">
+                                <ImageDrawing.ImageSource>
+                                    <svg:EmbeddedBitmapSource Data="iVBORw0KGgoAAAANSUhEUgAAAEoAAABlCAMAAADd9IWgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAB1UExURQAAAGCAn2CAr2CAp2CApmCFqmCDqmCCqGCCp2CCqGCDqWCEqmCDqWCDqWCDqmCDqWCEqWCDqWCDqWCDqWCDqWqLrm+PsXSTtH6auYOevIiiv42mwZyyyqa6z6/B1L3M3MLQ3tbg6eDo7+rv9PT3+vn7/P7//1KipxoAAAAUdFJOUwAIECAoMEhYYHCAn6+3v8/f5+/32rbdOQAAAAlwSFlzAAAOwwAADsMBx2+oZAAAAStJREFUWEft2NtuwjAMgOHCxnmwsQUYo7BDwe//iLMSI6U0BdupBBf+r3rjT22V+qLFveo90UV+0/cBXSUbO1FTGkslpJZXnlFIubd2C6kSmB281afJRmLKvbZZQurziiWkDj9ozXs0XE9KwXerJab8G3uh6VpyylszGo9TULBPWxoKSrSan5CKSls66rRDa0LEOR0VrDEZlJKC0xatESEhLQVH/IY+hqT41FTT0lNQbdCKVnQG5a1o3edQUK3ReiYpj4K/VbSi86iaJaQ2Xxfh63LLcFaFVLqwojuh3EJKVb+pcEvM/ImQUOnwXsO+MepmRvEzip9R/IziZxQ/o/gZxc8ofkbxM4qfUfyM4mcUP6P4GcUvpnb0e0xZGVH5dU4NFx108Q//YSqKf2WpYnuh257mAAAAAElFTkSuQmCC"  />
+                                </ImageDrawing.ImageSource>
+                            </ImageDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                    <DrawingGroup Opacity="1">
+                        <DrawingGroup.ClipGeometry>
+                            <PathGeometry FillRule="EvenOdd" Figures="M680,514L756,514 756,567 680,567z" />
+                        </DrawingGroup.ClipGeometry>
+                        <DrawingGroup Transform="1,0,0,1,680,514" Opacity="1">
+                            <ImageDrawing Rect="0,0,76,53">
+                                <ImageDrawing.ImageSource>
+                                    <svg:EmbeddedBitmapSource Data="iVBORw0KGgoAAAANSUhEUgAAAEwAAAA1CAMAAADcZP0QAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABjUExURQAAAICfv3Cfz3Wfynifz3OfzHWfynafzXSfy3WfynafzHSfy3WfzXafzHSfy3WfzHafy3WfzHafzXWfzHWfzXafzXWfzHWfzXWfzHWfzHWfzHWfzHWfzXWfzHWfzHWfzHWfzGFyRWkAAAAgdFJOUwAIEBggKDA4QEhQWGBocHiAh4+Xn6evt7/Hz9ff5+/3v+H4wgAAAAlwSFlzAAAOwwAADsMBx2+oZAAAAnFJREFUWEftltuaqjAMhUUGFQcEFQXk1Pd/ymnThTQ9IHOxv32x939VVkNI2yRl90c5HDH4RHLCIMSxmYQQTYrHMEk9SsM2w6OPQhoQtwhKgEx9U/HYQ3G4wkLygOQnh5WkhWRzwDxxhugjnuNSXCByohemiX5loQ/YEGMMlcECEyJ8VpEZmBDeQ8gwCfzhK6yv3iAzbpgEFWQX66sNZEaFSfCE7HKBBXhBZlg2BWSXIyzAHTLDsgnnxh4WwLu5e1Ugb6Zgau92LWw0CVSOkddrq7TW4F2lxPhiZ+TsuerF+DRXY5zV4M1ZSfz21i2x7+c3W0N7QhPDSsNCqVdLXFGnJcl4gCa56CqoV3ZWvnsqy9S0MFOZdYhTUZ5DSwzAS2etF27gDjeaUPPycSzqXr3zqot5X3lKTVCT/Elb2TWlv7nE5UAvgLGii4B3G0rQfb6ciWSqnANNrDJXlPILGM7IOA6sUIieVVRkdP8FldssWiHk8X1jyDByMGVxv1GXSo2xZpAKK7o301x+Jwg2vZwrMdYo9579IOSmSCJ3E4CMPTLXOakSsBa+QOdg9TEDtWlnjBWq25vPHDoFq6WbqEiWhdayYlmkHLo0VpxRe0+xDbTF3mPXfHKme3d8vjVVRofP7nKLD85q928oqYLuVp09lkQ0icvA6a84G+aovrJH04i2ueez85hn8kzYWaUbZFxSGwHDHTWd+YILORt1WCf2u0N0OXV0T7VrZ2nj8K302HWl6Cg6z0trl6N3KcR15dfNj/VPxGh/6S3Fe36usNoIv0hsOlhthP3fusBqI2Z6eYDVRv47U8BqI/+Is7/ObvcDA77ga8Bpe/EAAAAASUVORK5CYII="  />
+                                </ImageDrawing.ImageSource>
+                            </ImageDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                    <DrawingGroup Opacity="1">
+                        <DrawingGroup.ClipGeometry>
+                            <PathGeometry FillRule="EvenOdd" Figures="M679,466L716,466 716,488 679,488z" />
+                        </DrawingGroup.ClipGeometry>
+                        <DrawingGroup Transform="1,0,0,1,679,466" Opacity="1">
+                            <ImageDrawing Rect="0,0,37,22">
+                                <ImageDrawing.ImageSource>
+                                    <svg:EmbeddedBitmapSource Data="iVBORw0KGgoAAAANSUhEUgAAACUAAAAWCAMAAABwrqUyAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABjUExURQAAAICfv3Cfz3Wfynifz3OfzHWfynafzXSfy3WfynafzHSfy3WfzXafzHSfy3WfzHafy3WfzHafzXWfzHWfzXafzXWfzHWfzXWfzHWfzHWfzHWfzHWfzXWfzHWfzHWfzHWfzGFyRWkAAAAgdFJOUwAIEBggKDA4QEhQWGBocHiAh4+Xn6evt7/Hz9ff5+/3v+H4wgAAAAlwSFlzAAAOwwAADsMBx2+oZAAAANpJREFUOE+NUlEWgjAMKyJYBsJANxAQev9TmoLPL63kgxaakSyvdBApM5+JEma8ZJzhyZwQnd8tX5RVich8dVEkFPUiS+2CSHTXWdamuOlQWQ7NOPzCiqGyKBlExb5jlnKrafk0WeHjy2LtviibTJbHfYFDrGOKSWG77zRc0B4my21VUzUVt1TTZjVZw/4z6g8owrytGLXmN1txqvcumqx9lvcid/8LizxbZWn2a+hgYGqxihK7CXl3AZvVtyM+bNnnOFEgEO9PRKXHOp28T3ErXyFxDN++/oHoBUYmF682VDCQAAAAAElFTkSuQmCC"  />
+                                </ImageDrawing.ImageSource>
+                            </ImageDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="documentLabelDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V175 H182 V0 H0 Z">
+                <DrawingGroup Opacity="1" Transform="1,0,0,1,-195,-175">
+                    <DrawingGroup.ClipGeometry>
+                        <PathGeometry FillRule="EvenOdd" Figures="M195,175L377,175 377,350 195,350z" />
+                    </DrawingGroup.ClipGeometry>
+                    <GeometryDrawing Brush="#FF3D64AC" Geometry="F0 M182,175z M0,0z M266.667,345.333L266,346 265.333,346.5 264.5,347 263.667,347.333 262.833,347.667 261.833,347.833 261,348 260,348 259.167,348 258.167,347.833 257.333,347.667 256.333,347.167 255.5,346.833 254.833,346.333 254,345.833 253.333,345 200,290.833 199.167,290.167 198.667,289.333 198.167,288.5 197.667,287.667 197.333,286.833 197.167,285.833 197,285 197,284 197,283.167 197.167,282.167 197.333,281.333 197.667,280.5 198,279.667 198.5,278.833 199,278.167 199.667,277.5 266.667,209.333 267.333,208.667 268.167,208.167 268.833,207.667 269.667,207.167 270.5,206.833 271.5,206.667 272.5,206.5 273.5,206.333 317.333,206.333 318.667,206.5 320.167,206.667 321.667,207 323.167,207.333 324.5,207.833 325.833,208.5 327,209.167 328.167,210 329.333,210.833 330.333,211.667 331.5,212.667 332.333,213.833 333.167,215 334,216.167 334.667,217.5 335.167,218.833 336.167,218.5 336.833,218 337.667,217.667 338.167,217.167 338.667,216.667 339.167,216.167 340,215 340.5,213.833 340.833,212.667 341.167,211.5 341.5,210.333 341.833,208 342.167,206 342.5,204 342.833,202 343.333,199.167 343.833,196.333 344.333,193.833 345,191.333 345.667,189.167 346.667,187 347.667,185.167 349,183.5 350.5,182 351.333,181.333 352.333,180.667 353.333,180.167 354.333,179.5 355.5,179.167 356.833,178.667 358.167,178.333 359.5,178 361,177.667 362.667,177.5 364.333,177.333 366.167,177.167 368.167,177 370.167,177 371.167,177.167 372,177.333 372.833,177.833 373.667,178.5 374.167,179.167 374.5,180 374.833,180.833 375,181.833 374.833,182.833 374.5,183.833 374.167,184.667 373.667,185.333 372.833,186 372,186.333 371.167,186.667 370.167,186.667 368.833,186.833 367.5,186.833 366.167,186.833 365.167,187 364,187 363,187.167 361.167,187.5 359.667,187.833 358.333,188.333 357.333,189.167 356.333,190 355.5,191 354.833,192.167 354.333,193.5 353.833,195 353.5,196.833 353.167,198.833 352.833,201.167 352.5,203.5 352.167,205.5 351.667,207.667 351.333,209.833 351,212 350.667,213.667 350.167,215.167 349.833,216.5 349.333,217.833 348.667,219.167 348,220.5 347.167,221.5 346.333,222.667 345.5,223.667 344.333,224.5 343.333,225.333 342.167,226.167 341,226.833 339.5,227.5 338.167,228 336.667,228.5 336.667,270.333 336.667,271.333 336.5,272.167 336.333,273.167 336,274 335.5,274.833 335,275.667 334.5,276.5 333.833,277.167 266.667,345.333 266.667,345.333z M308,225.667L308,226.667 308,227.667 308.333,228.5 308.667,229.333 309,230.333 309.5,231.167 310.167,231.833 310.667,232.5 311.333,233.167 312.167,233.833 313,234.167 313.833,234.667 314.667,235 315.667,235.167 316.5,235.333 317.5,235.333 318.833,235.333 320,235 321.333,234.5 322.333,234 323.5,233.167 324.333,232.333 325.167,231.333 325.833,230.167 324.5,230.333 323,230.5 321.5,230.5 319.833,230.5 319,230.5 318,230.167 317.167,229.667 316.5,229.167 316,228.333 315.5,227.667 315.167,226.667 315.167,225.667 315.167,224.667 315.5,223.833 316,223 316.5,222.333 317.167,221.667 318,221.167 319,221 319.833,220.833 321.5,220.833 323,220.667 324.333,220.5 325.667,220.5 324.833,219.667 324.167,218.667 323.167,217.833 322.167,217.167 321.167,216.667 320,216.333 318.667,216 317.5,216 316.5,216 315.667,216.167 314.667,216.333 313.833,216.667 313,217.167 312.167,217.667 311.333,218.167 310.667,218.833 310.167,219.5 309.5,220.167 309,221 308.667,221.833 308.333,222.667 308,223.667 308,224.667 308,225.667 308,225.667z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+
+    <DrawingImage x:Key="documentLabel1DrawingImage" xmlns:svg="http://sharpvectors.codeplex.com/runtime/">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V172 H172 V0 H0 Z">
+                <DrawingGroup Opacity="1" Transform="1,0,0,1,-236,-345">
+                    <DrawingGroup.ClipGeometry>
+                        <PathGeometry FillRule="EvenOdd" Figures="M236,345L408,345 408,517 236,517z" />
+                    </DrawingGroup.ClipGeometry>
+                    <DrawingGroup Opacity="1">
+                        <DrawingGroup.ClipGeometry>
+                            <PathGeometry FillRule="EvenOdd" Figures="M237,345L407,345 407,516 237,516z" />
+                        </DrawingGroup.ClipGeometry>
+                        <DrawingGroup Transform="1,0,0,1,237,345" Opacity="1">
+                            <ImageDrawing Rect="0,0,170,171">
+                                <ImageDrawing.ImageSource>
+                                    <svg:EmbeddedBitmapSource Data="iVBORw0KGgoAAAANSUhEUgAAAKoAAACrCAMAAADB9PcVAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABjUExURQAAAEBgn0Bgr0BgqkBor0BmrDplqjtkrTxkqzxjqj1jrD1jqz1lrT1lrD1kqz5krD5kqzxkrD1krT1krD1lrT1lrT1lrD1krT1krD5krD5krDxkrD1lrT1krD1krD1krD1krLsq2rAAAAAgdFJOUwAIEBggKDA4QEhQWGBocHiAh4+Xn6evt7/Hz9ff5+/3v+H4wgAAAAlwSFlzAAAOwwAADsMBx2+oZAAABT1JREFUeF7t3Wt34iAQBuBE7dberW3tVcP//5Wb6FiBMDDADLDn7PtpD+jkOTEXkpBu9z9dt3rY7D4S8r7Z3Kx7KFIiN18qJ8PufgmVhNO/wSJzsruCapLp32FpmXkRX7Nc0nE7uIeSQuGTjtlCUZGwSsctdgF1+cMsVepT6sDFLh13LijNHAGpUo9QnDUiUqXWUJ4xQlL1BfX5ki09vN5OdZYPH9BwzrGZMbnSYXs5Ll1/QuMpX7xHgVzpwdwit9B8CutZK1e6X0Ghcx6g45h3aORI9q9/DYUu0dfrwHfOyt6jHOf6fg99U+6gMTvZ0r1rv7mFzilv0JabbKn75NkfoHcM06E1X6puoJQZ7VpiD015YZAq93D/CXqnQFNWOKQD1LJyB91T7GNZQjik6geKWVlD95R8KosU+3nvoXdKNpVJikA20Dslm8okRc7x+gArl/oKdbLjPMIvBuidkkllk6rBJdGPVZlUPul4DQ01tSz1lZpH5ZQq9QBVf9OblwI5VF6pGqyLkt6qn0Fllo55gsrHLM0rlhwqv3QcPf1esvRP2qDqlGSqhHTMz3Y95u7N2KFOSaUKSX1JpFaQJlJrSNOoVaRJVFT6NdtrOZNAxaWLP5LWeKpH2nWS1miqVypqjaUGpJLWSGpQKmiNoxKkctYoKkkqZo2hotLBujUiY42golKl3q3beCJWOtUjLWMlU/WbB47Y1mvHgDMzVGpAOrfesFuJ1KC0gJVGJUjlrSQqSSpupVCJUmkrgUqWClvD1AiprDVIjZKKWkNUVKo/qNMjZw1QUenPSr9Nr0fM6qd6pOYjBT1SVi/VKy1u9VED0tJWDzUoLWzFqQRpWStKJUmLWjEqKj1Y3yhnRaioVKkNfOScYlY31SOlW+0HUblWJ9UrpVtfof+cTKuLGpDWsjqoQWm6VZ80EZ05FVusEdtqPLfVYltJxZHMqMRithX7KRitNpVcqrzVokYUKm41qVFlSluN242RRcpajZlY0SWKWvXJLWiBwx/shmVJqzaxwSPFb66Ws2oTLb3SBqyXmZgBaXXrM3zNc3I+SytbLwNK9Hb4RVrVehmmG9Ov9ejSilbtguIRmuyY0mpW/dIHW6mz6Y9VrLpUn3prhWq1X4hitBqXk9i4eArVan+OzWpI0cUfw229HCBPCVhNqTH1dh5uq71de62WVH9PwJWKVlvaPUMHFmHrCj0AzaTGSy3OiFpXP9A6y1za9cE7CYLWKKn9apsrYtZIqTX92hkha6zUegvPHRFrvJSyCSRbsePLaE2R4gvWYr/1SrVin9ukSSnWwX7RLNeKTsXxS6tYkYSk7Vgpf7mgDas5aQ9LC1aaNMmKvRqWaKVKU6zoC3dJVrq0tjVGWtcaJ+26HXwPD9lKPb9BYqWUtz2pVvtzfmu0tJo1QSpqXaDn/SSpoHWB/uWwRKmYVUAqZBWRiliFpAJWMSm7VVDKbBWV8lq/4R+zsEhZrViYpAWs31xScas5aS8zolZWqaiVWSpoZZeSFmw/NqRYBaRCVhGpiFVIKmAVk/oGG7+JsQpKk6z4dZSoNMGKr1VhabS1ojTSWlUaZa0sjbBWl5KtDUiJ1iakNCs6a6OolGTFUliaYS0uTbbq54diSbJWkSZZK0kTrNWk0daK0khrVWmUtbI0wlpdSrY2IO26JTpNRksTUt/ko980IiVYm5EGrQ1JA9ampF5rY1KPtTkpam1QiliblDqtjUod1mal4znWHA/s25V2Xf8Cyim7Qv/hW2pW29NWsH9teZWec7Ver/8Fp3i67i+9ZzWbIkD/4AAAAABJRU5ErkJggg==" />
+                                </ImageDrawing.ImageSource>
+                            </ImageDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="addressBookDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V1000 H1000 V0 H0 Z">
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="0" Y="3441" />
+                </DrawingGroup.Transform>
+                <DrawingGroup Opacity="1">
+                    <DrawingGroup Opacity="1" Transform="0.1,0,0,-0.1,0,511">
+                        <GeometryDrawing Brush="#FF000000" Geometry="F1 M1000,1000z M0,0z M437.6,3610.1C382.7,3582.6 298.3,3515.9 249.3,3463 88.4,3282.4 100.2,3559.1 100.2,110 100.2,-3339.1 88.4,-3062.4 249.3,-3242.9 298.3,-3295.9 382.7,-3362.6 437.6,-3390L539.6,-3441 5003,-3441C9348.7,-3441 9470.3,-3439 9550.7,-3403.7 9664.5,-3350.7 9794,-3227.1 9850.9,-3113.3L9900,-3019.1 9900,110 9900,3239.3 9850.9,3333.5C9794,3447.3 9664.5,3570.9 9550.7,3623.9 9470.3,3659.2 9348.6,3661.2 5003,3661.2L539.7,3661.2 437.6,3610.1z M4848,110L4848,-3127.2 2699.7,-3127.2 551.4,-3127.2 488.6,-3070.3 423.9,-3013.4 423.9,110 423.9,3233.4 488.6,3290.3 551.4,3347.2 2699.7,3347.2 4848,3347.2 4848,110z M9521.4,3290.3L9586.1,3233.4 9586.1,110 9586.1,-3013.4 9521.4,-3070.3 9458.6,-3127.2 7310.3,-3127.2 5162,-3127.2 5162,110 5162,3347.2 7310.3,3347.2 9458.6,3347.2 9521.4,3290.3z" />
+                        <GeometryDrawing Brush="#FF000000" Geometry="F1 M1000,1000z M0,0z M2499.6,1915C2089.6,1858.1 1720.7,1669.8 1424.5,1371.5 806.5,745.7 669.2,-300 1112.5,-982.8 1222.4,-1151.5 1481.3,-1396.8 1652,-1492.9 2009.1,-1695 2389.7,-1751.9 2856.6,-1673.4 3097.9,-1634.2 3396.1,-1512.5 3435.4,-1441.9 3472.7,-1371.3 3458.9,-1288.9 3404,-1245.7 3335.3,-1190.8 3278.4,-1194.7 3158.8,-1255.5 2976.3,-1347.7 2786,-1385 2493.7,-1387 2191.6,-1389 2058.1,-1361.5 1832.5,-1251.6 1383.2,-1029.9 1122.3,-512 1167.4,70.7 1228.2,828 1661.8,1389.1 2326.9,1563.7 2538.8,1618.6 2915.5,1624.5 3111.7,1573.5 3535.5,1461.7 3825.8,1175.2 3939.6,755.4 3986.7,582.8 3986.7,186.4 3939.6,11.8 3890.6,-168.7 3823.8,-298.2 3725.7,-398.2 3627.6,-496.3 3474.6,-576.7 3378.4,-576.7L3313.6,-576.7 3321.5,-315.8C3329.3,-100,3347,23.5999999999999,3433.3,431.7L3537.3,918.3 3500,971.3C3421.5,1075.3 3027.2,1167.5 2770.2,1142 2574,1122.4 2479.8,1094.9 2297.4,1006.6 2165.9,941.9 2097.3,892.8 1973.7,767.2 1724.5,516.1 1600.9,257.1 1577.4,-60.6999999999999 1549.9,-457 1763.8,-786.6 2111,-882.7 2218.9,-910.2 2244.4,-912.1 2401.4,-884.7 2593.7,-851.4 2770.2,-776.8 2911.5,-666.9 2991.9,-606.1 3005.7,-600.2 3015.5,-629.6 3039,-714 3109.7,-831.7 3148.9,-857.2 3258.8,-927.8 3449.1,-908.2 3662.9,-802.3 4018,-627.7 4259.3,-205.9 4292.7,296.4 4322.1,751.6 4161.2,1173.4 3839.5,1493.2 3655.1,1675.7 3425.5,1807.1 3172.4,1873.8 2996,1920.8 2676.2,1940.5 2499.6,1915z M3137.2,804.5C3160.7,796.7 3180.4,781 3180.4,765.3 3180.4,667.2 3015.6,-11.6 2966.6,-117.6 2892,-278.5 2760.6,-417.8 2605.6,-500.2 2499.6,-557.1 2462.4,-566.9 2307.4,-572.8 2093.6,-580.7 2019,-549.3 1944.4,-417.8 1899.3,-339.3 1895.4,-311.9 1897.3,-125.5 1899.3,31.4999999999999 1909.1,108 1942.4,196.3 2093.5,614.2 2464.3,851.6 2925.3,826.1 3017.6,820.2 3111.7,810.4 3137.2,804.5z" />
+                        <GeometryDrawing Brush="#FF000000" Geometry="F1 M1000,1000z M0,0z M5734.8,2458.4C5675.9,2395.6,5677.9,2299.5,5740.7,2238.7L5787.8,2189.7 7388.7,2189.7 8991.6,2189.7 9050.5,2248.6C9099.6,2299.6 9107.4,2319.2 9097.6,2372.2 9091.7,2407.5 9066.2,2450.7 9044.6,2470.3 9005.4,2501.7 8897.5,2503.7 7390.7,2503.7L5776,2503.7 5734.8,2458.4z" />
+                        <GeometryDrawing Brush="#FF000000" Geometry="F1 M1000,1000z M0,0z M5742.7,971.3C5670.1,914.4 5670.1,796.7 5742.7,739.8 5795.7,698.6 5805.5,698.6 7380.9,698.6 8516.9,698.6 8979.9,704.5 9015.2,720.2 9085.8,753.5 9117.2,839.9 9085.8,914.4 9072.1,947.8 9044.6,983.1 9025,992.9 9003.4,1004.7 8377.6,1012.5 7392.7,1012.5 5805.5,1012.5 5795.7,1012.5 5742.7,971.3z" />
+                        <GeometryDrawing Brush="#FF000000" Geometry="F1 M1000,1000z M0,0z M5742.7,-519.8C5670.1,-576.7 5670.1,-694.4 5742.7,-751.3 5795.7,-792.5 5805.5,-792.5 7390.7,-792.5 8267.7,-792.5 8999.5,-786.6 9017.1,-780.7 9062.2,-763 9111.3,-659.1 9097.5,-604.1 9089.7,-578.6 9066.1,-539.3 9042.6,-517.8 8999.4,-478.6 8979.8,-478.6 7396.6,-478.6 5805.5,-478.6 5795.7,-478.6 5742.7,-519.8z" />
+                        <GeometryDrawing Brush="#FF000000" Geometry="F1 M1000,1000z M0,0z M5740.7,-2018.7C5672,-2085.4 5674,-2187.4 5742.7,-2242.4 5795.7,-2283.6 5805.5,-2283.6 7398.6,-2283.6 8897.5,-2283.6 9005.4,-2281.6 9044.7,-2248.3 9066.3,-2230.6 9091.8,-2187.5 9097.7,-2152.2 9107.5,-2099.2 9099.7,-2079.6 9050.6,-2028.6L8991.7,-1969.7 7388.7,-1969.7 5787.8,-1969.7 5740.7,-2018.7z" />
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <DrawingImage x:Key="contactDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V93.15 H93.75 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <DrawingGroup Opacity="1" Transform="1,0,0,1,18.75,-32.4">
+                        <DrawingGroup Opacity="1">
+                            <DrawingGroup Opacity="1">
+                                <GeometryDrawing Brush="#FFFFFFFF">
+                                    <GeometryDrawing.Geometry>
+                                        <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0,51.15,56.25,42" />
+                                    </GeometryDrawing.Geometry>
+                                </GeometryDrawing>
+                            </DrawingGroup>
+                            <DrawingGroup Opacity="1" Transform="1,0,0,1,1.5,-1.5">
+                                <GeometryDrawing Brush="#FF808080">
+                                    <GeometryDrawing.Geometry>
+                                        <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0,54.15,53.25,39" />
+                                    </GeometryDrawing.Geometry>
+                                </GeometryDrawing>
+                            </DrawingGroup>
+                            <DrawingGroup Opacity="1" Transform="1,0,0,1,3,-3">
+                                <GeometryDrawing Brush="#FFFFFFFF">
+                                    <GeometryDrawing.Geometry>
+                                        <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0,57.15,50.25,36" />
+                                    </GeometryDrawing.Geometry>
+                                </GeometryDrawing>
+                            </DrawingGroup>
+                            <DrawingGroup Opacity="1" Transform="1,0,0,1,33.75,-10.5">
+                                <DrawingGroup Opacity="1" Transform="1,0,0,1,0,-19.5">
+                                    <GeometryDrawing Brush="#FF759FCC">
+                                        <GeometryDrawing.Geometry>
+                                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0,91.65,15,1.5" />
+                                        </GeometryDrawing.Geometry>
+                                    </GeometryDrawing>
+                                </DrawingGroup>
+                                <DrawingGroup Opacity="1" Transform="1,0,0,1,0,-10.5">
+                                    <GeometryDrawing Brush="#FF759FCC">
+                                        <GeometryDrawing.Geometry>
+                                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0,91.65,15,1.5" />
+                                        </GeometryDrawing.Geometry>
+                                    </GeometryDrawing>
+                                </DrawingGroup>
+                                <DrawingGroup Opacity="1" Transform="1,0,0,1,0,-5.25">
+                                    <GeometryDrawing Brush="#FF759FCC">
+                                        <GeometryDrawing.Geometry>
+                                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0,91.65,15,1.5" />
+                                        </GeometryDrawing.Geometry>
+                                    </GeometryDrawing>
+                                </DrawingGroup>
+                                <DrawingGroup Opacity="1">
+                                    <GeometryDrawing Brush="#FF759FCC">
+                                        <GeometryDrawing.Geometry>
+                                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0,91.65,15,1.5" />
+                                        </GeometryDrawing.Geometry>
+                                    </GeometryDrawing>
+                                </DrawingGroup>
+                            </DrawingGroup>
+                            <DrawingGroup Opacity="1" Transform="1,0,0,1,6.7095,-8.25">
+                                <DrawingGroup Opacity="1" Transform="1,0,0,1,5.121,-12.8565">
+                                    <GeometryDrawing Brush="#FF759FCC" Geometry="F0 M93.75,93.15z M0,0z M6.1,80.94C9.47,80.94 12.21,83.68 12.21,87.05 12.21,90.42 9.47,93.15 6.1,93.15 2.73,93.15 0,90.42 0,87.05 0,83.68 2.73,80.94 6.1,80.94z" />
+                                </DrawingGroup>
+                                <DrawingGroup Opacity="1">
+                                    <GeometryDrawing Brush="#FF759FCC" Geometry="F0 M93.75,93.15z M0,0z M22.21,88.02C21.26,82.6 20.87,82.25 16.19,81.01 16.03,80.96 15.96,80.94 15.78,80.91 15.39,80.82 14.99,80.91 14.99,80.91 14.56,82.58 12.11,86.06 11.4,87.05 11.34,87.05 11.28,87.05 11.22,87.05 11.22,87.05 11.22,87.05 11.21,87.05 11.21,87.05 11.21,87.05 11.2,87.05 11.15,87.05 11.09,87.05 11.03,87.05 10.32,86.06 7.87,82.58 7.44,80.91 7.44,80.91 7.04,80.82 6.65,80.91 6.47,80.94 6.4,80.96 6.24,81.01 1.56,82.25 1.17,82.6 0.22,88.02 0,89.28 0.03,89.58 0.06,89.86 0.25,91.83 5.14,93.15 11.2,93.15 11.21,93.15 11.21,93.15 11.21,93.15 11.22,93.15 11.22,93.15 11.22,93.15 17.28,93.15 22.18,91.83 22.37,89.86 22.4,89.58 22.43,89.28 22.21,88.02z" />
+                                </DrawingGroup>
+                            </DrawingGroup>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!--<Canvas x:Key="playCanvas" 
+            Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+        <Path Width="20.5832" Height="31.6667" Canvas.Left="30.0833" Canvas.Top="22.1667" Stretch="Fill" Fill="#FF000000" Data="F1 M 30.0833,22.1667L 50.6665,37.6043L 50.6665,38.7918L 30.0833,53.8333L 30.0833,22.1667 Z "/>
+    </Canvas>-->
+
+    <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+            x:Key="playDownArrow" 
+            Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+        <Path Width="20.5832" Height="31.6667" Canvas.Left="30.0833" Canvas.Top="22.1667" Stretch="Fill" Fill="#FF000000" Data="F1 M 30.0833,22.1667L 50.6665,37.6043L 50.6665,38.7918L 30.0833,53.8333L 30.0833,22.1667 Z " RenderTransformOrigin="0.5,0.5">
+            <Path.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Path.RenderTransform>
+        </Path>
+    </Canvas>
+
+    <Canvas x:Key="settingsIcon" >
+        <Canvas Name="Group22">
+            <Polygon xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+                     Points="0.885940606 0.232671509 23.9259406 0.232671509 23.9259406 23.2726715 0.885940606 23.2726715" Name="Path" FillRule="EvenOdd" StrokeThickness="1"/>
+            <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="Shape" Fill="#FFFFFFFF" StrokeThickness="1">
+                <Path.Data>
+                    <PathGeometry Figures="M19.4665389 12.6836715 C19.5045389 12.3796715 19.5330389 12.0756715 19.5330389 11.7526715 C19.5330389 11.4296715 19.5045389 11.1256715 19.4665389 10.8216715 L21.4710389 9.25417151 C21.6515389 9.11167151 21.6990389 8.85517151 21.5850389 8.64617151 L19.6850389 5.35917151 C19.5995389 5.20717151 19.4380389 5.12167151 19.2670389 5.12167151 C19.2100389 5.12167151 19.1530389 5.13117151 19.1055389 5.15017151 L16.7400389 6.10017151 C16.2460389 5.72017151 15.7140389 5.40667151 15.1345389 5.16917151 L14.7735389 2.65167151 C14.7450389 2.42367151 14.5455389 2.25267151 14.3080389 2.25267151 L10.5080389 2.25267151 C10.2705389 2.25267151 10.0710389 2.42367151 10.0425389 2.65167151 L9.68153891 5.16917151 C9.10203891 5.40667151 8.57003891 5.72967151 8.07603891 6.10017151 L5.71053891 5.15017151 C5.65353891 5.13117151 5.59653891 5.12167151 5.53953891 5.12167151 C5.37803891 5.12167151 5.21653891 5.20717151 5.13103891 5.35917151 L3.23103891 8.64617151 C3.10753891 8.85517151 3.16453891 9.11167151 3.34503891 9.25417151 L5.34953891 10.8216715 C5.31153891 11.1256715 5.28303891 11.4391715 5.28303891 11.7526715 C5.28303891 12.0661715 5.31153891 12.3796715 5.34953891 12.6836715 L3.34503891 14.2511715 C3.16453891 14.3936715 3.11703891 14.6501715 3.23103891 14.8591715 L5.13103891 18.1461715 C5.21653891 18.2981715 5.37803891 18.3836715 5.54903891 18.3836715 C5.60603891 18.3836715 5.66303891 18.3741715 5.71053891 18.3551715 L8.07603891 17.4051715 C8.57003891 17.7851715 9.10203891 18.0986715 9.68153891 18.3361715 L10.0425389 20.8536715 C10.0710389 21.0816715 10.2705389 21.2526715 10.5080389 21.2526715 L14.3080389 21.2526715 C14.5455389 21.2526715 14.7450389 21.0816715 14.7735389 20.8536715 L15.1345389 18.3361715 C15.7140389 18.0986715 16.2460389 17.7756715 16.7400389 17.4051715 L19.1055389 18.3551715 C19.1625389 18.3741715 19.2195389 18.3836715 19.2765389 18.3836715 C19.4380389 18.3836715 19.5995389 18.2981715 19.6850389 18.1461715 L21.5850389 14.8591715 C21.6990389 14.6501715 21.6515389 14.3936715 21.4710389 14.2511715 L19.4665389 12.6836715 Z M17.5855389 11.0591715 C17.6235389 11.3536715 17.6330389 11.5531715 17.6330389 11.7526715 C17.6330389 11.9521715 17.6140389 12.1611715 17.5855389 12.4461715 L17.4525389 13.5196715 L18.2980389 14.1846715 L19.3240389 14.9826715 L18.6590389 16.1321715 L17.4525389 15.6476715 L16.4645389 15.2486715 L15.6095389 15.8946715 C15.2010389 16.1986715 14.8115389 16.4266715 14.4220389 16.5881715 L13.4150389 16.9966715 L13.2630389 18.0701715 L13.0730389 19.3526715 L11.7430389 19.3526715 L11.5625389 18.0701715 L11.4105389 16.9966715 L10.4035389 16.5881715 C9.99503891 16.4171715 9.61503891 16.1986715 9.23503891 15.9136715 L8.37053891 15.2486715 L7.36353891 15.6571715 L6.15703891 16.1416715 L5.49203891 14.9921715 L6.51803891 14.1941715 L7.36353891 13.5291715 L7.23053891 12.4556715 C7.20203891 12.1611715 7.18303891 11.9426715 7.18303891 11.7526715 C7.18303891 11.5626715 7.20203891 11.3441715 7.23053891 11.0591715 L7.36353891 9.98567151 L6.51803891 9.32067151 L5.49203891 8.52267151 L6.15703891 7.37317151 L7.36353891 7.85767151 L8.35153891 8.25667151 L9.20653891 7.61067151 C9.61503891 7.30667151 10.0045389 7.07867151 10.3940389 6.91717151 L11.4010389 6.50867151 L11.5530389 5.43517151 L11.7430389 4.15267151 L13.0635389 4.15267151 L13.2440389 5.43517151 L13.3960389 6.50867151 L14.4030389 6.91717151 C14.8115389 7.08817151 15.1915389 7.30667151 15.5715389 7.59167151 L16.4360389 8.25667151 L17.4430389 7.84817151 L18.6495389 7.36367151 L19.3145389 8.51317151 L18.2980389 9.32067151 L17.4525389 9.98567151 L17.5855389 11.0591715 Z M12.4059406 8.47350484 C10.594201 8.47350484 9.12677394 9.94093193 9.12677394 11.7526715 C9.12677394 13.5644111 10.594201 15.0318382 12.4059406 15.0318382 C14.2176802 15.0318382 15.6851073 13.5644111 15.6851073 11.7526715 C15.6851073 9.94093193 14.2176802 8.47350484 12.4059406 8.47350484 Z M12.4059406 13.1318382 C11.6473989 13.1318382 11.0267739 12.5112132 11.0267739 11.7526715 C11.0267739 10.9941298 11.6473989 10.3735048 12.4059406 10.3735048 C13.1644823 10.3735048 13.7851073 10.9941298 13.7851073 11.7526715 C13.7851073 12.5112132 13.1644823 13.1318382 12.4059406 13.1318382 Z" FillRule="NonZero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+</ResourceDictionary>
+

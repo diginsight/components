@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This file is compatible with Silverlight-->
+<Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="e6e9dc42aa454c25a1533c4dea6d1408" Width="18" Height="18">
+  <Canvas.RenderTransform>
+    <TranslateTransform X="0" Y="0"/>
+  </Canvas.RenderTransform>
+  <Canvas.Resources>
+    <LinearGradientBrush xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Key="bee47a41-9626-4448-9119-87ad28e72505" MappingMode="Absolute" StartPoint="9,13" EndPoint="9,0">
+      <LinearGradientBrush.GradientStops>
+        <GradientStopCollection>
+          <GradientStop Color="#198AB3" Offset="0"/>
+          <GradientStop Color="#28B7DB" Offset="0.44"/>
+          <GradientStop Color="#32D4F5" Offset="0.78"/>
+        </GradientStopCollection>
+      </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+    <LinearGradientBrush xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Key="beb70c0a-9df6-4825-adec-20340c00add6" MappingMode="RelativeToBoundingBox" StartPoint="9,18" EndPoint="9,14">
+      <LinearGradientBrush.GradientStops>
+        <GradientStopCollection/>
+      </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+  </Canvas.Resources>
+  <!--Unknown tag: metadata-->
+  <!--Unknown tag: sodipodi:namedview-->
+  <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path12" Fill="{StaticResource bee47a41-9626-4448-9119-87ad28e72505}" Data="M18 8.85A4.06 4.06 0 0 0 14.49 5 5.1 5.1 0 0 0 9.24.09a5.23 5.23 0 0 0-5 3.41A4.82 4.82 0 0 0 0 8.14a4.9 4.9 0 0 0 5.07 4.71l.44 0h8.21a.78.78 0 0 0 .22 0A4.09 4.09 0 0 0 18 8.85Z"/>
+  <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="8.58" Canvas.Top="8.46" Width="0.78" Height="6.19" Name="rect14" Fill="#FFB3B3B3"/>
+  <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="6.9" Canvas.Top="4.5" Width="4.2" Height="4.2" Name="circle16" Fill="#FFF2F2F2"/>
+  <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="7.08" Canvas.Top="14.13" Width="3.78" Height="3.78" RadiusX="0.73" RadiusY="0.73" Name="rect18" Fill="{StaticResource beb70c0a-9df6-4825-adec-20340c00add6}"/>
+</Canvas>

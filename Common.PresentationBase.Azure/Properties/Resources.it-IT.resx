@@ -1,0 +1,280 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="All Employees" xml:space="preserve">
+    <value>Tutti gli interni</value>
+  </data>
+  <data name="Anyone (not protected)" xml:space="preserve">
+    <value>Tutti (non protetta)</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Applica</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="CannotProtectDigitallySignedPDF" xml:space="preserve">
+    <value>Impossibile applicare la protezione al documento: il file è firmato digitalmente
+La protezione ai documenti può essere applicata solo prima di apporre la firma digitale</value>
+  </data>
+  <data name="Classify and protect" xml:space="preserve">
+    <value>Classifica e proteggi</value>
+  </data>
+  <data name="ClassifyAndProtect" xml:space="preserve">
+    <value>Classifica e proteggi</value>
+  </data>
+  <data name="ClassifyAndProtectColon" xml:space="preserve">
+    <value>Classifica e proteggi:</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Chiudi</value>
+  </data>
+  <data name="Confidential" xml:space="preserve">
+    <value>Confidenziale</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Conferma</value>
+  </data>
+  <data name="DocumentUsedByAnotherProcess" xml:space="preserve">
+    <value>Impossibile applicare la classificazione a '{documentName}': il file è aperto da un'altra applicazione.
+Per favore chiudi tutte le applicazioni che accedono al documento prima di applicare la classificazione</value>
+  </data>
+  <data name="EmailAddressesNotValid" xml:space="preserve">
+    <value>{count} indirizzi non sono validi</value>
+  </data>
+  <data name="EmailAddressIsDistributionList" xml:space="preserve">
+    <value>'{address}' è una distribution list e non può essere usata come destinatario per la protezione</value>
+  </data>
+  <data name="EmailAddressNotExternalUser" xml:space="preserve">
+    <value>non è un utente esterno</value>
+  </data>
+  <data name="EmailAddressNotInternalUser" xml:space="preserve">
+    <value>non è un utente interno</value>
+  </data>
+  <data name="EmailAddressNotValid" xml:space="preserve">
+    <value>l`indirizzo email non è valido</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="GAL" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACwAAAAuCAIAAADcLmxdAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAd
+        hwAAHYcBj+XxZQAAAfpJREFUWEftlrFOwzAQhnkSngN1RrwIpZUYeJF2oQsT8AgMKGM2NsSEGBgqsbFG
+        6tCKiV/5z6fDidPYdSUGf/LQXs65r2fH6UnzDygSjiLhKBKOoMRkcjY8ptPLqqoku2W5XCDopXWHZBvS
+        JThQlfljynMw37JH4idMXdfMQXkazOez1epWLvfBfClgSJcgTMOAgYTCMFMKGA6V0H4M94AwUwoYDpUA
+        sZlSwFAkHEXCcSyJ3W633W7lXk2z2WzwlZkSMhxFAgZylw56wlryS6gB3iz2LPdeNJb8Epze+yrpbQPI
+        LMF9gB/NoB6jerD29iOzBOeyDd5Brh7MsaRL9O5/fg7NZZw5lkSJgf0PQnMZlyRDioQa3L18nd+/ny7e
+        OPCVcfzFwlz0Xya0YHUQzPOIqoEtrwNBXuV09aABRp6NyYXHj2bVm+c14w+v34ywH2yGN7I9orzKNqgB
+        UQ8k6FPqjTyd4FUWk5BBJYD9w4d1GViRI0pIyBA6sqIlcB7gKouh/xJtweogqHtTon+hB3YMc8ihG1M9
+        aIDBjYk0xrvwzm0RYY9Ed8xmV0wYfkSjiJPQZ0w70R3sRBRBiQHU4OLxQ1rcPp/eiownRYKVvF1J9KiI
+        8oiW6D2mLPS4fvqUCSOIluAPlYIBmCMTRpCyHNkpEo4i4SgSpGl+Ac1LEu7y6ULfAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>Generale</value>
+  </data>
+  <data name="Highly Confidential" xml:space="preserve">
+    <value>Strettamente confidenziale</value>
+  </data>
+  <data name="Info.IncompatibleAddIn" xml:space="preserve">
+    <value>Attenzione: l'add-In '{addInDescription}' è attivo.
+Per favore, disattiva l'Add-In '{addInDescription}' e riavvia l'applicazione '{applicationName}' per utilizzare 'Classifica e proteggi'</value>
+  </data>
+  <data name="Info.PressLogin" xml:space="preserve">
+    <value>Premi Login per inserire le tue credenziali</value>
+  </data>
+  <data name="Internal use" xml:space="preserve">
+    <value>Ad uso interno</value>
+  </data>
+  <data name="JustificationMessage.PreviousLabelIncorrect" xml:space="preserve">
+    <value>La precedente label non era corretta</value>
+  </data>
+  <data name="JustificationMessage.PreviousLabelNoLongerApplies" xml:space="preserve">
+    <value>La precedente label non è più valida</value>
+  </data>
+  <data name="NoDocumentIsSelected" xml:space="preserve">
+    <value>Nessun documento selezionato</value>
+  </data>
+  <data name="NoLabelAvailableForDocument" xml:space="preserve">
+    <value>Classificazione non disponibile per il documento</value>
+  </data>
+  <data name="NoOwnerDocumentInformation" xml:space="preserve">
+    <value>Questo documento è stato protetto da un'altro utente.
+Modifiche alla classificazione o protezione del documento sono riservate agli owner del documento.
+Per riclassificare il documento o modificarne la protezione chiedi agli owner o chiedi loro di abilitarti al ruolo di owner</value>
+  </data>
+  <data name="NoOwnerDocumentInformation2" xml:space="preserve">
+    <value>non è un proiprietario del documento  =&gt;classificazione e protezione è disabilitato</value>
+  </data>
+  <data name="NoOwnerDocumentInformation3" xml:space="preserve">
+    <value>Questo file è stato protetto da '{ownerAccounts}'.
+Accesso per modificarne la classificazione o protezione 
+può essere richiesto a '{ownerAccounts}' o i contatti indicati nell'attributo "Owners" del documento</value>
+  </data>
+  <data name="NoOwnerDocumentInformation5" xml:space="preserve">
+    <value>Per ri-classificare o modificare la protezione del documento chiedi all'owner o chiedigli di abilitarti al ruolo di owner.</value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Personale</value>
+  </data>
+  <data name="ProtectDocument" xml:space="preserve">
+    <value>Proteggi documento</value>
+  </data>
+  <data name="ProtectDocumentColon" xml:space="preserve">
+    <value>Proteggi documento:</value>
+  </data>
+  <data name="Public" xml:space="preserve">
+    <value>Pubblica</value>
+  </data>
+  <data name="Recipients Only" xml:space="preserve">
+    <value>Destinatari individuali</value>
+  </data>
+  <data name="RemoveProtection" xml:space="preserve">
+    <value>Rimuovi Protezione</value>
+  </data>
+  <data name="Strictly confidential" xml:space="preserve">
+    <value>Strettamente confidenziale</value>
+  </data>
+  <data name="Typing" xml:space="preserve">
+    <value>scrivendo ...</value>
+  </data>
+  <data name="With footer" xml:space="preserve">
+    <value>Con footer</value>
+  </data>
+  <data name="With protection" xml:space="preserve">
+    <value>Con protezione</value>
+  </data>
+  <data name="With protection, with footer" xml:space="preserve">
+    <value>Con protezione, con footer</value>
+  </data>
+  <data name="Without footer" xml:space="preserve">
+    <value>Senza footer</value>
+  </data>
+  <data name="Without protection" xml:space="preserve">
+    <value>Senza protezione</value>
+  </data>
+  <data name="Without protection, with footer" xml:space="preserve">
+    <value>Senza protezione, con footer</value>
+  </data>
+  <data name="Without protection, without footer" xml:space="preserve">
+    <value>Senza protezione, senza footer</value>
+  </data>
+</root>

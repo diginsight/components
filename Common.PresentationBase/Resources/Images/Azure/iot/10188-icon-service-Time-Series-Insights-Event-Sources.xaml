@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This file is compatible with Silverlight-->
+<Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="a978b06d4c0e4630bb2f1c95b82750dc" Width="18" Height="18">
+  <Canvas.RenderTransform>
+    <TranslateTransform X="0" Y="0"/>
+  </Canvas.RenderTransform>
+  <Canvas.Resources>
+    <LinearGradientBrush xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Key="be18c16e-547a-4c25-9f22-b3a89153c17b" MappingMode="Absolute" StartPoint="4,9" EndPoint="4,0">
+      <LinearGradientBrush.GradientStops>
+        <GradientStopCollection>
+          <GradientStop Color="#198AB3" Offset="0"/>
+          <GradientStop Color="#25AED3" Offset="0.4"/>
+          <GradientStop Color="#2FCAEC" Offset="0.78"/>
+          <GradientStop Color="#32D4F5" Offset="1"/>
+        </GradientStopCollection>
+      </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+  </Canvas.Resources>
+  <!--Unknown tag: metadata-->
+  <!--Unknown tag: sodipodi:namedview-->
+  <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="4.65" Canvas.Top="4.63" Width="8.75" Height="8.75" RadiusX="0.41" RadiusY="0.41" Name="rect13" Fill="{StaticResource be18c16e-547a-4c25-9f22-b3a89153c17b}"/>
+  <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path15" Fill="#FFFFFFFF" Data="M7.31 12.53Z"/>
+  <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path17" Fill="#FFC3F1FF" Data="M11.78 12.18l4.38-3.07a.13.13 0 0 0 0-.22L11.78 5.83a.13.13 0 0 0-.21.11V7.7H4.65v2.6h6.92v1.77A.14.14 0 0 0 11.78 12.18Z"/>
+  <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path19" Fill="#FF949494" Data="M17 17.6H1a.52.52 0 0 1-.52-.52V.92A.52.52 0 0 1 1 .4H17a.52.52 0 0 1 .52.52V6a.26.26 0 0 1-.41.22l-1-.7a.27.27 0 0 1-.11-.22V2H2.06V16H15.94V12.8a.26.26 0 0 1 .11-.21l1-.73a.26.26 0 0 1 .41.22v5A.52.52 0 0 1 17 17.6Z"/>
+  <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path21" Fill="#FF767676" Data="M15.94 2V5.25a.27.27 0 0 0 .11.22l1 .7A.26.26 0 0 0 17.5 6V2Z"/>
+  <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path23" Fill="#FF767676" Data="M15.94 16V12.75a.25.25 0 0 1 .11-.21l1-.71a.27.27 0 0 1 .41.22v4Z"/>
+</Canvas>

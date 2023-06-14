@@ -1,0 +1,19 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
+    <!--x:Class ="Common.DefaultSkin"-->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images.generic.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Colors.generic.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Brushes.generic.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Canvas.generic.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Scroll.Color.generic.xaml"/>
+        
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/CommonConversions.generic.xaml" />
+        
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/DataTemplates.generic.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/ControlTemplates.generic.xaml" />
+        
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Styles.button.generic.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

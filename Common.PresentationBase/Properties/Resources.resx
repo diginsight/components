@@ -1,0 +1,284 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="All Employees" xml:space="preserve">
+    <value>All Employees</value>
+  </data>
+  <data name="Anyone (not protected)" xml:space="preserve">
+    <value>Anyone (not protected)</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CannotProtectDigitallySignedPDF" xml:space="preserve">
+    <value>Cannot apply protection to the document: the file is digitally signed
+Please, protect your documents before applying the signature to them</value>
+  </data>
+  <data name="Classify and protect" xml:space="preserve">
+    <value>Classify and protect</value>
+  </data>
+  <data name="ClassifyAndProtect" xml:space="preserve">
+    <value>Classify and protect</value>
+  </data>
+  <data name="ClassifyAndProtectColon" xml:space="preserve">
+    <value>Classify and protect:</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Confidential" xml:space="preserve">
+    <value>Confidential</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="DocumentUsedByAnotherProcess" xml:space="preserve">
+    <value>cannot apply protection document '{documentName}': the file is opened by another application
+Please close the document before applying protection to it</value>
+  </data>
+  <data name="EmailAddressesNotValid" xml:space="preserve">
+    <value>{count} addresses are not valid</value>
+  </data>
+  <data name="EmailAddressIsDistributionList" xml:space="preserve">
+    <value>{address}: is a distribution list and cannot be used as a protection target</value>
+  </data>
+  <data name="EmailAddressNotExternalUser" xml:space="preserve">
+    <value>is not an external user</value>
+  </data>
+  <data name="EmailAddressNotInternalUser" xml:space="preserve">
+    <value>is not an internal user</value>
+  </data>
+  <data name="EmailAddressNotValid" xml:space="preserve">
+    <value>email address is not valid</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Full name</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="GAL" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACwAAAAuCAIAAADcLmxdAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAd
+        hwAAHYcBj+XxZQAAAfpJREFUWEftlrFOwzAQhnkSngN1RrwIpZUYeJF2oQsT8AgMKGM2NsSEGBgqsbFG
+        6tCKiV/5z6fDidPYdSUGf/LQXs65r2fH6UnzDygSjiLhKBKOoMRkcjY8ptPLqqoku2W5XCDopXWHZBvS
+        JThQlfljynMw37JH4idMXdfMQXkazOez1epWLvfBfClgSJcgTMOAgYTCMFMKGA6V0H4M94AwUwoYDpUA
+        sZlSwFAkHEXCcSyJ3W633W7lXk2z2WzwlZkSMhxFAgZylw56wlryS6gB3iz2LPdeNJb8Epze+yrpbQPI
+        LMF9gB/NoB6jerD29iOzBOeyDd5Brh7MsaRL9O5/fg7NZZw5lkSJgf0PQnMZlyRDioQa3L18nd+/ny7e
+        OPCVcfzFwlz0Xya0YHUQzPOIqoEtrwNBXuV09aABRp6NyYXHj2bVm+c14w+v34ywH2yGN7I9orzKNqgB
+        UQ8k6FPqjTyd4FUWk5BBJYD9w4d1GViRI0pIyBA6sqIlcB7gKouh/xJtweogqHtTon+hB3YMc8ihG1M9
+        aIDBjYk0xrvwzm0RYY9Ed8xmV0wYfkSjiJPQZ0w70R3sRBRBiQHU4OLxQ1rcPp/eiownRYKVvF1J9KiI
+        8oiW6D2mLPS4fvqUCSOIluAPlYIBmCMTRpCyHNkpEo4i4SgSpGl+Ac1LEu7y6ULfAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="Highly Confidential" xml:space="preserve">
+    <value>Highly Confidential</value>
+  </data>
+  <data name="Info.IncompatibleAddIn" xml:space="preserve">
+    <value>Add-In '{addInDescription}' is loaded
+Please unload the '{addInDescription}' Add-In and restart '{applicationName}' to use 'Classifica e proteggi'</value>
+  </data>
+  <data name="Info.PressLogin" xml:space="preserve">
+    <value>Press Login to enter your credentials</value>
+  </data>
+  <data name="Internal use" xml:space="preserve">
+    <value>Internal use</value>
+  </data>
+  <data name="JustificationMessage.PreviousLabelIncorrect" xml:space="preserve">
+    <value>The previous was incorrect</value>
+  </data>
+  <data name="JustificationMessage.PreviousLabelNoLongerApplies" xml:space="preserve">
+    <value>The previous label no longer applies</value>
+  </data>
+  <data name="NoDocumentIsSelected" xml:space="preserve">
+    <value>No document is selected</value>
+  </data>
+  <data name="NoLabelAvailableForDocument" xml:space="preserve">
+    <value>No label is available for the document</value>
+  </data>
+  <data name="NoOwnerDocumentInformation" xml:space="preserve">
+    <value>This file was protected by another account.
+Changes to the document classification and protection are reserved to the document owners.
+To re-classify or change the protection of the document ask the owner or ask him to enable you to the role of owner.</value>
+  </data>
+  <data name="NoOwnerDocumentInformation2" xml:space="preserve">
+    <value>is not an owner for the document =&gt; classification and protection is disabled</value>
+  </data>
+  <data name="NoOwnerDocumentInformation3" xml:space="preserve">
+    <value>This file has been protected from '{ownerAccounts}'.
+Access to change sensitivity level or protection
+can be required at '{ownerAccounts}' or to contacts shown in "Owners" property for the document</value>
+  </data>
+  <data name="NoOwnerDocumentInformation5" xml:space="preserve">
+    <value>To re-classify or change the protection of the document ask the owner or ask him to enable you to the role of owner.</value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Personal</value>
+  </data>
+  <data name="ProtectDocument" xml:space="preserve">
+    <value>Protect document</value>
+  </data>
+  <data name="ProtectDocumentColon" xml:space="preserve">
+    <value>Protect document:</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ProtectDocumentIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ProtectDocument.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Public" xml:space="preserve">
+    <value>Public</value>
+  </data>
+  <data name="Recipients Only" xml:space="preserve">
+    <value>Recipients Only</value>
+  </data>
+  <data name="RemoveProtection" xml:space="preserve">
+    <value>Remove Protection</value>
+  </data>
+  <data name="Settings.About.Title" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="Settings.Lang.Title" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Settings.Themes.Title" xml:space="preserve">
+    <value>Themes</value>
+  </data>
+  <data name="Strictly confidential" xml:space="preserve">
+    <value>Strictly confidential</value>
+  </data>
+  <data name="Typing" xml:space="preserve">
+    <value>typing...</value>
+  </data>
+  <data name="With footer" xml:space="preserve">
+    <value>With footer</value>
+  </data>
+  <data name="With protection" xml:space="preserve">
+    <value>With protection</value>
+  </data>
+  <data name="Without footer" xml:space="preserve">
+    <value>Without footer</value>
+  </data>
+  <data name="Without protection" xml:space="preserve">
+    <value>Without protection</value>
+  </data>
+</root>

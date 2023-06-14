@@ -77,6 +77,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KustoSample", "Samples\03. 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AKSSample", "Samples\01. Compute\AKSSample\AKSSample.csproj", "{B371E27A-E05E-40BF-B4BA-85A48EB7A416}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyVaultSample", "Samples\00. Security\KeyVaultSample\KeyVaultSample.csproj", "{F2E65731-A481-4499-8234-E06DD0DDE076}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -181,6 +183,10 @@ Global
 		{B371E27A-E05E-40BF-B4BA-85A48EB7A416}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B371E27A-E05E-40BF-B4BA-85A48EB7A416}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B371E27A-E05E-40BF-B4BA-85A48EB7A416}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2E65731-A481-4499-8234-E06DD0DDE076}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2E65731-A481-4499-8234-E06DD0DDE076}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2E65731-A481-4499-8234-E06DD0DDE076}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2E65731-A481-4499-8234-E06DD0DDE076}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -218,6 +224,7 @@ Global
 		{C01C4922-CE62-4FD9-B08E-A9CC9938A625} = {53E749AA-CF51-4F7C-97AC-39D5C712B72F}
 		{A3680A90-1D4C-4C49-8469-3FD494A8551C} = {141FE649-2E71-462C-806D-CF84EA336E07}
 		{B371E27A-E05E-40BF-B4BA-85A48EB7A416} = {53E749AA-CF51-4F7C-97AC-39D5C712B72F}
+		{F2E65731-A481-4499-8234-E06DD0DDE076} = {8F685748-B1CE-4DFA-B367-17A12C9E8FBE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B75EF8D-0D79-4B04-8149-CADF5FDBF419}

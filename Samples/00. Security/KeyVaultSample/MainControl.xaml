@@ -57,7 +57,7 @@
                         Height="40" >
                 <Button Style="{StaticResource  IconsButtonTemplate}" 
                     Focusable="False" Grid.Column="0"
-                    Margin="0,0,0,0" Padding="0" Height="34" Width="34" 
+                    Margin="5,0,0,0" Padding="0" Height="34" Width="39" 
                     HorizontalAlignment="Left"
                     Background="Transparent" Foreground="Black"
                     Command="{x:Static common:Commands.LoginToggle}" >
@@ -83,16 +83,20 @@
                     <Label Grid.Column="0" VerticalAlignment="Center" VerticalContentAlignment="Center" 
                                                FontSize="12" 
                                                Foreground="Black"
-                                               Margin="0,0,5,0"
+                                               Margin="0,0,10,0"
                                                Padding="5,0,0,0" 
                            Content="{Binding Path=Identity, Mode=OneWay, Converter={StaticResource getIdentityDescription}, FallbackValue=Login}" />
 
+                    <ContentControl
+                        Width="32" Height="32" 
+                        Content="{StaticResource viewBoxUser}" />
+                    <!--
+                    viewBoxUser
                     <Rectangle Margin="0" Height="20" Width="20" >
                         <Rectangle.Fill>
                             <VisualBrush Visual="{StaticResource userCanvas}" Stretch="Uniform" />
-                            <!--I10245IconServiceKeyVaults-->
                         </Rectangle.Fill>
-                    </Rectangle>
+                    </Rectangle>-->
                 </StackPanel>
             </Button>
             <!--<Rectangle Margin="0" Height="20" Width="20" Grid.Column="1" TextBlock.Foreground="Black" >
@@ -122,12 +126,21 @@
                      Grid.Column="1" HorizontalAlignment="Stretch"  BorderThickness="0"
                      Text="{Binding Path=App.ConnectionString, Mode=TwoWay}" 
                      ></TextBox>
-
+            <!-- Background="White" -->
             <Button x:Name="btnRun" x:Uid="btnRun" Grid.Column="2" BorderThickness="0"
-                    
-                    Click="btnRun_Click"  Width="200" 
-                    
-                    HorizontalAlignment="Right" >Connect</Button>
+                    Click="btnRun_Click"  Width="32" 
+                    HorizontalAlignment="Right" >
+                <ContentControl Content="{StaticResource viewBoxPlay}" />
+            </Button>
+            <Button x:Name="btnSettings" x:Uid="btnRun" Grid.Column="3" BorderThickness="0"
+                    Click="btnRun_Click"  Width="32" 
+                    HorizontalAlignment="Right" >
+                <ContentControl Content="{StaticResource viewBoxEllipsis}" >
+                    <ContentControl.LayoutTransform>
+                        <RotateTransform Angle="90" />
+                    </ContentControl.LayoutTransform>
+                </ContentControl>
+            </Button>
         </Grid>
 
         <Grid Grid.Row="2" >
@@ -168,11 +181,27 @@
                 </TabItem>
                 <TabItem Header="Secrets" IsSelected="True" >
                     <ListView Margin="0" Name="lvSecrets" Background="Transparent" 
-                              ItemsSource="{Binding Path=Secrets, Mode=OneWay}" >
+                              ItemsSource="{Binding Path=Secrets, Mode=OneWay}" HorizontalContentAlignment="Stretch" >
                         <ListView.View>
-                            <GridView>
+                            <GridView   >
                                 <GridViewColumn Header="Name" Width="250" DisplayMemberBinding="{Binding Name}" />
-                                <GridViewColumn Header="Value" Width="150" DisplayMemberBinding="{Binding Source=*****}" />
+                                <GridViewColumn Header="Value" Width="150"  >
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid HorizontalAlignment="Stretch" >
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox Grid.Column="0" Text="***" HorizontalAlignment="Stretch" /> <!--{Binding ., Mode=OneWay}-->
+                                                <Button Grid.Column="1" Width="20">
+                                                    <ContentControl Content="{StaticResource viewBoxCloakOrHide}" />
+                                                </Button>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <!--viewBoxHide-->
                                 <GridViewColumn Header="Version" Width="50" DisplayMemberBinding="{Binding Version}" />
                                 <GridViewColumn Header="Type" Width="50" DisplayMemberBinding="{Binding ContentType}" />
                                 <GridViewColumn Header="Is managed" Width="65" DisplayMemberBinding="{Binding Managed}" />

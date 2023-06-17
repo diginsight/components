@@ -5,6 +5,17 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:wndBase="clr-namespace:System.Windows;assembly=WindowsBase"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/p/Play.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/u/User.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/c/CloakOrHide.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/e/Ellipsis.xaml" />
+
+        <!--
+        \2022\
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images.generic.xaml" />
+        -->
+    </ResourceDictionary.MergedDictionaries>
 
     <Image x:Key="collapse16Image" Source="/Common.PresentationBase;component/Resources/Images/Pages/Collapse-16.png" Width="16" Height="16" Stretch="None" />
     <Image x:Key="expand16Image" Source="/Common.PresentationBase;component/Resources/Images/Pages/Expand-16.png" Width="16" Height="16" Stretch="None" />

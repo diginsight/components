@@ -326,7 +326,6 @@
 
 	<ItemGroup>
 		<Folder Include="Binding\" />
-		<Folder Include="Resources\Images\VisualStudio\" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -377,6 +376,18 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
 	  <Page Include="Resources\Images\Azure\security\10245-icon-service-Key-Vaults.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\VisualStudio\2022\c\CloakOrHide.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\VisualStudio\2022\e\Ellipsis.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\VisualStudio\2022\p\Play.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\VisualStudio\2022\u\User.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
 	</ItemGroup>

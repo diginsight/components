@@ -180,6 +180,17 @@
                                 <Setter Property="BorderThickness" Value="0" />
                                 <Setter Property="Margin" Value="0" />
                                 <Setter Property="Padding" Value="0" />
+                                <!--<Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                    BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
+                                                    Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter Margin="0" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>-->
                             </Style>
                         </ListView.ItemContainerStyle>
                         <ListView.View>
@@ -194,7 +205,7 @@
                                     </GridViewColumn.Width>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Grid HorizontalAlignment="Stretch" >
+                                            <Grid HorizontalAlignment="Stretch"  Margin="-6,0" >
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="auto"/>
@@ -206,9 +217,9 @@
                                                         <MultiBinding Converter="{StaticResource getSecretValue}" FallbackValue="*****" >
                                                             <Binding Path="." Mode="OneWay" />
                                                             <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}" Path="(common:AttachedProperties.IsVisible0)" Mode="OneWay" />
-                                                        </MultiBinding>    
+                                                        </MultiBinding>
                                                     </TextBox.Text>
-                                                    
+
                                                 </TextBox>
                                                 <Button Grid.Column="1" Width="20" BorderThickness="0" 
                                                         Command="{x:Static common:Commands.Copy}" 
@@ -229,6 +240,11 @@
                                                     </Rectangle>
                                                 </Button>
                                             </Grid>
+                                            <DataTemplate.Resources>
+                                                <Style TargetType="ContentPresenter">
+                                                    <Setter Property="Margin" Value="0"/>
+                                                </Style>
+                                            </DataTemplate.Resources>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

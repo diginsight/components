@@ -28,6 +28,7 @@
         <CommandBinding Command="{x:Static common:Commands.Logout}" CanExecute="LogoutCanExecute" Executed="LogoutExecuted" />
         <CommandBinding Command="{x:Static common:Commands.Copy}" CanExecute="CopyCanExecute" Executed="CopyExecuted" />
         <CommandBinding Command="{x:Static common:Commands.Watch}" CanExecute="WatchCanExecute" Executed="WatchExecuted" />
+        <CommandBinding Command="{x:Static common:Commands.WatchAll}" CanExecute="WatchAllCanExecute" Executed="WatchAllExecuted" />
 
         <!--<CommandBinding Command="{x:Static common:Commands.Settings}" CanExecute="SettingsCanExecute" Executed="SettingsCommand" />
         <CommandBinding Command="{x:Static common:Commands.HideSettings}" CanExecute="HideSettingsCanExecute" Executed="HideSettingsCommand" />
@@ -196,13 +197,37 @@
                         <ListView.View>
                             <GridView >
                                 <GridViewColumn Header="Name" Width="250" DisplayMemberBinding="{Binding Name}" />
-                                <GridViewColumn Header="Value" >
+                                <GridViewColumn>
+                                    <!--x:Name="Value"-->
                                     <GridViewColumn.Width>
                                         <MultiBinding Converter="{StaticResource starColumnSize}">
                                             <Binding ElementName="lvSecrets" Path="." Mode="OneWay" />
                                             <Binding ElementName="lvSecrets" Path="ActualWidth" Mode="OneWay" />
                                         </MultiBinding>
                                     </GridViewColumn.Width>
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader HorizontalContentAlignment="Stretch" >
+                                            <Grid HorizontalAlignment="Stretch"  Margin="0" >
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Label Grid.Column="0" BorderBrush="White"
+                                                       HorizontalAlignment="Center" Content="Value">
+                                                </Label>
+                                                <Button Grid.Column="2" Width="20" BorderThickness="0" Background="Transparent"
+                                                        Command="{x:Static common:Commands.WatchAll}" 
+                                                        CommandParameter="{Binding Path=., Mode=OneWay, RelativeSource={RelativeSource Self}}" >
+                                                    <Rectangle Margin="0" Height="16" Width="16" >
+                                                        <Rectangle.Fill>
+                                                            <VisualBrush Visual="{StaticResource viewBoxCloakOrHide}" Stretch="Uniform" />
+                                                        </Rectangle.Fill>
+                                                    </Rectangle>
+                                                </Button>
+                                            </Grid>
+                                        </GridViewColumnHeader>
+                                    </GridViewColumn.Header>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Grid HorizontalAlignment="Stretch"  Margin="-6,0" >
@@ -240,11 +265,11 @@
                                                     </Rectangle>
                                                 </Button>
                                             </Grid>
-                                            <DataTemplate.Resources>
+                                            <!--<DataTemplate.Resources>
                                                 <Style TargetType="ContentPresenter">
                                                     <Setter Property="Margin" Value="0"/>
                                                 </Style>
-                                            </DataTemplate.Resources>
+                                            </DataTemplate.Resources>-->
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

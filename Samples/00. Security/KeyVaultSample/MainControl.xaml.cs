@@ -394,6 +394,27 @@ namespace KeyVaultSample
             var isVisible0 = listViewItem.GetValue(AttachedProperties.IsVisible0Property) ?? false;
             listViewItem.SetValue(AttachedProperties.IsVisible0Property, !(bool)isVisible0);
         }
+        private void WatchAllCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
+        private async void WatchAllExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
+
+            var originalSource = e.OriginalSource as FrameworkElement;
+            var listView = UserControlHelper.FindAncestor<ListView>(originalSource);
+            scope.LogDebug(new { listView = listView.GetLogString() });
+
+            var itemContainerGenerator = listView.ItemContainerGenerator;
+            
+            var item = listView.Items.OfType<object>().FirstOrDefault();
+            var listViewItem = (ListViewItem)itemContainerGenerator.ContainerFromItem(item);
+
+            var isVisible0 = listViewItem.GetValue(AttachedProperties.IsVisible0Property) ?? false;
+            foreach (var item1 in listView.Items)
+            {
+                var listViewItem1 = (ListViewItem)itemContainerGenerator.ContainerFromItem(item1);
+                listViewItem1.SetValue(AttachedProperties.IsVisible0Property, !(bool)isVisible0);
+            }
+        }
         private void CopyCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
         private async void CopyExecuted(object sender, ExecutedRoutedEventArgs e)
         {
@@ -493,7 +514,7 @@ namespace KeyVaultSample
             if (listView == null) { return 150; }
             var gridView = listView.View as GridView;
             var gridViewColumnsWidth = gridView.Columns.Sum(c => c.ActualWidth);
-            var valueColum = gridView.Columns.FirstOrDefault(c => "Value".Equals(c.Header));
+            var valueColum = gridView.Columns.FirstOrDefault(c => string.IsNullOrEmpty(c.Header as string));
             double otherColumnsWidth = gridViewColumnsWidth - valueColum.ActualWidth;
             double starWidth = listView.ActualWidth - otherColumnsWidth;
 

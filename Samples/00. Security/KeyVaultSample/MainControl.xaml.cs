@@ -108,7 +108,7 @@ namespace KeyVaultSample
         public static readonly DependencyProperty OutputProperty = DependencyProperty.Register("Output", typeof(string), typeof(MainControl), new PropertyMetadata(null));
         #endregion
 
-        private void ctlMain_Initialized(object sender, EventArgs e)
+        private async void ctlMain_Initialized(object sender, EventArgs e)
         {
             if (DesignerProperties.GetIsInDesignMode(this)) { return; }
             using var scope = logger.BeginMethodScope(new { sender, e });
@@ -135,8 +135,9 @@ namespace KeyVaultSample
                 scope.LogDebug(new { _authenticationHelper = authenticationHelper.GetLogString() });
                 this.authenticationHelper = authenticationHelper;
 
-                var task = ctlMain_InitializedAsync(sender, e);
-                try { task.Start(); } catch (InvalidOperationException ex) { scope.LogException(ex); }
+                await Task.Run(async () => await ctlMain_InitializedAsync(sender, e));
+                //var task = ctlMain_InitializedAsync(sender, e);
+                //try { task.Start(); } catch (InvalidOperationException ex) { scope.LogException(ex); }
 
             }
             catch (Exception ex)
@@ -158,19 +159,28 @@ namespace KeyVaultSample
             try
             {
                 var identity = await authenticationHelper.LoginSilentAsync();
-                this.Identity = identity;
+                this.Dispatcher.Invoke(() =>
+                {
+                    this.Identity = identity;
+                    scope.LogDebug(new { this.Identity });
+                });
 
                 var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS); scope.LogDebug($"ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS); returned {keyVaultAddress}");
-                App.ConnectionString = keyVaultAddress;
-                var clientSecret = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_CLIENTSECRET, DEFAULTVALUE_CLIENTSECRET);
+                this.Dispatcher.Invoke(() =>
+                {
+                    App.ConnectionString = keyVaultAddress;
+                    scope.LogDebug(new { App.ConnectionString });
+                });
 
                 TokenCredential credential = null;
+                var clientSecret = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_CLIENTSECRET, DEFAULTVALUE_CLIENTSECRET);
                 if (!string.IsNullOrEmpty(clientSecret)) { credential = new ClientSecretCredential(tenantId, clientId, clientSecret); }
-                if (identity != null && credential == null)
+
+                if (credential == null)
                 {
-                    credential = new DefaultAzureCredential(new DefaultAzureCredentialOptions
+                    var credentialOptions = new DefaultAzureCredentialOptions
                     {
-                        SharedTokenCacheUsername = this.Identity.Upn,
+                        SharedTokenCacheUsername = identity.Upn,
                         ExcludeInteractiveBrowserCredential = false,
                         ExcludeSharedTokenCacheCredential = false,
                         ExcludeAzureCliCredential = false,
@@ -178,14 +188,24 @@ namespace KeyVaultSample
                         ExcludeManagedIdentityCredential = true,
                         ExcludeVisualStudioCodeCredential = true,
                         ExcludeVisualStudioCredential = true
-                    });
+                    };
+                    credential = new DefaultAzureCredential(credentialOptions);
                 }
+
                 if (credential != null)
                 {
+                    ConfigurationManager configurationManager = null;
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        configurationManager = App.ConfigurationManager;
+                        scope.LogDebug($"configurationManager");
+                    });
+
                     var secretClient = new SecretClient(new Uri(keyVaultAddress), credential);
-                    App.ConfigurationManager.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
-                    this.VaultUri = secretClient.VaultUri;
+                    configurationManager.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
+                    scope.LogDebug($"configurationManager.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());");
                 }
+
 
             }
             catch (Exception ex)

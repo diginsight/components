@@ -17,12 +17,18 @@
 
             <common:EventConverter x:Key="firstOrDefaultLocal" ConvertEvent="firstOrDefaultLocal_ConvertEvent" ConvertEvent2="firstOrDefaultLocal_ConvertEvent2" />
             <common:EventConverter x:Key="getIdentityDescription" ConvertEvent="getIdentityDescription_ConvertEvent" />
+            <common:EventConverter x:Key="starColumnSize" ConvertEvent2="starColumnSize_ConvertEvent" />
+            <common:EventConverter x:Key="getSecretValue" ConvertEvent2="getSecretValue_ConvertEvent" />
+            <!---->
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.CommandBindings>
         <CommandBinding Command="{x:Static common:Commands.LoginToggle}" CanExecute="LoginToggleCanExecute" Executed="LoginToggleExecuted" />
         <CommandBinding Command="{x:Static common:Commands.Login}" CanExecute="LoginCanExecute" Executed="LoginExecuted" />
         <CommandBinding Command="{x:Static common:Commands.Logout}" CanExecute="LogoutCanExecute" Executed="LogoutExecuted" />
+        <CommandBinding Command="{x:Static common:Commands.Copy}" CanExecute="CopyCanExecute" Executed="CopyExecuted" />
+        <CommandBinding Command="{x:Static common:Commands.Watch}" CanExecute="WatchCanExecute" Executed="WatchExecuted" />
+
         <!--<CommandBinding Command="{x:Static common:Commands.Settings}" CanExecute="SettingsCanExecute" Executed="SettingsCommand" />
         <CommandBinding Command="{x:Static common:Commands.HideSettings}" CanExecute="HideSettingsCanExecute" Executed="HideSettingsCommand" />
         <CommandBinding Command="{x:Static local:LocalCommands.QueryRest}" CanExecute="QueryRestCanExecute" Executed="QueryRestCommand" />-->
@@ -57,7 +63,7 @@
                         Height="40" >
                 <Button Style="{StaticResource  IconsButtonTemplate}" 
                     Focusable="False" Grid.Column="0"
-                    Margin="5,0,0,0" Padding="0" Height="34" Width="39" 
+                    Margin="2,0,0,0" Padding="0" Height="34" Width="39" 
                     HorizontalAlignment="Left"
                     Background="Transparent" Foreground="Black"
                     Command="{x:Static common:Commands.LoginToggle}" >
@@ -87,24 +93,9 @@
                                                Padding="5,0,0,0" 
                            Content="{Binding Path=Identity, Mode=OneWay, Converter={StaticResource getIdentityDescription}, FallbackValue=Login}" />
 
-                    <ContentControl
-                        Width="32" Height="32" 
-                        Content="{StaticResource viewBoxUser}" />
-                    <!--
-                    viewBoxUser
-                    <Rectangle Margin="0" Height="20" Width="20" >
-                        <Rectangle.Fill>
-                            <VisualBrush Visual="{StaticResource userCanvas}" Stretch="Uniform" />
-                        </Rectangle.Fill>
-                    </Rectangle>-->
+                    <ContentControl Width="32" Height="32" Content="{StaticResource viewBoxUser}" />
                 </StackPanel>
             </Button>
-            <!--<Rectangle Margin="0" Height="20" Width="20" Grid.Column="1" TextBlock.Foreground="Black" >
-                <Rectangle.Fill>
-                    <VisualBrush Visual="{StaticResource userCanvas}" Stretch="Uniform"  />
-                </Rectangle.Fill>
-            </Rectangle>-->
-
             <Button Margin="10,4,10,8" Grid.Column="2" x:Name="minimizeButton" Style="{StaticResource WindowButtonStyle}" Content="0" 
                                        Command="{x:Static common:Commands.Minimize}" />
             <Button Margin="10,4,10,8" Grid.Column="3" x:Name="restoreButton" 
@@ -113,7 +104,7 @@
             <Button Margin="10,4,10,8" Grid.Column="4" x:Name="closeButton" Style="{StaticResource WindowButtonStyle}" Content="r" 
                                        Command="{x:Static common:Commands.Close}" />
         </Grid>
-        <Grid Grid.Row="1" >
+        <Grid Grid.Row="1" MinWidth="60" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition SharedSizeGroup="labels"  Width="auto" />
                 <ColumnDefinition Width="*" />
@@ -181,27 +172,66 @@
                 </TabItem>
                 <TabItem Header="Secrets" IsSelected="True" >
                     <ListView Margin="0" Name="lvSecrets" Background="Transparent" 
-                              ItemsSource="{Binding Path=Secrets, Mode=OneWay}" HorizontalContentAlignment="Stretch" >
+                              ItemsSource="{Binding Path=Secrets, Mode=OneWay}" 
+                              HorizontalContentAlignment="Stretch" >
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Margin" Value="0" />
+                                <Setter Property="Padding" Value="0" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
                         <ListView.View>
-                            <GridView   >
+                            <GridView >
                                 <GridViewColumn Header="Name" Width="250" DisplayMemberBinding="{Binding Name}" />
-                                <GridViewColumn Header="Value" Width="150"  >
+                                <GridViewColumn Header="Value" >
+                                    <GridViewColumn.Width>
+                                        <MultiBinding Converter="{StaticResource starColumnSize}">
+                                            <Binding ElementName="lvSecrets" Path="." Mode="OneWay" />
+                                            <Binding ElementName="lvSecrets" Path="ActualWidth" Mode="OneWay" />
+                                        </MultiBinding>
+                                    </GridViewColumn.Width>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Grid HorizontalAlignment="Stretch" >
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBox Grid.Column="0" Text="***" HorizontalAlignment="Stretch" /> <!--{Binding ., Mode=OneWay}-->
-                                                <Button Grid.Column="1" Width="20">
-                                                    <ContentControl Content="{StaticResource viewBoxCloakOrHide}" />
+                                                <TextBox Grid.Column="0" BorderBrush="White"
+                                                         HorizontalAlignment="Stretch" >
+                                                    <TextBox.Text>
+                                                        <MultiBinding Converter="{StaticResource getSecretValue}" FallbackValue="*****" >
+                                                            <Binding Path="." Mode="OneWay" />
+                                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}" Path="(common:AttachedProperties.IsVisible0)" Mode="OneWay" />
+                                                        </MultiBinding>    
+                                                    </TextBox.Text>
+                                                    
+                                                </TextBox>
+                                                <Button Grid.Column="1" Width="20" BorderThickness="0" 
+                                                        Command="{x:Static common:Commands.Copy}" 
+                                                        CommandParameter="{Binding Path=., Mode=OneWay}" >
+                                                    <Rectangle Margin="0" Height="16" Width="16">
+                                                        <Rectangle.Fill>
+                                                            <VisualBrush Visual="{StaticResource viewBoxCopy}" Stretch="Uniform" />
+                                                        </Rectangle.Fill>
+                                                    </Rectangle>
+                                                </Button>
+                                                <Button Grid.Column="2" Width="20" BorderThickness="0" 
+                                                        Command="{x:Static common:Commands.Watch}" 
+                                                        CommandParameter="{Binding Path=., Mode=OneWay, RelativeSource={RelativeSource Self}}" >
+                                                    <Rectangle Margin="0" Height="16" Width="16" >
+                                                        <Rectangle.Fill>
+                                                            <VisualBrush Visual="{StaticResource viewBoxCloakOrHide}" Stretch="Uniform" />
+                                                        </Rectangle.Fill>
+                                                    </Rectangle>
                                                 </Button>
                                             </Grid>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <!--viewBoxHide-->
                                 <GridViewColumn Header="Version" Width="50" DisplayMemberBinding="{Binding Version}" />
                                 <GridViewColumn Header="Type" Width="50" DisplayMemberBinding="{Binding ContentType}" />
                                 <GridViewColumn Header="Is managed" Width="65" DisplayMemberBinding="{Binding Managed}" />

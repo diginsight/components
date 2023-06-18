@@ -51,6 +51,10 @@ namespace Common
         public static readonly RoutedUICommand About = new RoutedUICommand("About", "About", typeof(Commands));
         public static readonly RoutedUICommand ToggleDeveloperTools = new RoutedUICommand("ToggleDeveloperTools", "ToggleDeveloperTools", typeof(Commands));
         public static readonly RoutedUICommand ToggleModifyReadonly = new RoutedUICommand("ToggleModifyReadonly", "ToggleModifyReadonly", typeof(Commands));
+        public static readonly RoutedUICommand Watch = new RoutedUICommand("Watch", "Watch", typeof(Commands));
+        public static readonly RoutedUICommand Cut = new RoutedUICommand("Cut", "Cut", typeof(Commands));
+        public static readonly RoutedUICommand Copy = new RoutedUICommand("Copy", "Copy", typeof(Commands));
+        public static readonly RoutedUICommand Paste = new RoutedUICommand("Paste", "Paste", typeof(Commands));
 
         public static readonly RoutedUICommand OK = new RoutedUICommand("OK", "OK", typeof(Commands));
         // Developer window

@@ -38,6 +38,7 @@ using Microsoft.Identity.Client.NativeInterop;
 using Microsoft.Azure.Amqp.Framing;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Azure.Core;
+using System.Net.Sockets;
 #endregion
 
 namespace KeyVaultSample
@@ -72,6 +73,7 @@ namespace KeyVaultSample
         private string redirectUri;
         private string scopes;
         private string oauthVersionSuffix;
+        Dictionary<string, string> secretValues = new Dictionary<string, string>();
 
         #region .ctor
         public MainControl()
@@ -195,7 +197,6 @@ namespace KeyVaultSample
                 // RegreshCount += 1;
             }
         }
-
         private void ctlMain_Loaded(object sender, RoutedEventArgs e)
         {
             using var scope = logger.BeginMethodScope();
@@ -217,7 +218,7 @@ namespace KeyVaultSample
 
             TokenCredential credential = null;
             if (!string.IsNullOrEmpty(clientSecret)) { credential = new ClientSecretCredential(tenantId, clientId, clientSecret); }
-            
+
             if (this.Identity == null && credential == null)
             {
                 var message = this.GetResourceValue<string>("Info.PressLogin", "Press Login to enter your credentials");
@@ -244,9 +245,8 @@ namespace KeyVaultSample
             {
                 var client = new SecretClient(new Uri(keyVaultAddress), credential); // , new SecretClientOptions()
                 this.VaultUri = client.VaultUri;
-                
-                Dictionary<string, string> secretValues = new Dictionary<string, string>();
 
+                secretValues = new Dictionary<string, string>();
                 IEnumerable<SecretProperties> secrets = client.GetPropertiesOfSecrets();
                 this.Secrets = secrets;
                 foreach (var secret in secrets)
@@ -255,21 +255,14 @@ namespace KeyVaultSample
                     if (!secret.Enabled.GetValueOrDefault()) { continue; }
 
                     KeyVaultSecret secretWithValue = client.GetSecret(secret.Name);
-                    if (secretValues.ContainsKey(secretWithValue.Value))
-                    {
-                        scope.LogDebug($"Secret {secretWithValue.Name} shares a value with secret {secretValues[secretWithValue.Value]}");
-                        var message = $"Secret {secretWithValue.Name} shares a value with secret {secretValues[secretWithValue.Value]}";
-                        this.Output += $"\r\n{message}";
-                    }
-                    else
+                    if (!secretValues.ContainsKey(secretWithValue.Name))
                     {
                         var message = $"Secret {secretWithValue.Name}: {secretWithValue.Value}";
                         this.Output += $"\r\n{message}";
-                        secretValues.Add(secretWithValue.Value, secretWithValue.Name);
+                        secretValues.Add(secretWithValue.Name, secretWithValue.Value);
                     }
                 }
             }
-
         }
 
         #region Identity
@@ -368,20 +361,6 @@ namespace KeyVaultSample
 
 
             string consumerGroup = EventHubConsumerClient.DefaultConsumerGroupName;
-            // Create a blob container client that the event processor will use 
-            //BlobContainerClient storageClient = new BlobContainerClient(App.BlobstorageConnectionString, App.CheckpointsContainer);
-
-            ////// Create an event processor client to process events in the event hub
-            //var processor = new EventProcessorClient(storageClient, consumerGroup, App.ConnectionString, "samplehub"); // App.EventHubName
-
-            ////// Register handlers for processing events and handling errors
-            //processor.ProcessEventAsync += Processor_ProcessEventAsync; // ProcessEventHandler;
-            //processor.ProcessErrorAsync += Processor_ProcessErrorAsync; // ProcessErrorHandler;
-
-            ////// Start the processing
-            //processor.StartProcessingAsync().GetAwaiter().GetResult();
-
-            //CommandManager.InvalidateRequerySuggested();
         }
         private void LogoutCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
         private async void LogoutExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -400,47 +379,74 @@ namespace KeyVaultSample
             ExceptionManager.RaiseException(this, exception);
             //CommandManager.InvalidateRequerySuggested();
         }
-
-        // Events
-        private object getIdentityDescription_ConvertEvent(DependencyObject source, object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        private void WatchCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
+        private async void WatchExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            var identity = value as Identity;
-            if (identity == null) { return "login"; }
-            if (!string.IsNullOrEmpty(identity.Name)) { return identity.Name; }
-            if (!string.IsNullOrEmpty(identity.Upn)) { return identity.Upn; }
+            using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
 
-            return identity.Email;
+            var secret = e.Parameter as SecretProperties;
+
+            var originalSource = e.OriginalSource as FrameworkElement;
+
+            var listViewItem = UserControlHelper.FindAncestor<ListViewItem>(originalSource);
+            scope.LogDebug(new { listViewItem = listViewItem.GetLogString() });
+
+            var isVisible0 = listViewItem.GetValue(AttachedProperties.IsVisible0Property) ?? false;
+            listViewItem.SetValue(AttachedProperties.IsVisible0Property, !(bool)isVisible0);
         }
-        private Task Processor_ProcessErrorAsync(ProcessErrorEventArgs arg)
+        private void CopyCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
+        private async void CopyExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            using var scope = logger.BeginMethodScope(new { arg = arg.GetLogString() });
-            // Write details about the error to the console window
-            this.Dispatcher.Invoke(() =>
-            {
-                var output = $"\tPartition '{arg.PartitionId}': an unhandled exception was encountered.\r\n{arg.Exception.Message}.\r\n{this.Output}";
-                this.Output = output;
-            });
+            using var scope = logger.BeginMethodScope();
 
-            //Console.WriteLine();
-            return Task.CompletedTask;
+            var secret = e.Parameter as SecretProperties;
+            if (!secret.Enabled.GetValueOrDefault()) { Clipboard.SetText($"secret '{secret.Name}' is disabled"); return; }
+
+            var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS);
+            if (App.ConnectionString is not null) { keyVaultAddress = App.ConnectionString; }
+            var clientSecret = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_CLIENTSECRET, DEFAULTVALUE_CLIENTSECRET);
+
+            TokenCredential credential = null;
+            if (!string.IsNullOrEmpty(clientSecret)) { credential = new ClientSecretCredential(tenantId, clientId, clientSecret); }
+
+            if (this.Identity == null && credential == null)
+            {
+                var message = this.GetResourceValue<string>("Info.PressLogin", "Press Login to enter your credentials");
+                var exception = new ClientException(message) { Code = ExceptionCodes.PRESSLOGIN };
+                ExceptionManager.RaiseException(this, exception);
+                return;
+            }
+
+            if (this.Identity != null && credential == null)
+            {
+                credential = new DefaultAzureCredential(new DefaultAzureCredentialOptions
+                {
+                    SharedTokenCacheUsername = this.Identity.Upn,
+                    ExcludeInteractiveBrowserCredential = false,
+                    ExcludeSharedTokenCacheCredential = false,
+                    ExcludeAzureCliCredential = false,
+                    ExcludeEnvironmentCredential = true,
+                    ExcludeManagedIdentityCredential = true,
+                    ExcludeVisualStudioCodeCredential = true,
+                    ExcludeVisualStudioCredential = true
+                });
+            }
+            if (credential != null)
+            {
+                var client = new SecretClient(new Uri(keyVaultAddress), credential); // , new SecretClientOptions()
+                this.VaultUri = client.VaultUri;
+
+                KeyVaultSecret secretWithValue = client.GetSecret(secret.Name);
+                var message = $"Secret {secretWithValue.Name}: {secretWithValue.Value}";
+                this.Output += $"\r\n{message}";
+
+                Clipboard.SetText(secretWithValue.Value);
+            }
         }
-        private async Task Processor_ProcessEventAsync(ProcessEventArgs arg)
+        private void closeButton_Click(object sender, RoutedEventArgs e)
         {
-            using var scope = logger.BeginMethodScope(new { arg = arg.GetLogString() });
+            using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
 
-            var now = DateTime.Now;
-            // Write the body of the event to the console window
-            var value = Encoding.UTF8.GetString(arg.Data.Body.ToArray());
-
-            this.Dispatcher.Invoke(() =>
-            {
-                Console.WriteLine("\tReceived event: {0}", value);
-                this.Output = $"{now:HH:mm:ss.fff} Received event: {value}\r\n{this.Output}";
-            });
-
-
-            // Update checkpoint in the blob storage so that the app receives only new events the next time it's run
-            await arg.UpdateCheckpointAsync(arg.CancellationToken);
         }
 
         // Exception event
@@ -468,6 +474,55 @@ namespace KeyVaultSample
             exArg.Handled = true;
         }
 
+        // Conversion Events
+        private object getIdentityDescription_ConvertEvent(DependencyObject source, object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var identity = value as Identity;
+            if (identity == null) { return "login"; }
+            if (!string.IsNullOrEmpty(identity.Name)) { return identity.Name; }
+            if (!string.IsNullOrEmpty(identity.Upn)) { return identity.Upn; }
+
+            return identity.Email;
+        }
+        private object starColumnSize_ConvertEvent(DependencyObject source, object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            int i = 0;
+            var listView = values != null && values.Length > i && values[i] is ListView ? values[i] as ListView : null; i++;
+            var width = values != null && values.Length > i && values[i] is ListView ? values[i] as object : null; i++;
+
+            if (listView == null) { return 150; }
+            var gridView = listView.View as GridView;
+            var gridViewColumnsWidth = gridView.Columns.Sum(c => c.ActualWidth);
+            var valueColum = gridView.Columns.FirstOrDefault(c => "Value".Equals(c.Header));
+            double otherColumnsWidth = gridViewColumnsWidth - valueColum.ActualWidth;
+            double starWidth = listView.ActualWidth - otherColumnsWidth;
+
+            TraceLogger.LogDebug($"listView.ActualWidth:{listView.ActualWidth:0.00},otherColumnsWidth:{otherColumnsWidth:0.00},starWidth:{starWidth:0.00},gridViewColumnsWidth:{gridViewColumnsWidth:0.00},valueColum.ActualWidth:{valueColum.ActualWidth:0.00}");
+            return starWidth - listView.BorderThickness.Left - listView.BorderThickness.Right;
+        }
+        private object getSecretValue_ConvertEvent(DependencyObject source, object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            int i = 0;
+            var secret = values != null && values.Length > i && values[i] is SecretProperties ? values[i] as SecretProperties : null; i++;
+            var isVisible0 = values != null && values.Length > i && values[i] is bool ? (bool)values[i] : false; i++;
+            //var listViewItem = values != null && values.Length > i && values[i] is ListViewItem ? values[i] as ListViewItem : null; i++;
+
+            if (!secret.Enabled.GetValueOrDefault()) { return "secret is disabled"; }
+
+            var name = secret.Name;
+            var kvp = secretValues.FirstOrDefault(kvp => kvp.Key == name);
+            var value = kvp.Value as string;
+            if (isVisible0 == false)
+            {
+                var length = value != null ? value.Length : 0;
+                if (length < 5) { length = 5; }
+                return new string('*', length);
+            }
+            //if (isVisible0 == false) { return DependencyProperty.UnsetValue; }
+
+            TraceLogger.LogDebug($"name:{name},value:{value}");
+            return value;
+        }
         private object firstOrDefaultLocal_ConvertEvent(DependencyObject source, object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             using var scope = logger.BeginMethodScope(new { value = value.GetLogString() });
@@ -477,13 +532,6 @@ namespace KeyVaultSample
 
             return exception;
         }
-
-        private void closeButton_Click(object sender, RoutedEventArgs e)
-        {
-            using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
-
-        }
-
         private object firstOrDefaultLocal_ConvertEvent2(DependencyObject source, object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             using var scope = logger.BeginMethodScope(new { values = values.GetLogString() });

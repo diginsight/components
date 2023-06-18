@@ -381,6 +381,9 @@
 	  <Page Include="Resources\Images\VisualStudio\2022\c\CloakOrHide.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
+	  <Page Include="Resources\Images\VisualStudio\2022\c\Copy.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	  <Page Include="Resources\Images\VisualStudio\2022\e\Ellipsis.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>

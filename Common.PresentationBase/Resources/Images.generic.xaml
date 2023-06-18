@@ -8,11 +8,13 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/p/Play.xaml" />
         <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/u/User.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/c/Copy.xaml" />
         <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/c/CloakOrHide.xaml" />
         <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/e/Ellipsis.xaml" />
 
+
         <!--
-        \2022\
+        
         <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images.generic.xaml" />
         -->
     </ResourceDictionary.MergedDictionaries>

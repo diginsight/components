@@ -265,6 +265,14 @@ namespace KeyVaultSample
             }
         }
 
+        #region ShowSettingsPanel
+        public bool ShowSettingsPanel
+        {
+            get { return (bool)GetValue(ShowSettingsPanelProperty); }
+            set { SetValue(ShowSettingsPanelProperty, value); }
+        }
+        public static readonly DependencyProperty ShowSettingsPanelProperty = DependencyProperty.Register("ShowSettingsPanel", typeof(bool), typeof(MainControl), new PropertyMetadata(false));
+        #endregion
         #region Identity
         public Identity Identity
         {
@@ -404,7 +412,7 @@ namespace KeyVaultSample
             scope.LogDebug(new { listView = listView.GetLogString() });
 
             var itemContainerGenerator = listView.ItemContainerGenerator;
-            
+
             var item = listView.Items.OfType<object>().FirstOrDefault();
             var listViewItem = (ListViewItem)itemContainerGenerator.ContainerFromItem(item);
 
@@ -469,6 +477,38 @@ namespace KeyVaultSample
             using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
 
         }
+        private void SettingsCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            //Application.Current.Windows.Count
+            e.CanExecute = true;
+            e.Handled = true;
+            return;
+        }
+        private void SettingsCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            using var scope = logger.BeginMethodScope();
+
+            ShowSettingsPanel = !ShowSettingsPanel;
+            if (ShowSettingsPanel)
+            {
+                Commands.Reset.Execute(null, settingsControl);
+            }
+        }
+        #region HideSettingsCanExecute
+        private void HideSettingsCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+            e.Handled = true;
+            return;
+        }
+        #endregion
+        #region HideSettingsCommand
+        private void HideSettingsCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            using var scope = logger.BeginMethodScope();
+            ShowSettingsPanel = false;
+        }
+        #endregion
 
         // Exception event
         public event RoutedEventHandler PreviewExceptionEvent
@@ -567,6 +607,15 @@ namespace KeyVaultSample
 
             return exception;
             // return new Exception(exception.Message, exception);
+        }
+        private object onChangeIsMouseOver_ConvertEvent(DependencyObject source, object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool isMouseOver = (bool)value;
+            if (isMouseOver == false)
+            {
+                Commands.HideSettings.Execute(null, this);
+            }
+            return DependencyProperty.UnsetValue;
         }
     }
 }

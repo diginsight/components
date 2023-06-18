@@ -60,6 +60,7 @@ namespace Common
         public static readonly RoutedUICommand OK = new RoutedUICommand("OK", "OK", typeof(Commands));
         // Developer window
         public static readonly RoutedUICommand Play = new RoutedUICommand("Play", "Play", typeof(Commands));
+        public static readonly RoutedUICommand Run = new RoutedUICommand("Run", "Run", typeof(Commands));
         public static readonly RoutedUICommand Pause = new RoutedUICommand("Pause", "Pause", typeof(Commands));
         public static readonly RoutedUICommand Stop = new RoutedUICommand("Stop", "Stop", typeof(Commands));
         public static readonly RoutedUICommand ClearWindow = new RoutedUICommand("ClearWindow", "ClearWindow", typeof(Commands));

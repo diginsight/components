@@ -24,7 +24,7 @@ namespace Common
 
         private static System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            if (_assemblyBinding == null || _assembly.Binding.dependentAssemblies == null) { return null; }
+            if (_assemblyBinding == null || _assemblyBinding.dependentAssemblies == null) { return null; }
 
             var strongNameParts = args.Name.Split(',')?.Select(s => s?.Trim());
             var assemplyName = strongNameParts.FirstOrDefault();

@@ -765,13 +765,6 @@
                 </StatusBarItem>
             </StatusBar>
             
-            <!--<Grid Grid.Row="5" >
-
-                <TextBox x:Name="text" VerticalAlignment="Stretch" Margin="0" BorderThickness="1"
-                     Text="{Binding Path=Output, Mode=TwoWay}" Background="Transparent">
-                </TextBox>
-            </Grid>-->
-
             <Grid x:Name="settingsLayer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                       Grid.Column="2" Grid.Row="0" Grid.RowSpan="7" 
                       Visibility="{Binding ShowSettingsPanel, Converter={StaticResource booleanToVisibility}, FallbackValue=Collapsed, Mode=OneWay}"  >

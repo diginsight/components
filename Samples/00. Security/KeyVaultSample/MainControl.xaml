@@ -19,7 +19,7 @@
             <common:EventConverter x:Key="getIdentityDescription" ConvertEvent="getIdentityDescription_ConvertEvent" />
             <common:EventConverter x:Key="starColumnSize" ConvertEvent2="starColumnSize_ConvertEvent" />
             <common:EventConverter x:Key="getSecretValue" ConvertEvent2="getSecretValue_ConvertEvent" />
-            <!---->
+            <common:EventConverter x:Key="onChangeIsMouseOver" ConvertEvent="onChangeIsMouseOver_ConvertEvent" />
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.CommandBindings>
@@ -29,17 +29,13 @@
         <CommandBinding Command="{x:Static common:Commands.Copy}" CanExecute="CopyCanExecute" Executed="CopyExecuted" />
         <CommandBinding Command="{x:Static common:Commands.Watch}" CanExecute="WatchCanExecute" Executed="WatchExecuted" />
         <CommandBinding Command="{x:Static common:Commands.WatchAll}" CanExecute="WatchAllCanExecute" Executed="WatchAllExecuted" />
-
-        <!--<CommandBinding Command="{x:Static common:Commands.Settings}" CanExecute="SettingsCanExecute" Executed="SettingsCommand" />
+        <CommandBinding Command="{x:Static common:Commands.Settings}" CanExecute="SettingsCanExecute" Executed="SettingsCommand" />
         <CommandBinding Command="{x:Static common:Commands.HideSettings}" CanExecute="HideSettingsCanExecute" Executed="HideSettingsCommand" />
-        <CommandBinding Command="{x:Static local:LocalCommands.QueryRest}" CanExecute="QueryRestCanExecute" Executed="QueryRestCommand" />-->
+        <!-- <CommandBinding Command="{x:Static local:LocalCommands.QueryRest}" CanExecute="QueryRestCanExecute" Executed="QueryRestCommand" /> -->
     </UserControl.CommandBindings>
     <Grid Grid.IsSharedSizeScope="True" 
           x:Name="grdBody"
-          DataContext="{Binding ElementName=ctlMain, Path=., Mode=OneWay}"
-          >
-        <!-- common:ExceptionProperties.Exceptions="" -->
-        <!-- common:ExceptionManager -->
+          DataContext="{Binding ElementName=ctlMain, Path=., Mode=OneWay}" >
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -125,7 +121,7 @@
                 <ContentControl Content="{StaticResource viewBoxPlay}" />
             </Button>
             <Button x:Name="btnSettings" x:Uid="btnRun" Grid.Column="3" BorderThickness="0"
-                    Click="btnRun_Click"  Width="32" 
+                    Command="{x:Static common:Commands.Settings}"   Width="32" 
                     HorizontalAlignment="Right" >
                 <ContentControl Content="{StaticResource viewBoxEllipsis}" >
                     <ContentControl.LayoutTransform>
@@ -143,15 +139,6 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
         </Grid>
-
-        <!--<Grid Grid.Row="3" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition SharedSizeGroup="labels"  />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-        </Grid>-->
 
         <Grid Grid.Row="4" >
             <Grid.ColumnDefinitions>
@@ -338,6 +325,18 @@
                 </common:AttachedProperties.Object0>
             </Label>
             <!--common:AttachedProperties.Object0="{Binding Path=(common:ExceptionProperties.Exceptions), Converter={StaticResource firstOrDefault}, Mode=OneWay}"-->
+        </Grid>
+
+        <Grid x:Name="settingsLayer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      Grid.Column="2" Grid.Row="0" Grid.RowSpan="7" 
+                      Visibility="{Binding ShowSettingsPanel, Converter={StaticResource booleanToVisibility}, FallbackValue=Collapsed, Mode=OneWay}"  >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+
+            <common:SettingsControl x:Name="settingsControl" Grid.Column="1"
+                                    common:AttachedProperties.Boolean0="{Binding ElementName=settingsControl, Path=IsMouseOver, Converter={StaticResource onChangeIsMouseOver}, Mode=OneWay}" />
         </Grid>
     </Grid>
 </UserControl>

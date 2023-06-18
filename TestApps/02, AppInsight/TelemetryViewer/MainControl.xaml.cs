@@ -42,7 +42,6 @@ namespace TelemetryViewer
         //private static Timer _timer;
         //public static Timer Timer { get => _timer; set => _timer = value; }
 
-
         public MainControl()
         {
             InitializeComponent();

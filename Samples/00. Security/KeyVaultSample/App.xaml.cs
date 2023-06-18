@@ -72,27 +72,70 @@ namespace KeyVaultSample
             set { SetValue(() => ConnectionString, value); }
         }
         #endregion
-        #region EventHubName
-        public string EventHubName
+
+        #region TenantId
+        public string TenantId
         {
-            get { return GetValue(() => EventHubName); }
-            set { SetValue(() => EventHubName, value); }
+            get { return GetValue(() => TenantId); }
+            set { SetValue(() => TenantId, value); }
         }
         #endregion
-        #region BlobstorageConnectionString
-        public string BlobstorageConnectionString
+        #region ClientId
+        public string ClientId
         {
-            get { return GetValue(() => BlobstorageConnectionString); }
-            set { SetValue(() => BlobstorageConnectionString, value); }
+            get { return GetValue(() => ClientId); }
+            set { SetValue(() => ClientId, value); }
         }
         #endregion
-        #region CheckpointsContainer
-        public string CheckpointsContainer
+        #region ClientSecret
+        public string ClientSecret
         {
-            get { return GetValue(() => CheckpointsContainer); }
-            set { SetValue(() => CheckpointsContainer, value); }
+            get { return GetValue(() => ClientSecret); }
+            set { SetValue(() => ClientSecret, value); }
         }
         #endregion
+        #region AppName
+        public string AppName
+        {
+            get { return GetValue(() => AppName); }
+            set { SetValue(() => AppName, value); }
+        }
+        #endregion
+        #region RedirectUri
+        public string RedirectUri
+        {
+            get { return GetValue(() => RedirectUri); }
+            set { SetValue(() => RedirectUri, value); }
+        }
+        #endregion
+        #region AppVersion
+        public string AppVersion
+        {
+            get { return GetValue(() => AppVersion); }
+            set { SetValue(() => AppVersion, value); }
+        }
+        #endregion
+        #region KeyVaultAddress
+        public string KeyVaultAddress
+        {
+            get { return GetValue(() => KeyVaultAddress); }
+            set { SetValue(() => KeyVaultAddress, value); }
+        }
+        #endregion
+        //#region BlobstorageConnectionString
+        //public string BlobstorageConnectionString
+        //{
+        //    get { return GetValue(() => BlobstorageConnectionString); }
+        //    set { SetValue(() => BlobstorageConnectionString, value); }
+        //}
+        //#endregion
+        //#region CheckpointsContainer
+        //public string CheckpointsContainer
+        //{
+        //    get { return GetValue(() => CheckpointsContainer); }
+        //    set { SetValue(() => CheckpointsContainer, value); }
+        //}
+        //#endregion
 
         #region .ctor
         public App()
@@ -120,7 +163,9 @@ namespace KeyVaultSample
             this.Message = ConfigurationHelper.GetClassSetting<App, string>("Message", S_MESSAGE_DEFAULT);
             this.Description = ConfigurationHelper.GetClassSetting<App, string>("Description", S_DESCRIPTION_DEFAULT);
             this.Path = ConfigurationHelper.GetClassSetting<App, string>("Path", S_PATH_DEFAULT);
-            var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS);
+
+            //var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS);
+            //this.ConnectionString = this.KeyVaultAddress = keyVaultAddress;
 
             Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
                     .ConfigureAppConfiguration((context, builder) =>
@@ -204,8 +249,6 @@ namespace KeyVaultSample
                 applicationWindow.Name = mainControl.Name;
                 return applicationWindow;
             });
-
-
         }
 
         protected override async void OnExit(ExitEventArgs e)

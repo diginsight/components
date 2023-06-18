@@ -38,6 +38,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Page Update="UserControl\SettingsKeyVaultControl.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	  </Page>
 	  <Page Update="UserControl\SettingsAppInsightKeyControl.xaml">
 	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 	  </Page>

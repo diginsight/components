@@ -26,10 +26,12 @@ using Azure.Core;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 #endregion
 
 namespace Common
 {
+
     /// <summary>Interaction logic for SettingsDownloadControl.xaml</summary>
     public partial class SettingsAccountControl : UserControl
     {
@@ -49,22 +51,18 @@ namespace Common
         const string CONFIGVALUE_SCOPES = "Scopes"; const string DEFAULTVALUE_SCOPES = "";
         const string CONFIGVALUE_OAUTHVERSIONSUFFIX = "OauthVersionSuffix"; const string DEFAULTVALUE_OAUTHVERSIONSUFFIX = "/2.0";
         #endregion
+        private static readonly Type T = typeof(SettingsAccountControl);
+        private IConfiguration configuration;
         private ILogger<SettingsAccountControl> logger;
         private AuthenticationHelper authenticationHelper;
-        private string tenantId;
-        private string clientId;
-        private string appName;
-        private string appVersion;
-        private string redirectUri;
-        private string scopes;
-        private string oauthVersionSuffix;
+
         #region IsCollapsed
         public bool IsCollapsed
         {
             get { return (bool)GetValue(IsCollapsedProperty); }
             set { SetValue(IsCollapsedProperty, value); }
         }
-        public static readonly DependencyProperty IsCollapsedProperty = DependencyProperty.Register("IsCollapsed", typeof(bool), typeof(SettingsAccountControl), new PropertyMetadata(false));
+        public static readonly DependencyProperty IsCollapsedProperty = DependencyProperty.Register("IsCollapsed", typeof(bool), T, new PropertyMetadata(false));
         #endregion
         #region Title
         public string Title
@@ -72,7 +70,7 @@ namespace Common
             get { return (string)GetValue(TitleProperty); }
             set { SetValue(TitleProperty, value); }
         }
-        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(SettingsAccountControl), new PropertyMetadata());
+        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), T, new PropertyMetadata());
         #endregion
         #region Identity
         public Identity Identity
@@ -80,15 +78,66 @@ namespace Common
             get { return (Identity)GetValue(IdentityProperty); }
             set { SetValue(IdentityProperty, value); }
         }
-        public static readonly DependencyProperty IdentityProperty = DependencyProperty.Register("Identity", typeof(Identity), typeof(SettingsAccountControl), new PropertyMetadata());
+        public static readonly DependencyProperty IdentityProperty = DependencyProperty.Register("Identity", typeof(Identity), T, new PropertyMetadata());
         #endregion
+
+        #region TenantId
+        public string TenantId
+        {
+            get { return (string)GetValue(TenantIdProperty); }
+            set { SetValue(TenantIdProperty, value); }
+        }
+        public static readonly DependencyProperty TenantIdProperty = DependencyProperty.Register("TenantId", typeof(string), T, new PropertyMetadata());
+        #endregion
+        #region ClientId
+        public string ClientId
+        {
+            get { return (string)GetValue(ClientIdProperty); }
+            set { SetValue(ClientIdProperty, value); }
+        }
+        public static readonly DependencyProperty ClientIdProperty = DependencyProperty.Register("ClientId", typeof(string), T, new PropertyMetadata());
+        #endregion
+        #region ClientSecret
+        public string ClientSecret
+        {
+            get { return (string)GetValue(ClientSecretProperty); }
+            set { SetValue(ClientSecretProperty, value); }
+        }
+        public static readonly DependencyProperty ClientSecretProperty = DependencyProperty.Register("ClientSecret", typeof(string), T, new PropertyMetadata());
+        #endregion
+        #region UseManagedIdentity
+        public bool UseManagedIdentity
+        {
+            get { return (bool)GetValue(UseManagedIdentityProperty); }
+            set { SetValue(UseManagedIdentityProperty, value); }
+        }
+        public static readonly DependencyProperty UseManagedIdentityProperty = DependencyProperty.Register("UseManagedIdentity", typeof(bool), T, new PropertyMetadata());
+        #endregion
+        
+        #region Configuration
+        public TenantConfiguration Configuration
+        {
+            get { return (TenantConfiguration)GetValue(ConfigurationProperty); }
+            set { SetValue(ConfigurationProperty, value); }
+        }
+        public static readonly DependencyProperty ConfigurationProperty = DependencyProperty.Register("Configuration", typeof(TenantConfiguration), T, new PropertyMetadata());
+        #endregion
+        #region Configurations
+        public IList<TenantConfiguration> Configurations
+        {
+            get { return (IList<TenantConfiguration>)GetValue(ConfigurationsProperty); }
+            set { SetValue(ConfigurationsProperty, value); }
+        }
+        public static readonly DependencyProperty ConfigurationsProperty = DependencyProperty.Register("Configurations", typeof(IList<TenantConfiguration>), T, new PropertyMetadata());
+        #endregion
+
         #region App
         public ApplicationBase App
         {
             get { return (ApplicationBase)GetValue(AppProperty); }
             set { SetValue(AppProperty, value); }
         }
-        public static readonly DependencyProperty AppProperty = DependencyProperty.Register("App", typeof(ApplicationBase), typeof(SettingsAccountControl), new PropertyMetadata(null));
+        public static readonly DependencyProperty AppProperty = DependencyProperty.Register("App", typeof(ApplicationBase), T, new PropertyMetadata(null));
         #endregion
 
         #region .ctor
@@ -97,11 +146,18 @@ namespace Common
         }
         public SettingsAccountControl()
         {
-            InitializeComponent();
+            using var scope = logger.BeginMethodScope();
             if (DesignerProperties.GetIsInDesignMode(this)) { return; }
 
-            //cmbLanguages.ItemsSource = LocalizationExtensions.GetAvailableCultures();
-            //cmbLanguages.SelectedValue =  Thread.CurrentThread.CurrentCulture;
+            var app = ApplicationBase.Current as ApplicationBase;
+            this.App = app;
+
+            this.configuration = app.Host.Services.GetService<IConfiguration>();
+            this.logger = app.Host.Services.GetService<ILogger<SettingsAccountControl>>();
+            this.authenticationHelper = this.App.Host.Services.GetService<AuthenticationHelper>();
+            scope.LogDebug(new { authenticationHelper = authenticationHelper.GetLogString() });
+
+            InitializeComponent();
         }
 
         #endregion
@@ -113,48 +169,35 @@ namespace Common
             //this.ExceptionEvent += SettingsAccountControl_ExceptionEvent;
             try
             {
-                var tenantId = default(string);
-                var clientId = default(string);
-                var clientSecret = default(string);
                 var keyVaultAddress = default(string);
                 var identity = await authenticationHelper.LoginSilentAsync();
                 this.Dispatcher.Invoke(() =>
                 {
                     this.Identity = identity;
-                    tenantId = ApplicationBase.Current.Properties["TenantId"] as string;
-                    clientId = ApplicationBase.Current.Properties["ClientId"] as string;
-                    clientSecret = ApplicationBase.Current.Properties["ClientSecret"] as string;
+                    this.App.SetProperty("Identity", identity);
+                    this.TenantId = ApplicationBase.Current.Properties["TenantId"] as string;
+                    this.ClientId = ApplicationBase.Current.Properties["ClientId"] as string;
+                    this.ClientSecret = ApplicationBase.Current.Properties["ClientSecret"] as string;
                     keyVaultAddress = ApplicationBase.Current.Properties["KeyVaultAddress"] as string;
                     scope.LogDebug(new { this.Identity });
                 });
 
                 TokenCredential credential = null;
-                if (!string.IsNullOrEmpty(clientSecret)) { credential = new ClientSecretCredential(tenantId, clientId, clientSecret); }
-
-                if (credential == null)
+                if (!string.IsNullOrEmpty(this.ClientSecret)) { credential = new ClientSecretCredential(this.TenantId, this.ClientId, this.ClientSecret); }
+                if (identity != null && credential == null)
                 {
-                    var credentialOptions = new DefaultAzureCredentialOptions
-                    {
-                        SharedTokenCacheUsername = identity.Upn,
-                        ExcludeInteractiveBrowserCredential = false,
-                        ExcludeSharedTokenCacheCredential = false,
-                        ExcludeAzureCliCredential = false,
-                        ExcludeEnvironmentCredential = true,
-                        ExcludeManagedIdentityCredential = true,
-                        ExcludeVisualStudioCodeCredential = true,
-                        ExcludeVisualStudioCredential = true
-                    };
+                    var credentialOptions = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = identity.Upn, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
                     credential = new DefaultAzureCredential(credentialOptions);
                 }
 
                 if (credential != null)
                 {
                     ConfigurationManager configurationManager = null;
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        configurationManager = ApplicationBase.Current.Properties["ConfigurationManager"] as ConfigurationManager;
-                        scope.LogDebug($"configurationManager");
-                    });
+                    //this.Dispatcher.Invoke(() =>
+                    //{
+                    //    configurationManager = ApplicationBase.Current.Properties["ConfigurationManager"] as ConfigurationManager;
+                    //    scope.LogDebug($"configurationManager");
+                    //});
 
                     //var secretClient = new SecretClient(new Uri(keyVaultAddress), credential);
                     //configurationManager.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
@@ -174,6 +217,8 @@ namespace Common
             }
         }
 
+
+        // Commands
         #region ToggleIsCollapsedCanExecute
         private void ToggleIsCollapsedCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -186,12 +231,81 @@ namespace Common
         #region ToggleIsCollapsedCommand
         private void ToggleIsCollapsedCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            using (var sec = logger.BeginMethodScope(new { sender, e }))
-            {
-                IsCollapsed = !IsCollapsed;
-            }
+            using var scope = logger.BeginMethodScope();
+            IsCollapsed = !IsCollapsed;
         }
         #endregion
+        private void LoginToggleCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
+        private void LoginToggleExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            using var scope = logger.BeginMethodScope();
+            if (Identity == null) { Commands.Login.Execute(null, this); }
+            else { Commands.Logout.Execute(null, this); }
+        }
+        private void LoginCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
+        private async void LoginExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            using var scope = logger.BeginMethodScope();
+
+            scope.LogDebug(new { authenticationHelper = authenticationHelper.GetLogString() });
+            if (authenticationHelper == null)
+            {
+                var message = this.GetResourceValue<string>("Info.AuthHelperNotAvailable", "Authentication helper is not available");
+                var ex = new ClientException(message) { Code = ExceptionCodes.PRESSLOGIN };
+                ExceptionManager.RaiseException(this, ex);
+                //CommandManager.InvalidateRequerySuggested();
+                return;
+            }
+
+            await authenticationHelper.LogoutAsync();
+            var identity = await authenticationHelper.LoginAsync();
+            this.Identity = identity;
+            this.App.SetProperty("Identity", identity);
+
+            //TokenCredential credential = null;
+            //var clientSecret = ConfigurationHelper.GetClassSetting<SettingsAccountControl, string>(CONFIGVALUE_CLIENTSECRET, DEFAULTVALUE_CLIENTSECRET);
+            //if (!string.IsNullOrEmpty(clientSecret)) { credential = new ClientSecretCredential(this.TenantId, this.ClientId, this.ClientSecret); }
+            //if (identity == null && credential == null)
+            //{
+            //    var message = this.GetResourceValue<string>("Info.PressLogin", "Press Login to enter your credentials");
+            //    var ex = new ClientException(message) { Code = ExceptionCodes.PRESSLOGIN };
+            //    ExceptionManager.RaiseException(this, ex);
+            //    return;
+            //}
+            //if (credential == null)
+            //{
+            //    var credentialOptions = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = identity.Upn, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
+            //    credential = new DefaultAzureCredential(credentialOptions);
+            //}
+        }
+        private void LogoutCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
+        private async void LogoutExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            using var scope = logger.BeginMethodScope();
+
+            if (authenticationHelper == null) { return; }
+            await authenticationHelper.LogoutAsync(); scope.LogDebug($"await authenticationHelper.LogoutAsync(); completed");
+            this.Identity = null;
+            this.App.SetProperty("Identity", default(Identity));
+
+            var message = this.GetResourceValue<string>("Info.PressLogin", "Press Login to enter your credentials");
+            var exception = new ClientException(message) { Code = ExceptionCodes.PRESSLOGIN };
+            ExceptionManager.RaiseException(this, exception);
+            //CommandManager.InvalidateRequerySuggested();
+        }
+        private void SaveCanExecute(object sender, CanExecuteRoutedEventArgs e) { 
+            if (string.IsNullOrEmpty(TenantId) || string.IsNullOrEmpty(ClientId)) { return; }
+            if(this.Configuration!=null &&  this.Configuration.TenantId== TenantId && this.Configuration.ClientId == ClientId && this.Configuration.ClientSecret == ClientSecret) { return; }
+            
+            e.CanExecute = true; 
+        }
+        private void SaveExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            using var scope = logger.BeginMethodScope();
+
+
+
+        }
 
         private void CmbLanguages_DropDownClosed(object sender, EventArgs e)
         {

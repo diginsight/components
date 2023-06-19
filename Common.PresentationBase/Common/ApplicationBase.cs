@@ -1,5 +1,6 @@
 ﻿#region using
 using Common;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.ComponentModel;
@@ -70,6 +71,8 @@ namespace Common
             }
         }
         #endregion
+
+        public IHost Host { get; set; }
 
         #region Zoom
         public double Zoom
@@ -396,15 +399,15 @@ namespace Common
         [DebuggerStepThrough]
         public void VerifyPropertyName(string propertyName)
         {
-            // Verify that the property name matches a real, public, instance property on this object.
-            if (this.GetType().GetProperty(propertyName) == null)
-            {
-                string msg = "Invalid property name: " + propertyName;
-                if (this.ThrowOnInvalidPropertyName)
-                    throw new Exception(msg);
-                else
-                    Debug.Assert(false, msg);
-            }
+            //Verify that the property name matches a real, public, instance property on this object.
+            //if (this.GetType().GetProperty(propertyName) == null)
+            //{
+            //    string msg = "Invalid property name: " + propertyName;
+            //    if (this.ThrowOnInvalidPropertyName)
+            //        throw new Exception(msg);
+            //    else
+            //        Debug.Assert(false, msg);
+            //}
         }
         /// <summary>Returns whether an exception is thrown, or if a Debug.Fail() is used
         /// when an invalid property name is passed to the VerifyPropertyName method.

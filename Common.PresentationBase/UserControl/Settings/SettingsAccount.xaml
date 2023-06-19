@@ -13,10 +13,29 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Common.PresentationBase;component/Resources/DefaultSkin.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="LinkButtonStyle" TargetType="Button">
+                <Setter Property="Foreground" Value="Blue" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <TextBlock>
+                        <Hyperlink>
+                            <TextBlock Text="{TemplateBinding Content}" />
+                        </Hyperlink>
+                    </TextBlock>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.CommandBindings>
         <CommandBinding Command="{x:Static common:Commands.ToggleIsCollapsed}" CanExecute="ToggleIsCollapsedCanExecute" Executed="ToggleIsCollapsedCommand" />
+        <CommandBinding Command="{x:Static common:Commands.LoginToggle}" CanExecute="LoginToggleCanExecute" Executed="LoginToggleExecuted" />
+        <CommandBinding Command="{x:Static common:Commands.Login}" CanExecute="LoginCanExecute" Executed="LoginExecuted" />
+        <CommandBinding Command="{x:Static common:Commands.Logout}" CanExecute="LogoutCanExecute" Executed="LogoutExecuted" />
+        <CommandBinding Command="{x:Static common:Commands.Save}" CanExecute="SaveCanExecute" Executed="SaveExecuted" />
     </UserControl.CommandBindings>
     <Grid Name="MenuGrid" 
           Width="{Binding ElementName=ctlSettingsAccountControl, Path=IsCollapsed, Mode=OneWay, Converter={StaticResource if}, ConverterParameter=45, FallbackValue=280}"
@@ -67,11 +86,44 @@
                 <Label  Content="User" 
                         common:Localization.Uid="{common:Localize Settings.Lang.SelectLanguages, Property={x:Static Label.ContentProperty}}"
                         Foreground="White" FontFamily="Helvetica Neue eText Pro Light" FontSize="12"/>
-                <ComboBox x:Name="cmbUser" 
-                          DisplayMemberPath="NativeName" Height="30" BorderThickness="0" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
-                          VerticalAlignment="Center" VerticalContentAlignment="Center"
-                          Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" DropDownClosed="CmbLanguages_DropDownClosed" >
-                </ComboBox>
+                <TextBox x:Name="txtUser" 
+                         Height="30" BorderThickness="0" Margin="0,2" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
+                         VerticalAlignment="Center" VerticalContentAlignment="Center"
+                         Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" 
+                         Text="{Binding Path=Identity.Name, Mode=OneWay}"
+                         
+                         IsReadOnly="true"
+                         >
+                </TextBox>
+                <!--Sign out-->
+                <Button Style="{StaticResource LinkButtonStyle}"
+                        Command="{x:Static common:Commands.LoginToggle}" 
+                        
+                        Content="{Binding RelativeSource={RelativeSource Self}, Path=(common:AttachedProperties.Boolean0), Mode=OneWay, Converter={StaticResource if}, ConverterParameter=Sign in, FallbackValue=Sign out}" 
+                        common:AttachedProperties.Boolean0="{Binding Path=Identity, Converter={StaticResource isNull}}"
+                        />
+
+                <Grid HorizontalAlignment="Stretch" Height="20">
+
+                </Grid>
+                <Grid HorizontalAlignment="Stretch" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label  Content="Configuration" Grid.Column="0" VerticalAlignment="Center"
+                        Foreground="White" FontFamily="Helvetica Neue eText Pro Light" FontSize="12"/>
+
+
+                    <ComboBox Grid.Column="1" MinWidth="90">
+                    </ComboBox>
+                    <Button Grid.Column="2"
+                            Command="{x:Static common:Commands.Save}">
+                        Save 
+                    </Button>
+                </Grid>
+
                 <Grid HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -81,9 +133,11 @@
                         Foreground="White" FontFamily="Helvetica Neue eText Pro Light" FontSize="12"/>
                 </Grid>
                 <TextBox x:Name="txtClientId2" 
-                          Height="30" BorderThickness="0" Margin="0,2" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
-                          VerticalAlignment="Center" VerticalContentAlignment="Center"
-                          Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" >
+                         Height="30" BorderThickness="0" Margin="0,2" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
+                         VerticalAlignment="Center" VerticalContentAlignment="Center"
+                         Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" 
+                         Text="{Binding Path=TenantId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         >
                     <!-- DisplayMemberPath="NativeName" DropDownClosed="CmbLanguages_DropDownClosed" -->
                 </TextBox>
                 <Grid HorizontalAlignment="Stretch">
@@ -95,29 +149,38 @@
                         Foreground="White" FontFamily="Helvetica Neue eText Pro Light" FontSize="12"/>
                 </Grid>
                 <TextBox x:Name="txtClientId" 
-                          Height="30" BorderThickness="0" Margin="0,2" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
-                          VerticalAlignment="Center" VerticalContentAlignment="Center"
-                          Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" >
+                         Height="30" BorderThickness="0" Margin="0,2" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
+                         VerticalAlignment="Center" VerticalContentAlignment="Center"
+                         Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" 
+                         Text="{Binding Path=ClientId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <!-- DisplayMemberPath="NativeName" DropDownClosed="CmbLanguages_DropDownClosed" -->
                 </TextBox>
-                <Grid HorizontalAlignment="Stretch">
+                <Grid HorizontalAlignment="Stretch" Margin="0" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Label  Content="Client secret" Grid.Column="0" VerticalAlignment="Bottom"
                         Foreground="White" FontFamily="Helvetica Neue eText Pro Light" FontSize="12"/>
-                    <RadioButton x:Name="txtClientId0" Grid.Column="1" Margin="0,2" HorizontalAlignment="Right" HorizontalContentAlignment="Right"
-                          Height="30" BorderThickness="0" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" Foreground="White"
-                          VerticalAlignment="Center" VerticalContentAlignment="Center"
-                          Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" >
+                    <CheckBox x:Name="txtClientId0" Grid.Column="1" Margin="0,2" 
+                              HorizontalAlignment="Right" HorizontalContentAlignment="Right" VerticalAlignment="Bottom"
+                          BorderThickness="0" FontFamily="Helvetica Neue eText Pro Light" FontSize="12" Foreground="White"
+                          VerticalContentAlignment="Bottom"
+                          Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" 
+                          IsChecked="{Binding Path=UseManagedIdentity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          >
                         Use Managed Identity
-                    </RadioButton>
+                    </CheckBox>
                 </Grid>
                 <TextBox x:Name="txtClientSecret" 
-                          Height="30" BorderThickness="0" Margin="0,2" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
-                          VerticalAlignment="Center" VerticalContentAlignment="Center"
-                          Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" >
+                         Height="30" BorderThickness="0" Margin="0,2" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
+                         VerticalAlignment="Center" VerticalContentAlignment="Center"
+                         Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" 
+                         Text="{Binding Path=ClientSecret, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         
+                        IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=(common:AttachedProperties.Boolean0), Mode=OneWay}"
+                        common:AttachedProperties.Boolean0="{Binding Path=UseManagedIdentity, Mode=OneWay}"
+                         >
                     <!-- DisplayMemberPath="NativeName" DropDownClosed="CmbLanguages_DropDownClosed" -->
                 </TextBox>
             </StackPanel>

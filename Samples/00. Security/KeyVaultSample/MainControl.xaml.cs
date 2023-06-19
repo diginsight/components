@@ -47,20 +47,8 @@ namespace KeyVaultSample
     public partial class MainControl : UserControl
     {
         #region const
-        const string S_CONNECTIONSTRING_DEFAULT = @"";
-        const string S_BLOBSTORAGECONNECTIONSTRING_DEFAULT = "";
-        const string S_CHECKPOINTSCONTAINER_DEFAULT = "";
-        const string S_EVENTHUBNAME_DEFAULT = "";
         const string CONFIGVALUE_KEYVAULTADDRESS = "KeyVaultAddress", DEFAULTVALUE_KEYVAULTADDRESS = "";
         const string CONFIGVALUE_CLIENTSECRET = "ClientSecret", DEFAULTVALUE_CLIENTSECRET = "";
-        const string CONFIGVALUE_APPINSIGHTSKEY = "AppInsightsKey", DEFAULTVALUE_APPINSIGHTSKEY = "";
-        const string CONFIGVALUE_TENANTID = "TenantId"; const string DEFAULTVALUE_TENANTID = "";
-        const string CONFIGVALUE_CLIENTID = "ClientId"; const string DEFAULTVALUE_CLIENTID = "";
-        const string CONFIGVALUE_APPNAME = "AppName"; const string DEFAULTVALUE_APPNAME = "";
-        const string CONFIGVALUE_APPVERSION = "AppVersion"; const string DEFAULTVALUE_APPVERSION = "";
-        const string CONFIGVALUE_REDIRECTURI = "RedirectUri"; const string DEFAULTVALUE_REDIRECTURI = "";
-        const string CONFIGVALUE_SCOPES = "Scopes"; const string DEFAULTVALUE_SCOPES = "";
-        const string CONFIGVALUE_OAUTHVERSIONSUFFIX = "OauthVersionSuffix"; const string DEFAULTVALUE_OAUTHVERSIONSUFFIX = "/2.0";
         #endregion
 
         private IConfiguration configuration;
@@ -68,28 +56,54 @@ namespace KeyVaultSample
         private AuthenticationHelper authenticationHelper;
         private string tenantId;
         private string clientId;
-        private string appName;
-        private string appVersion;
-        private string redirectUri;
-        private string scopes;
-        private string oauthVersionSuffix;
         Dictionary<string, string> secretValues = new Dictionary<string, string>();
 
         #region .ctor
         public MainControl()
         {
             using var scope = logger.BeginMethodScope();
+            if (DesignerProperties.GetIsInDesignMode(this)) { return; }
 
             var app = App.Current as App;
             this.App = app;
 
+            this.App.PropertyChanged += App_PropertyChanged;
+
             this.configuration = app.Host.Services.GetService<IConfiguration>();
-            //var configuration = app.Host.Services.GetService<IConfiguration>();
             this.logger = app.Host.Services.GetService<ILogger<MainControl>>();
+            this.authenticationHelper = this.App.Host.Services.GetService<AuthenticationHelper>();
+            scope.LogDebug(new { authenticationHelper = authenticationHelper.GetLogString() });
 
             InitializeComponent();
         }
+
+        private void App_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
+            scope.LogDebug(new { e.PropertyName });
+
+            if (new[] { "Identity" }.Contains(e.PropertyName)) { Identity_PropertyChanged(sender, e); return; }
+            //if (new[] { "Identity" }.Contains(e.PropertyName)) { Identity_PropertyChanged(sender, e); return; }
+
+            //switch(e.PropertyName)
+            //{
+            //    case "Identity": break;
+            //    default: break;
+            //}
+
+        }
         #endregion
+        
+        Reference<bool> _lockIdentity_PropertyChanged = new Reference<bool>();
+        private void Identity_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
+
+            if (this._lockIdentity_PropertyChanged.Value) { return; }
+            using var switchLocal = new SwitchOnDispose(this._lockIdentity_PropertyChanged, true);
+
+            this.Identity = App.Properties["Identity"] as Identity;
+        }
 
         #region App
         public App App
@@ -113,31 +127,14 @@ namespace KeyVaultSample
             if (DesignerProperties.GetIsInDesignMode(this)) { return; }
             using var scope = logger.BeginMethodScope(new { sender, e });
 
+            scope.LogDebug(new { authenticationHelper = authenticationHelper.GetLogString() });
+
             // ExceptionManager.CatchExceptions()
             this.ExceptionEvent += MainControl_ExceptionEvent;
 
             try
             {
-                App.TenantId = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID); // , CultureInfo.InvariantCulture
-                this.clientId = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_CLIENTID, DEFAULTVALUE_CLIENTID); // , CultureInfo.InvariantCulture
-                this.appName = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_APPNAME, DEFAULTVALUE_APPNAME); // , CultureInfo.InvariantCulture SettingAccessType.SecretWithCredential, 
-                this.appVersion = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_APPVERSION, DEFAULTVALUE_APPVERSION); // , CultureInfo.InvariantCulture
-                this.redirectUri = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_REDIRECTURI, DEFAULTVALUE_REDIRECTURI); // , CultureInfo.InvariantCulture
-                this.scopes = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_SCOPES, DEFAULTVALUE_SCOPES); // , CultureInfo.InvariantCulture
-                this.oauthVersionSuffix = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_OAUTHVERSIONSUFFIX, DEFAULTVALUE_OAUTHVERSIONSUFFIX); // , CultureInfo.InvariantCulture
-                var appInsightKey = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_APPINSIGHTSKEY, DEFAULTVALUE_APPINSIGHTSKEY); // , CultureInfo.InvariantCulture SettingAccessType.SecretWithCredential, 
-
-                scope.LogDebug(new { clientId, appName, appVersion, scopes = scopes.GetLogString(), oauthVersionSuffix });
-
-                var scopesArray = this.scopes?.Split(',');
-
-                var authenticationHelper = new AuthenticationHelper(App.TenantId, clientId, appName, appVersion, redirectUri, scopesArray, oauthVersionSuffix, Application.Current.MainWindow);
-                scope.LogDebug(new { _authenticationHelper = authenticationHelper.GetLogString() });
-                this.authenticationHelper = authenticationHelper;
-
                 await Task.Run(async () => await ctlMain_InitializedAsync(sender, e));
-                //var task = ctlMain_InitializedAsync(sender, e);
-                //try { task.Start(); } catch (InvalidOperationException ex) { scope.LogException(ex); }
 
                 var environment = TraceManager.EnvironmentName;
                 var panelInfo = new SettingsPanelInfo<SettingsAppInsightKeyControl>() { Name = "AppInsight", Description = "AppInsight", InternalName = "", Position = 0, Type = null };
@@ -146,8 +143,6 @@ namespace KeyVaultSample
                 Commands.RegisterPanel.Execute(panelAkv, settingsControl);
                 var panelAccount = new SettingsPanelInfo<SettingsAccountControl>() { Name = "Account", Description = "Account", InternalName = "", Position = 0, Type = null };
                 Commands.RegisterPanel.Execute(panelAccount, settingsControl);
-                //
-
             }
             catch (Exception ex)
             {
@@ -171,28 +166,22 @@ namespace KeyVaultSample
                 var clientId = default(string);
                 var clientSecret = default(string);
                 var keyVaultAddress = default(string);
+
                 var identity = await authenticationHelper.LoginSilentAsync();
                 this.Dispatcher.Invoke(() =>
                 {
                     this.Identity = identity;
-                    tenantId = App.TenantId;
-                    clientId = App.ClientId;
-                    clientSecret = App.ClientSecret;
+                    tenantId = App.TenantId; clientId = App.ClientId; clientSecret = App.ClientSecret;
                     keyVaultAddress = App.KeyVaultAddress;
-                    scope.LogDebug(new { this.Identity });
                 });
+
+                scope.LogDebug(new { this.Identity, tenantId, clientId, clientSecret, keyVaultAddress });
 
                 TokenCredential credential = null;
                 if (!string.IsNullOrEmpty(clientSecret)) { credential = new ClientSecretCredential(tenantId, clientId, clientSecret); }
-
-                if (credential == null)
+                if (this.Identity == null && credential == null)
                 {
-                    var credentialOptions = new DefaultAzureCredentialOptions
-                    {
-                        SharedTokenCacheUsername = identity.Upn,
-                        ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false,
-                        ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true
-                    };
+                    var credentialOptions = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = identity.Upn, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
                     credential = new DefaultAzureCredential(credentialOptions);
                 }
 
@@ -230,62 +219,6 @@ namespace KeyVaultSample
             // RegreshCount += 1;
         }
 
-        private async void btnRun_Click(object sender, RoutedEventArgs e)
-        {
-            using var scope = logger.BeginMethodScope();
-
-            var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS);
-            if (App.ConnectionString is not null) { keyVaultAddress = App.ConnectionString; }
-            var clientSecret = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_CLIENTSECRET, DEFAULTVALUE_CLIENTSECRET);
-
-            TokenCredential credential = null;
-            if (!string.IsNullOrEmpty(clientSecret)) { credential = new ClientSecretCredential(tenantId, clientId, clientSecret); }
-
-            if (this.Identity == null && credential == null)
-            {
-                var message = this.GetResourceValue<string>("Info.PressLogin", "Press Login to enter your credentials");
-                var exception = new ClientException(message) { Code = ExceptionCodes.PRESSLOGIN };
-                ExceptionManager.RaiseException(this, exception);
-                return;
-            }
-
-            if (this.Identity != null && credential == null)
-            {
-                credential = new DefaultAzureCredential(new DefaultAzureCredentialOptions
-                {
-                    SharedTokenCacheUsername = this.Identity.Upn,
-                    ExcludeInteractiveBrowserCredential = false,
-                    ExcludeSharedTokenCacheCredential = false,
-                    ExcludeAzureCliCredential = false,
-                    ExcludeEnvironmentCredential = true,
-                    ExcludeManagedIdentityCredential = true,
-                    ExcludeVisualStudioCodeCredential = true,
-                    ExcludeVisualStudioCredential = true
-                });
-            }
-            if (credential != null)
-            {
-                var client = new SecretClient(new Uri(keyVaultAddress), credential); // , new SecretClientOptions()
-                this.VaultUri = client.VaultUri;
-
-                secretValues = new Dictionary<string, string>();
-                IEnumerable<SecretProperties> secrets = client.GetPropertiesOfSecrets();
-                this.Secrets = secrets;
-                foreach (var secret in secrets)
-                {
-                    // Getting a disabled secret will fail, so skip disabled secrets.
-                    if (!secret.Enabled.GetValueOrDefault()) { continue; }
-
-                    KeyVaultSecret secretWithValue = client.GetSecret(secret.Name);
-                    if (!secretValues.ContainsKey(secretWithValue.Name))
-                    {
-                        var message = $"Secret {secretWithValue.Name}: {secretWithValue.Value}";
-                        this.Output += $"\r\n{message}";
-                        secretValues.Add(secretWithValue.Name, secretWithValue.Value);
-                    }
-                }
-            }
-        }
 
         #region ShowSettingsPanel
         public bool ShowSettingsPanel
@@ -323,6 +256,53 @@ namespace KeyVaultSample
 
 
         // Commands
+        private async void btnRun_Click(object sender, RoutedEventArgs e)
+        {
+            using var scope = logger.BeginMethodScope();
+
+            var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS);
+            if (App.ConnectionString is not null) { keyVaultAddress = App.ConnectionString; }
+            var clientSecret = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_CLIENTSECRET, DEFAULTVALUE_CLIENTSECRET);
+
+            TokenCredential credential = null;
+            if (!string.IsNullOrEmpty(clientSecret)) { credential = new ClientSecretCredential(tenantId, clientId, clientSecret); }
+            if (this.Identity == null && credential == null)
+            {
+                var message = this.GetResourceValue<string>("Info.PressLogin", "Press Login to enter your credentials");
+                var exception = new ClientException(message) { Code = ExceptionCodes.PRESSLOGIN };
+                ExceptionManager.RaiseException(this, exception);
+                return;
+            }
+            if (credential == null)
+            {
+                var credentialOptions = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = this.Identity.Upn, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
+                credential = new DefaultAzureCredential(credentialOptions);
+            }
+
+
+            if (credential != null)
+            {
+                var client = new SecretClient(new Uri(keyVaultAddress), credential); // , new SecretClientOptions()
+                this.VaultUri = client.VaultUri;
+
+                secretValues = new Dictionary<string, string>();
+                IEnumerable<SecretProperties> secrets = client.GetPropertiesOfSecrets();
+                this.Secrets = secrets;
+                foreach (var secret in secrets)
+                {
+                    // Getting a disabled secret will fail, so skip disabled secrets.
+                    if (!secret.Enabled.GetValueOrDefault()) { continue; }
+
+                    KeyVaultSecret secretWithValue = client.GetSecret(secret.Name);
+                    if (!secretValues.ContainsKey(secretWithValue.Name))
+                    {
+                        var message = $"Secret {secretWithValue.Name}: {secretWithValue.Value}";
+                        this.Output += $"\r\n{message}";
+                        secretValues.Add(secretWithValue.Name, secretWithValue.Value);
+                    }
+                }
+            }
+        }
         private void LoginToggleCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
         private void LoginToggleExecuted(object sender, ExecutedRoutedEventArgs e)
         {
@@ -348,23 +328,22 @@ namespace KeyVaultSample
             await authenticationHelper.LogoutAsync();
             var identity = await authenticationHelper.LoginAsync();
 
-            if (identity == null)
+            TokenCredential credential = null;
+            var clientSecret = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_CLIENTSECRET, DEFAULTVALUE_CLIENTSECRET);
+            if (!string.IsNullOrEmpty(clientSecret)) { credential = new ClientSecretCredential(tenantId, clientId, clientSecret); }
+            if (identity == null && credential == null)
             {
-                this.Identity = identity;
                 var message = this.GetResourceValue<string>("Info.PressLogin", "Press Login to enter your credentials");
                 var ex = new ClientException(message) { Code = ExceptionCodes.PRESSLOGIN };
                 ExceptionManager.RaiseException(this, ex);
-                //CommandManager.InvalidateRequerySuggested();
-                //this.RegreshCount += 1;
                 return;
             }
-
-            var credential = new DefaultAzureCredential(new DefaultAzureCredentialOptions
+            if (credential == null)
             {
-                SharedTokenCacheUsername = identity.Upn,
-                ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false,
-                ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = false, ExcludeVisualStudioCodeCredential = false, ExcludeVisualStudioCredential = false
-            });
+                var credentialOptions = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = identity.Upn, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
+                credential = new DefaultAzureCredential(credentialOptions);
+            }
+
             var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS); scope.LogDebug($"ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS); returned {keyVaultAddress}");
             var secretClient = new SecretClient(new Uri(keyVaultAddress), credential);
             App.ConfigurationManager.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
@@ -454,7 +433,6 @@ namespace KeyVaultSample
 
             TokenCredential credential = null;
             if (!string.IsNullOrEmpty(clientSecret)) { credential = new ClientSecretCredential(tenantId, clientId, clientSecret); }
-
             if (this.Identity == null && credential == null)
             {
                 var message = this.GetResourceValue<string>("Info.PressLogin", "Press Login to enter your credentials");
@@ -462,14 +440,18 @@ namespace KeyVaultSample
                 ExceptionManager.RaiseException(this, exception);
                 return;
             }
-
             if (this.Identity != null && credential == null)
             {
                 credential = new DefaultAzureCredential(new DefaultAzureCredentialOptions
                 {
                     SharedTokenCacheUsername = this.Identity.Upn,
-                    ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false,
-                    ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true
+                    ExcludeInteractiveBrowserCredential = false,
+                    ExcludeSharedTokenCacheCredential = false,
+                    ExcludeAzureCliCredential = false,
+                    ExcludeEnvironmentCredential = true,
+                    ExcludeManagedIdentityCredential = true,
+                    ExcludeVisualStudioCodeCredential = true,
+                    ExcludeVisualStudioCredential = true
                 });
             }
             if (credential != null)

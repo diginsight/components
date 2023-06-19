@@ -34,6 +34,8 @@ namespace Common
         public static readonly RoutedUICommand Apply = new RoutedUICommand("Apply", "Apply", typeof(Commands));
         public static readonly RoutedUICommand Refresh = new RoutedUICommand("Refresh", "Refresh", typeof(Commands)); 
         public static readonly RoutedUICommand Idea = new RoutedUICommand("Idea", "Idea", typeof(Commands));
+        public static readonly RoutedUICommand Load = new RoutedUICommand("Load", "Load", typeof(Commands));
+        public static readonly RoutedUICommand Save = new RoutedUICommand("Save", "Save", typeof(Commands));
         // Settings
         public static readonly RoutedUICommand Clear = new RoutedUICommand("Clear", "Clear", typeof(Commands));
         public static readonly RoutedUICommand Reset = new RoutedUICommand("Reset", "Reset", typeof(Commands));

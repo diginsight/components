@@ -34,14 +34,23 @@ namespace KeyVaultSample
     {
         static Type T = typeof(App);
         #region constants
-        const string CONFIGVALUE_KEYVAULTADDRESS = "KeyVaultAddress", DEFAULTVALUE_KEYVAULTADDRESS = "";
         const string S_PATH_DEFAULT = @"";
         const string S_MESSAGE_DEFAULT = @"This is a test message.";
         const string S_DESCRIPTION_DEFAULT = @"This is a test message description.";
+        const string CONFIGVALUE_KEYVAULTADDRESS = "KeyVaultAddress", DEFAULTVALUE_KEYVAULTADDRESS = "";
+        const string CONFIGVALUE_CLIENTSECRET = "ClientSecret", DEFAULTVALUE_CLIENTSECRET = "";
+        const string CONFIGVALUE_APPINSIGHTSKEY = "AppInsightsKey", DEFAULTVALUE_APPINSIGHTSKEY = "";
+        const string CONFIGVALUE_TENANTID = "TenantId"; const string DEFAULTVALUE_TENANTID = "";
+        const string CONFIGVALUE_CLIENTID = "ClientId"; const string DEFAULTVALUE_CLIENTID = "";
+        const string CONFIGVALUE_APPNAME = "AppName"; const string DEFAULTVALUE_APPNAME = "";
+        const string CONFIGVALUE_APPVERSION = "AppVersion"; const string DEFAULTVALUE_APPVERSION = "";
+        const string CONFIGVALUE_REDIRECTURI = "RedirectUri"; const string DEFAULTVALUE_REDIRECTURI = "";
+        const string CONFIGVALUE_SCOPES = "Scopes"; const string DEFAULTVALUE_SCOPES = "";
+        const string CONFIGVALUE_OAUTHVERSIONSUFFIX = "OauthVersionSuffix"; const string DEFAULTVALUE_OAUTHVERSIONSUFFIX = "/2.0";
         #endregion
 
         private ILogger<App> logger;
-        public IHost Host { get; set; }
+        //public IHost Host { get; set; }
         public ConfigurationManager ConfigurationManager { get; set; }
 
         #region Message
@@ -108,11 +117,33 @@ namespace KeyVaultSample
             set { SetValue(() => RedirectUri, value); }
         }
         #endregion
+        #region Scopes
+        public string Scopes
+        {
+            get { return GetValue(() => Scopes); }
+            set { SetValue(() => Scopes, value); }
+        }
+        #endregion
         #region AppVersion
         public string AppVersion
         {
             get { return GetValue(() => AppVersion); }
             set { SetValue(() => AppVersion, value); }
+        }
+        #endregion
+        #region OauthVersionSuffix
+        public string OauthVersionSuffix
+        {
+            get { return GetValue(() => OauthVersionSuffix); }
+            set { SetValue(() => OauthVersionSuffix, value); }
+        }
+        #endregion
+
+        #region AppInsightKey
+        public string AppInsightKey
+        {
+            get { return GetValue(() => AppInsightKey); }
+            set { SetValue(() => AppInsightKey, value); }
         }
         #endregion
         #region KeyVaultAddress
@@ -122,20 +153,6 @@ namespace KeyVaultSample
             set { SetValue(() => KeyVaultAddress, value); }
         }
         #endregion
-        //#region BlobstorageConnectionString
-        //public string BlobstorageConnectionString
-        //{
-        //    get { return GetValue(() => BlobstorageConnectionString); }
-        //    set { SetValue(() => BlobstorageConnectionString, value); }
-        //}
-        //#endregion
-        //#region CheckpointsContainer
-        //public string CheckpointsContainer
-        //{
-        //    get { return GetValue(() => CheckpointsContainer); }
-        //    set { SetValue(() => CheckpointsContainer, value); }
-        //}
-        //#endregion
 
         #region .ctor
         public App()
@@ -208,6 +225,7 @@ namespace KeyVaultSample
             // LogStringExtensions.RegisterLogstringProvider(this);
             await Host.StartAsync(); scope.LogDebug($"await Host.StartAsync();");
 
+            // registers 
             var mainWindow = Host.Services.GetRequiredService<Window>(); scope.LogDebug($"Host.Services.GetRequiredService<Window>(); returned {mainWindow}");
             this.MainWindow = mainWindow;
 
@@ -249,6 +267,27 @@ namespace KeyVaultSample
                 applicationWindow.Name = mainControl.Name;
                 return applicationWindow;
             });
+
+            services.AddSingleton<AuthenticationHelper>((IServiceProvider provider) =>
+            {
+                TenantId = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID); // , CultureInfo.InvariantCulture
+                ClientId = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_CLIENTID, DEFAULTVALUE_CLIENTID); // , CultureInfo.InvariantCulture
+                AppName = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_APPNAME, DEFAULTVALUE_APPNAME); // , CultureInfo.InvariantCulture SettingAccessType.SecretWithCredential, 
+                AppVersion = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_APPVERSION, DEFAULTVALUE_APPVERSION); // , CultureInfo.InvariantCulture
+                RedirectUri = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_REDIRECTURI, DEFAULTVALUE_REDIRECTURI); // , CultureInfo.InvariantCulture
+                Scopes = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_SCOPES, DEFAULTVALUE_SCOPES); // , CultureInfo.InvariantCulture
+                OauthVersionSuffix = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_OAUTHVERSIONSUFFIX, DEFAULTVALUE_OAUTHVERSIONSUFFIX); // , CultureInfo.InvariantCulture
+                AppInsightKey = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_APPINSIGHTSKEY, DEFAULTVALUE_APPINSIGHTSKEY); // , CultureInfo.InvariantCulture SettingAccessType.SecretWithCredential, 
+
+                scope.LogDebug(new { ClientId, AppName, AppVersion, Scopes = Scopes.GetLogString(), OauthVersionSuffix, AppInsightKey });
+
+                var scopesArray = Scopes?.Split(',');
+
+                var authenticationHelper = new AuthenticationHelper(TenantId, ClientId, AppName, AppVersion, RedirectUri, scopesArray, OauthVersionSuffix, Application.Current.MainWindow);
+                return authenticationHelper;
+            });
+
+
         }
 
         protected override async void OnExit(ExitEventArgs e)

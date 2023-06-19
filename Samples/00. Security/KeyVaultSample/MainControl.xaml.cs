@@ -76,7 +76,6 @@ namespace KeyVaultSample
 
             InitializeComponent();
         }
-
         private void App_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
@@ -85,15 +84,8 @@ namespace KeyVaultSample
             if (new[] { "Identity" }.Contains(e.PropertyName)) { Identity_PropertyChanged(sender, e); return; }
             //if (new[] { "Identity" }.Contains(e.PropertyName)) { Identity_PropertyChanged(sender, e); return; }
 
-            //switch(e.PropertyName)
-            //{
-            //    case "Identity": break;
-            //    default: break;
-            //}
-
         }
         #endregion
-        
         Reference<bool> _lockIdentity_PropertyChanged = new Reference<bool>();
         private void Identity_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -236,6 +228,7 @@ namespace KeyVaultSample
         }
         public static readonly DependencyProperty IdentityProperty = DependencyProperty.Register("Identity", typeof(Identity), typeof(MainControl), new PropertyMetadata());
         #endregion
+        
         #region VaultUri
         public Uri VaultUri
         {
@@ -244,7 +237,6 @@ namespace KeyVaultSample
         }
         public static readonly DependencyProperty VaultUriProperty = DependencyProperty.Register("VaultUri", typeof(Uri), typeof(MainControl), new PropertyMetadata());
         #endregion
-
         #region Secrets
         public IEnumerable<SecretProperties> Secrets
         {
@@ -253,7 +245,6 @@ namespace KeyVaultSample
         }
         public static readonly DependencyProperty SecretsProperty = DependencyProperty.Register("Secrets", typeof(IEnumerable<SecretProperties>), typeof(MainControl), new PropertyMetadata(null));
         #endregion
-
 
         // Commands
         private async void btnRun_Click(object sender, RoutedEventArgs e)

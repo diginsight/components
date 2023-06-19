@@ -33,8 +33,10 @@ namespace Common
         static SettingsControl() { }
         public SettingsControl()
         {
+            using var sec = logger.BeginMethodScope();
             InitializeComponent();
             if (DesignerProperties.GetIsInDesignMode(this)) { return; }
+            
             Commands = new List<CommandInfo>() {
                 new CommandInfo() { Name=this.GetResourceValue<string>("Settings.Themes.Title", "Themes"), Description="Themes", Command = Common.Commands.Themes },
                 new CommandInfo() { Name=this.GetResourceValue<string>("Settings.Lang.Title", "Language"), Description=this.GetResourceValue<string>("Settings.Lang.Title"), Command = Common.Commands.Languages },
@@ -45,10 +47,9 @@ namespace Common
         }
         public SettingsControl(FrameworkElement content) : this()
         {
-            using (var sec = logger.BeginMethodScope(new { content }))
-            {
-                Common.Commands.AddItem.Execute(content, this);
-            }
+            using var sec = logger.BeginMethodScope(new { content });
+            
+            Common.Commands.AddItem.Execute(content, this);
         }
         #endregion
 

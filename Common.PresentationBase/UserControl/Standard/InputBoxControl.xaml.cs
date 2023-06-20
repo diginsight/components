@@ -23,14 +23,16 @@ namespace Common
     /// <summary>Interaction logic for InputBoxControl.xaml</summary>
     public partial class InputBoxControl : UserControl
     {
+        private static readonly Type T = typeof(InputBoxControl);
         private ILogger<InputBoxControl> logger;
+
         #region IsCollapsed
         public bool IsCollapsed
         {
             get { return (bool)GetValue(IsCollapsedProperty); }
             set { SetValue(IsCollapsedProperty, value); }
         }
-        public static readonly DependencyProperty IsCollapsedProperty = DependencyProperty.Register("IsCollapsed", typeof(bool), typeof(InputBoxControl), new PropertyMetadata(false));
+        public static readonly DependencyProperty IsCollapsedProperty = DependencyProperty.Register("IsCollapsed", typeof(bool), T, new PropertyMetadata(false));
         #endregion
         #region Title
         public string Title
@@ -38,15 +40,32 @@ namespace Common
             get { return (string)GetValue(TitleProperty); }
             set { SetValue(TitleProperty, value); }
         }
-        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(InputBoxControl), new PropertyMetadata()); 
+        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), T, new PropertyMetadata());
         #endregion
+        #region Label
+        public string Label
+        {
+            get { return (string)GetValue(LabelProperty); }
+            set { SetValue(LabelProperty, value); }
+        }
+        public static readonly DependencyProperty LabelProperty = DependencyProperty.Register("Label", typeof(string), T, new PropertyMetadata());
+        #endregion
+        #region Text
+        public string Text
+        {
+            get { return (string)GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
+        }
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), T, new PropertyMetadata());
+        #endregion
+
         #region Commands
         public List<CommandInfo> Commands
         {
             get { return (List<CommandInfo>)GetValue(CommandsProperty); }
             set { SetValue(CommandsProperty, value); }
         }
-        public static readonly DependencyProperty CommandsProperty = DependencyProperty.Register("Commands", typeof(List<CommandInfo>), typeof(InputBoxControl), new PropertyMetadata(null));
+        public static readonly DependencyProperty CommandsProperty = DependencyProperty.Register("Commands", typeof(List<CommandInfo>), T, new PropertyMetadata(null));
         #endregion
 
         #region .ctor

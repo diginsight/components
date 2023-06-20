@@ -27,6 +27,7 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Configuration;
 #endregion
 
 namespace Common
@@ -113,7 +114,7 @@ namespace Common
         }
         public static readonly DependencyProperty UseManagedIdentityProperty = DependencyProperty.Register("UseManagedIdentity", typeof(bool), T, new PropertyMetadata());
         #endregion
-        
+
         #region Configuration
         public TenantConfiguration Configuration
         {
@@ -192,7 +193,7 @@ namespace Common
 
                 if (credential != null)
                 {
-                    ConfigurationManager configurationManager = null;
+                    //ConfigurationManager configurationManager = null;
                     //this.Dispatcher.Invoke(() =>
                     //{
                     //    configurationManager = ApplicationBase.Current.Properties["ConfigurationManager"] as ConfigurationManager;
@@ -293,18 +294,31 @@ namespace Common
             ExceptionManager.RaiseException(this, exception);
             //CommandManager.InvalidateRequerySuggested();
         }
-        private void SaveCanExecute(object sender, CanExecuteRoutedEventArgs e) { 
+        private void SaveCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
             if (string.IsNullOrEmpty(TenantId) || string.IsNullOrEmpty(ClientId)) { return; }
-            if(this.Configuration!=null &&  this.Configuration.TenantId== TenantId && this.Configuration.ClientId == ClientId && this.Configuration.ClientSecret == ClientSecret) { return; }
-            
-            e.CanExecute = true; 
+            if (this.Configuration != null && this.Configuration.TenantId == TenantId && this.Configuration.ClientId == ClientId && this.Configuration.ClientSecret == ClientSecret) { return; }
+
+            e.CanExecute = true;
         }
         private void SaveExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             using var scope = logger.BeginMethodScope();
 
+            var configuration = new TenantConfiguration()
+            {
+                TenantId = TenantId,
+                ClientId = ClientId,
+                ClientSecret = ClientSecret
+            };
 
+            // TODO: create InputBoxControl 
+            // AddItem
+            // OnOk => 
 
+            var configurations = this.Configurations is null? new List<TenantConfiguration>(): new List<TenantConfiguration>(this.Configurations);
+            configurations.Add(configuration);
+            this.Configurations = configurations;
         }
 
         private void CmbLanguages_DropDownClosed(object sender, EventArgs e)

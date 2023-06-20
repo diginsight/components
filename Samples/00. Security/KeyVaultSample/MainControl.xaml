@@ -23,15 +23,15 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.CommandBindings>
-        <CommandBinding Command="{x:Static common:Commands.LoginToggle}" CanExecute="LoginToggleCanExecute" Executed="LoginToggleExecuted" />
-        <CommandBinding Command="{x:Static common:Commands.Login}" CanExecute="LoginCanExecute" Executed="LoginExecuted" />
-        <CommandBinding Command="{x:Static common:Commands.Logout}" CanExecute="LogoutCanExecute" Executed="LogoutExecuted" />
-        <CommandBinding Command="{x:Static common:Commands.Copy}" CanExecute="CopyCanExecute" Executed="CopyExecuted" />
-        <CommandBinding Command="{x:Static common:Commands.Watch}" CanExecute="WatchCanExecute" Executed="WatchExecuted" />
-        <CommandBinding Command="{x:Static common:Commands.WatchAll}" CanExecute="WatchAllCanExecute" Executed="WatchAllExecuted" />
+        <CommandBinding Command="{x:Static common:Commands.LoginToggle}" CanExecute="LoginToggleCanExecute" Executed="LoginToggleCommand" />
+        <CommandBinding Command="{x:Static common:Commands.Login}" CanExecute="LoginCanExecute" Executed="LoginCommand" />
+        <CommandBinding Command="{x:Static common:Commands.Logout}" CanExecute="LogoutCanExecute" Executed="LogoutCommand" />
+        <CommandBinding Command="{x:Static common:Commands.Copy}" CanExecute="CopyCanExecute" Executed="CopyCommand" />
+        <CommandBinding Command="{x:Static common:Commands.Watch}" CanExecute="WatchCanExecute" Executed="WatchCommand" />
+        <CommandBinding Command="{x:Static common:Commands.WatchAll}" CanExecute="WatchAllCanExecute" Executed="WatchAllCommand" />
         <CommandBinding Command="{x:Static common:Commands.Settings}" CanExecute="SettingsCanExecute" Executed="SettingsCommand" />
         <CommandBinding Command="{x:Static common:Commands.HideSettings}" CanExecute="HideSettingsCanExecute" Executed="HideSettingsCommand" />
-        <!-- <CommandBinding Command="{x:Static local:LocalCommands.QueryRest}" CanExecute="QueryRestCanExecute" Executed="QueryRestCommand" /> -->
+        <CommandBinding Command="{x:Static common:Commands.Run}" CanExecute="RunCanExecute" Executed="RunCommand" />
     </UserControl.CommandBindings>
     <Grid Grid.IsSharedSizeScope="True" 
           x:Name="grdBody"
@@ -116,7 +116,7 @@
                      ></TextBox>
             <!-- Background="White" -->
             <Button x:Name="btnRun" x:Uid="btnRun" Grid.Column="2" BorderThickness="0"
-                    Click="btnRun_Click"  Width="32" 
+                    Width="32" Command="{x:Static common:Commands.Run}"
                     HorizontalAlignment="Right" >
                 <ContentControl Content="{StaticResource viewBoxPlay}" />
             </Button>

@@ -116,7 +116,13 @@
                         Foreground="White" FontFamily="Helvetica Neue eText Pro Light" FontSize="12"/>
 
 
-                    <ComboBox Grid.Column="1" MinWidth="90">
+                    <ComboBox x:Name="cboConfigurations" Grid.Column="1" MinWidth="90" 
+                              ItemsSource="{Binding Path=Configurations, Mode=OneWay}"
+                              SelectedItem="{Binding Path=Configuration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              IsSynchronizedWithCurrentItem="True"
+                              
+                              IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=(common:AttachedProperties.Boolean0), Mode=OneWay}"
+                              common:AttachedProperties.Boolean0="{Binding Path=Configurations.Count, Mode=OneWay, Converter={StaticResource lte}, ConverterParameter={common:Int32 0}}">
                     </ComboBox>
                     <Button Grid.Column="2"
                             Command="{x:Static common:Commands.Save}">

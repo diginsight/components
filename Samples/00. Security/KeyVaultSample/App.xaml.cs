@@ -181,9 +181,6 @@ namespace KeyVaultSample
             this.Description = ConfigurationHelper.GetClassSetting<App, string>("Description", S_DESCRIPTION_DEFAULT);
             this.Path = ConfigurationHelper.GetClassSetting<App, string>("Path", S_PATH_DEFAULT);
 
-            //var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS);
-            //this.ConnectionString = this.KeyVaultAddress = keyVaultAddress;
-
             Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
                     .ConfigureAppConfiguration((context, builder) =>
                     {

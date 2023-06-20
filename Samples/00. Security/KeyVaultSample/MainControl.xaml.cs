@@ -157,14 +157,14 @@ namespace KeyVaultSample
                 var tenantId = default(string);
                 var clientId = default(string);
                 var clientSecret = default(string);
-                var keyVaultAddress = default(string);
+                var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS);
 
                 var identity = await authenticationHelper.LoginSilentAsync();
                 this.Dispatcher.Invoke(() =>
                 {
                     this.Identity = identity;
                     tenantId = App.TenantId; clientId = App.ClientId; clientSecret = App.ClientSecret;
-                    keyVaultAddress = App.KeyVaultAddress;
+                    App.ConnectionString = App.KeyVaultAddress = keyVaultAddress;
                 });
 
                 scope.LogDebug(new { this.Identity, tenantId, clientId, clientSecret, keyVaultAddress });
@@ -247,7 +247,8 @@ namespace KeyVaultSample
         #endregion
 
         // Commands
-        private async void btnRun_Click(object sender, RoutedEventArgs e)
+        private void RunCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
+        private void RunCommand(object sender, ExecutedRoutedEventArgs e)
         {
             using var scope = logger.BeginMethodScope();
 
@@ -295,14 +296,14 @@ namespace KeyVaultSample
             }
         }
         private void LoginToggleCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
-        private void LoginToggleExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void LoginToggleCommand(object sender, ExecutedRoutedEventArgs e)
         {
             using var scope = logger.BeginMethodScope();
             if (Identity == null) { Commands.Login.Execute(null, this); }
             else { Commands.Logout.Execute(null, this); }
         }
         private void LoginCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
-        private async void LoginExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void LoginCommand(object sender, ExecutedRoutedEventArgs e)
         {
             using var scope = logger.BeginMethodScope();
 
@@ -358,7 +359,7 @@ namespace KeyVaultSample
             string consumerGroup = EventHubConsumerClient.DefaultConsumerGroupName;
         }
         private void LogoutCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
-        private async void LogoutExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void LogoutCommand(object sender, ExecutedRoutedEventArgs e)
         {
             using var scope = logger.BeginMethodScope();
 
@@ -375,7 +376,7 @@ namespace KeyVaultSample
             //CommandManager.InvalidateRequerySuggested();
         }
         private void WatchCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
-        private async void WatchExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void WatchCommand(object sender, ExecutedRoutedEventArgs e)
         {
             using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
 
@@ -390,7 +391,7 @@ namespace KeyVaultSample
             listViewItem.SetValue(AttachedProperties.IsVisible0Property, !(bool)isVisible0);
         }
         private void WatchAllCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
-        private async void WatchAllExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void WatchAllCommand(object sender, ExecutedRoutedEventArgs e)
         {
             using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
 
@@ -411,7 +412,7 @@ namespace KeyVaultSample
             }
         }
         private void CopyCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
-        private async void CopyExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void CopyCommand(object sender, ExecutedRoutedEventArgs e)
         {
             using var scope = logger.BeginMethodScope();
 
@@ -457,11 +458,6 @@ namespace KeyVaultSample
                 Clipboard.SetText(secretWithValue.Value);
             }
         }
-        private void closeButton_Click(object sender, RoutedEventArgs e)
-        {
-            using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
-
-        }
         private void SettingsCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             //Application.Current.Windows.Count
@@ -494,6 +490,11 @@ namespace KeyVaultSample
             ShowSettingsPanel = false;
         }
         #endregion
+        private void closeButton_Click(object sender, RoutedEventArgs e)
+        {
+            using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
+
+        }
 
         // Exception event
         public event RoutedEventHandler PreviewExceptionEvent

@@ -121,7 +121,6 @@ namespace KeyVaultSample
 
             scope.LogDebug(new { authenticationHelper = authenticationHelper.GetLogString() });
 
-            // ExceptionManager.CatchExceptions()
             this.ExceptionEvent += MainControl_ExceptionEvent;
 
             try

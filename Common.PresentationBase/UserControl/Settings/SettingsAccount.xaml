@@ -121,8 +121,14 @@
                               SelectedItem="{Binding Path=Configuration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               IsSynchronizedWithCurrentItem="True"
                               
-                              IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=(common:AttachedProperties.Boolean0), Mode=OneWay}"
-                              common:AttachedProperties.Boolean0="{Binding Path=Configurations.Count, Mode=OneWay, Converter={StaticResource lte}, ConverterParameter={common:Int32 0}}">
+                              >
+                              <!--IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=(common:AttachedProperties.Boolean0), Mode=OneWay}"
+                              common:AttachedProperties.Boolean0="{Binding Path=Configurations.Count, Mode=OneWay, Converter={StaticResource lte}, ConverterParameter={common:Int32 0}}"-->
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
                     </ComboBox>
                     <Button Grid.Column="2"
                             Command="{x:Static common:Commands.Save}">

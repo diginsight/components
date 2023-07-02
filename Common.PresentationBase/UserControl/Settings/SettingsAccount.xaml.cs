@@ -28,6 +28,9 @@ using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
+using System.IO;
+using Newtonsoft.Json;
+using Path = System.IO.Path;
 #endregion
 
 namespace Common
@@ -193,6 +196,30 @@ namespace Common
 
                 if (credential != null)
                 {
+                    var profileFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                    var currentProcessFileName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                    var executableName = Path.GetFileNameWithoutExtension(currentProcessFileName);
+                    var configurationFilePath = Path.Combine(profileFolder, executableName, "Configuration");
+                    scope.LogDebug(new { configurationFilePath });
+
+                    var configurations = new List<TenantConfiguration>();
+                    string[] fileNames = Directory.GetFiles(configurationFilePath); scope.LogDebug($"Directory.GetFiles(configurationFilePath); returned {fileNames.GetLogString()}");
+                    foreach (string fileName in fileNames)
+                    {
+                        try
+                        {
+                            scope.LogDebug(new { fileName });
+                            var json = File.ReadAllText(fileName);
+                            var tenantConfiguration = JsonConvert.DeserializeObject<TenantConfiguration>(json);
+
+                            configurations.Add(tenantConfiguration);
+                        }
+                        catch (Exception ex) { }
+                    }
+                    this.Configurations = configurations;
+                    scope.LogDebug(new { configurations });
+                    if (configurations?.Count == 1) { this.Configuration = configurations.FirstOrDefault(); }
+
                     //ConfigurationManager configurationManager = null;
                     //this.Dispatcher.Invoke(() =>
                     //{
@@ -297,7 +324,15 @@ namespace Common
         private void SaveCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(TenantId) || string.IsNullOrEmpty(ClientId)) { return; }
-            if (this.Configuration != null && this.Configuration.TenantId == TenantId && this.Configuration.ClientId == ClientId && this.Configuration.ClientSecret == ClientSecret) { return; }
+            if (this.Configurations == null) { e.CanExecute = true; return; }
+
+            var configurations = this.Configurations.ToArray();
+            if (configurations.Any(configuration =>
+                configuration != null && configuration.TenantId == TenantId && configuration.ClientId == ClientId && configuration.ClientSecret == ClientSecret
+                ))
+            {
+                return;
+            }
 
             e.CanExecute = true;
         }
@@ -312,11 +347,34 @@ namespace Common
                 ClientSecret = ClientSecret
             };
 
-            // TODO: create InputBoxControl 
-            // AddItem
-            // OnOk => 
+            var inputBox = new InputBoxControl()
+            {
+                Title = "Save configuration...",
+                Label = "Choose a configuration name:",
+                Text = "Samplename"
+            };
 
-            var configurations = this.Configurations is null? new List<TenantConfiguration>(): new List<TenantConfiguration>(this.Configurations);
+            inputBox.OnOK += (sender, e) =>
+            {
+                using var scope = TraceLogger.BeginNamedScope(T, "OnOK");
+
+                var inputBox = e as InputBoxControl;
+                var profileFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                var chosenName = inputBox.Text;
+                var fileName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                var executableName = Path.GetFileNameWithoutExtension(fileName);
+                configuration.Name = chosenName;
+
+                var configurationFilePath = Path.Combine(profileFolder, executableName, "Configuration", $"{chosenName}.json");
+                if (!Directory.Exists(Path.GetDirectoryName(configurationFilePath))) { Directory.CreateDirectory(Path.GetDirectoryName(configurationFilePath)); }
+
+                File.WriteAllText(configurationFilePath, JsonConvert.SerializeObject(configuration));
+                scope.LogDebug($"File.WriteAllText({configurationFilePath}, JsonConvert.SerializeObject(configuration)); completed");
+            };
+
+            Common.Commands.AddItem.Execute(inputBox, App.MainWindow);
+
+            var configurations = this.Configurations is null ? new List<TenantConfiguration>() : new List<TenantConfiguration>(this.Configurations);
             configurations.Add(configuration);
             this.Configurations = configurations;
         }

@@ -330,6 +330,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Common.Diagnostics" Version="1.0.1.231" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="SharpVectors" Version="1.8.1" />
 		<PackageReference Include="System.ComponentModel" Version="4.3.0" />
 		<!--<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />-->

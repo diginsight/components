@@ -25,6 +25,9 @@ namespace Common
     {
         private static readonly Type T = typeof(InputBoxControl);
         private ILogger<InputBoxControl> logger;
+        public event EventHandler<InputBoxControl> OnOK;
+        public event EventHandler<InputBoxControl> OnCancel;
+        //public event EventHandler<InputBoxControl> OnClose;
 
         #region IsCollapsed
         public bool IsCollapsed
@@ -95,6 +98,42 @@ namespace Common
             {
                 IsCollapsed = !IsCollapsed;
             }
+        }
+        #endregion
+        #region CancelCanExecute
+        private void CancelCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            //using (var sec = this.GetCodeSection(new { sender, e })) {
+            e.CanExecute = true;
+            e.Handled = true;
+            //}
+        }
+        #endregion
+        #region CancelCommand
+        private void CancelCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            using var sec = logger.BeginMethodScope(new { sender, e });
+            if (OnCancel != null) { OnCancel(this, this); }
+            Common.Commands.Close.Execute(this, this);
+        }
+        #endregion
+        #region OKCanExecute
+        private void OKCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            //using (var sec = this.GetCodeSection(new { sender, e })) {
+            e.CanExecute = true;
+            e.Handled = true;
+            //}
+        }
+        #endregion
+        #region OKCommand
+        private void OKCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            using var sec = logger.BeginMethodScope(new { sender, e });
+
+            if (OnOK != null) { OnOK(this, this); }
+
+            Common.Commands.Close.Execute(this, this);
         }
         #endregion
     }

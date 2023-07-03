@@ -6,14 +6,16 @@
     xmlns:wndBase="clr-namespace:System.Windows;assembly=WindowsBase"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/p/Play.xaml" />
         <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/u/User.xaml" />
         <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/c/Copy.xaml" />
         <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/c/CloakOrHide.xaml" />
         <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/e/Ellipsis.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/p/Play.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/VisualStudio/2022/p/Pin.xaml" />
 
 
         <!--
+        C:\dev\97. Diginsight\components\Common.PresentationBase\Resources\Images\VisualStudio\2022\p\Pin.xaml
         
         <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images.generic.xaml" />
         -->

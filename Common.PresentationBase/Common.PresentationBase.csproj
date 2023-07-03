@@ -388,6 +388,9 @@
 	  <Page Include="Resources\Images\VisualStudio\2022\e\Ellipsis.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
+	  <Page Include="Resources\Images\VisualStudio\2022\p\Pin.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	  <Page Include="Resources\Images\VisualStudio\2022\p\Play.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>

@@ -7,7 +7,11 @@
              xmlns:properties="clr-namespace:Common.Properties"
              mc:Ignorable="d" 
              Name="ctlSettingsControl"
-             d:DesignHeight="450" d:DesignWidth="280"  >
+             d:DesignHeight="450" d:DesignWidth="280"
+             
+             MouseEnter="UserControl_MouseEnter"
+             MouseLeave="UserControl_MouseLeave"
+             >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

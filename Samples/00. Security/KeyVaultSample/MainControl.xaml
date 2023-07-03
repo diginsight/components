@@ -336,7 +336,7 @@
             </Grid.ColumnDefinitions>
 
             <common:SettingsControl x:Name="settingsControl" Grid.Column="1"
-                                    common:AttachedProperties.Boolean0="{Binding ElementName=settingsControl, Path=IsMouseOver, Converter={StaticResource onChangeIsMouseOver}, Mode=OneWay}" />
+                                    common:AttachedProperties.Boolean0="{Binding ElementName=settingsControl, Path=IsMouseOverOuterElement, Converter={StaticResource onChangeIsMouseOver}, Mode=OneWay}" />
         </Grid>
     </Grid>
 </UserControl>

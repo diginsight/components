@@ -247,7 +247,6 @@ namespace Common
 
 
         // Commands
-        #region ToggleIsCollapsedCanExecute
         private void ToggleIsCollapsedCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             //using (var sec = this.GetCodeSection(new { sender, e })) {
@@ -255,14 +254,11 @@ namespace Common
             e.Handled = true;
             //}
         }
-        #endregion
-        #region ToggleIsCollapsedCommand
         private void ToggleIsCollapsedCommand(object sender, ExecutedRoutedEventArgs e)
         {
             using var scope = logger.BeginMethodScope();
             IsCollapsed = !IsCollapsed;
         }
-        #endregion
         private void LoginToggleCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
         private void LoginToggleExecuted(object sender, ExecutedRoutedEventArgs e)
         {
@@ -323,16 +319,18 @@ namespace Common
         }
         private void SaveCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(TenantId) || string.IsNullOrEmpty(ClientId)) { return; }
-            if (this.Configurations == null) { e.CanExecute = true; return; }
-
-            var configurations = this.Configurations.ToArray();
-            if (configurations.Any(configuration =>
-                configuration != null && configuration.TenantId == TenantId && configuration.ClientId == ClientId && configuration.ClientSecret == ClientSecret
-                ))
+            try
             {
-                return;
+                if (string.IsNullOrEmpty(TenantId) || string.IsNullOrEmpty(ClientId)) { return; }
+                if (this.Configurations == null) { e.CanExecute = true; return; }
+
+                var configurations = this.Configurations.ToArray();
+                if (configurations.Any(configuration => configuration != null && configuration.TenantId == TenantId && configuration.ClientId == ClientId && configuration.ClientSecret == ClientSecret))
+                {
+                    return;
+                }
             }
+            catch (Exception ex) { }
 
             e.CanExecute = true;
         }

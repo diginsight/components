@@ -329,7 +329,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Common.Diagnostics" Version="1.0.1.231" />
+		<PackageReference Include="Common.Diagnostics" Version="1.0.2.5" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="SharpVectors" Version="1.8.1" />
 		<PackageReference Include="System.ComponentModel" Version="4.3.0" />
@@ -348,7 +348,7 @@
 		<PackageReference Include="System.Runtime.Serialization.Xml" Version="4.3.0" />
 		<PackageReference Include="System.Security.AccessControl" Version="6.0.0" />
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="7.0.1" />
-		<PackageReference Include="System.Text.Json" Version="7.0.2" />
+		<PackageReference Include="System.Text.Json" Version="7.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>

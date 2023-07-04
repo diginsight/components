@@ -28,7 +28,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Common.Diagnostics" Version="1.0.1.231" />
+		<PackageReference Include="Common.Diagnostics" Version="1.0.2.5" />
 		<!--<PackageReference Include="Common.Diagnostics.Log4net" Version="1.0.1.185" />-->
 	</ItemGroup>
 

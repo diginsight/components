@@ -327,9 +327,10 @@
             <!--common:AttachedProperties.Object0="{Binding Path=(common:ExceptionProperties.Exceptions), Converter={StaticResource firstOrDefault}, Mode=OneWay}"-->
         </Grid>
 
-        <Grid x:Name="settingsLayer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+        <Grid Name="settingsLayer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                       Grid.Column="2" Grid.Row="0" Grid.RowSpan="7" 
-                      Visibility="{Binding ShowSettingsPanel, Converter={StaticResource booleanToVisibility}, FallbackValue=Collapsed, Mode=OneWay}"  >
+                      Visibility="{Binding ShowSettingsPanel, Converter={StaticResource booleanToVisibility}, FallbackValue=Collapsed, Mode=OneWay}" 
+              >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="auto" />

@@ -31,6 +31,16 @@ using System.Configuration;
 using System.IO;
 using Newtonsoft.Json;
 using Path = System.IO.Path;
+using Microsoft.Identity.Client;
+using Microsoft.Graph;
+using Microsoft.Graph.Applications.GetByIds;
+using Microsoft.Graph.Models;
+using Azure;
+using Azure.Identity;
+using Azure.ResourceManager;
+using Azure.ResourceManager.Resources;
+//using Azure.Management.Resources;
+//using Azure.Management.Resources.Models;
 #endregion
 
 namespace Common
@@ -134,6 +144,22 @@ namespace Common
         }
         public static readonly DependencyProperty ConfigurationsProperty = DependencyProperty.Register("Configurations", typeof(IList<TenantConfiguration>), T, new PropertyMetadata());
         #endregion
+        #region Applications
+        public IList<Microsoft.Graph.Models.Application> Applications
+        {
+            get { return (IList<Microsoft.Graph.Models.Application>)GetValue(ApplicationsProperty); }
+            set { SetValue(ApplicationsProperty, value); }
+        }
+        public static readonly DependencyProperty ApplicationsProperty = DependencyProperty.Register("Applications", typeof(IList<Microsoft.Graph.Models.Application>), T, new PropertyMetadata());
+        #endregion
+        #region Organizations
+        public IList<Microsoft.Graph.Models.Organization> Organizations
+        {
+            get { return (IList<Microsoft.Graph.Models.Organization>)GetValue(OrganizationsProperty); }
+            set { SetValue(OrganizationsProperty, value); }
+        }
+        public static readonly DependencyProperty OrganizationsProperty = DependencyProperty.Register("Organizations", typeof(IList<Microsoft.Graph.Models.Organization>), T, new PropertyMetadata());
+        #endregion
 
         #region App
         public ApplicationBase App
@@ -220,16 +246,32 @@ namespace Common
                     scope.LogDebug(new { configurations });
                     if (configurations?.Count == 1) { this.Configuration = configurations.FirstOrDefault(); }
 
-                    //ConfigurationManager configurationManager = null;
-                    //this.Dispatcher.Invoke(() =>
-                    //{
-                    //    configurationManager = ApplicationBase.Current.Properties["ConfigurationManager"] as ConfigurationManager;
-                    //    scope.LogDebug($"configurationManager");
-                    //});
+                    //var armClient = new ArmClient(new DefaultAzureCredential());
+                    //// Get the list of tenants
+                    //Pageable<TenantResource> tenants = armClient.DefaultSubscription.GetTenantList();
 
-                    //var secretClient = new SecretClient(new Uri(keyVaultAddress), credential);
-                    //configurationManager.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
+
+                    // get the list of appregistrations 
+                    var graphClient = new GraphServiceClient(credential);
+
+                    // Get the tenants
+                    //var tenants = await graphClient.TenantRelationships.GetAsync();
+                    var tenants = await graphClient.Organization.GetAsync();
+                    this.Organizations = tenants.Value;
+
+                    var appRegistrations = await graphClient.Applications.GetAsync(requestConfiguration =>
+                    {
+                        requestConfiguration.QueryParameters.Top = 10;
+                        requestConfiguration.QueryParameters.Select = new string[] { "AppId", "Id", "DisplayName", "Owners" };
+                        //requestConfiguration.QueryParameters.Filter = "Owners/$count ge 1";  // Filter = "Owners/any()"; "Owners ne null"
+                        //requestConfiguration.Headers.Add("Prefer", "outlook.body-content-type=\"text\""); 		+		Owners	null	System.Collections.Generic.List<Microsoft.Graph.Models.DirectoryObject>
+                    });
+
+                    var applications = appRegistrations.Value;
+                    this.Applications = applications;
+
                     //scope.LogDebug($"configurationManager.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());");
+
                 }
             }
             catch (Exception ex)

@@ -150,8 +150,21 @@
                          Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" 
                          Text="{Binding Path=TenantId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          >
-                    <!-- DisplayMemberPath="NativeName" DropDownClosed="CmbLanguages_DropDownClosed" -->
                 </TextBox>
+                <ComboBox x:Name="cboTenants" 
+                         Height="30" BorderThickness="0" Margin="0,2" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
+                         VerticalAlignment="Center" VerticalContentAlignment="Center"
+                         Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" 
+                         ItemsSource="{Binding Path=Organizations, Mode=OneWay}"
+                         SelectedItem="{Binding Path=Organization, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DisplayName}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
                 <Grid HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -167,6 +180,19 @@
                          Text="{Binding Path=ClientId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <!-- DisplayMemberPath="NativeName" DropDownClosed="CmbLanguages_DropDownClosed" -->
                 </TextBox>
+                <ComboBox x:Name="cboApplications" 
+                         Height="30" BorderThickness="0" Margin="0,2" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
+                         VerticalAlignment="Center" VerticalContentAlignment="Center"
+                         Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" 
+                         ItemsSource="{Binding Path=Applications, Mode=OneWay}"
+                         SelectedItem="{Binding Path=Application, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DisplayName}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
                 <Grid HorizontalAlignment="Stretch" Margin="0" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />

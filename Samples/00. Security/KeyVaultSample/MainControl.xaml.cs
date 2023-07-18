@@ -227,7 +227,7 @@ namespace KeyVaultSample
         }
         public static readonly DependencyProperty IdentityProperty = DependencyProperty.Register("Identity", typeof(Identity), typeof(MainControl), new PropertyMetadata());
         #endregion
-        
+
         #region VaultUri
         public Uri VaultUri
         {
@@ -494,6 +494,7 @@ namespace KeyVaultSample
             using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
 
         }
+       
 
         // Exception event
         public event RoutedEventHandler PreviewExceptionEvent
@@ -578,6 +579,7 @@ namespace KeyVaultSample
 
             return exception;
         }
+
         private object firstOrDefaultLocal_ConvertEvent2(DependencyObject source, object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             using var scope = logger.BeginMethodScope(new { values = values.GetLogString() });
@@ -598,7 +600,13 @@ namespace KeyVaultSample
             bool isMouseOver = (bool)value;
             if (isMouseOver == false)
             {
-                Commands.HideSettings.Execute(null, this);
+                Rect areaBounds = new Rect(0, 0, this.ActualWidth * 0.9, this.ActualHeight * 0.9);
+                Point mousePosition = Mouse.GetPosition(Application.Current.MainWindow);
+
+                if (areaBounds.Contains(mousePosition))
+                {
+                    Commands.HideSettings.Execute(null, this);
+                }
             }
             return DependencyProperty.UnsetValue;
         }

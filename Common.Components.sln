@@ -79,6 +79,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AKSSample", "Samples\01. Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyVaultSample", "Samples\00. Security\KeyVaultSample\KeyVaultSample.csproj", "{F2E65731-A481-4499-8234-E06DD0DDE076}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp1", "WpfApp1\WpfApp1.csproj", "{D9FD88E5-8829-41EB-8E4D-CEC7E6ECC239}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -187,6 +189,10 @@ Global
 		{F2E65731-A481-4499-8234-E06DD0DDE076}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2E65731-A481-4499-8234-E06DD0DDE076}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2E65731-A481-4499-8234-E06DD0DDE076}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9FD88E5-8829-41EB-8E4D-CEC7E6ECC239}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9FD88E5-8829-41EB-8E4D-CEC7E6ECC239}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9FD88E5-8829-41EB-8E4D-CEC7E6ECC239}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9FD88E5-8829-41EB-8E4D-CEC7E6ECC239}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -225,6 +231,7 @@ Global
 		{A3680A90-1D4C-4C49-8469-3FD494A8551C} = {141FE649-2E71-462C-806D-CF84EA336E07}
 		{B371E27A-E05E-40BF-B4BA-85A48EB7A416} = {53E749AA-CF51-4F7C-97AC-39D5C712B72F}
 		{F2E65731-A481-4499-8234-E06DD0DDE076} = {8F685748-B1CE-4DFA-B367-17A12C9E8FBE}
+		{D9FD88E5-8829-41EB-8E4D-CEC7E6ECC239} = {24A3EDBA-F995-4D90-BA60-4655BA36C4CE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B75EF8D-0D79-4B04-8149-CADF5FDBF419}

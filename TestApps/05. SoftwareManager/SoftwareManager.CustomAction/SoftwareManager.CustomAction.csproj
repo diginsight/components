@@ -39,8 +39,8 @@
     <AssemblyOriginatorKeyFile>diginsight.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Common.Diagnostics, Version=1.0.1.231, Culture=neutral, PublicKeyToken=f87012e4294a7041, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Common.Diagnostics.1.0.1.231\lib\netstandard2.0\Common.Diagnostics.dll</HintPath>
+    <Reference Include="Common.Diagnostics, Version=1.0.2.6, Culture=neutral, PublicKeyToken=f87012e4294a7041, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Common.Diagnostics.1.0.2.6\lib\netstandard2.0\Common.Diagnostics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ApplicationInsights, Version=2.21.0.429, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.ApplicationInsights.2.21.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>

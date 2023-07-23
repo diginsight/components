@@ -185,7 +185,7 @@
               Visibility="{Binding RelativeSource={RelativeSource Self}, Path=(common:AttachedProperties.IsVisible0), Mode=OneWay, Converter={StaticResource booleanToVisibility}}"
               >
             <common:AttachedProperties.IsVisible0>
-                <MultiBinding Converter="{StaticResource firstOrDefault}" >
+                <MultiBinding Converter="{StaticResource firstOrDefaultLocal}" >
                     <Binding ElementName="ctlMain" Path="(common:ExceptionProperties.Exceptions)" Converter="{StaticResource isNotNull}" Mode="OneWay" />
                     <Binding ElementName="ctlMain" Path="RegreshCount" Mode="OneWay" />
                 </MultiBinding>

@@ -18,6 +18,12 @@ namespace IotHubSample
     {
         // Azure.Messaging.EventHubs
         // EventData, EventHubConnection, EventHubConnectionOptions, EventHubProperties, EventHubsConnectionStringProperties, EventHubsModelFactory, EventHubsRetryOptions, EventHubsRetryPolicy, PartitionProperties
+        public static string ToLogStringInternal(Identity pthis)
+        {
+            string logString = $"{{{nameof(Identity)}:{{Upn:{pthis.Upn},Name:{pthis.Name},Manager:{pthis.Manager},Email:{pthis.Email}}}}}";
+            return logString;
+        }
+
         public static string ToLogStringInternal(EventData pthis)
         {
             string logString = $"{{{pthis.GetType().Name}:{{EnqueuedTime:{pthis.EnqueuedTime},PartitionKey:{pthis.PartitionKey},Offset:{pthis.Offset},EventBody:{pthis.EventBody},SequenceNumber:{pthis.SequenceNumber},SystemProperties:{pthis.SystemProperties}}}}}";

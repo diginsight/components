@@ -36,15 +36,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Common.Diagnostics" Version="1.0.2.6" />
-		<!--
-    <PackageReference Include="Common.Diagnostics.AppInsights" Version="1.0.1.53" />
-    <PackageReference Include="Common.Diagnostics.Log4net" Version="1.0.1.53" />
-	-->
+		<PackageReference Include="Common.Diagnostics" Version="1.0.2.7" />
 		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
 		<PackageReference Include="log4net" Version="2.0.15" />
-		<!--<PackageReference Include="Microsoft.Azure.ApplicationInsights.Query" Version="1.0.0" />-->
-		<!--<PackageReference Include="Microsoft.Azure.OperationalInsights" Version="1.0.0" />-->
 		<PackageReference Include="Microsoft.Rest.ClientRuntime.Azure.Authentication" Version="2.4.1" />
 		<PackageReference Include="System.Text.Json" Version="7.0.3" />
 	</ItemGroup>

@@ -21,7 +21,7 @@ namespace SoftwareManager.Service
 
         public SoftwareManagerService()
         {
-            using (var sec = this.GetCodeSection())
+            //using (var sec = this.GetCodeSection())
             {
                 InitializeComponent();
             }
@@ -29,7 +29,7 @@ namespace SoftwareManager.Service
 
         protected override void OnStart(string[] args)
         {
-            using (var sec = this.GetCodeSection(new { args = args.GetLogString() }))
+            //using (var sec = this.GetCodeSection(new { args = args.GetLogString() }))
             {
 
             }
@@ -37,7 +37,7 @@ namespace SoftwareManager.Service
 
         protected override void OnStop()
         {
-            using (var sec = this.GetCodeSection())
+            //using (var sec = this.GetCodeSection())
             {
             }
         }

@@ -70,11 +70,11 @@ namespace IotHubSample
             set { SetValue(() => ConnectionString, value); }
         }
         #endregion
-        #region EventHubName
-        public string EventHubName
+        #region IotHubName
+        public string IotHubName
         {
-            get { return GetValue(() => EventHubName); }
-            set { SetValue(() => EventHubName, value); }
+            get { return GetValue(() => IotHubName); }
+            set { SetValue(() => IotHubName, value); }
         }
         #endregion
         #region BlobstorageConnectionString

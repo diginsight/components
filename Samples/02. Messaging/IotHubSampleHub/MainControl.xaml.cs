@@ -163,7 +163,16 @@ namespace IotHubSample
 
             try
             {
+                //var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS);
+
                 var identity = await authenticationHelper.LoginSilentAsync();
+                this.Dispatcher.Invoke(() =>
+                {
+                    this.Identity = identity;
+                    //tenantId = App.TenantId; clientId = App.ClientId; clientSecret = App.ClientSecret;
+                    //App.ConnectionString = App.KeyVaultAddress = keyVaultAddress;
+                });
+
 
                 this.Dispatcher.Invoke(() =>
                 {

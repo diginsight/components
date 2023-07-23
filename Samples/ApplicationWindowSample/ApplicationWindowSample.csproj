@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Common.Diagnostics" Version="1.0.2.5" />
+		<PackageReference Include="Common.Diagnostics" Version="1.0.2.6" />
 		<!--<PackageReference Include="Common.Diagnostics.AppInsights" Version="1.0.1.185" />
     <PackageReference Include="Common.Diagnostics.Log4net" Version="1.0.1.185" />-->
 	</ItemGroup>

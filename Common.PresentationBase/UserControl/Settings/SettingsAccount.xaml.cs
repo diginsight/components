@@ -39,6 +39,11 @@ using Azure;
 using Azure.Identity;
 using Azure.ResourceManager;
 using Azure.ResourceManager.Resources;
+using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using Microsoft.Kiota.Abstractions;
+using System.Windows.Media.TextFormatting;
 //using Azure.Management.Resources;
 //using Azure.Management.Resources.Models;
 #endregion
@@ -144,6 +149,14 @@ namespace Common
         }
         public static readonly DependencyProperty ConfigurationsProperty = DependencyProperty.Register("Configurations", typeof(IList<TenantConfiguration>), T, new PropertyMetadata());
         #endregion
+        #region Tenants
+        public IList<TenantData> Tenants
+        {
+            get { return (IList<TenantData>)GetValue(TenantsProperty); }
+            set { SetValue(TenantsProperty, value); }
+        }
+        public static readonly DependencyProperty TenantsProperty = DependencyProperty.Register("Tenants", typeof(IList<TenantData>), T, new PropertyMetadata());
+        #endregion
         #region Applications
         public IList<Microsoft.Graph.Models.Application> Applications
         {
@@ -246,29 +259,146 @@ namespace Common
                     scope.LogDebug(new { configurations });
                     if (configurations?.Count == 1) { this.Configuration = configurations.FirstOrDefault(); }
 
-                    //var armClient = new ArmClient(new DefaultAzureCredential());
-                    //// Get the list of tenants
-                    //Pageable<TenantResource> tenants = armClient.DefaultSubscription.GetTenantList();
+                    var tenantId = authenticationHelper.TenantId;
+                    var clientId = authenticationHelper.ApplicationId;
 
+                    //var token = await credential.GetTokenAsync(new Azure.Core.TokenRequestContext(new[] { "https://management.azure.com/.default" }), new CancellationToken());
+                    //var client = new HttpClient();
+                    //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
+                    //// Call the REST API to list the tenants
+                    //var response = await client.GetAsync("https://management.azure.com/tenants?api-version=2020-01-01");
+                    //// Print the response content
+                    //var content = await response.Content.ReadAsStringAsync();
 
-                    // get the list of appregistrations 
-                    var graphClient = new GraphServiceClient(credential);
-
-                    // Get the tenants
-                    //var tenants = await graphClient.TenantRelationships.GetAsync();
-                    var tenants = await graphClient.Organization.GetAsync();
-                    this.Organizations = tenants.Value;
-
-                    var appRegistrations = await graphClient.Applications.GetAsync(requestConfiguration =>
+                    var tenants = new List<TenantData>();
+                    var armClient = new ArmClient(credential);
+                    var tenantObjects = armClient.GetTenants();
+                    foreach (var tenantObj in tenantObjects)
                     {
-                        requestConfiguration.QueryParameters.Top = 10;
-                        requestConfiguration.QueryParameters.Select = new string[] { "AppId", "Id", "DisplayName", "Owners" };
-                        //requestConfiguration.QueryParameters.Filter = "Owners/$count ge 1";  // Filter = "Owners/any()"; "Owners ne null"
-                        //requestConfiguration.Headers.Add("Prefer", "outlook.body-content-type=\"text\""); 		+		Owners	null	System.Collections.Generic.List<Microsoft.Graph.Models.DirectoryObject>
-                    });
+                        var tenantItem = tenantObj.Data;
+                        scope.LogDebug($"Id:{tenantItem.Id},TenantId:{tenantItem.TenantId},DisplayName:{tenantItem.DisplayName},DefaultDomain:{tenantItem.DefaultDomain},TenantCategory:{tenantItem.TenantCategory},TenantType:{tenantItem.TenantType},Country:{tenantItem.Country},CountryCode:{tenantItem.CountryCode}");
+                        tenants.Add(tenantItem);
+                    }
+                    this.Tenants = tenants;
 
-                    var applications = appRegistrations.Value;
+                    var tenant = this.Tenants.FirstOrDefault();
+                    tenantId = tenant.TenantId?.ToString();
+                    
+                    var client = new GraphServiceClient(credential);
+                    //var user = await client.Users["me"].GetAsync(); 
+                    //var accountId = user.Id;
+                    var me = await client.Me.GetAsync();
+                    var accountId = me.Id;
+
+                    var ownedObjects =  client.Me.OwnedObjects.GetAsync();
+                    //var onenote = await client.Me.Onenote.GetAsync();
+                    
+                    var pageSize = 30;
+                    var applications = new List<Microsoft.Graph.Models.Application>();
+                    string responseAppsContent = null;
+                    try
+                    {
+                        //var requestUri = $"https://graph.microsoft.com/beta/applications?$top={pageSize}&$filter=owners/$count eq 1&$count=true";
+                        var requestUri = $"https://graph.microsoft.com/v1.0/me/ownedObjects/microsoft.graph.application?$top=10&$count=true";
+                        // /$count ne 0
+                        // https://graph.microsoft.com/v1.0/me/ownedObjects/microsoft.graph.application?$top=10&$count=true
+                        //$expand=owners& &$select=appId,identifierUris,displayName,publisherDomain,signInAudience,owners $filter=owners/any(x:x/id eq '{accountId}') $select=appId,identifierUris,displayName,publisherDomain,signInAudience,owners
+                        //GET https://graph.microsoft.com/v1.0/applications?$filter=owners/$count eq 0 or owners/$count eq 1&$count=true&$select=id,displayName
+                        //ConsistencyLevel: eventual
+                        for (var page = 0; ; page++)
+                        {
+                            if (page > 10) { scope.LogDebug($"Page limit reached: {page-1}"); break; }
+                            if (page > 0 && string.IsNullOrEmpty(requestUri)) { scope.LogDebug($"Enumeration completed: {page-1}"); break; }
+                            var token = await credential.GetTokenAsync(new Azure.Core.TokenRequestContext(new[] { "https://graph.microsoft.com/.default" }), new CancellationToken());
+                            using (var request = new HttpRequestMessage(HttpMethod.Get, requestUri))
+                            {
+                                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
+                                request.Headers.Add("ConsistencyLevel", "eventual");
+
+                                using (var clientApps = new HttpClient())
+                                using (var responseApps = await clientApps.SendAsync(request))
+                                {
+                                    responseApps.EnsureSuccessStatusCode();
+
+                                    responseAppsContent = await responseApps.Content.ReadAsStringAsync();
+                                    JObject responseAppsOjbect = JObject.Parse(responseAppsContent);
+                                    var nextLink = responseAppsOjbect["@odata.nextLink"]?.Value<string>();
+                                    requestUri = nextLink;
+                                    scope.LogDebug(new { page, nextLink });
+
+                                    var applicationList = responseAppsOjbect["value"];
+                                    foreach (var item in applicationList)
+                                    {
+                                        var id = item["id"]?.Value<string>();
+                                        var appId = item["appId"]?.Value<string>();
+                                        var displayName = item["displayName"]?.Value<string>();
+                                        var description = item["description"]?.Value<string>();
+                                        var createdDateTime = item["createdDateTime"]?.Value<DateTime?>();
+                                        var signInAudience = item["signInAudience"]?.Value<string>();
+                                        var identifierUris = item["identifierUris"]?.Select(uri=> uri?.Value<string>()).ToList();
+                                        var publisherDomain = item["publisherDomain"]?.Value<string>();
+                                        //var owners = item["owners"];
+                                        //appId,identifierUris,displayName,publisherDomain,signInAudience
+
+                                        var application = new Microsoft.Graph.Models.Application()
+                                        {
+                                            Id = id,
+                                            AppId = appId,
+                                            DisplayName = displayName,
+                                            Description = description,
+                                            CreatedDateTime = createdDateTime,
+                                            SignInAudience = signInAudience,
+                                            PublisherDomain = publisherDomain,
+                                            IdentifierUris = identifierUris
+                                        };
+                                        scope.LogDebug(new { application = application.GetLogString() });
+                                        applications.Add(application);
+                                    }
+                                }
+                            }
+                        }
+
+                        ApplicationCollectionResponse response;
+                        //for (var page = 0; ; page++)
+                        //{
+                        //    var appRegistrations = response = await client.Applications.GetAsync(requestConfiguration =>
+                        //    {
+                        //        requestConfiguration.QueryParameters.Count = true;
+                        //        requestConfiguration.QueryParameters.Top = pageSize;
+                        //        if (page > 0) { requestConfiguration.QueryParameters.Skip = page * pageSize; }
+                        //        requestConfiguration.QueryParameters.Select = new string[] { "AppId", "Id", "DisplayName", "Owners" };
+                        //        //requestConfiguration.QueryParameters.Filter = $"appOwnerOrganizationId eq '{tenantId}'";  // Filter = "Owners/any()"; "Owners ne null"
+                        //        // requestConfiguration.Headers.Add("Prefer", "outlook.body-content-type=\"text\""); 		+		Owners	null	System.Collections.Generic.List<Microsoft.Graph.Models.DirectoryObject>
+                        //    }); 
+
+                        //    var applicationsPage = appRegistrations.Value;
+                        //    applications.AddRange(applicationsPage);
+                        //}
+                    }
+                    catch (Exception ex) { scope.LogException(ex); }
+
                     this.Applications = applications;
+
+
+
+                    ////// get the list of owned appregistrations 
+                    //var graphClient = new GraphServiceClient(credential);
+
+                    ////// Get the tenants
+                    ////// var tenants = await graphClient.TenantRelationships.GetAsync();
+                    ////   var tenants = await graphClient.Organization.GetAsync();
+                    ////   this.Organizations = tenants.Value;
+                    //var appRegistrations = await graphClient.Applications.GetAsync(requestConfiguration =>
+                    //{
+                    //    requestConfiguration.QueryParameters.Top = 10;
+                    //    requestConfiguration.QueryParameters.Select = new string[] { "AppId", "Id", "DisplayName", "Owners" };
+                    //    // requestConfiguration.QueryParameters.Filter = "Owners/$count ge 1";  // Filter = "Owners/any()"; "Owners ne null"
+                    //    // requestConfiguration.Headers.Add("Prefer", "outlook.body-content-type=\"text\""); 		+		Owners	null	System.Collections.Generic.List<Microsoft.Graph.Models.DirectoryObject>
+                    //});
+                    //var applications = appRegistrations.Value;
+                    //this.Applications = applications;
+
 
                     //scope.LogDebug($"configurationManager.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());");
 
@@ -287,9 +417,32 @@ namespace Common
             }
         }
 
+        static async Task<string> GetAccessTokenAsync(string tenantId, string clientId)
+        {
+            // Create an HTTP client for Azure AD
+            var client = new HttpClient();
+
+            // Set the request parameters
+            var request = new HttpRequestMessage(HttpMethod.Post, $"https://login.microsoftonline.com/{tenantId}/oauth2/token");
+            request.Content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("grant_type", "client_credentials"),
+                new KeyValuePair<string, string>("client_id", clientId),
+                new KeyValuePair<string, string>("resource", "https://management.core.windows.net/")
+            });
+
+            // Send the request and get the response
+            var response = await client.SendAsync(request);
+
+            // Parse the response content as JSON
+            var json = System.Text.Json.JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+
+            // Return the access token
+            return json.RootElement.GetProperty("access_token").GetString();
+        }
 
         // Commands
-        private void ToggleIsCollapsedCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        void ToggleIsCollapsedCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             //using (var sec = this.GetCodeSection(new { sender, e })) {
             e.CanExecute = true;

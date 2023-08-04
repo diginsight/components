@@ -164,13 +164,15 @@ namespace KeyVaultSample
                     this.Identity = identity;
                     tenantId = App.TenantId; clientId = App.ClientId; clientSecret = App.ClientSecret;
                     App.ConnectionString = App.KeyVaultAddress = keyVaultAddress;
+                    
+                    scope.LogDebug(new { this.Identity, tenantId, clientId, clientSecret, keyVaultAddress });
                 });
 
-                scope.LogDebug(new { this.Identity, tenantId, clientId, clientSecret, keyVaultAddress });
+
 
                 TokenCredential credential = null;
                 if (!string.IsNullOrEmpty(clientSecret)) { credential = new ClientSecretCredential(tenantId, clientId, clientSecret); }
-                if (this.Identity == null && credential == null)
+                if (identity == null && credential == null)
                 {
                     var credentialOptions = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = identity.Upn, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
                     credential = new DefaultAzureCredential(credentialOptions);
@@ -494,7 +496,7 @@ namespace KeyVaultSample
             using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
 
         }
-       
+
 
         // Exception event
         public event RoutedEventHandler PreviewExceptionEvent

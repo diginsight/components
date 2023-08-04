@@ -24,13 +24,16 @@ using System.Windows.Media.Imaging;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using ConfigurationManager = Microsoft.Extensions.Configuration.ConfigurationManager;
 using Window = System.Windows.Window;
+using Azure.Messaging.EventHubs;
+using System.ComponentModel;
+using System.Threading;
 //using Azure.Extensions.AspNetCore.Configuration.Secrets;
 #endregion
 
 namespace KeyVaultSample
 {
     /// <summary>Interaction logic for App.xaml</summary>
-    public partial class App : ApplicationBase
+    public partial class App : ApplicationBase, IProvideLogString
     {
         static Type T = typeof(App);
         #region constants
@@ -160,6 +163,7 @@ namespace KeyVaultSample
             using var scope = logger.BeginMethodScope();
             //this.Activated += App_Activated;
             //this.LoadCompleted += App_LoadCompleted;
+            LogStringExtensions.RegisterLogstringProvider(this);
         }
         #endregion
 
@@ -307,6 +311,23 @@ namespace KeyVaultSample
             //var logger = Host.GetLogger<App>();
             using var scope = logger.BeginMethodScope(new { sender, e });
 
+        }
+
+        public string ToLogString(object t, HandledEventArgs arg)
+        {
+            switch (t)
+            {
+                case Window w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case System.Windows.Controls.Button w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case PropertyChangedEventArgs w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case Thread w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case Microsoft.Graph.Models.Application w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                //
+                //case EventProcessorClient w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                default:
+                    break;
+            }
+            return null;
         }
     }
 }

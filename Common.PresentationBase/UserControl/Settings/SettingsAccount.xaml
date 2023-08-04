@@ -155,8 +155,8 @@
                          Height="30" BorderThickness="0" Margin="0,2" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
                          VerticalAlignment="Center" VerticalContentAlignment="Center"
                          Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" 
-                         ItemsSource="{Binding Path=Organizations, Mode=OneWay}"
-                         SelectedItem="{Binding Path=Organization, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         ItemsSource="{Binding Path=Tenants, Mode=OneWay}"
+                         SelectedItem="{Binding Path=Tenant, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          >
                     <ComboBox.ItemTemplate>
                         <DataTemplate>

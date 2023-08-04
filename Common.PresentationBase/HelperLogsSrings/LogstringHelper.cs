@@ -39,5 +39,11 @@ namespace Common
             string logString = $"{{Button:{{Name:{pthis.Name},ManagedThreadId:{pthis.ManagedThreadId},ApartmentState:{pthis.ApartmentState},ThreadState:{pthis.ThreadState},IsAlive:{pthis.IsAlive},IsBackground:{pthis.IsBackground},IsThreadPoolThread:{pthis.IsThreadPoolThread},Priority:{pthis.Priority},CurrentCulture:{pthis.CurrentCulture},CurrentUICulture:{pthis.CurrentUICulture}}}}}";
             return logString;
         }
+        public static string ToLogStringInternal(Microsoft.Graph.Models.Application pthis)
+        {
+            if (pthis == null) { return null; }
+            string logString = $"{{Application:{{Id:{pthis.Id},AppId:{pthis.AppId},DisplayName:{pthis.DisplayName},Description:{pthis.Description},PublisherDomain:{pthis.PublisherDomain},SignInAudience:{pthis.SignInAudience},Owners:{pthis.Owners.GetLogString()}}}}}";
+            return logString;
+        }
     }
 }

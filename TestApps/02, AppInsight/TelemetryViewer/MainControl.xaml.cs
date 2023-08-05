@@ -34,7 +34,7 @@ namespace TelemetryViewer
         const string CONFIGVALUE_APPNAME = "AppName"; const string DEFAULTVALUE_APPNAME = "";
         const string CONFIGVALUE_APPVERSION = "AppVersion"; const string DEFAULTVALUE_APPVERSION = "";
         const string CONFIGVALUE_OAUTHVERSIONSUFFIX = "OauthVersionSuffix"; const string DEFAULTVALUE_OAUTHVERSIONSUFFIX = "/2.0";
-        AuthenticationHelper _authenticationHelper;
+        AuthenticationService _authenticationHelper;
         Reference<bool> _lockQueryRestLoop = new Reference<bool>(false);
         Reference<bool> _lockPersistState = new Reference<bool>(true);
         private string oauthVersionSuffix;

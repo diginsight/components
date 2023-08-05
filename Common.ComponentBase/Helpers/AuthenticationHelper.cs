@@ -45,7 +45,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Common
 {
-    public class AuthenticationHelper //: IAuthDelegate
+    public class AuthenticationHelper
+        //: IAuthDelegate
     {
         #region constants
         private static readonly Type T = typeof(AuthenticationHelper);
@@ -80,12 +81,6 @@ namespace Common
         string[] scopesAADRM = new string[] { "https://aadrm.com/user_impersonation" }; // , , "https://psor.o365syncservice.com/UnifiedPolicy.User.Read" 
         string[] scopesO365syncservice = new string[] { "https://psor.o365syncservice.com/UnifiedPolicy.User.Read" };
         #endregion
-
-        public AuthenticationResult AuthenticationResult { get => authenticationResult; set => authenticationResult = value; }
-        public Identity Identity { get => identity; set => identity = value; }
-        public string TenantId { get => tenantId; set => tenantId = value; }
-        public string ApplicationId { get => applicationId; set => applicationId = value; }
-        public IPublicClientApplication App { get => publicClientApp; set => publicClientApp = value; }
 
         #region .ctor
         public AuthenticationHelper(string tenantId, string applicationId, string appName, string appVersion, string redirectUri, string[] scopes, string oauthVersion, Window window) // ApplicationInfo appInfo, 
@@ -131,6 +126,12 @@ namespace Common
             TokenCacheHelper.EnableSerialization(publicClientApp.UserTokenCache); scope.LogDebug($"TokenCacheHelper.EnableSerialization({publicClientApp.UserTokenCache}); completed");
         }
         #endregion
+
+        public AuthenticationResult AuthenticationResult { get => authenticationResult; set => authenticationResult = value; }
+        public Identity Identity { get => identity; set => identity = value; }
+        public string TenantId { get => tenantId; set => tenantId = value; }
+        public string ApplicationId { get => applicationId; set => applicationId = value; }
+        public IPublicClientApplication App { get => publicClientApp; set => publicClientApp = value; }
 
         #region AcquireToken
         /// <summary>AcquireToken is called by the SDK when auth is required for an operation. 

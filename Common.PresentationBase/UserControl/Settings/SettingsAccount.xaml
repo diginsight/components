@@ -7,7 +7,7 @@
              xmlns:properties="clr-namespace:Common.Properties"
              mc:Ignorable="d" 
              Name="ctlSettingsAccountControl"
-             d:DesignHeight="450" d:DesignWidth="280" Initialized="ctlSettingsAccountControl_Initialized"  >
+             d:DesignHeight="450" d:DesignWidth="350" Initialized="ctlSettingsAccountControl_Initialized"  >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -38,7 +38,7 @@
         <CommandBinding Command="{x:Static common:Commands.Save}" CanExecute="SaveCanExecute" Executed="SaveExecuted" />
     </UserControl.CommandBindings>
     <Grid Name="MenuGrid" 
-          Width="{Binding ElementName=ctlSettingsAccountControl, Path=IsCollapsed, Mode=OneWay, Converter={StaticResource if}, ConverterParameter=45, FallbackValue=280}"
+          Width="{Binding ElementName=ctlSettingsAccountControl, Path=IsCollapsed, Mode=OneWay, Converter={StaticResource if}, ConverterParameter=45, FallbackValue=350}"
           Background="{StaticResource Grey38}"
           DataContext="{Binding ElementName=ctlSettingsAccountControl, Mode=OneWay}"  >
         <Grid.RowDefinitions>

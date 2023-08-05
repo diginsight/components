@@ -37,7 +37,7 @@ namespace ApplicationInsightQuery
         const string CONFIGVALUE_APPVERSION = "AppVersion"; const string DEFAULTVALUE_APPVERSION = "";
         const string CONFIGVALUE_OAUTHVERSIONSUFFIX = "OauthVersionSuffix"; const string DEFAULTVALUE_OAUTHVERSIONSUFFIX = "/2.0";
 
-        AuthenticationHelper _authenticationHelper;
+        AuthenticationService _authenticationHelper;
         Reference<bool> _locPersistState = new Reference<bool>(true);
         private string oauthVersionSuffix;
 

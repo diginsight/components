@@ -292,7 +292,13 @@ namespace Common
 
                     var ownedObjects =  client.Me.OwnedObjects.GetAsync();
                     //var onenote = await client.Me.Onenote.GetAsync();
-                    
+
+
+                    var credentialOptions1 = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = identity.Upn, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
+                    credentialOptions1.TenantId = "16b3c013-d300-468d-ac64-7eda0820b6d3";
+                    credential = new DefaultAzureCredential(credentialOptions1);
+
+
                     var pageSize = 30;
                     var applications = new List<Microsoft.Graph.Models.Application>();
                     string responseAppsContent = null;

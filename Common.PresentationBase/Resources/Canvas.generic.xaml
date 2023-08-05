@@ -109,6 +109,7 @@
             </Path.Data>
         </Path>
     </Canvas>
+    
     <Canvas x:Key="deleteCanvas" Width="24" Height="24">
         <Path Stretch="Fill" StrokeThickness="0.01" Stroke="{StaticResource Grey70}" Fill="{StaticResource Grey70}">
             <Path.Data>

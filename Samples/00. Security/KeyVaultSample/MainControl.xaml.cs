@@ -53,7 +53,7 @@ namespace KeyVaultSample
 
         private IConfiguration configuration;
         private ILogger<MainControl> logger;
-        private AuthenticationHelper authenticationHelper;
+        private AuthenticationService authenticationService;
         private string tenantId;
         private string clientId;
         Dictionary<string, string> secretValues = new Dictionary<string, string>();
@@ -71,8 +71,8 @@ namespace KeyVaultSample
 
             this.configuration = app.Host.Services.GetService<IConfiguration>();
             this.logger = app.Host.Services.GetService<ILogger<MainControl>>();
-            this.authenticationHelper = this.App.Host.Services.GetService<AuthenticationHelper>();
-            scope.LogDebug(new { authenticationHelper = authenticationHelper.GetLogString() });
+            this.authenticationService = this.App.Host.Services.GetService<AuthenticationService>();
+            scope.LogDebug(new { authenticationService = authenticationService.GetLogString() });
 
             InitializeComponent();
         }
@@ -119,7 +119,7 @@ namespace KeyVaultSample
             if (DesignerProperties.GetIsInDesignMode(this)) { return; }
             using var scope = logger.BeginMethodScope(new { sender, e });
 
-            scope.LogDebug(new { authenticationHelper = authenticationHelper.GetLogString() });
+            scope.LogDebug(new { authenticationService = authenticationService.GetLogString() });
 
             this.ExceptionEvent += MainControl_ExceptionEvent;
 
@@ -158,7 +158,7 @@ namespace KeyVaultSample
                 var clientSecret = default(string);
                 var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS);
 
-                var identity = await authenticationHelper.LoginSilentAsync();
+                var identity = await authenticationService.LoginSilentAsync();
                 this.Dispatcher.Invoke(() =>
                 {
                     this.Identity = identity;
@@ -308,8 +308,8 @@ namespace KeyVaultSample
         {
             using var scope = logger.BeginMethodScope();
 
-            scope.LogDebug(new { authenticationHelper = authenticationHelper.GetLogString() });
-            if (authenticationHelper == null)
+            scope.LogDebug(new { authenticationService = authenticationService.GetLogString() });
+            if (authenticationService == null)
             {
                 var message = this.GetResourceValue<string>("Info.AuthHelperNotAvailable", "Authentication helper is not available");
                 var ex = new ClientException(message) { Code = ExceptionCodes.PRESSLOGIN };
@@ -318,8 +318,8 @@ namespace KeyVaultSample
                 return;
             }
 
-            await authenticationHelper.LogoutAsync();
-            var identity = await authenticationHelper.LoginAsync();
+            await authenticationService.LogoutAsync();
+            var identity = await authenticationService.LoginAsync();
 
             TokenCredential credential = null;
             var clientSecret = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_CLIENTSECRET, DEFAULTVALUE_CLIENTSECRET);
@@ -364,8 +364,8 @@ namespace KeyVaultSample
         {
             using var scope = logger.BeginMethodScope();
 
-            if (authenticationHelper == null) { return; }
-            await authenticationHelper.LogoutAsync(); scope.LogDebug($"await authenticationHelper.LogoutAsync(); completed");
+            if (authenticationService == null) { return; }
+            await authenticationService.LogoutAsync(); scope.LogDebug($"await authenticationService.LogoutAsync(); completed");
             this.Identity = null;
 
             this.Secrets = null;

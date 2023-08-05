@@ -271,7 +271,7 @@ namespace KeyVaultSample
                 return applicationWindow;
             });
 
-            services.AddSingleton<AuthenticationHelper>((IServiceProvider provider) =>
+            services.AddSingleton<AuthenticationService>((IServiceProvider provider) =>
             {
 
                 TenantId = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID); // , CultureInfo.InvariantCulture
@@ -287,8 +287,8 @@ namespace KeyVaultSample
 
                 var scopesArray = Scopes?.Split(',');
 
-                var authenticationHelper = new AuthenticationHelper(TenantId, ClientId, AppName, AppVersion, RedirectUri, scopesArray, OauthVersionSuffix, Application.Current.MainWindow);
-                return authenticationHelper;
+                var authenticationService = new AuthenticationService(TenantId, ClientId, AppName, AppVersion, RedirectUri, scopesArray, OauthVersionSuffix, Application.Current.MainWindow);
+                return authenticationService;
             });
 
 

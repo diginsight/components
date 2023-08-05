@@ -1,7 +1,7 @@
 # Common.ComponentBase
 Common.ComponentBase provides component classes and helpers for .Net
 As examples:
-- class AuthenticationHelper provides helper methods for authenticating with MSAL
+- class AuthenticationService provides helper methods for authenticating with MSAL
 - class DebugHelper provides helper methods for troubleshooting support
 - class SerializationHelper provides helper methods for serialization
 - ...

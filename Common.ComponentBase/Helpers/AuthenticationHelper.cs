@@ -45,11 +45,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Common
 {
-    public class AuthenticationHelper
+    public class AuthenticationService
         //: IAuthDelegate
     {
         #region constants
-        private static readonly Type T = typeof(AuthenticationHelper);
+        private static readonly Type T = typeof(AuthenticationService);
         const string CONFIGVALUE_TENANTID = "TenantId"; const string DEFAULTVALUE_TENANTID = "common";
         const string CONFIGVALUE_CLIENTID = "ClientId"; const string DEFAULTVALUE_CLIENTID = "";
         const string CONFIGVALUE_APPNAME = "AppName"; const string DEFAULTVALUE_APPNAME = "";
@@ -62,7 +62,7 @@ namespace Common
         #endregion
 
         #region internal state
-        private ILogger<AuthenticationHelper> logger;
+        private ILogger<AuthenticationService> logger;
         // ADAL: Set the redirect URI from the AAD Application Registration.
         string tenantId;
         string applicationId;
@@ -83,24 +83,24 @@ namespace Common
         #endregion
 
         #region .ctor
-        public AuthenticationHelper(string tenantId, string applicationId, string appName, string appVersion, string redirectUri, string[] scopes, string oauthVersion, Window window) // ApplicationInfo appInfo, 
+        public AuthenticationService(string tenantId, string applicationId, string appName, string appVersion, string redirectUri, string[] scopes, string oauthVersion, Window window) // ApplicationInfo appInfo, 
         {
             using var scope = logger.BeginMethodScope(new { tenantId, applicationId, appName, appVersion, redirectUri, scopes, oauthVersion, window = window.GetLogString() }); // new { appInfo = appInfo.GetLogString() }
 
             this.tenantId = tenantId;
-            if (string.IsNullOrEmpty(this.tenantId)) { this.tenantId = ConfigurationHelper.GetClassSetting<AuthenticationHelper, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID); } // , CultureInfo.InvariantCulture
+            if (string.IsNullOrEmpty(this.tenantId)) { this.tenantId = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID); } // , CultureInfo.InvariantCulture
             this.applicationId = applicationId;
-            if (string.IsNullOrEmpty(this.applicationId)) { this.applicationId = ConfigurationHelper.GetClassSetting<AuthenticationHelper, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID); } // , CultureInfo.InvariantCulture
+            if (string.IsNullOrEmpty(this.applicationId)) { this.applicationId = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID); } // , CultureInfo.InvariantCulture
             this.appName = appName;
-            if (string.IsNullOrEmpty(this.appName)) { this.appName = ConfigurationHelper.GetClassSetting<AuthenticationHelper, string>(CONFIGVALUE_APPNAME, DEFAULTVALUE_APPNAME); } // , CultureInfo.InvariantCulture
+            if (string.IsNullOrEmpty(this.appName)) { this.appName = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_APPNAME, DEFAULTVALUE_APPNAME); } // , CultureInfo.InvariantCulture
             this.appVersion = appVersion;
-            if (string.IsNullOrEmpty(this.appVersion)) { this.appVersion = ConfigurationHelper.GetClassSetting<AuthenticationHelper, string>(CONFIGVALUE_APPVERSION, DEFAULTVALUE_APPVERSION); } // , CultureInfo.InvariantCulture
+            if (string.IsNullOrEmpty(this.appVersion)) { this.appVersion = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_APPVERSION, DEFAULTVALUE_APPVERSION); } // , CultureInfo.InvariantCulture
             this.redirectUri = redirectUri;
-            if (string.IsNullOrEmpty(this.redirectUri)) { this.redirectUri = ConfigurationHelper.GetClassSetting<AuthenticationHelper, string>(CONFIGVALUE_REDIRECTURI, DEFAULTVALUE_REDIRECTURI); } // , CultureInfo.InvariantCulture
+            if (string.IsNullOrEmpty(this.redirectUri)) { this.redirectUri = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_REDIRECTURI, DEFAULTVALUE_REDIRECTURI); } // , CultureInfo.InvariantCulture
             this.scopes = scopes;
             if (this.scopes == null)
             {
-                var scopesString = ConfigurationHelper.GetClassSetting<AuthenticationHelper, string>(CONFIGVALUE_SCOPES, DEFAULTVALUE_SCOPES);
+                var scopesString = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_SCOPES, DEFAULTVALUE_SCOPES);
                 this.scopes = scopesString?.Split(',');
             }
 

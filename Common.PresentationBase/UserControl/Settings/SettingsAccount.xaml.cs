@@ -73,7 +73,7 @@ namespace Common
         private static readonly Type T = typeof(SettingsAccountControl);
         private IConfiguration configuration;
         private ILogger<SettingsAccountControl> logger;
-        private AuthenticationHelper authenticationHelper;
+        private AuthenticationService authenticationService;
 
         #region IsCollapsed
         public bool IsCollapsed
@@ -197,8 +197,8 @@ namespace Common
 
             this.configuration = app.Host.Services.GetService<IConfiguration>();
             this.logger = app.Host.Services.GetService<ILogger<SettingsAccountControl>>();
-            this.authenticationHelper = this.App.Host.Services.GetService<AuthenticationHelper>();
-            scope.LogDebug(new { authenticationHelper = authenticationHelper.GetLogString() });
+            this.authenticationService = this.App.Host.Services.GetService<AuthenticationService>();
+            scope.LogDebug(new { authenticationService = authenticationService.GetLogString() });
 
             InitializeComponent();
         }
@@ -213,7 +213,7 @@ namespace Common
             try
             {
                 var keyVaultAddress = default(string);
-                var identity = await authenticationHelper.LoginSilentAsync();
+                var identity = await authenticationService.LoginSilentAsync();
                 this.Dispatcher.Invoke(() =>
                 {
                     this.Identity = identity;
@@ -259,8 +259,8 @@ namespace Common
                     scope.LogDebug(new { configurations });
                     if (configurations?.Count == 1) { this.Configuration = configurations.FirstOrDefault(); }
 
-                    var tenantId = authenticationHelper.TenantId;
-                    var clientId = authenticationHelper.ApplicationId;
+                    var tenantId = authenticationService.TenantId;
+                    var clientId = authenticationService.ApplicationId;
 
                     //var token = await credential.GetTokenAsync(new Azure.Core.TokenRequestContext(new[] { "https://management.azure.com/.default" }), new CancellationToken());
                     //var client = new HttpClient();
@@ -472,8 +472,8 @@ namespace Common
         {
             using var scope = logger.BeginMethodScope();
 
-            scope.LogDebug(new { authenticationHelper = authenticationHelper.GetLogString() });
-            if (authenticationHelper == null)
+            scope.LogDebug(new { authenticationService = authenticationService.GetLogString() });
+            if (authenticationService == null)
             {
                 var message = this.GetResourceValue<string>("Info.AuthHelperNotAvailable", "Authentication helper is not available");
                 var ex = new ClientException(message) { Code = ExceptionCodes.PRESSLOGIN };
@@ -482,8 +482,8 @@ namespace Common
                 return;
             }
 
-            await authenticationHelper.LogoutAsync();
-            var identity = await authenticationHelper.LoginAsync();
+            await authenticationService.LogoutAsync();
+            var identity = await authenticationService.LoginAsync();
             this.Identity = identity;
             this.App.SetProperty("Identity", identity);
 
@@ -508,8 +508,8 @@ namespace Common
         {
             using var scope = logger.BeginMethodScope();
 
-            if (authenticationHelper == null) { return; }
-            await authenticationHelper.LogoutAsync(); scope.LogDebug($"await authenticationHelper.LogoutAsync(); completed");
+            if (authenticationService == null) { return; }
+            await authenticationService.LogoutAsync(); scope.LogDebug($"await authenticationService.LogoutAsync(); completed");
             this.Identity = null;
             this.App.SetProperty("Identity", default(Identity));
 

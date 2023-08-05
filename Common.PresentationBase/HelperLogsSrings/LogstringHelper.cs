@@ -45,5 +45,12 @@ namespace Common
             string logString = $"{{Application:{{Id:{pthis.Id},AppId:{pthis.AppId},DisplayName:{pthis.DisplayName},Description:{pthis.Description},PublisherDomain:{pthis.PublisherDomain},SignInAudience:{pthis.SignInAudience},Owners:{pthis.Owners.GetLogString()}}}}}";
             return logString;
         }
+        
+        public static string ToLogStringInternal(Identity pthis)
+        {
+            if (pthis == null) { return null; }
+            string logString = $"{{Identity:{{Name:{pthis.Name},Email:{pthis.Email},Upn:{pthis.Upn},Manager:{pthis.Manager}}}}}";
+            return logString;
+        }
     }
 }

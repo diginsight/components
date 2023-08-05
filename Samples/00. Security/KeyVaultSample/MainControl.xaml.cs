@@ -470,6 +470,9 @@ namespace KeyVaultSample
         {
             using var scope = logger.BeginMethodScope();
 
+            // TODO: new SettingsControl,
+            // TODO: AddItem
+
             ShowSettingsPanel = !ShowSettingsPanel;
             if (ShowSettingsPanel)
             {

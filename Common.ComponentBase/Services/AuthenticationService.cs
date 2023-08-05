@@ -40,13 +40,13 @@ using System.Diagnostics;
 using System.Windows.Interop;
 using Microsoft.Identity.Client.Extensibility;
 using Microsoft.Extensions.Logging;
+using Common.Abstractions;
 //using Microsoft.Identity.Client.Broker;
 #endregion
 
 namespace Common
 {
-    public class AuthenticationService
-        //: IAuthDelegate
+    public class AuthenticationService : IAuthenticationService
     {
         #region constants
         private static readonly Type T = typeof(AuthenticationService);
@@ -56,6 +56,7 @@ namespace Common
         const string CONFIGVALUE_APPVERSION = "AppVersion"; const string DEFAULTVALUE_APPVERSION = "";
         const string CONFIGVALUE_REDIRECTURI = "RedirectUri"; const string DEFAULTVALUE_REDIRECTURI = "";
         const string CONFIGVALUE_SCOPES = "Scopes"; const string DEFAULTVALUE_SCOPES = "";
+        const string CONFIGVALUE_OAUTHVERSIONSUFFIX = "OauthVersionSuffix"; const string DEFAULTVALUE_OAUTHVERSIONSUFFIX = "/2.0";
         //const string CONFIGVALUE_TENANTID = "TenantId"; const string DEFAULTVALUE_TENANTID = "common";
         //const string CONFIGVALUE_REDIRECTURI = "RedirectUri"; const string DEFAULTVALUE_REDIRECTURI = "";
         const string CONFIGVALUE_DATADECLASSGROUPNAME = "GFSCL_DATADECLASS_USERS";
@@ -83,6 +84,29 @@ namespace Common
         #endregion
 
         #region .ctor
+        public AuthenticationService()
+        {
+            using var scope = logger.BeginMethodScope();
+
+            this.tenantId = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID);
+            this.applicationId = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID);
+            this.appName = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_APPNAME, DEFAULTVALUE_APPNAME);
+            this.appVersion = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_APPVERSION, DEFAULTVALUE_APPVERSION);
+            this.redirectUri = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_REDIRECTURI, DEFAULTVALUE_REDIRECTURI);
+            var scopesString = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_SCOPES, DEFAULTVALUE_SCOPES);
+            this.scopes = scopesString?.Split(',');
+            var oauthVersionSuffix = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_OAUTHVERSIONSUFFIX, DEFAULTVALUE_OAUTHVERSIONSUFFIX); // , CultureInfo.InvariantCulture
+
+
+            //this.window = window;
+            var builder = PublicClientApplicationBuilder.Create(applicationId)
+                                .WithAuthority($"https://login.microsoftonline.com/{tenantId}{oauthVersionSuffix}", true) //$"{Instance}{tenantId}"
+                                .WithDefaultRedirectUri();
+
+            publicClientApp = builder.Build(); scope.LogDebug($@"_clientApp = PublicClientApplicationBuilder.Create(applicationId).WithAuthority($'{Instance}{tenantId}', true).WithRedirectUri({this.redirectUri}).Build();");
+
+            TokenCacheHelper.EnableSerialization(publicClientApp.UserTokenCache); scope.LogDebug($"TokenCacheHelper.EnableSerialization({publicClientApp.UserTokenCache}); completed");
+        }
         public AuthenticationService(string tenantId, string applicationId, string appName, string appVersion, string redirectUri, string[] scopes, string oauthVersion, Window window) // ApplicationInfo appInfo, 
         {
             using var scope = logger.BeginMethodScope(new { tenantId, applicationId, appName, appVersion, redirectUri, scopes, oauthVersion, window = window.GetLogString() }); // new { appInfo = appInfo.GetLogString() }
@@ -457,7 +481,7 @@ namespace Common
             }
         }
 
-        public void Logout()
+        public async Task Logout()
         {
             using var scope = logger.BeginMethodScope();
 

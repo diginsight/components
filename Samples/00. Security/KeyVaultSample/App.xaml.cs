@@ -322,7 +322,7 @@ namespace KeyVaultSample
                 case PropertyChangedEventArgs w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case Thread w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case Microsoft.Graph.Models.Application w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
-                //
+                case Identity w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 //case EventProcessorClient w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 default:
                     break;

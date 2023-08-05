@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 
 namespace Common.Abstractions
 {
-    public interface AuthenticationService
+    public interface IAuthenticationService
     {
         Task<Identity> LoginSilentAsync();
         Task<Identity> LoginAsync();
-        Task<Identity> LogoutAsync();
+        Task LogoutAsync();
     }
 }

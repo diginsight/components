@@ -2,7 +2,7 @@
 using Common;
 using System.Threading.Tasks;
 
-namespace Common.Abstractions
+namespace Common
 {
     public interface IAuthenticationService
     {

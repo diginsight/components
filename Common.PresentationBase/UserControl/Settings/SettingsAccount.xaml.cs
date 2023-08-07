@@ -47,6 +47,7 @@ using System.Windows.Media.TextFormatting;
 using Microsoft.Graph.Models.ExternalConnectors;
 using Microsoft.Graph.Models.TermStore;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
+using System.Windows.Markup;
 //using Azure.Management.Resources;
 //using Azure.Management.Resources.Models;
 #endregion
@@ -77,6 +78,7 @@ namespace Common
         private IConfiguration configuration;
         private ILogger<SettingsAccountControl> logger;
         private AuthenticationService authenticationService;
+        private IParallelService parallelService;
 
         #region IsCollapsed
         public bool IsCollapsed
@@ -209,12 +211,18 @@ namespace Common
             using var scope = logger.BeginMethodScope();
             if (DesignerProperties.GetIsInDesignMode(this)) { return; }
 
+
             var app = ApplicationBase.Current as ApplicationBase;
             this.App = app;
 
             this.configuration = app.Host.Services.GetService<IConfiguration>();
             this.logger = app.Host.Services.GetService<ILogger<SettingsAccountControl>>();
-            this.authenticationService = this.App.Host.Services.GetService<AuthenticationService>();
+
+            var authenticationService = this.App.Host.Services.GetService<AuthenticationService>();
+            this.authenticationService = authenticationService;
+            var parallelService = this.App.Host.Services.GetService<IParallelService>();
+            this.parallelService = parallelService;
+
             scope.LogDebug(new { authenticationService = authenticationService.GetLogString() });
 
             InitializeComponent();
@@ -321,12 +329,14 @@ namespace Common
                 if (!string.IsNullOrEmpty(applicationTenantId)) { application = await GetOwnedApplicationAsync(identity, applicationTenantId, clientId); }
                 if (applicationTenantId == null || application == null)
                 {
-                    foreach (var tenant in tenants ?? new List<TenantData>())
+                    var options = new ParallelOptions() { MaxDegreeOfParallelism = parallelService.MediumConcurrency };
+
+                    await parallelService.ForEachAsync(tenants ?? new List<TenantData>(), options, async (tenant) =>
                     {
                         applicationTenantId = tenant.TenantId.ToString();
                         application = await GetOwnedApplicationAsync(identity, applicationTenantId, clientId);
-                        if (application != null) { break; }
-                    }
+                        if (application != null) { var breakException = new BreakLoopException(); breakException.Data["item"] = tenant; throw breakException; }
+                    });
                 }
 
                 var clientTenantId = default(string);

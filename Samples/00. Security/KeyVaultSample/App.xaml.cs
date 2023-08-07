@@ -27,6 +27,8 @@ using Window = System.Windows.Window;
 using Azure.Messaging.EventHubs;
 using System.ComponentModel;
 using System.Threading;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 //using Azure.Extensions.AspNetCore.Configuration.Secrets;
 #endregion
 
@@ -242,7 +244,11 @@ namespace KeyVaultSample
         {
             using var scope = logger.BeginMethodScope(new { configuration, services });
             ConfigurationHelper.Init(configuration); // set full configuration with secrets 
-            //var logger = Host.GetLogger<App>();
+                                                     //var logger = Host.GetLogger<App>();
+
+            //object value = services.AddHttpContextAccessor();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IParallelService, ParallelService>();
 
             services.AddSingleton<Window>((IServiceProvider provider) =>
             {

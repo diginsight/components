@@ -72,9 +72,20 @@
                         </Rectangle>
                     </StackPanel>
                 </Button>
-                <Label Content="{Binding Path=VaultUri.Host, Mode=OneWay, Converter={StaticResource format}, ConverterParameter={}Key Vault: {0}, FallbackValue=Key Vault Sample}" 
-                       VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                       ></Label>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+                            Visibility="{Binding RelativeSource={RelativeSource Self}, Path=(common:AttachedProperties.IsVisible0), Mode=OneWay, Converter={StaticResource booleanToVisibility}}"
+                            common:AttachedProperties.IsVisible0="{Binding Path=VaultUri.Host, Mode=OneWay, Converter={StaticResource isNotNull}, FallbackValue={common:Boolean false}}" >
+                    <Label Content="Key Vault: " ></Label>
+                    <Label FontWeight="Bold" Content="{Binding Path=VaultUri.Host, Mode=OneWay}" ></Label>
+                </StackPanel>
+                <Label Content="{Binding Path=VaultUri.Host, Mode=OneWay, Converter={StaticResource format}, ConverterParameter={}Key Vault: {0}, FallbackValue=Key Vault Sample}"
+                       VerticalAlignment="Center" VerticalContentAlignment="Center"
+                            Visibility="{Binding RelativeSource={RelativeSource Self}, Path=(common:AttachedProperties.IsVisible0), Mode=OneWay, Converter={StaticResource booleanToVisibility}}"
+                            common:AttachedProperties.IsVisible0="{Binding Path=VaultUri.Host, Mode=OneWay, Converter={StaticResource isNull}, FallbackValue={common:Boolean true}}">
+                </Label>
+                <!--<Label VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                       Content="{Binding Path=VaultUri.Host, Mode=OneWay, Converter={StaticResource format}, ConverterParameter={}Key Vault: {0}, FallbackValue=Key Vault Sample}">
+                </Label>-->
                 <!--Background="LightBlue"-->
             </StackPanel>
             <Button Style="{StaticResource IconsButtonTemplate}" Focusable="False" Grid.Column="1"

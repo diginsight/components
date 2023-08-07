@@ -8,7 +8,7 @@
              xmlns:properties="clr-namespace:Common.Properties"
              mc:Ignorable="d" 
              Name="ctlSettingsKeyVaultControl"
-             d:DesignHeight="450" d:DesignWidth="280" 
+             d:DesignHeight="450" d:DesignWidth="350" 
              Initialized="ctlSettingsKeyVaultControl_Initialized"
              >
     <UserControl.Resources>
@@ -22,7 +22,7 @@
         <CommandBinding Command="{x:Static common:Commands.ToggleIsCollapsed}" CanExecute="ToggleIsCollapsedCanExecute" Executed="ToggleIsCollapsedCommand" />
     </UserControl.CommandBindings>
     <Grid Name="MenuGrid" 
-          Width="{Binding ElementName=ctlSettingsKeyVaultControl, Path=IsCollapsed, Mode=OneWay, Converter={StaticResource if}, ConverterParameter=45, FallbackValue=280}"
+          Width="{Binding ElementName=ctlSettingsKeyVaultControl, Path=IsCollapsed, Mode=OneWay, Converter={StaticResource if}, ConverterParameter=45, FallbackValue=350}"
           Background="{StaticResource Grey38}"
           DataContext="{Binding ElementName=ctlSettingsKeyVaultControl, Mode=OneWay}"  >
         <Grid.RowDefinitions>
@@ -46,9 +46,15 @@
                     Command="{x:Static common:Commands.RemoveItem}" CommandParameter="{Binding ElementName=ctlSettingsKeyVaultControl, Path=., Mode=OneWay}"
                     VerticalAlignment="Center" 
                     Style="{StaticResource SimpleButtonTemplate}" 
-                Margin="0,0,0,0"
-                Height="40" Width="40" IsEnabled="True" 
-                Visibility="Visible" HorizontalContentAlignment="Left" Focusable="False" >
+                    Margin="5,0,0,0"
+                    Height="40" Width="40" IsEnabled="True" 
+                    Visibility="Visible" HorizontalContentAlignment="Left" Focusable="False" >
+                <Rectangle Margin="0" Height="32" Width="32" >
+                    <Rectangle.Fill>
+                        <VisualBrush Visual="{StaticResource IconsWphoneAppbarArrowLeft}" Stretch="Uniform" />
+                        <!--IconApplicationButtonsBack-->
+                    </Rectangle.Fill>
+                </Rectangle>
                 <!--<TextBlock Grid.Column="1" Margin="10,0" 
                     Text="&lt;" Foreground="White" Padding="5,10,0,0" TextWrapping="Wrap" FontSize="16" FontFamily="Helvetica Neue eText Pro Light" />-->
                 <!--<Glyphs Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center" Fill="White" FontUri="/Common;component/Resources/Images/icons/abb_icon_24.ttf"
@@ -75,7 +81,7 @@
             <StackPanel Grid.Row="0" Margin="10">
                 <Label  Content="Address" 
                         Foreground="White" FontFamily="Helvetica Neue eText Pro Light" FontSize="12"/>
-                        <!--common:Localization.Uid="{common:Localize Settings.Lang.SelectLanguages, Property={x:Static Label.ContentProperty}}"-->
+                <!--common:Localization.Uid="{common:Localize Settings.Lang.SelectLanguages, Property={x:Static Label.ContentProperty}}"-->
                 <TextBox x:Name="txtAIApplicationID" 
                          Height="30" BorderThickness="0" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
                          VerticalAlignment="Center" VerticalContentAlignment="Center"

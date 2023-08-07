@@ -164,11 +164,9 @@ namespace KeyVaultSample
                     this.Identity = identity;
                     tenantId = App.TenantId; clientId = App.ClientId; clientSecret = App.ClientSecret;
                     App.ConnectionString = App.KeyVaultAddress = keyVaultAddress;
-                    
+
                     scope.LogDebug(new { this.Identity, tenantId, clientId, clientSecret, keyVaultAddress });
                 });
-
-
 
                 TokenCredential credential = null;
                 if (!string.IsNullOrEmpty(clientSecret)) { credential = new ClientSecretCredential(tenantId, clientId, clientSecret); }
@@ -188,6 +186,11 @@ namespace KeyVaultSample
                     });
 
                     var secretClient = new SecretClient(new Uri(keyVaultAddress), credential);
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        this.VaultUri = secretClient.VaultUri;
+                    });
+
                     configurationManager.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
                     scope.LogDebug($"configurationManager.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());");
                 }

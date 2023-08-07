@@ -72,7 +72,7 @@
                         </Rectangle>
                     </StackPanel>
                 </Button>
-                <Label Content="{Binding Path=VaultUri.Host, Mode=OneWay}" 
+                <Label Content="{Binding Path=VaultUri.Host, Mode=OneWay, Converter={StaticResource format}, ConverterParameter={}Key Vault: {0}, FallbackValue=Key Vault Sample}" 
                        VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                        ></Label>
                 <!--Background="LightBlue"-->

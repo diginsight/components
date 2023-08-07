@@ -48,6 +48,7 @@ using Microsoft.Graph.Models.ExternalConnectors;
 using Microsoft.Graph.Models.TermStore;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using System.Windows.Markup;
+using System.Net;
 //using Azure.Management.Resources;
 //using Azure.Management.Resources.Models;
 #endregion
@@ -254,6 +255,8 @@ namespace Common
                 var identity = await authenticationService.LoginSilentAsync();
                 authTenantId = authenticationService.AuthenticationResult.TenantId;
 
+                // LoadState(this) 
+
                 this.Dispatcher.Invoke(() =>
                 {
                     this.Identity = identity;
@@ -275,31 +278,8 @@ namespace Common
                 }
                 if (credential == null) { return; }
 
-                var profileFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData); // UserProfile
-                var currentProcessFileName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-                var executableName = Path.GetFileNameWithoutExtension(currentProcessFileName);
-                var configurationFilePath = Path.Combine(profileFolder, executableName, "Configuration");
-                scope.LogDebug(new { configurationFilePath });
-
-                var configurations = new List<TenantConfiguration>();
                 var configuration = new TenantConfiguration();
-                if (Directory.Exists(configurationFilePath))
-                {
-                    string[] fileNames = Directory.GetFiles(configurationFilePath); scope.LogDebug($"Directory.GetFiles(configurationFilePath); returned {fileNames.GetLogString()}");
-                    foreach (string fileName in fileNames)
-                    {
-                        try
-                        {
-                            scope.LogDebug(new { fileName });
-                            var json = File.ReadAllText(fileName);
-                            var tenantConfiguration = JsonConvert.DeserializeObject<TenantConfiguration>(json);
-
-                            configurations.Add(tenantConfiguration);
-                        }
-                        catch (Exception ex) { }
-                    }
-                }
-
+                var configurations = GetTenantConfigurations();
                 this.Dispatcher.Invoke(() =>
                 {
                     scope.LogDebug(new { configurations });
@@ -307,16 +287,7 @@ namespace Common
                     if (configurations?.Count == 1) { this.Configuration = configuration = configurations.FirstOrDefault(); }
                 });
 
-                var tenants = new List<TenantData>();
-                var armClient = new ArmClient(credential);
-                var tenantObjects = armClient.GetTenants();
-                foreach (var tenantObj in tenantObjects)
-                {
-                    var tenantItem = tenantObj.Data;
-                    scope.LogDebug($"Id:{tenantItem.Id},TenantId:{tenantItem.TenantId},DisplayName:{tenantItem.DisplayName},DefaultDomain:{tenantItem.DefaultDomain},TenantCategory:{tenantItem.TenantCategory},TenantType:{tenantItem.TenantType},Country:{tenantItem.Country},CountryCode:{tenantItem.CountryCode}");
-                    tenants.Add(tenantItem);
-                }
-
+                var tenants = GetUserTenants(credential);
                 this.Dispatcher.Invoke(() =>
                 {
                     this.Tenants = tenants;
@@ -456,6 +427,13 @@ namespace Common
                     this.Application = application;
                 }));
 
+                // if (application!=null) { }
+                    // PersistState(this) 
+                        // Identity
+                        // tenantId
+                        // Tenant
+                        // clientId
+                        // Application
 
 
                 ////// get the list of owned appregistrations 
@@ -495,6 +473,53 @@ namespace Common
                 //RegreshCount += 1;
             }
 
+        }
+
+        private List<TenantConfiguration> GetTenantConfigurations()
+        {
+            using var scope = logger.BeginMethodScope();
+
+            var profileFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData); // UserProfile
+            var currentProcessFileName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            var executableName = Path.GetFileNameWithoutExtension(currentProcessFileName);
+            var configurationFilePath = Path.Combine(profileFolder, executableName, "Configuration");
+            scope.LogDebug(new { configurationFilePath });
+
+            var configurations = new List<TenantConfiguration>();
+            if (Directory.Exists(configurationFilePath))
+            {
+                string[] fileNames = Directory.GetFiles(configurationFilePath); scope.LogDebug($"Directory.GetFiles(configurationFilePath); returned {fileNames.GetLogString()}");
+                foreach (string fileName in fileNames)
+                {
+                    try
+                    {
+                        scope.LogDebug(new { fileName });
+                        var json = File.ReadAllText(fileName);
+                        var tenantConfiguration = JsonConvert.DeserializeObject<TenantConfiguration>(json);
+
+                        configurations.Add(tenantConfiguration);
+                    }
+                    catch (Exception ex) { }
+                }
+            }
+            return configurations;
+        }
+
+        private List<TenantData> GetUserTenants(TokenCredential credential)
+        {
+            using var scope = logger.BeginMethodScope(new { credential= credential.GetLogString() });
+
+            var tenants = new List<TenantData>();
+            var armClient = new ArmClient(credential);
+            var tenantObjects = armClient.GetTenants();
+            foreach (var tenantObj in tenantObjects)
+            {
+                var tenantItem = tenantObj.Data;
+                scope.LogDebug($"Id:{tenantItem.Id},TenantId:{tenantItem.TenantId},DisplayName:{tenantItem.DisplayName},DefaultDomain:{tenantItem.DefaultDomain},TenantCategory:{tenantItem.TenantCategory},TenantType:{tenantItem.TenantType},Country:{tenantItem.Country},CountryCode:{tenantItem.CountryCode}");
+                tenants.Add(tenantItem);
+            }
+
+            return tenants;
         }
 
         async Task<Microsoft.Graph.Models.Application> GetOwnedApplicationAsync(Identity identity, string tenantId, string clientId)

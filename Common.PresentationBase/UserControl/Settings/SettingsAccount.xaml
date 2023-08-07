@@ -62,9 +62,16 @@
                     Command="{x:Static common:Commands.RemoveItem}" CommandParameter="{Binding ElementName=ctlSettingsAccountControl, Path=., Mode=OneWay}"
                     VerticalAlignment="Center" 
                     Style="{StaticResource SimpleButtonTemplate}" 
-                Margin="0,0,0,0"
+                Margin="5,0,0,0"
                 Height="40" Width="40" IsEnabled="True" 
                 Visibility="Visible" HorizontalContentAlignment="Left" Focusable="False" >
+                <Rectangle Margin="0" Height="32" Width="32" >
+                    <Rectangle.Fill>
+                        <VisualBrush Visual="{StaticResource IconsWphoneAppbarArrowLeft}" Stretch="Uniform" />
+                        <!--IconApplicationButtonsBack-->
+                    </Rectangle.Fill>
+                </Rectangle>
+
                 <!--<TextBlock Grid.Column="1" Margin="10,0" 
                     Text="&lt;" Foreground="White" Padding="5,10,0,0" TextWrapping="Wrap" FontSize="16" FontFamily="Helvetica Neue eText Pro Light" />-->
                 <!--<Glyphs Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center" Fill="White" FontUri="/Common;component/Resources/Images/icons/abb_icon_24.ttf"

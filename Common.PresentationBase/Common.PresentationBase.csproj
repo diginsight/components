@@ -283,6 +283,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\Application\Buttons\01. Arrows.pptx" />
+	  <None Remove="Resources\Images\Application\Buttons\Back.svg" />
 	  <None Remove="Resources\Images\Azure\Azure icons.url" />
 	  <None Remove="Resources\Images\Azure\Azure_Icons_FAQ.pdf" />
 	  <None Remove="Resources\Images\Azure\Microsoft_Terms_of_Use.pdf" />
@@ -383,6 +385,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
 	  <Page Include="Resources\Images\Azure\security\10245-icon-service-Key-Vaults.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\icons\wphone\appbar.arrow.left.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
 	  <Page Include="Resources\Images\VisualStudio\2022\c\CloakOrHide.xaml">

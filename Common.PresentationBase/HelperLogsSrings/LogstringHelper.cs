@@ -1,4 +1,5 @@
 ﻿#region using
+using Azure.ResourceManager.Resources;
 using Common;
 using System;
 using System.Collections.Generic;
@@ -50,6 +51,12 @@ namespace Common
         {
             if (pthis == null) { return null; }
             string logString = $"{{Identity:{{Name:{pthis.Name},Email:{pthis.Email},Upn:{pthis.Upn},Manager:{pthis.Manager}}}}}";
+            return logString;
+        }
+        public static string ToLogStringInternal(TenantData pthis)
+        {
+            if (pthis == null) { return null; }
+            string logString = $"{{TenantData:{{DisplayName:{pthis.DisplayName},DefaultDomain:{pthis.DefaultDomain},Id:{pthis.Id},TenantId:{pthis.TenantId},TenantType:{pthis.TenantType},TenantCategory:{pthis.TenantCategory},Country:{pthis.Country},CountryCode:{pthis.CountryCode},TenantBrandingLogoUri:{pthis.TenantBrandingLogoUri}}}}}";
             return logString;
         }
     }

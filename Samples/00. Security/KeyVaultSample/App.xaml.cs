@@ -29,6 +29,7 @@ using System.ComponentModel;
 using System.Threading;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Azure.ResourceManager.Resources;
 //using Azure.Extensions.AspNetCore.Configuration.Secrets;
 #endregion
 
@@ -329,6 +330,7 @@ namespace KeyVaultSample
                 case Thread w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case Microsoft.Graph.Models.Application w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case Identity w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case TenantData w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 //case EventProcessorClient w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 default:
                     break;

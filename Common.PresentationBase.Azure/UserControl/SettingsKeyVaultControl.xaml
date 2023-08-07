@@ -79,29 +79,62 @@
                 </MultiBinding>
             </common:AttachedProperties.Boolean0>-->
             <StackPanel Grid.Row="0" Margin="10">
-                <Label  Content="Address" 
-                        Foreground="White" FontFamily="Helvetica Neue eText Pro Light" FontSize="12"/>
+                <!--<Label  Content="Address" 
+                        Foreground="White" FontFamily="Helvetica Neue eText Pro Light" FontSize="12"/>-->
                 <!--common:Localization.Uid="{common:Localize Settings.Lang.SelectLanguages, Property={x:Static Label.ContentProperty}}"-->
-                <TextBox x:Name="txtAIApplicationID" 
-                         Height="30" BorderThickness="0" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label  Content="Tenant" Grid.Column="0" VerticalAlignment="Bottom"
+                        Foreground="White" FontFamily="Helvetica Neue eText Pro Light" FontSize="12"/>
+                </Grid>
+
+                <ComboBox x:Name="cboTenants" 
+                         Height="30" BorderThickness="0" Margin="0,2" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
                          VerticalAlignment="Center" VerticalContentAlignment="Center"
                          Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" 
-                         Text="{Binding Path=AIApplicationID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         ItemsSource="{Binding Path=Tenants, Mode=OneWay}"
+                         SelectedItem="{Binding Path=Tenant, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          >
-                </TextBox>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DisplayName}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label  Content="Key vault" Grid.Column="0" VerticalAlignment="Bottom"
+                        Foreground="White" FontFamily="Helvetica Neue eText Pro Light" FontSize="12"/>
+                </Grid>
+                <!--<TextBox x:Name="txtClientId" 
+                         Height="30" BorderThickness="0" Margin="0,2" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
+                         VerticalAlignment="Center" VerticalContentAlignment="Center"
+                         Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" 
+                         Text="{Binding Path=ClientId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    --><!-- DisplayMemberPath="NativeName" DropDownClosed="CmbLanguages_DropDownClosed" --><!--
+                </TextBox>-->
+                <ComboBox x:Name="cboApplications" 
+                         Height="30" BorderThickness="0" Margin="0,2" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
+                         VerticalAlignment="Center" VerticalContentAlignment="Center"
+                         Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" 
+                         ItemsSource="{Binding Path=KeyVaults, Mode=OneWay}"
+                         SelectedItem="{Binding Path=KeyVault, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </StackPanel>
 
-            <!--<StackPanel Grid.Row="1" Margin="10">
-                <Label  Content="Akv key" 
-                        Foreground="White" FontFamily="Helvetica Neue eText Pro Light" FontSize="12"/>
-                <TextBox x:Name="txtAIApiKey" 
-                          Height="30" BorderThickness="0" FontFamily="Helvetica Neue eText Pro Light" FontSize="14" 
-                          VerticalAlignment="Center" VerticalContentAlignment="Center"
-                          Background="{StaticResource Grey255}" SnapsToDevicePixels="True" UseLayoutRounding="False" 
-                          Text="{Binding Path=AIApiKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         >
-                </TextBox>
-            </StackPanel>-->
         </Grid>
     </Grid>
 </UserControl>

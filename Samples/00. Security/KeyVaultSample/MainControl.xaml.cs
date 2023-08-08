@@ -78,8 +78,8 @@ namespace KeyVaultSample
         }
         private void App_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
-            scope.LogDebug(new { e.PropertyName });
+            using var scope = logger.BeginMethodScope(new { e = e.GetLogString(), Value = App.Properties[e.PropertyName].GetLogString(), sender = sender.GetLogString()});
+            //scope.LogDebug(new { e.PropertyName, );
 
             if (new[] { "Identity" }.Contains(e.PropertyName)) { Identity_PropertyChanged(sender, e); return; }
             if (new[] { "KeyVaultAddress" }.Contains(e.PropertyName)) { KeyVaultAddress_OuterPropertyChanged(sender, e); return; }
@@ -89,7 +89,7 @@ namespace KeyVaultSample
         Reference<bool> _lockIdentity_PropertyChanged = new Reference<bool>();
         private void Identity_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
+            using var scope = logger.BeginMethodScope(new { e = e.GetLogString(), Value = App.Properties[e.PropertyName].GetLogString(), sender = sender.GetLogString() });
 
             if (this._lockIdentity_PropertyChanged.Value) { return; }
             using var switchLocal = new SwitchOnDispose(this._lockIdentity_PropertyChanged, true);
@@ -98,7 +98,7 @@ namespace KeyVaultSample
         }
         private void KeyVaultAddress_OuterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            using var scope = logger.BeginMethodScope(new { sender, e });
+            using var scope = logger.BeginMethodScope(new { e = e.GetLogString(), Value = App.Properties[e.PropertyName].GetLogString(), sender = sender.GetLogString() });
 
             //if (this._lockKeyVault_PropertyChanged.Value) { return; }
             //using var switchLocal = new SwitchOnDispose(this._lockKeyVault_PropertyChanged, true);

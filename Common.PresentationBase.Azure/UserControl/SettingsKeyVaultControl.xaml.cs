@@ -34,6 +34,7 @@ using Azure;
 using System.Diagnostics;
 using Microsoft.Rest.Azure.OData;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
+using System.Net;
 #endregion
 
 namespace Common
@@ -138,7 +139,31 @@ namespace Common
             get { return (TenantData)GetValue(TenantProperty); }
             set { SetValue(TenantProperty, value); }
         }
-        public static readonly DependencyProperty TenantProperty = DependencyProperty.Register("Tenant", typeof(TenantData), T, new PropertyMetadata());
+        Reference<bool> _lockTenant_PropertyChanged = new Reference<bool>();
+        public static readonly DependencyProperty TenantProperty = DependencyProperty.Register("Tenant", typeof(TenantData), T, new PropertyMetadata(null, TenantChanged));
+        public static void TenantChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var pthis = d as SettingsKeyVaultControl;
+            if (DesignerProperties.GetIsInDesignMode(pthis)) { return; }
+            using var scope = TraceLogger.BeginMethodScope(T, new { d, e });
+
+            if (pthis._lockTenant_PropertyChanged.Value) { return; }
+            using var switchLocal = new SwitchOnDispose(pthis._lockTenant_PropertyChanged, true);
+
+            var tenant = e.NewValue as TenantData;
+            //var keyVaultAddress = $"https://{keyVault.Name}.vault.azure.net/";
+            //pthis.App.SetProperty("KeyVaultAddress", keyVaultAddress);
+
+        }
+        #endregion
+
+        #region Application
+        public Microsoft.Graph.Models.Application Application
+        {
+            get { return (Microsoft.Graph.Models.Application)GetValue(ApplicationProperty); }
+            set { SetValue(ApplicationProperty, value); }
+        }
+        public static readonly DependencyProperty ApplicationProperty = DependencyProperty.Register("Application", typeof(Microsoft.Graph.Models.Application), T, new PropertyMetadata());
         #endregion
 
         #region KeyVaultAddress
@@ -147,7 +172,7 @@ namespace Common
             get { return (string)GetValue(KeyVaultAddressProperty); }
             set { SetValue(KeyVaultAddressProperty, value); }
         }
-        public static readonly DependencyProperty KeyVaultAddressProperty = DependencyProperty.Register("KeyVaultAddressAddress", typeof(string), T, new PropertyMetadata());
+        public static readonly DependencyProperty KeyVaultAddressProperty = DependencyProperty.Register("KeyVaultAddress", typeof(string), T, new PropertyMetadata());
         #endregion
         #region KeyVaults
         public IList<GenericResourceData> KeyVaults
@@ -158,12 +183,12 @@ namespace Common
         public static readonly DependencyProperty KeyVaultsProperty = DependencyProperty.Register("KeyVaults", typeof(IList<GenericResourceData>), T, new PropertyMetadata());
         #endregion
         #region KeyVault
-        Reference<bool> _lockKeyVault_PropertyChanged = new Reference<bool>();
         public GenericResourceData KeyVault
         {
             get { return (GenericResourceData)GetValue(KeyVaultProperty); }
             set { SetValue(KeyVaultProperty, value); }
         }
+        Reference<bool> _lockKeyVault_PropertyChanged = new Reference<bool>();
         public static readonly DependencyProperty KeyVaultProperty = DependencyProperty.Register("KeyVault", typeof(GenericResourceData), T, new PropertyMetadata(null, KeyVaultChanged));
         public static void KeyVaultChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -175,9 +200,11 @@ namespace Common
             using var switchLocal = new SwitchOnDispose(pthis._lockKeyVault_PropertyChanged, true);
 
             var keyVault = e.NewValue as GenericResourceData;
-            var keyVaultAddress = $"https://{keyVault.Name}.vault.azure.net/";
-            pthis.App.SetProperty("KeyVaultAddress", keyVaultAddress);
-
+            if (keyVault != null)
+            {
+                var keyVaultAddress = $"https://{keyVault.Name}.vault.azure.net/";
+                pthis.App.SetProperty("KeyVaultAddress", keyVaultAddress);
+            }
         }
         #endregion
 
@@ -199,7 +226,7 @@ namespace Common
 
             var app = ApplicationBase.Current as ApplicationBase;
             this.App = app;
-            this.App.PropertyChanged += App_PropertyChanged;
+            this.App.PropertyChanged += App_PropertyChanged; scope.LogDebug($"this.App.PropertyChanged += SettingsKeyVaultControl.App_PropertyChanged; registered");
 
             this.configuration = app.Host.Services.GetService<IConfiguration>();
             this.logger = app.Host.Services.GetService<ILogger<SettingsKeyVaultControl>>();
@@ -223,16 +250,18 @@ namespace Common
             if (new[] { "KeyVaultAddress" }.Contains(e.PropertyName)) { KeyVaultAddress_OuterPropertyChanged(sender, e); return; }
         }
         #endregion
+        #region KeyVaultAddress_OuterPropertyChanged
         private void KeyVaultAddress_OuterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             using var scope = logger.BeginMethodScope(new { sender, e });
-            
-            //if (this._lockKeyVault_PropertyChanged.Value) { return; }
-            //using var switchLocal = new SwitchOnDispose(this._lockKeyVault_PropertyChanged, true);
+
+            // if (this._lockKeyVault_PropertyChanged.Value) { return; }
+            // using var switchLocal = new SwitchOnDispose(this._lockKeyVault_PropertyChanged, true);
 
             var KeyVaultAddress = App.GetProperty<string>("KeyVaultAddress");
             this.KeyVaultAddress = KeyVaultAddress;
         }
+        #endregion
 
         #region ctlSettingsKeyVaultControl_Initialized
         private void ctlSettingsKeyVaultControl_Initialized(object sender, EventArgs e)
@@ -271,7 +300,7 @@ namespace Common
                     tenantId = this.TenantId = this.App.Properties["TenantId"] as string;
                     clientId = this.ClientId = this.App.Properties["ClientId"] as string;
                     clientSecret = this.ClientSecret = this.App.Properties["ClientSecret"] as string;
-                    keyVaultAddress = this.App.Properties["KeyVaultAddress"] as string;
+                    keyVaultAddress = this.KeyVaultAddress = this.App.Properties["KeyVaultAddress"] as string;
                 });
                 scope.LogDebug(new { identity = identity.GetLogString() });
                 scope.LogDebug(new { tenantId, authTenantId, clientId, clientSecret, keyVaultAddress });
@@ -316,6 +345,10 @@ namespace Common
                         if (application != null) { var breakException = new BreakLoopException(); breakException.Data["item"] = tenant; throw breakException; }
                     });
                 }
+                this.Dispatcher.Invoke(() =>
+                {
+                    this.Application = application;
+                });
 
                 var clientTenantId = default(string);
                 if (application != null)
@@ -333,45 +366,8 @@ namespace Common
                 });
 
 
+                // _TenantChanged
                 //var tenants = new List<TenantData>();
-                var credentialOptions1 = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = identity.Upn, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
-                credentialOptions1.TenantId = clientTenantId;
-                credential = new DefaultAzureCredential(credentialOptions1);
-
-                var armClient = new ArmClient(credential);
-                var subscription = await armClient.GetDefaultSubscriptionAsync(); // .GetResourceGroups();
-
-                string filterQuery = "resourceType eq 'Microsoft.KeyVault/vaults'"; // Modify this filter as needed
-                var resourcesPageable = subscription.GetGenericResourcesAsync(filterQuery);
-
-                var keyVaults = new List<GenericResourceData>();
-                await foreach (Page<GenericResource> page in resourcesPageable.AsPages())
-                {
-                    foreach (GenericResource akvResource in page.Values)
-                    {
-                        var akvResourceData = akvResource.Data;
-                        keyVaults.Add(akvResourceData);
-                        // akvData.CreatedOn
-                        // akvData.ChangedOn
-                        // akvData.Id
-                        // akvData.Location
-                        // akvData.Name
-                        // akvData.ResourceType
-                    }
-                }
-
-                this.Dispatcher.Invoke(() =>
-                {
-                    this.KeyVaults = keyVaults;
-                });
-
-                var keyVault = keyVaults.FirstOrDefault(kv => $"https://{kv.Name}.vault.azure.net/" == keyVaultAddress);
-                this.Dispatcher.Invoke(() =>
-                {
-                    this.KeyVault = keyVault;
-                });
-
-                scope.LogDebug(new { keyVaults = keyVaults.GetLogString(), keyVault = keyVault.GetLogString() });
 
             }
             catch (Exception ex)
@@ -489,6 +485,7 @@ namespace Common
         }
         #endregion
 
+        #region KeyVaultAddressChanged_ConvertEvent2
         private object KeyVaultAddressChanged_ConvertEvent2(DependencyObject source, object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             using var scope = logger.BeginMethodScope(new { values = values.GetLogString(), targetType, parameter = parameter.GetLogString(), source, culture });
@@ -496,6 +493,8 @@ namespace Common
             int i = 0;
             var keyVaults = values != null && values.Length > i ? values[i] as List<GenericResourceData> : null; i++;
             var keyVaultAddress = values != null && values.Length > i ? values[i] as string : null; i++;
+            scope.LogDebug(new { keyVaults = keyVaults.GetLogString() });
+            scope.LogDebug(new { keyVaultAddress });
 
             if (keyVaults == null) { return null; }
 
@@ -503,6 +502,66 @@ namespace Common
             this.KeyVault = keyVault;
 
             return null;
+        }
+        #endregion
+        private async void tenantChanged_ConvertEvent2Async(DoWorkContext worker, DependencyObject source, object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            using var scope = logger.BeginMethodScope(new { values = values.GetLogString(), targetType, parameter = parameter.GetLogString(), source, culture });
+
+            int i = 0;
+            var identity = values != null && values.Length > i ? values[i] as Identity : null; i++;
+            var tenant = values != null && values.Length > i ? values[i] as TenantData : null; i++;
+            var keyVaultAddress = values != null && values.Length > i ? values[i] as string : null; i++;
+            scope.LogDebug(new { identity = identity.GetLogString() });
+            scope.LogDebug(new { tenant = tenant.GetLogString() });
+            scope.LogDebug(new { keyVaultAddress, tenant = tenant.GetLogString() });
+
+            if (identity == null) { return /*null*/; }
+            if (tenant == null) { return /*null*/; }
+
+            //var clientTenantId = default(string);
+            //if (application != null)
+            //{
+            //    var applicationTenant = tenants.FirstOrDefault(t => t.DefaultDomain == application.PublisherDomain);
+            //    clientTenantId = applicationTenant?.TenantId?.ToString();
+            //}
+            ////if (string.IsNullOrEmpty(clientTenantId)) { clientTenantId = configuration?.ClientTenantId; }
+            //if (string.IsNullOrEmpty(clientTenantId)) { clientTenantId = authenticationService?.AuthenticationResult?.TenantId; }
+
+            var credentialOptions1 = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = identity.Upn, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
+            credentialOptions1.TenantId = tenant.TenantId.ToString();
+            var credential = new DefaultAzureCredential(credentialOptions1);
+
+            var armClient = new ArmClient(credential);
+            var subscription = await armClient.GetDefaultSubscriptionAsync(); // .GetResourceGroups();
+
+            string filterQuery = "resourceType eq 'Microsoft.KeyVault/vaults'"; // Modify this filter as needed
+            var resourcesPageable = subscription.GetGenericResourcesAsync(filterQuery);
+
+            var keyVaults = new List<GenericResourceData>();
+            await foreach (Page<GenericResource> page in resourcesPageable.AsPages())
+            {
+                foreach (GenericResource akvResource in page.Values)
+                {
+                    var akvResourceData = akvResource.Data;
+                    keyVaults.Add(akvResourceData); // CreatedOn, ChangedOn, Id, Location, Name, ResourceType
+                }
+            }
+
+            this.Dispatcher.Invoke(() =>
+            {
+                this.KeyVaults = keyVaults;
+            });
+
+            var keyVault = keyVaults.FirstOrDefault(kv => $"https://{kv.Name}.vault.azure.net/" == keyVaultAddress);
+            this.Dispatcher.Invoke(() =>
+            {
+                this.KeyVault = keyVault;
+            });
+
+            scope.LogDebug(new { keyVaults = keyVaults.GetLogString(), keyVault = keyVault.GetLogString() });
+
+            return /*null*/;
         }
     }
 }

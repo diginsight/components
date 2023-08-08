@@ -18,6 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <common:EventConverter x:Key="KeyVaultAddressChanged" ConvertEvent2="KeyVaultAddressChanged_ConvertEvent2" />
+            <common:EventConverter x:Key="tenantChanged" ConvertEvent2Async="tenantChanged_ConvertEvent2Async" />
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.CommandBindings>
@@ -40,6 +41,13 @@
                 <Binding Path="KeyVaultAddress" Mode="OneWay" />
             </MultiBinding>
         </common:AttachedProperties.Object0>
+        <common:AttachedProperties.Object1>
+            <MultiBinding Converter="{StaticResource tenantChanged}">
+                <Binding Path="Identity" Mode="OneWay" />
+                <Binding Path="Tenant" Mode="OneWay" />
+                <Binding Path="KeyVaultAddress" Mode="OneWay" />
+            </MultiBinding>
+        </common:AttachedProperties.Object1>
 
         <Grid HorizontalAlignment="Stretch" 
               Grid.Row="0" Name="grdTitle" Height="45" 

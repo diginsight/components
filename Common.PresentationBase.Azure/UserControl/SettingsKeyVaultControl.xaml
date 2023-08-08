@@ -16,6 +16,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Common.PresentationBase;component/Resources/DefaultSkin.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <common:EventConverter x:Key="KeyVaultAddressChanged" ConvertEvent2="KeyVaultAddressChanged_ConvertEvent2" />
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.CommandBindings>
@@ -32,6 +34,12 @@
             <RowDefinition Height="0"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <common:AttachedProperties.Object0>
+            <MultiBinding Converter="{StaticResource KeyVaultAddressChanged}">
+                <Binding Path="KeyVaults" Mode="OneWay" />
+                <Binding Path="KeyVaultAddress" Mode="OneWay" />
+            </MultiBinding>
+        </common:AttachedProperties.Object0>
 
         <Grid HorizontalAlignment="Stretch" 
               Grid.Row="0" Name="grdTitle" Height="45" 

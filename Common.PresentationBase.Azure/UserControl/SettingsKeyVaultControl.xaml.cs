@@ -33,6 +33,7 @@ using Azure.ResourceManager;
 using Azure;
 using System.Diagnostics;
 using Microsoft.Rest.Azure.OData;
+using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 #endregion
 
 namespace Common
@@ -40,6 +41,7 @@ namespace Common
     /// <summary>Interaction logic for SettingsDownloadControl.xaml</summary>
     public partial class SettingsKeyVaultControl : UserControl
     {
+        const string CONFIGVALUE_KEYVAULTADDRESS = "KeyVaultAddress", DEFAULTVALUE_KEYVAULTADDRESS = "";
         private static readonly Type T = typeof(SettingsKeyVaultControl);
         private ILogger<SettingsKeyVaultControl> logger;
         private IConfiguration configuration;
@@ -121,6 +123,7 @@ namespace Common
         }
         public static readonly DependencyProperty ConfigurationsProperty = DependencyProperty.Register("Configurations", typeof(IList<TenantConfiguration>), T, new PropertyMetadata());
         #endregion
+
         #region Tenants
         public IList<TenantData> Tenants
         {
@@ -137,6 +140,15 @@ namespace Common
         }
         public static readonly DependencyProperty TenantProperty = DependencyProperty.Register("Tenant", typeof(TenantData), T, new PropertyMetadata());
         #endregion
+
+        #region KeyVaultAddress
+        public string KeyVaultAddress
+        {
+            get { return (string)GetValue(KeyVaultAddressProperty); }
+            set { SetValue(KeyVaultAddressProperty, value); }
+        }
+        public static readonly DependencyProperty KeyVaultAddressProperty = DependencyProperty.Register("KeyVaultAddressAddress", typeof(string), T, new PropertyMetadata());
+        #endregion
         #region KeyVaults
         public IList<GenericResourceData> KeyVaults
         {
@@ -146,14 +158,29 @@ namespace Common
         public static readonly DependencyProperty KeyVaultsProperty = DependencyProperty.Register("KeyVaults", typeof(IList<GenericResourceData>), T, new PropertyMetadata());
         #endregion
         #region KeyVault
+        Reference<bool> _lockKeyVault_PropertyChanged = new Reference<bool>();
         public GenericResourceData KeyVault
         {
             get { return (GenericResourceData)GetValue(KeyVaultProperty); }
             set { SetValue(KeyVaultProperty, value); }
         }
-        public static readonly DependencyProperty KeyVaultProperty = DependencyProperty.Register("KeyVault", typeof(GenericResourceData), T, new PropertyMetadata());
+        public static readonly DependencyProperty KeyVaultProperty = DependencyProperty.Register("KeyVault", typeof(GenericResourceData), T, new PropertyMetadata(null, KeyVaultChanged));
+        public static void KeyVaultChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var pthis = d as SettingsKeyVaultControl;
+            if (DesignerProperties.GetIsInDesignMode(pthis)) { return; }
+            using var scope = TraceLogger.BeginMethodScope(T, new { d, e });
+
+            if (pthis._lockKeyVault_PropertyChanged.Value) { return; }
+            using var switchLocal = new SwitchOnDispose(pthis._lockKeyVault_PropertyChanged, true);
+
+            var keyVault = e.NewValue as GenericResourceData;
+            var keyVaultAddress = $"https://{keyVault.Name}.vault.azure.net/";
+            pthis.App.SetProperty("KeyVaultAddress", keyVaultAddress);
+
+        }
         #endregion
-        
+
         #region App
         public ApplicationBase App
         {
@@ -163,11 +190,8 @@ namespace Common
         public static readonly DependencyProperty AppProperty = DependencyProperty.Register("App", typeof(ApplicationBase), T, new PropertyMetadata(null));
         #endregion
 
-
         #region .ctor
-        static SettingsKeyVaultControl()
-        {
-        }
+        static SettingsKeyVaultControl() { }
         public SettingsKeyVaultControl()
         {
             using var scope = logger.BeginMethodScope();
@@ -175,6 +199,7 @@ namespace Common
 
             var app = ApplicationBase.Current as ApplicationBase;
             this.App = app;
+            this.App.PropertyChanged += App_PropertyChanged;
 
             this.configuration = app.Host.Services.GetService<IConfiguration>();
             this.logger = app.Host.Services.GetService<ILogger<SettingsKeyVaultControl>>();
@@ -189,18 +214,36 @@ namespace Common
             InitializeComponent();
         }
         #endregion
+        #region App_PropertyChanged
+        private void App_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (DesignerProperties.GetIsInDesignMode(this)) { return; }
+            using var scope = logger.BeginMethodScope(new { sender, e });
 
+            if (new[] { "KeyVaultAddress" }.Contains(e.PropertyName)) { KeyVaultAddress_OuterPropertyChanged(sender, e); return; }
+        }
+        #endregion
+        private void KeyVaultAddress_OuterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            using var scope = logger.BeginMethodScope(new { sender, e });
+            
+            //if (this._lockKeyVault_PropertyChanged.Value) { return; }
+            //using var switchLocal = new SwitchOnDispose(this._lockKeyVault_PropertyChanged, true);
+
+            var KeyVaultAddress = App.GetProperty<string>("KeyVaultAddress");
+            this.KeyVaultAddress = KeyVaultAddress;
+        }
+
+        #region ctlSettingsKeyVaultControl_Initialized
         private void ctlSettingsKeyVaultControl_Initialized(object sender, EventArgs e)
         {
             if (DesignerProperties.GetIsInDesignMode(this)) { return; }
             using var scope = logger.BeginMethodScope(new { sender, e });
 
             Task.Run(async () => await ctlSettingsKeyVaultControl_InitializedAsync(sender, e));
-
-            //var app = Application.Current as ApplicationBase;
-            //this.AIApplicationID = app.Properties["AIApplicationID"] as string;
-            //this.AIApiKey = app.Properties["AIApiKey"] as string;
         }
+        #endregion
+        #region ctlSettingsKeyVaultControl_InitializedAsync
         private async Task ctlSettingsKeyVaultControl_InitializedAsync(object sender, EventArgs e)
         {
             var isInDesignMode = false;
@@ -225,10 +268,10 @@ namespace Common
                 {
                     this.Identity = identity;
                     this.App.SetProperty("Identity", identity);
-                    tenantId = this.TenantId = ApplicationBase.Current.Properties["TenantId"] as string;
-                    clientId = this.ClientId = ApplicationBase.Current.Properties["ClientId"] as string;
-                    clientSecret = this.ClientSecret = ApplicationBase.Current.Properties["ClientSecret"] as string;
-                    keyVaultAddress = ApplicationBase.Current.Properties["KeyVaultAddress"] as string;
+                    tenantId = this.TenantId = this.App.Properties["TenantId"] as string;
+                    clientId = this.ClientId = this.App.Properties["ClientId"] as string;
+                    clientSecret = this.ClientSecret = this.App.Properties["ClientSecret"] as string;
+                    keyVaultAddress = this.App.Properties["KeyVaultAddress"] as string;
                 });
                 scope.LogDebug(new { identity = identity.GetLogString() });
                 scope.LogDebug(new { tenantId, authTenantId, clientId, clientSecret, keyVaultAddress });
@@ -287,7 +330,6 @@ namespace Common
                 {
                     var tenant = this.Tenants.FirstOrDefault(t => t.TenantId == Guid.Parse(clientTenantId));
                     this.Tenant = tenant;
-                    //tenantId = tenant.TenantId?.ToString();
                 });
 
 
@@ -323,8 +365,13 @@ namespace Common
                     this.KeyVaults = keyVaults;
                 });
 
+                var keyVault = keyVaults.FirstOrDefault(kv => $"https://{kv.Name}.vault.azure.net/" == keyVaultAddress);
+                this.Dispatcher.Invoke(() =>
+                {
+                    this.KeyVault = keyVault;
+                });
 
-                //scope.LogDebug($"configurationManager.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());");
+                scope.LogDebug(new { keyVaults = keyVaults.GetLogString(), keyVault = keyVault.GetLogString() });
 
             }
             catch (Exception ex)
@@ -339,6 +386,7 @@ namespace Common
                 // RegreshCount += 1;
             }
         }
+        #endregion
 
         #region ToggleIsCollapsedCanExecute
         private void ToggleIsCollapsedCanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -359,35 +407,6 @@ namespace Common
         }
         #endregion
 
-        #region AIApplicationID
-        public string AIApplicationID
-        {
-            get { return (string)GetValue(AIApplicationIDProperty); }
-            set { SetValue(AIApplicationIDProperty, value); }
-        }
-        public static readonly DependencyProperty AIApplicationIDProperty = DependencyProperty.Register("AIApplicationID", typeof(string), typeof(SettingsKeyVaultControl), new PropertyMetadata(null, AIApplicationIDChanged));
-        public static void AIApplicationIDChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var pthis = d as SettingsKeyVaultControl;
-            var app = Application.Current as ApplicationBase;
-            app.SetProperty("AIApplicationID", pthis.AIApplicationID);
-        }
-        #endregion
-        #region AIApiKey
-        public string AIApiKey
-        {
-            get { return (string)GetValue(AIApiKeyProperty); }
-            set { SetValue(AIApiKeyProperty, value); }
-        }
-        public static readonly DependencyProperty AIApiKeyProperty = DependencyProperty.Register("AIApiKey", typeof(string), typeof(SettingsKeyVaultControl), new PropertyMetadata(null, AIApiKeyChanged));
-        public static void AIApiKeyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var pthis = d as SettingsKeyVaultControl;
-            var app = Application.Current as ApplicationBase;
-            app.SetProperty("AIApiKey", pthis.AIApiKey);
-        }
-        #endregion
-
         #region GetUserTenants
         private List<TenantData> GetUserTenants(TokenCredential credential)
         {
@@ -405,6 +424,7 @@ namespace Common
 
             return tenants;
         }
+
         #endregion
         #region GetOwnedApplicationAsync
         async Task<Microsoft.Graph.Models.Application> GetOwnedApplicationAsync(Identity identity, string tenantId, string clientId)
@@ -468,6 +488,22 @@ namespace Common
             return null;
         }
         #endregion
+
+        private object KeyVaultAddressChanged_ConvertEvent2(DependencyObject source, object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            using var scope = logger.BeginMethodScope(new { values = values.GetLogString(), targetType, parameter = parameter.GetLogString(), source, culture });
+
+            int i = 0;
+            var keyVaults = values != null && values.Length > i ? values[i] as List<GenericResourceData> : null; i++;
+            var keyVaultAddress = values != null && values.Length > i ? values[i] as string : null; i++;
+
+            if (keyVaults == null) { return null; }
+
+            var keyVault = keyVaults.FirstOrDefault(kv => $"https://{kv.Name}.vault.azure.net/" == keyVaultAddress);
+            this.KeyVault = keyVault;
+
+            return null;
+        }
     }
 }
 

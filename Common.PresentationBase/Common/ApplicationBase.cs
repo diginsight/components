@@ -307,7 +307,7 @@ namespace Common
         }
         #endregion
         #region GetProperty
-        protected T GetProperty<T>(string propertyName)
+        public T GetProperty<T>(string propertyName)
         {
             object value;
             if (Properties.Contains(propertyName))
@@ -318,6 +318,7 @@ namespace Common
             return default(T);
         }
         #endregion
+        
         // INotifyPropertyChanged 
         #region SetValue
         protected void SetValue<T>(Expression<Func<T>> propertySelector, T value)

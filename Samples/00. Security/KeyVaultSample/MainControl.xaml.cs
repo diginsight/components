@@ -82,7 +82,7 @@ namespace KeyVaultSample
             scope.LogDebug(new { e.PropertyName });
 
             if (new[] { "Identity" }.Contains(e.PropertyName)) { Identity_PropertyChanged(sender, e); return; }
-            //if (new[] { "Identity" }.Contains(e.PropertyName)) { Identity_PropertyChanged(sender, e); return; }
+            if (new[] { "KeyVaultAddress" }.Contains(e.PropertyName)) { KeyVaultAddress_OuterPropertyChanged(sender, e); return; }
 
         }
         #endregion
@@ -95,6 +95,16 @@ namespace KeyVaultSample
             using var switchLocal = new SwitchOnDispose(this._lockIdentity_PropertyChanged, true);
 
             this.Identity = App.Properties["Identity"] as Identity;
+        }
+        private void KeyVaultAddress_OuterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            using var scope = logger.BeginMethodScope(new { sender, e });
+
+            //if (this._lockKeyVault_PropertyChanged.Value) { return; }
+            //using var switchLocal = new SwitchOnDispose(this._lockKeyVault_PropertyChanged, true);
+
+            var KeyVaultAddress = App.GetProperty<string>("KeyVaultAddress");
+            App.ConnectionString = KeyVaultAddress;
         }
 
         #region App

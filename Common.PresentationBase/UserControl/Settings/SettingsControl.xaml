@@ -7,7 +7,11 @@
              xmlns:properties="clr-namespace:Common.Properties"
              mc:Ignorable="d" 
              Name="ctlSettingsControl"
-             d:DesignHeight="450" d:DesignWidth="280"  >
+             d:DesignHeight="450" d:DesignWidth="350"
+             
+             MouseEnter="UserControl_MouseEnter"
+             MouseLeave="UserControl_MouseLeave"
+             >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -31,7 +35,7 @@
         <!--<CommandBinding Command="{x:Static common:Commands.LicenseKey}" CanExecute="LicenseKeyCanExecute" Executed="LicenseKeyCommand" />-->
     </UserControl.CommandBindings>
     <Grid Name="MenuGrid" 
-          Width="{Binding ElementName=ctlSettingsControl, Path=IsCollapsed, Mode=OneWay, Converter={StaticResource if}, ConverterParameter=45, FallbackValue=280}"
+          Width="{Binding ElementName=ctlSettingsControl, Path=IsCollapsed, Mode=OneWay, Converter={StaticResource if}, ConverterParameter=45, FallbackValue=350}"
           Background="{StaticResource Grey38}"
           DataContext="{Binding ElementName=ctlSettingsControl, Mode=OneWay}"  >
         <Grid.RowDefinitions>

@@ -6,7 +6,7 @@
              xmlns:common="clr-namespace:Common"
              mc:Ignorable="d" 
              Name="ctlSettingsThemesControl"
-             d:DesignHeight="450" d:DesignWidth="280"  >
+             d:DesignHeight="450" d:DesignWidth="350"  >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,7 +18,7 @@
         <CommandBinding Command="{x:Static common:Commands.ToggleIsCollapsed}" CanExecute="ToggleIsCollapsedCanExecute" Executed="ToggleIsCollapsedCommand" />
     </UserControl.CommandBindings>
     <Grid Name="MenuGrid" 
-          Width="{Binding ElementName=ctlSettingsThemesControl, Path=IsCollapsed, Mode=OneWay, Converter={StaticResource if}, ConverterParameter=45, FallbackValue=280}"
+          Width="{Binding ElementName=ctlSettingsThemesControl, Path=IsCollapsed, Mode=OneWay, Converter={StaticResource if}, ConverterParameter=45, FallbackValue=350}"
           Background="{StaticResource Grey38}"
           DataContext="{Binding ElementName=ctlSettingsThemesControl, Mode=OneWay}"  >
         <Grid.RowDefinitions>

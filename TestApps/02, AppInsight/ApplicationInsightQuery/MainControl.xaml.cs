@@ -37,7 +37,7 @@ namespace ApplicationInsightQuery
         const string CONFIGVALUE_APPVERSION = "AppVersion"; const string DEFAULTVALUE_APPVERSION = "";
         const string CONFIGVALUE_OAUTHVERSIONSUFFIX = "OauthVersionSuffix"; const string DEFAULTVALUE_OAUTHVERSIONSUFFIX = "/2.0";
 
-        AuthenticationHelper _authenticationHelper;
+        AuthenticationService _authenticationService;
         Reference<bool> _locPersistState = new Reference<bool>(true);
         private string oauthVersionSuffix;
 
@@ -65,8 +65,8 @@ namespace ApplicationInsightQuery
 
 
                 sec.Debug(new { this.ClientID });
-                // _authenticationHelper = new AuthenticationHelper(this.ClientID, Application.Current.MainWindow); sec.Debug(new { _authenticationHelper = _authenticationHelper.GetLogString() });
-                // var task = _authenticationHelper.GetUserIdentityAsync((identity) =>
+                // _authenticationService = new AuthenticationService(this.ClientID, Application.Current.MainWindow); sec.Debug(new { _authenticationService = _authenticationService.GetLogString() });
+                // var task = _authenticationService.GetUserIdentityAsync((identity) =>
                 // {
                 //     using (var sec1 = this.GetNamedSection("GetUserIdentityAsyncCallback"))
                 //     {
@@ -256,8 +256,8 @@ namespace ApplicationInsightQuery
         {
             using (var sec = this.GetCodeSection(new { sender = sender.GetLogString(), e = e.GetLogString() }))
             {
-                if (_authenticationHelper == null) { return; }
-                await _authenticationHelper.GetUserIdentityAsync((identity) =>
+                if (_authenticationService == null) { return; }
+                await _authenticationService.GetUserIdentityAsync((identity) =>
                 {
                     this.Dispatcher.Invoke(() =>
                     {
@@ -280,7 +280,7 @@ namespace ApplicationInsightQuery
             using (var sec = this.GetCodeSection(new { sender = sender.GetLogString(), e = e.GetLogString() }))
             {
                 this.Identity = null;
-                _authenticationHelper.Logout(); sec.Debug($"_authenticationHelper.Logout(); completed");
+                _authenticationService.Logout(); sec.Debug($"_authenticationService.Logout(); completed");
 
                 var message = this.GetResourceValue<string>("Info.PressLogin", "Press Login to enter your credentials");
                 this.Exception = new ClientException(message) { Code = ExceptionCodes.PRESSLOGIN };

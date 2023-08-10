@@ -24,24 +24,39 @@ using System.Windows.Media.Imaging;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using ConfigurationManager = Microsoft.Extensions.Configuration.ConfigurationManager;
 using Window = System.Windows.Window;
+using Azure.Messaging.EventHubs;
+using System.ComponentModel;
+using System.Threading;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Azure.ResourceManager.Resources;
 //using Azure.Extensions.AspNetCore.Configuration.Secrets;
 #endregion
 
 namespace KeyVaultSample
 {
     /// <summary>Interaction logic for App.xaml</summary>
-    public partial class App : ApplicationBase
+    public partial class App : ApplicationBase, IProvideLogString
     {
         static Type T = typeof(App);
         #region constants
-        const string CONFIGVALUE_KEYVAULTADDRESS = "KeyVaultAddress", DEFAULTVALUE_KEYVAULTADDRESS = "";
         const string S_PATH_DEFAULT = @"";
         const string S_MESSAGE_DEFAULT = @"This is a test message.";
         const string S_DESCRIPTION_DEFAULT = @"This is a test message description.";
+        const string CONFIGVALUE_KEYVAULTADDRESS = "KeyVaultAddress", DEFAULTVALUE_KEYVAULTADDRESS = "";
+        const string CONFIGVALUE_CLIENTSECRET = "ClientSecret", DEFAULTVALUE_CLIENTSECRET = "";
+        const string CONFIGVALUE_APPINSIGHTSKEY = "AppInsightsKey", DEFAULTVALUE_APPINSIGHTSKEY = "";
+        const string CONFIGVALUE_TENANTID = "TenantId"; const string DEFAULTVALUE_TENANTID = "";
+        const string CONFIGVALUE_CLIENTID = "ClientId"; const string DEFAULTVALUE_CLIENTID = "";
+        const string CONFIGVALUE_APPNAME = "AppName"; const string DEFAULTVALUE_APPNAME = "";
+        const string CONFIGVALUE_APPVERSION = "AppVersion"; const string DEFAULTVALUE_APPVERSION = "";
+        const string CONFIGVALUE_REDIRECTURI = "RedirectUri"; const string DEFAULTVALUE_REDIRECTURI = "";
+        const string CONFIGVALUE_SCOPES = "Scopes"; const string DEFAULTVALUE_SCOPES = "";
+        const string CONFIGVALUE_OAUTHVERSIONSUFFIX = "OauthVersionSuffix"; const string DEFAULTVALUE_OAUTHVERSIONSUFFIX = "/2.0";
         #endregion
 
         private ILogger<App> logger;
-        public IHost Host { get; set; }
+        //public IHost Host { get; set; }
         public ConfigurationManager ConfigurationManager { get; set; }
 
         #region Message
@@ -72,25 +87,76 @@ namespace KeyVaultSample
             set { SetValue(() => ConnectionString, value); }
         }
         #endregion
-        #region EventHubName
-        public string EventHubName
+
+        #region TenantId
+        public string TenantId
         {
-            get { return GetValue(() => EventHubName); }
-            set { SetValue(() => EventHubName, value); }
+            get { return GetValue(() => TenantId); }
+            set { SetValue(() => TenantId, value); }
         }
         #endregion
-        #region BlobstorageConnectionString
-        public string BlobstorageConnectionString
+        #region ClientId
+        public string ClientId
         {
-            get { return GetValue(() => BlobstorageConnectionString); }
-            set { SetValue(() => BlobstorageConnectionString, value); }
+            get { return GetValue(() => ClientId); }
+            set { SetValue(() => ClientId, value); }
         }
         #endregion
-        #region CheckpointsContainer
-        public string CheckpointsContainer
+        #region ClientSecret
+        public string ClientSecret
         {
-            get { return GetValue(() => CheckpointsContainer); }
-            set { SetValue(() => CheckpointsContainer, value); }
+            get { return GetValue(() => ClientSecret); }
+            set { SetValue(() => ClientSecret, value); }
+        }
+        #endregion
+        #region AppName
+        public string AppName
+        {
+            get { return GetValue(() => AppName); }
+            set { SetValue(() => AppName, value); }
+        }
+        #endregion
+        #region RedirectUri
+        public string RedirectUri
+        {
+            get { return GetValue(() => RedirectUri); }
+            set { SetValue(() => RedirectUri, value); }
+        }
+        #endregion
+        #region Scopes
+        public string Scopes
+        {
+            get { return GetValue(() => Scopes); }
+            set { SetValue(() => Scopes, value); }
+        }
+        #endregion
+        #region AppVersion
+        public string AppVersion
+        {
+            get { return GetValue(() => AppVersion); }
+            set { SetValue(() => AppVersion, value); }
+        }
+        #endregion
+        #region OauthVersionSuffix
+        public string OauthVersionSuffix
+        {
+            get { return GetValue(() => OauthVersionSuffix); }
+            set { SetValue(() => OauthVersionSuffix, value); }
+        }
+        #endregion
+
+        #region AppInsightKey
+        public string AppInsightKey
+        {
+            get { return GetValue(() => AppInsightKey); }
+            set { SetValue(() => AppInsightKey, value); }
+        }
+        #endregion
+        #region KeyVaultAddress
+        public string KeyVaultAddress
+        {
+            get { return GetValue(() => KeyVaultAddress); }
+            set { SetValue(() => KeyVaultAddress, value); }
         }
         #endregion
 
@@ -100,6 +166,7 @@ namespace KeyVaultSample
             using var scope = logger.BeginMethodScope();
             //this.Activated += App_Activated;
             //this.LoadCompleted += App_LoadCompleted;
+            LogStringExtensions.RegisterLogstringProvider(this);
         }
         #endregion
 
@@ -120,7 +187,6 @@ namespace KeyVaultSample
             this.Message = ConfigurationHelper.GetClassSetting<App, string>("Message", S_MESSAGE_DEFAULT);
             this.Description = ConfigurationHelper.GetClassSetting<App, string>("Description", S_DESCRIPTION_DEFAULT);
             this.Path = ConfigurationHelper.GetClassSetting<App, string>("Path", S_PATH_DEFAULT);
-            var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS);
 
             Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
                     .ConfigureAppConfiguration((context, builder) =>
@@ -141,6 +207,8 @@ namespace KeyVaultSample
                     .ConfigureLogging((context, loggingBuilder) =>
                     {
                         loggingBuilder.ClearProviders();
+
+
 
                         var options = new Log4NetProviderOptions();
                         options.Log4NetConfigFileName = "log4net.config";
@@ -163,6 +231,7 @@ namespace KeyVaultSample
             // LogStringExtensions.RegisterLogstringProvider(this);
             await Host.StartAsync(); scope.LogDebug($"await Host.StartAsync();");
 
+            // registers 
             var mainWindow = Host.Services.GetRequiredService<Window>(); scope.LogDebug($"Host.Services.GetRequiredService<Window>(); returned {mainWindow}");
             this.MainWindow = mainWindow;
 
@@ -176,7 +245,11 @@ namespace KeyVaultSample
         {
             using var scope = logger.BeginMethodScope(new { configuration, services });
             ConfigurationHelper.Init(configuration); // set full configuration with secrets 
-            //var logger = Host.GetLogger<App>();
+                                                     //var logger = Host.GetLogger<App>();
+
+            //object value = services.AddHttpContextAccessor();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IParallelService, ParallelService>();
 
             services.AddSingleton<Window>((IServiceProvider provider) =>
             {
@@ -205,6 +278,26 @@ namespace KeyVaultSample
                 return applicationWindow;
             });
 
+            services.AddSingleton<AuthenticationService>((IServiceProvider provider) =>
+            {
+
+                TenantId = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID); // , CultureInfo.InvariantCulture
+                ClientId = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_CLIENTID, DEFAULTVALUE_CLIENTID); // , CultureInfo.InvariantCulture
+                AppName = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_APPNAME, DEFAULTVALUE_APPNAME); // , CultureInfo.InvariantCulture SettingAccessType.SecretWithCredential, 
+                AppVersion = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_APPVERSION, DEFAULTVALUE_APPVERSION); // , CultureInfo.InvariantCulture
+                RedirectUri = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_REDIRECTURI, DEFAULTVALUE_REDIRECTURI); // , CultureInfo.InvariantCulture
+                Scopes = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_SCOPES, DEFAULTVALUE_SCOPES); // , CultureInfo.InvariantCulture
+                OauthVersionSuffix = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_OAUTHVERSIONSUFFIX, DEFAULTVALUE_OAUTHVERSIONSUFFIX); // , CultureInfo.InvariantCulture
+                AppInsightKey = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_APPINSIGHTSKEY, DEFAULTVALUE_APPINSIGHTSKEY); // , CultureInfo.InvariantCulture SettingAccessType.SecretWithCredential, 
+
+                scope.LogDebug(new { ClientId, AppName, AppVersion, Scopes = Scopes.GetLogString(), OauthVersionSuffix, AppInsightKey });
+
+                var scopesArray = Scopes?.Split(',');
+
+                var authenticationService = new AuthenticationService(TenantId, ClientId, AppName, AppVersion, RedirectUri, scopesArray, OauthVersionSuffix, Application.Current.MainWindow);
+                return authenticationService;
+            });
+
 
         }
 
@@ -225,6 +318,24 @@ namespace KeyVaultSample
             //var logger = Host.GetLogger<App>();
             using var scope = logger.BeginMethodScope(new { sender, e });
 
+        }
+
+        public string ToLogString(object t, HandledEventArgs arg)
+        {
+            switch (t)
+            {
+                case Window w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case System.Windows.Controls.Button w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case PropertyChangedEventArgs w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case Thread w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case Microsoft.Graph.Models.Application w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case Identity w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case TenantData w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                //case EventProcessorClient w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                default:
+                    break;
+            }
+            return null;
         }
     }
 }

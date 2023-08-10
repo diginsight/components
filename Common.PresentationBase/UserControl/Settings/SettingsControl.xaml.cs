@@ -26,6 +26,7 @@ namespace Common
     /// <summary>Interaction logic for SettingsControl.xaml</summary>
     public partial class SettingsControl : UserControl
     {
+        private static readonly Type T = typeof(SettingsControl);
         private readonly ResourceManager resManager = Properties.Resources.ResourceManager;
         private ILogger<SettingsControl> logger;
 
@@ -33,8 +34,10 @@ namespace Common
         static SettingsControl() { }
         public SettingsControl()
         {
+            using var sec = logger.BeginMethodScope();
             InitializeComponent();
             if (DesignerProperties.GetIsInDesignMode(this)) { return; }
+
             Commands = new List<CommandInfo>() {
                 new CommandInfo() { Name=this.GetResourceValue<string>("Settings.Themes.Title", "Themes"), Description="Themes", Command = Common.Commands.Themes },
                 new CommandInfo() { Name=this.GetResourceValue<string>("Settings.Lang.Title", "Language"), Description=this.GetResourceValue<string>("Settings.Lang.Title"), Command = Common.Commands.Languages },
@@ -45,20 +48,27 @@ namespace Common
         }
         public SettingsControl(FrameworkElement content) : this()
         {
-            using (var sec = logger.BeginMethodScope(new { content }))
-            {
-                Common.Commands.AddItem.Execute(content, this);
-            }
+            using var sec = logger.BeginMethodScope(new { content });
+
+            Common.Commands.AddItem.Execute(content, this);
         }
         #endregion
 
+        #region IsMouseOverOuterElement
+        public bool IsMouseOverOuterElement
+        {
+            get { return (bool)GetValue(IsMouseOverOuterElementProperty); }
+            set { SetValue(IsMouseOverOuterElementProperty, value); }
+        }
+        public static readonly DependencyProperty IsMouseOverOuterElementProperty = DependencyProperty.Register("IsMouseOverOuterElement", typeof(bool), T, new PropertyMetadata());
+        #endregion
         #region IsCollapsed
         public bool IsCollapsed
         {
             get { return (bool)GetValue(IsCollapsedProperty); }
             set { SetValue(IsCollapsedProperty, value); }
         }
-        public static readonly DependencyProperty IsCollapsedProperty = DependencyProperty.Register("IsCollapsed", typeof(bool), typeof(SettingsControl), new PropertyMetadata(false));
+        public static readonly DependencyProperty IsCollapsedProperty = DependencyProperty.Register("IsCollapsed", typeof(bool), T, new PropertyMetadata(false));
         #endregion
         #region Title
         public string Title
@@ -66,7 +76,7 @@ namespace Common
             get { return (string)GetValue(TitleProperty); }
             set { SetValue(TitleProperty, value); }
         }
-        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(SettingsControl), new PropertyMetadata());
+        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), T, new PropertyMetadata());
         #endregion
 
         #region Commands
@@ -75,7 +85,7 @@ namespace Common
             get { return (List<CommandInfo>)GetValue(CommandsProperty); }
             set { SetValue(CommandsProperty, value); }
         }
-        public static readonly DependencyProperty CommandsProperty = DependencyProperty.Register("Commands", typeof(List<CommandInfo>), typeof(SettingsControl), new PropertyMetadata(null));
+        public static readonly DependencyProperty CommandsProperty = DependencyProperty.Register("Commands", typeof(List<CommandInfo>), T, new PropertyMetadata(null));
         #endregion
         #region Items
         public IList<FrameworkElement> Items
@@ -83,7 +93,7 @@ namespace Common
             get { return (IList<FrameworkElement>)GetValue(ItemsProperty); }
             set { SetValue(ItemsProperty, value); }
         }
-        public static readonly DependencyProperty ItemsProperty = DependencyProperty.Register("Items", typeof(IList<FrameworkElement>), typeof(SettingsControl), new PropertyMetadata());
+        public static readonly DependencyProperty ItemsProperty = DependencyProperty.Register("Items", typeof(IList<FrameworkElement>), T, new PropertyMetadata());
         #endregion
 
         #region ResetCanExecute
@@ -98,18 +108,17 @@ namespace Common
         #region ResetCommand
         private void ResetCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            using (var sec = logger.BeginMethodScope(new { sender, e }))
-            {
-                // var fe = e.Parameter as FrameworkElement; sec.Debug($"fe: {fe.GetLogString()}");
-                // if (fe == null) { return; }
+            using var scope = logger.BeginMethodScope(new { sender, e });
 
-                var settingsMenu = new SettingsMenuControl();
-                settingsMenu.DataContext = this;
-                settingsMenu.SetBinding(SettingsMenuControl.CommandsProperty, new Binding("Commands") { Mode = BindingMode.OneWay });
+            // var fe = e.Parameter as FrameworkElement; sec.Debug($"fe: {fe.GetLogString()}");
+            // if (fe == null) { return; }
 
-                Common.Commands.Clear.Execute(settingsMenu, this);
-                Common.Commands.AddItem.Execute(settingsMenu, this);
-            }
+            var settingsMenu = new SettingsMenuControl();
+            settingsMenu.DataContext = this;
+            settingsMenu.SetBinding(SettingsMenuControl.CommandsProperty, new Binding("Commands") { Mode = BindingMode.OneWay });
+
+            Common.Commands.Clear.Execute(settingsMenu, this);
+            Common.Commands.AddItem.Execute(settingsMenu, this);
         }
         #endregion
         #region RegisterPanelCanExecute
@@ -124,13 +133,12 @@ namespace Common
         #region RegisterPanelCommand
         private void RegisterPanelCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            using (var sec = logger.BeginMethodScope(new { sender, e }))
-            {
-                var panelInfo = e.Parameter as SettingsPanelInfo;
+            using var sec = logger.BeginMethodScope(new { sender, e });
 
-                var commandInfo = new CommandInfo() { Name = panelInfo.Name, Description = panelInfo.Description, Command = Common.Commands.AddSettingsPanel, CommandParameter = panelInfo };
-                this.Commands.Insert(panelInfo.Position, commandInfo);
-            }
+            var panelInfo = e.Parameter as SettingsPanelInfo;
+
+            var commandInfo = new CommandInfo() { Name = panelInfo.Name, Description = panelInfo.Description, Command = Common.Commands.AddSettingsPanel, CommandParameter = panelInfo };
+            this.Commands.Insert(panelInfo.Position, commandInfo);
         }
         #endregion
         #region AddSettingsPanelCanExecute
@@ -145,12 +153,11 @@ namespace Common
         #region AddSettingsPanelCommand
         private void AddSettingsPanelCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            using (var sec = logger.BeginMethodScope(new { sender, e }))
-            {
-                var panelInfo = e.Parameter as SettingsPanelInfo;
-                var panel = panelInfo.GetPanelInstance();
-                Common.Commands.AddItem.Execute(panel, this);
-            }
+            using var sec = logger.BeginMethodScope(new { sender, e });
+
+            var panelInfo = e.Parameter as SettingsPanelInfo;
+            var panel = panelInfo.GetPanelInstance();
+            Common.Commands.AddItem.Execute(panel, this);
         }
         #endregion
 
@@ -166,13 +173,12 @@ namespace Common
         #region ClearCommand
         private void ClearCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            using (var sec = logger.BeginMethodScope(new { sender, e }))
-            {
-                var fe = e.Parameter as FrameworkElement; sec.LogDebug($"fe: {fe.GetLogString()}");
-                if (fe == null) { return; }
-                if (this.Items == null) { this.Items = new ObservableCollection<FrameworkElement>(); }
-                this.Items.Clear(); sec.LogDebug("this.Items.Add(fe); completed");
-            }
+            using var sec = logger.BeginMethodScope(new { sender, e });
+
+            var fe = e.Parameter as FrameworkElement; sec.LogDebug($"fe: {fe.GetLogString()}");
+            if (fe == null) { return; }
+            if (this.Items == null) { this.Items = new ObservableCollection<FrameworkElement>(); }
+            this.Items.Clear(); sec.LogDebug("this.Items.Add(fe); completed");
         }
         #endregion
         #region AddItemCanExecute
@@ -187,13 +193,12 @@ namespace Common
         #region AddItemCommand
         private void AddItemCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            using (var sec = logger.BeginMethodScope(new { sender, e }))
-            {
-                var fe = e.Parameter as FrameworkElement; sec.LogDebug($"fe: {fe.GetLogString()}");
-                if (fe == null) { return; }
-                if (this.Items == null) { this.Items = new ObservableCollection<FrameworkElement>(); }
-                this.Items.Add(fe); sec.LogDebug("this.Items.Add(fe); completed");
-            }
+            using var sec = logger.BeginMethodScope(new { sender, e });
+
+            var fe = e.Parameter as FrameworkElement; sec.LogDebug($"fe: {fe.GetLogString()}");
+            if (fe == null) { return; }
+            if (this.Items == null) { this.Items = new ObservableCollection<FrameworkElement>(); }
+            this.Items.Add(fe); sec.LogDebug("this.Items.Add(fe); completed");
         }
         #endregion
         #region RemoveItemCanExecute
@@ -208,16 +213,15 @@ namespace Common
         #region RemoveItemCommand
         private void RemoveItemCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            using (var sec = logger.BeginMethodScope(new { sender, e }))
-            {
-                var fe = e.Parameter as FrameworkElement; sec.LogDebug($"fe: {fe.GetLogString()}");
-                if (fe == null) { return; }
-                if (this.Items == null) { this.Items = new ObservableCollection<FrameworkElement>(); }
+            using var sec = logger.BeginMethodScope(new { sender, e });
 
-                if (this.Items.Contains(fe))
-                {
-                    this.Items.Remove(fe); sec.LogDebug("this.Remove.Add(fe); completed");
-                }
+            var fe = e.Parameter as FrameworkElement; sec.LogDebug($"fe: {fe.GetLogString()}");
+            if (fe == null) { return; }
+            if (this.Items == null) { this.Items = new ObservableCollection<FrameworkElement>(); }
+
+            if (this.Items.Contains(fe))
+            {
+                this.Items.Remove(fe); sec.LogDebug("this.Remove.Add(fe); completed");
             }
         }
         #endregion
@@ -234,11 +238,10 @@ namespace Common
         #region ThemesCommand
         private void ThemesCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            using (var sec = logger.BeginMethodScope(new { sender, e }))
-            {
-                var themes = new SettingsThemesControl();
-                Common.Commands.AddItem.Execute(themes, this);
-            }
+            using var sec = logger.BeginMethodScope(new { sender, e });
+
+            var themes = new SettingsThemesControl();
+            Common.Commands.AddItem.Execute(themes, this);
         }
         #endregion
         #region LanguagesCanExecute
@@ -253,11 +256,10 @@ namespace Common
         #region LanguagesCommand
         private void LanguagesCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            using (var sec = logger.BeginMethodScope(new { sender, e }))
-            {
-                var lang = new SettingsLanguagesControl();
-                Common.Commands.AddItem.Execute(lang, this);
-            }
+            using var sec = logger.BeginMethodScope(new { sender, e });
+
+            var lang = new SettingsLanguagesControl();
+            Common.Commands.AddItem.Execute(lang, this);
         }
         #endregion
         #region AboutCanExecute
@@ -272,13 +274,22 @@ namespace Common
         #region AboutCommand
         private void AboutCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            using (var sec = logger.BeginMethodScope(new { sender, e }))
-            {
+            using var sec = logger.BeginMethodScope(new { sender, e });
                 var themes = new SettingsAboutControl();
                 Common.Commands.AddItem.Execute(themes, this);
-            }
         }
         #endregion
+
+        private void UserControl_MouseEnter(object sender, MouseEventArgs e)
+        {
+            using var sec = logger.BeginMethodScope(new { sender, e });
+            this.IsMouseOverOuterElement = true;
+        }
+        private void UserControl_MouseLeave(object sender, MouseEventArgs e)
+        {
+            using var sec = logger.BeginMethodScope(new { sender, e });
+            this.IsMouseOverOuterElement = false;
+        }
     }
     public class CommandInfo
     {
@@ -289,7 +300,8 @@ namespace Common
         public RoutedCommand Command { get; set; }
         public object CommandParameter { get; set; }
     }
-    public abstract class SettingsPanelInfo {
+    public abstract class SettingsPanelInfo
+    {
         public int Position { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -297,7 +309,7 @@ namespace Common
         public Type Type { get; set; }
         public abstract FrameworkElement GetPanelInstance();
     }
-    public class SettingsPanelInfo<T>: SettingsPanelInfo
+    public class SettingsPanelInfo<T> : SettingsPanelInfo
         where T : FrameworkElement, new()
     {
         public override FrameworkElement GetPanelInstance() { return new T(); }

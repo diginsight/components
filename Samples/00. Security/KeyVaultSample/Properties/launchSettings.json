@@ -3,6 +3,13 @@
     "KeyVaultSample": {
       "commandName": "Project",
       "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "MaxConcurrency": "1"
+      }
+    },
+    "KeyVaultSampleNoDebug": {
+      "commandName": "Project",
+      "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     }

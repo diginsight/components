@@ -283,6 +283,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\Application\Buttons\01. Arrows.pptx" />
+	  <None Remove="Resources\Images\Application\Buttons\Back.svg" />
 	  <None Remove="Resources\Images\Azure\Azure icons.url" />
 	  <None Remove="Resources\Images\Azure\Azure_Icons_FAQ.pdf" />
 	  <None Remove="Resources\Images\Azure\Microsoft_Terms_of_Use.pdf" />
@@ -326,11 +328,17 @@
 
 	<ItemGroup>
 		<Folder Include="Binding\" />
-		<Folder Include="Resources\Images\VisualStudio\" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Common.Diagnostics" Version="1.0.1.231" />
+		<PackageReference Include="Azure.Identity" Version="1.9.0" />
+		<PackageReference Include="Azure.ResourceManager" Version="1.7.0" />
+		<PackageReference Include="Azure.ResourceManager.Resources" Version="1.6.0" />
+		<PackageReference Include="Common.Diagnostics" Version="1.0.2.7" />
+		<PackageReference Include="Microsoft.Graph" Version="5.21.0" />
+		<PackageReference Include="Microsoft.Graph.Core" Version="3.0.9" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.55.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="SharpVectors" Version="1.8.1" />
 		<PackageReference Include="System.ComponentModel" Version="4.3.0" />
 		<!--<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />-->
@@ -348,7 +356,7 @@
 		<PackageReference Include="System.Runtime.Serialization.Xml" Version="4.3.0" />
 		<PackageReference Include="System.Security.AccessControl" Version="6.0.0" />
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="7.0.1" />
-		<PackageReference Include="System.Text.Json" Version="7.0.2" />
+		<PackageReference Include="System.Text.Json" Version="7.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -377,6 +385,27 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
 	  <Page Include="Resources\Images\Azure\security\10245-icon-service-Key-Vaults.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\icons\wphone\appbar.arrow.left.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\VisualStudio\2022\c\CloakOrHide.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\VisualStudio\2022\c\Copy.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\VisualStudio\2022\e\Ellipsis.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\VisualStudio\2022\p\Pin.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\VisualStudio\2022\p\Play.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Include="Resources\Images\VisualStudio\2022\u\User.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
 	</ItemGroup>

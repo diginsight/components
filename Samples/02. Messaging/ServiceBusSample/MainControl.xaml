@@ -65,6 +65,7 @@
                         <Rectangle Margin="0" Height="32" Width="32" >
                             <Rectangle.Fill>
                                 <VisualBrush Visual="{StaticResource I10836iconserviceServiceBus}" Stretch="Uniform" />
+                                <!--IconApplicationButtonsBack-->
                             </Rectangle.Fill>
                         </Rectangle>
                     </StackPanel>

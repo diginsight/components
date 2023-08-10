@@ -1,0 +1,96 @@
+﻿<UserControl x:Class="Common.InputBoxControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:common="clr-namespace:Common"
+             mc:Ignorable="d" 
+             Name="ctlInputBoxControl"
+             d:DesignHeight="200" d:DesignWidth="300"  >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Common.PresentationBase;component/Resources/DefaultSkin.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <CommandBinding Command="{x:Static common:Commands.ToggleIsCollapsed}" CanExecute="ToggleIsCollapsedCanExecute" Executed="ToggleIsCollapsedCommand" />
+        <CommandBinding Command="{x:Static common:Commands.OK}" CanExecute="OKCanExecute" Executed="OKCommand" />
+        <CommandBinding Command="{x:Static common:Commands.Cancel}" CanExecute="CancelCanExecute" Executed="CancelCommand" />
+    </UserControl.CommandBindings>
+    <Grid Name="MenuGrid" 
+          DataContext="{Binding ElementName=ctlInputBoxControl, Mode=OneWay}"  >
+          <!--Background="{StaticResource Grey197}" Opacity="0.2"-->
+        <Grid.Background>
+            <SolidColorBrush Color="{StaticResource ColorGrey197}" Opacity="0.2" />
+        </Grid.Background>
+        
+        <Grid Background="{StaticResource Grey38}" Margin="20,10" MaxWidth="600" MaxHeight="400" Opacity="1" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="0"/>
+                <RowDefinition Height="0"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid HorizontalAlignment="Stretch" 
+              Grid.Row="0" Name="grdTitle" Height="45" 
+                  >
+                <!--Visibility="{Binding RelativeSource={RelativeSource Self}, Path=(common:AttachedProperties.IsVisible0), Mode=OneWay, Converter={StaticResource booleanToVisibility}}"
+              common:AttachedProperties.IsVisible0="{Binding Path=IsCollapsed, Mode=OneWay, Converter={StaticResource not}, FallbackValue=true}"-->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <!--<Button common:AccessKeyScoper.IsAccessKeyScope="False" 
+                    Grid.Row="1" Grid.Column="0" 
+                    Command="{x:Static common:Commands.RemoveItem}" CommandParameter="{Binding ElementName=ctlInputBoxControl, Path=., Mode=OneWay}"
+                    VerticalAlignment="Center" 
+                    Style="{StaticResource SimpleButtonTemplate}" 
+                Margin="0,0,0,0"
+                Height="40" Width="40" IsEnabled="True" 
+                Visibility="Visible" HorizontalContentAlignment="Left" Focusable="False" >
+            </Button>-->
+                <TextBlock Grid.Column="1" Padding="10,10,0,0" 
+                       Text="{Binding Path=Title, Mode=OneWay, FallbackValue=Title}" 
+                       Foreground="White" TextWrapping="Wrap" FontSize="20" FontFamily="Helvetica Neue eText Pro Light" />
+                       <!--common:Localization.Uid="{common:Localize Settings.About.Title, Property={x:Static TextBlock.TextProperty}}"-->
+            </Grid>
+            <Grid Grid.Row="4" Name="grdBody" >
+                <common:AttachedProperties.Boolean0>
+                    <MultiBinding Converter="{StaticResource and}" >
+                        <Binding ElementName="grdBody" Path="IsMouseOver" Mode="OneWay" />
+                        <Binding Path="IsCollapsed" Mode="OneWay" Converter="{StaticResource not}" />
+                    </MultiBinding>
+                </common:AttachedProperties.Boolean0>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Padding="10,5" 
+                       Text="{Binding Path=Label, Mode=OneWay, FallbackValue=Label}"  VerticalAlignment="Bottom"
+                       Foreground="White" TextWrapping="Wrap" FontSize="20" FontFamily="Helvetica Neue eText Pro Light" />
+                       <!--common:Localization.Uid="{common:Localize Settings.About.Title, Property={x:Static TextBlock.TextProperty}}"-->
+                <TextBox Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Padding="10,10,0,0" Margin="10,5" 
+                       Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=Text}" 
+                       common:Localization.Uid="{common:Localize Settings.About.Title, Property={x:Static TextBlock.TextProperty}}"
+                       Foreground="Black" TextWrapping="Wrap" FontSize="20" FontFamily="Helvetica Neue eText Pro Light" />
+
+
+                <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" Margin="10,5" >
+                    <Button Grid.Row="2" Grid.Column="2" Margin="5" MinWidth="90" Command="{x:Static common:Commands.OK}" >Ok</Button>
+                    <Button Grid.Row="2" Grid.Column="2" Margin="5" MinWidth="90" Command="{x:Static common:Commands.Cancel}" >Cancel</Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

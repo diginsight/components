@@ -12,6 +12,9 @@
 
         <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/Azure/integration/10836-icon-service-Service-Bus.xaml" />
 
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/Application/Buttons/Back.xaml" />
+        <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/icons/wphone/appbar.arrow.left.xaml" />
+
         <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/Azure/iot/00039-icon-service-Event-Hubs.xaml" />
         <ResourceDictionary Source="/Common.PresentationBase;component/Resources/Images/Azure/iot/10182-icon-service-IoT-Hub.xaml" />
         <!--
@@ -109,6 +112,7 @@
             </Path.Data>
         </Path>
     </Canvas>
+    
     <Canvas x:Key="deleteCanvas" Width="24" Height="24">
         <Path Stretch="Fill" StrokeThickness="0.01" Stroke="{StaticResource Grey70}" Fill="{StaticResource Grey70}">
             <Path.Data>

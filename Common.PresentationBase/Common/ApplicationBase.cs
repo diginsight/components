@@ -1,5 +1,6 @@
 ﻿#region using
 using Common;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.ComponentModel;
@@ -70,6 +71,8 @@ namespace Common
             }
         }
         #endregion
+
+        public IHost Host { get; set; }
 
         #region Zoom
         public double Zoom
@@ -304,7 +307,7 @@ namespace Common
         }
         #endregion
         #region GetProperty
-        protected T GetProperty<T>(string propertyName)
+        public T GetProperty<T>(string propertyName)
         {
             object value;
             if (Properties.Contains(propertyName))
@@ -315,6 +318,7 @@ namespace Common
             return default(T);
         }
         #endregion
+        
         // INotifyPropertyChanged 
         #region SetValue
         protected void SetValue<T>(Expression<Func<T>> propertySelector, T value)
@@ -396,15 +400,15 @@ namespace Common
         [DebuggerStepThrough]
         public void VerifyPropertyName(string propertyName)
         {
-            // Verify that the property name matches a real, public, instance property on this object.
-            if (this.GetType().GetProperty(propertyName) == null)
-            {
-                string msg = "Invalid property name: " + propertyName;
-                if (this.ThrowOnInvalidPropertyName)
-                    throw new Exception(msg);
-                else
-                    Debug.Assert(false, msg);
-            }
+            //Verify that the property name matches a real, public, instance property on this object.
+            //if (this.GetType().GetProperty(propertyName) == null)
+            //{
+            //    string msg = "Invalid property name: " + propertyName;
+            //    if (this.ThrowOnInvalidPropertyName)
+            //        throw new Exception(msg);
+            //    else
+            //        Debug.Assert(false, msg);
+            //}
         }
         /// <summary>Returns whether an exception is thrown, or if a Debug.Fail() is used
         /// when an invalid property name is passed to the VerifyPropertyName method.

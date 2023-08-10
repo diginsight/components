@@ -34,6 +34,8 @@ namespace Common
         public static readonly RoutedUICommand Apply = new RoutedUICommand("Apply", "Apply", typeof(Commands));
         public static readonly RoutedUICommand Refresh = new RoutedUICommand("Refresh", "Refresh", typeof(Commands)); 
         public static readonly RoutedUICommand Idea = new RoutedUICommand("Idea", "Idea", typeof(Commands));
+        public static readonly RoutedUICommand Load = new RoutedUICommand("Load", "Load", typeof(Commands));
+        public static readonly RoutedUICommand Save = new RoutedUICommand("Save", "Save", typeof(Commands));
         // Settings
         public static readonly RoutedUICommand Clear = new RoutedUICommand("Clear", "Clear", typeof(Commands));
         public static readonly RoutedUICommand Reset = new RoutedUICommand("Reset", "Reset", typeof(Commands));
@@ -51,10 +53,16 @@ namespace Common
         public static readonly RoutedUICommand About = new RoutedUICommand("About", "About", typeof(Commands));
         public static readonly RoutedUICommand ToggleDeveloperTools = new RoutedUICommand("ToggleDeveloperTools", "ToggleDeveloperTools", typeof(Commands));
         public static readonly RoutedUICommand ToggleModifyReadonly = new RoutedUICommand("ToggleModifyReadonly", "ToggleModifyReadonly", typeof(Commands));
+        public static readonly RoutedUICommand Watch = new RoutedUICommand("Watch", "Watch", typeof(Commands));
+        public static readonly RoutedUICommand WatchAll = new RoutedUICommand("WatchAll", "WatchAll", typeof(Commands));
+        public static readonly RoutedUICommand Cut = new RoutedUICommand("Cut", "Cut", typeof(Commands));
+        public static readonly RoutedUICommand Copy = new RoutedUICommand("Copy", "Copy", typeof(Commands));
+        public static readonly RoutedUICommand Paste = new RoutedUICommand("Paste", "Paste", typeof(Commands));
 
         public static readonly RoutedUICommand OK = new RoutedUICommand("OK", "OK", typeof(Commands));
         // Developer window
         public static readonly RoutedUICommand Play = new RoutedUICommand("Play", "Play", typeof(Commands));
+        public static readonly RoutedUICommand Run = new RoutedUICommand("Run", "Run", typeof(Commands));
         public static readonly RoutedUICommand Pause = new RoutedUICommand("Pause", "Pause", typeof(Commands));
         public static readonly RoutedUICommand Stop = new RoutedUICommand("Stop", "Stop", typeof(Commands));
         public static readonly RoutedUICommand ClearWindow = new RoutedUICommand("ClearWindow", "ClearWindow", typeof(Commands));

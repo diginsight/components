@@ -34,14 +34,13 @@ namespace TelemetryViewer
         const string CONFIGVALUE_APPNAME = "AppName"; const string DEFAULTVALUE_APPNAME = "";
         const string CONFIGVALUE_APPVERSION = "AppVersion"; const string DEFAULTVALUE_APPVERSION = "";
         const string CONFIGVALUE_OAUTHVERSIONSUFFIX = "OauthVersionSuffix"; const string DEFAULTVALUE_OAUTHVERSIONSUFFIX = "/2.0";
-        AuthenticationHelper _authenticationHelper;
+        AuthenticationService _authenticationService;
         Reference<bool> _lockQueryRestLoop = new Reference<bool>(false);
         Reference<bool> _lockPersistState = new Reference<bool>(true);
         private string oauthVersionSuffix;
 
         //private static Timer _timer;
         //public static Timer Timer { get => _timer; set => _timer = value; }
-
 
         public MainControl()
         {
@@ -65,8 +64,8 @@ namespace TelemetryViewer
                 var panelInfo = new SettingsPanelInfo<SettingsAppInsightKeyControl>() { Name = "AppInsight", Description = "AppInsight", InternalName = "", Position = 0, Type = null };
                 Commands.RegisterPanel.Execute(panelInfo, settingsControl);
 
-                // _authenticationHelper = new AuthenticationHelper(this.ClientID, Application.Current.MainWindow); sec.Debug(new { _authenticationHelper = _authenticationHelper.GetLogString() });
-                // var task = _authenticationHelper.GetUserIdentityAsync((identity) =>
+                // _authenticationService = new AuthenticationService(this.ClientID, Application.Current.MainWindow); sec.Debug(new { _authenticationService = _authenticationService.GetLogString() });
+                // var task = _authenticationService.GetUserIdentityAsync((identity) =>
                 // {
                 //     using (var sec1 = this.GetNamedSection("GetUserIdentityAsyncCallback"))
                 //     {

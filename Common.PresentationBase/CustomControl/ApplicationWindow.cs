@@ -21,7 +21,7 @@ namespace Common
     {
         private ILogger<ApplicationWindow> logger;
         private static Type T = typeof(ApplicationWindow);
-        //private HwndSource _hwndSource;
+        // private HwndSource _hwndSource;
 
         #region .ctor
         static ApplicationWindow()
@@ -31,18 +31,16 @@ namespace Common
         public ApplicationWindow()
             : base()
         {
-            using (var scope = logger.BeginMethodScope())
-            {
-                //PreviewMouseMove += OnPreviewMouseMove;
-            }
+            using var scope = logger.BeginMethodScope();
+
+            //PreviewMouseMove += OnPreviewMouseMove;
         }
         public ApplicationWindow(FrameworkElement content) : this()
         {
-            using (var sec = logger.BeginMethodScope(new { content }))
-            {
-                if (this.Items == null) { this.Items = new ObservableCollection<FrameworkElement>(); }
-                this.Items.Add(content); sec.LogDebug("this.Items.Add(content); completed");
-            }
+            using var scope = logger.BeginMethodScope(new { content });
+
+            if (this.Items == null) { this.Items = new ObservableCollection<FrameworkElement>(); }
+            this.Items.Add(content); scope.LogDebug("this.Items.Add(content); completed");
         }
         #endregion
 
@@ -109,7 +107,6 @@ namespace Common
         }
         #endregion
 
-
         #region OnInitialized
         protected override void OnInitialized(EventArgs e)
         {
@@ -122,7 +119,7 @@ namespace Common
                 this.CommandBindings.Add(new CommandBinding(Commands.AddItem, AddItemExecuted, AddItemCanExecute));
                 this.CommandBindings.Add(new CommandBinding(Commands.RemoveItem, RemoveItemExecuted, RemoveItemCanExecute));
             }
-        } 
+        }
         #endregion
         #region OnApplyTemplate
         public override void OnApplyTemplate()

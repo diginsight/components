@@ -62,7 +62,7 @@ namespace KustoSample
 
         private IConfiguration configuration;
         private ILogger<MainControl> logger;
-        private AuthenticationHelper authenticationHelper;
+        private AuthenticationService authenticationService;
         private string tenantId;
         private string clientId;
         private string appName;
@@ -144,9 +144,9 @@ namespace KustoSample
                 var appInsightKey = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_APPINSIGHTSKEY, DEFAULTVALUE_APPINSIGHTSKEY); // , CultureInfo.InvariantCulture SettingAccessType.SecretWithCredential, 
                 scope.LogDebug(new { appInsightKey });
 
-                var authenticationHelper = new AuthenticationHelper(tenantId, clientId, appName, appVersion, redirectUri, scopes?.Split(','), oauthVersionSuffix, Application.Current.MainWindow);
-                scope.LogDebug(new { _authenticationHelper = authenticationHelper.GetLogString() });
-                this.authenticationHelper = authenticationHelper;
+                var authenticationService = new AuthenticationService(tenantId, clientId, appName, appVersion, redirectUri, scopes?.Split(','), oauthVersionSuffix, Application.Current.MainWindow);
+                scope.LogDebug(new { _authenticationService = authenticationService.GetLogString() });
+                this.authenticationService = authenticationService;
 
                 await Task.Run(async () => await ctlMain_InitializedAsync(sender, e));
             }
@@ -162,7 +162,7 @@ namespace KustoSample
 
             try
             {
-                var identity = await authenticationHelper.LoginSilentAsync();
+                var identity = await authenticationService.LoginSilentAsync();
 
                 this.Dispatcher.Invoke(() =>
                 {
@@ -331,10 +331,10 @@ namespace KustoSample
         private async void LoginExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             using var scope = logger.BeginMethodScope();
-            if (authenticationHelper == null) { return; }
+            if (authenticationService == null) { return; }
 
-            await authenticationHelper.LogoutAsync();
-            var identity = await authenticationHelper.LoginAsync();
+            await authenticationService.LogoutAsync();
+            var identity = await authenticationService.LoginAsync();
 
             if (identity == null)
             {
@@ -403,8 +403,8 @@ namespace KustoSample
         {
             using var scope = logger.BeginMethodScope();
 
-            if (authenticationHelper == null) { return; }
-            await authenticationHelper.LogoutAsync(); scope.LogDebug($"await authenticationHelper.LogoutAsync(); completed");
+            if (authenticationService == null) { return; }
+            await authenticationService.LogoutAsync(); scope.LogDebug($"await authenticationService.LogoutAsync(); completed");
             this.Identity = null;
 
             var message = this.GetResourceValue<string>("Info.PressLogin", "Press Login to enter your credentials");

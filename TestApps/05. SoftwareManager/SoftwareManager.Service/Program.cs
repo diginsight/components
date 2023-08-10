@@ -18,7 +18,7 @@ namespace SoftwareManager.Service
         static void Main()
         {
             //Thread.Sleep(10000);
-            using (var sec = TraceManager.GetCodeSection(T))
+            //using (var sec = TraceManager.GetCodeSection(T))
             {
                 ServiceBase[] ServicesToRun;
                 ServicesToRun = new ServiceBase[] { new SoftwareManagerService() };

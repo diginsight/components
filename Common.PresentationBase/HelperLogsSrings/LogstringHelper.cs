@@ -1,4 +1,5 @@
 ﻿#region using
+using Azure.ResourceManager.Resources;
 using Common;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,25 @@ namespace Common
         {
             if (pthis == null) { return null; }
             string logString = $"{{Button:{{Name:{pthis.Name},ManagedThreadId:{pthis.ManagedThreadId},ApartmentState:{pthis.ApartmentState},ThreadState:{pthis.ThreadState},IsAlive:{pthis.IsAlive},IsBackground:{pthis.IsBackground},IsThreadPoolThread:{pthis.IsThreadPoolThread},Priority:{pthis.Priority},CurrentCulture:{pthis.CurrentCulture},CurrentUICulture:{pthis.CurrentUICulture}}}}}";
+            return logString;
+        }
+        public static string ToLogStringInternal(Microsoft.Graph.Models.Application pthis)
+        {
+            if (pthis == null) { return null; }
+            string logString = $"{{Application:{{Id:{pthis.Id},AppId:{pthis.AppId},DisplayName:{pthis.DisplayName},Description:{pthis.Description},PublisherDomain:{pthis.PublisherDomain},SignInAudience:{pthis.SignInAudience},Owners:{pthis.Owners.GetLogString()}}}}}";
+            return logString;
+        }
+        
+        public static string ToLogStringInternal(Identity pthis)
+        {
+            if (pthis == null) { return null; }
+            string logString = $"{{Identity:{{Name:{pthis.Name},Email:{pthis.Email},Upn:{pthis.Upn},Manager:{pthis.Manager}}}}}";
+            return logString;
+        }
+        public static string ToLogStringInternal(TenantData pthis)
+        {
+            if (pthis == null) { return null; }
+            string logString = $"{{TenantData:{{DisplayName:{pthis.DisplayName},DefaultDomain:{pthis.DefaultDomain},Id:{pthis.Id},TenantId:{pthis.TenantId},TenantType:{pthis.TenantType},TenantCategory:{pthis.TenantCategory},Country:{pthis.Country},CountryCode:{pthis.CountryCode},TenantBrandingLogoUri:{pthis.TenantBrandingLogoUri}}}}}";
             return logString;
         }
     }

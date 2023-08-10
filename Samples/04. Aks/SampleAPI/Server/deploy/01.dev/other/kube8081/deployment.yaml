@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-webapi
+spec:
+  selector:
+    matchLabels:
+      app: sample-webapi
+  template:
+    metadata:
+      labels:
+        app: sample-webapi
+    spec:
+      containers:
+        - image: devsamples00cr.azurecr.io/sample-webapi:23
+          name: sample-webapi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 8081
+              name: http

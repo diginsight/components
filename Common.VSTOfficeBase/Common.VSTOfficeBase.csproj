@@ -105,7 +105,7 @@
       <Version>2.2.1</Version>
     </PackageReference>
     <PackageReference Include="Common.Diagnostics">
-      <Version>1.0.2.5</Version>
+      <Version>1.0.2.44</Version>
     </PackageReference>
     <PackageReference Include="DocumentFormat.OpenXml">
       <Version>2.20.0</Version>

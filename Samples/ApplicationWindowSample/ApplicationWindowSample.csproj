@@ -6,11 +6,6 @@
 		<RuntimeIdentifiers>win</RuntimeIdentifiers>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Common.Diagnostics" Version="1.0.2.7" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\..\Common.EntityBase\Common.EntityBase.csproj" />
 		<ProjectReference Include="..\..\Common.PresentationBase\Common.PresentationBase.csproj" />

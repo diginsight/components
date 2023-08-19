@@ -33,6 +33,7 @@ namespace Common
         public const string HTTPHEADER_PROFILEURL = "ProfileUrl"; // Request-Id 
         #endregion
         #region internal state
+        private static readonly Type T = typeof(ServerManager);
         private ILogger<ServerManager> logger;
         bool _offline = false;
         Type _type = null;
@@ -46,7 +47,7 @@ namespace Common
         #region Initialize
         public static void Initialize(IList<KeyValuePair<string, string>> settings)
         {
-            using (var tracer = TraceManager.GetCodeSection<ServerManager>(null, new { settings }))
+            using (var scope = TraceLogger.BeginMethodScope(T, new { settings }))
             {
                 _enableInprocessInvocation = ConfigurationHelper.GetSetting("Api.EnableInProcessInvocation", true); 
                 _operationCompareKey = ConfigurationHelper.GetSetting("OperationCompareKey", "{System:MachineName}#{User:DomainName}#{User:UO}#{Business:PuntoOperativo}#{Business:Filiale}#{Message:MessageTypeName}#{Message:Action}#{Message:Key}"); 

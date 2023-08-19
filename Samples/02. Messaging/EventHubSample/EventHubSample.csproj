@@ -21,7 +21,7 @@
 		<PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
 		<PackageReference Include="Azure.Messaging.EventHubs" Version="5.9.2" />
 		<PackageReference Include="Azure.Messaging.EventHubs.Processor" Version="5.9.2" />
-		<PackageReference Include="Common.Diagnostics" Version="1.0.2.7" />
+		<PackageReference Include="Common.Diagnostics" Version="1.0.2.44" />
 		<PackageReference Include="log4net" Version="2.0.15" />
 		<PackageReference Include="Microsoft.Azure.Common" Version="2.2.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />

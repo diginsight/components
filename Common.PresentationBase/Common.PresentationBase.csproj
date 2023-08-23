@@ -334,8 +334,8 @@
 		<PackageReference Include="Azure.Identity" Version="1.9.0" />
 		<PackageReference Include="Azure.ResourceManager" Version="1.7.0" />
 		<PackageReference Include="Azure.ResourceManager.Resources" Version="1.6.0" />
-		<PackageReference Include="Common.Diagnostics" Version="1.0.2.44" />
-		<!--<PackageReference Include="Common.Diagnostics" Version="1.0.2.44" />-->
+		<PackageReference Include="Common.Diagnostics" Version="1.0.2.46" />
+		<!--<PackageReference Include="Common.Diagnostics" Version="1.0.2.46" />-->
 		<PackageReference Include="Microsoft.Graph" Version="5.21.0" />
 		<PackageReference Include="Microsoft.Graph.Core" Version="3.0.9" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.55.0" />

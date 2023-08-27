@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net5.0-windows</TargetFramework>
+		<TargetFramework>net6.0-windows</TargetFramework>
 		<RuntimeIdentifiers>win</RuntimeIdentifiers>
 		<UseWPF>true</UseWPF>
 		<ApplicationIcon>ApplicationInsightQuery3.ico</ApplicationIcon>
@@ -36,7 +36,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Common.Diagnostics" Version="1.0.2.46" />
+		<PackageReference Include="Common.Diagnostics" Version="1.0.2.47" />
 		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
 		<PackageReference Include="log4net" Version="2.0.15" />
 		<!--<PackageReference Include="Microsoft.Azure.ApplicationInsights.Query" Version="1.0.0" />-->

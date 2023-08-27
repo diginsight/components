@@ -4,7 +4,7 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<UseWindowsForms>true</UseWindowsForms>
 		<UseWPF>true</UseWPF>
-		<TargetFrameworks>net462;net6.0-windows</TargetFrameworks>
+		<TargetFrameworks>net6.0-windows</TargetFrameworks><!--net462;-->
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>diginsight.snk</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -29,7 +29,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Common.Diagnostics" Version="1.0.2.46" />
+		<PackageReference Include="Common.Diagnostics" Version="1.0.2.47" />
 		<PackageReference Include="Microsoft.Rest.ClientRuntime.Azure" Version="3.3.19" />
 	</ItemGroup>
 

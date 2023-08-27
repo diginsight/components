@@ -30,6 +30,8 @@ using System.Threading;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Azure.ResourceManager.Resources;
+using Common.PresentationBase;
+using Common.SmartCache;
 //using Azure.Extensions.AspNetCore.Configuration.Secrets;
 #endregion
 
@@ -202,7 +204,7 @@ namespace KeyVaultSample
                         // builder.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
                     }).ConfigureServices((context, services) =>
                     {
-                        ConfigureServices(context.Configuration, services);
+                        ConfigureServices(context.Configuration, services, context.HostingEnvironment);
                     })
                     .ConfigureLogging((context, loggingBuilder) =>
                     {
@@ -241,7 +243,7 @@ namespace KeyVaultSample
             base.OnStartup(e); scope.LogDebug($"base.OnStartup(e);");
         }
 
-        private void ConfigureServices(IConfiguration configuration, IServiceCollection services)
+        private void ConfigureServices(IConfiguration configuration, IServiceCollection services, IHostEnvironment hostEnvironment)
         {
             using var scope = logger.BeginMethodScope(new { configuration, services });
             ConfigurationHelper.Init(configuration); // set full configuration with secrets 
@@ -250,6 +252,11 @@ namespace KeyVaultSample
             //object value = services.AddHttpContextAccessor();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IParallelService, ParallelService>();
+            
+            services.AddClassConfiguration();
+            services.AddCacheService(configuration, hostEnvironment);
+
+            services.AddSingleton<IGraphAPIClientHttp, GraphAPIClientHttp>();
 
             services.AddSingleton<Window>((IServiceProvider provider) =>
             {

@@ -193,7 +193,8 @@ namespace KeyVaultSample
             Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
                     .ConfigureAppConfiguration((context, builder) =>
                     {
-                        var environmentName = context?.HostingEnvironment?.EnvironmentName; scope.LogDebug(new { environmentName });
+                        var environmentName = context?.HostingEnvironment?.EnvironmentName; 
+                        scope.LogDebug(new { environmentName }, properties: PROPS.Get(new[] { ("Tags", "Variables,Event" as object), ("MaxMessageLen", 0) }));
                         if (environmentName != null) { configurationManager.AddJsonFile($"appsettings.{environmentName}.json", true, reloadOnChange: true); }
 
                         builder.Sources.Clear();
@@ -210,12 +211,15 @@ namespace KeyVaultSample
                     {
                         loggingBuilder.ClearProviders();
 
+                        //var options = new Log4NetProviderOptions();
+                        //options.Log4NetConfigFileName = "log4net.config";
+                        //var log4NetProvider = new Log4NetProvider(options);
+                        //loggingBuilder.AddDiginsightFormatted(log4NetProvider, configuration);
 
-
-                        var options = new Log4NetProviderOptions();
-                        options.Log4NetConfigFileName = "log4net.config";
-                        var log4NetProvider = new Log4NetProvider(options);
-                        loggingBuilder.AddDiginsightFormatted(log4NetProvider, configuration);
+                        var options1 = new Log4NetProviderOptions();
+                        options1.Log4NetConfigFileName = "log4netJson.config";
+                        var log4NetProvider1 = new Log4NetProvider(options1);
+                        loggingBuilder.AddDiginsightJson(log4NetProvider1, configuration);
 
                         // TelemetryConfiguration telemetryConfiguration = new TelemetryConfiguration(appInsightKey);
                         // ApplicationInsightsLoggerOptions appinsightOptions = new ApplicationInsightsLoggerOptions();
@@ -297,7 +301,7 @@ namespace KeyVaultSample
                 OauthVersionSuffix = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_OAUTHVERSIONSUFFIX, DEFAULTVALUE_OAUTHVERSIONSUFFIX); // , CultureInfo.InvariantCulture
                 AppInsightKey = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_APPINSIGHTSKEY, DEFAULTVALUE_APPINSIGHTSKEY); // , CultureInfo.InvariantCulture SettingAccessType.SecretWithCredential, 
 
-                scope.LogDebug(new { ClientId, AppName, AppVersion, Scopes = Scopes.GetLogString(), OauthVersionSuffix, AppInsightKey });
+                scope.LogDebug(new { ClientId, AppName, AppVersion, Scopes = Scopes.GetLogString(), OauthVersionSuffix, AppInsightKey }, properties: PROPS.Get(new[] { ("Tags", "Variables,Event" as object), ("MaxMessageLen", 0) }));
 
                 var scopesArray = Scopes?.Split(',');
 

@@ -32,18 +32,17 @@ namespace Common.PresentationBase
 
         public async Task<IEnumerable<Application>> GetUserApplicationsAsync(Identity identity, string tenantId, Guid clientId, CacheContext cacheContext) // pageSize, $count
         {
-            using var scope = logger.BeginMethodScope(new { identity = identity.GetLogString(), tenantId, clientId });
+            using var scope = logger.BeginMethodScope(new { identity = identity.GetLogString(), tenantId, clientId }, properties: PROPS.Get(new[] { ("Tags", "Call,Event" as object), ("MaxMessageLen", 0) }));
 
             EnsureCacheContext<IGraphAPIClientHttp>(ref cacheContext);
 
             var cacheKey = new GetUserApplicationsAsyncKey(identity.Upn, tenantId, clientId);
 
             var result = await cacheService.GetAsync(
-                cacheKey,
-                async () =>
+                cacheKey, async () => 
                 {
-                    var applications = await GetUserApplicationsImplAsync(identity, tenantId, clientId);
-                    return applications;
+                    var applications = await GetUserApplicationsImplAsync(identity, tenantId, clientId); 
+                    return applications; 
                 },
                 cacheContext);
 

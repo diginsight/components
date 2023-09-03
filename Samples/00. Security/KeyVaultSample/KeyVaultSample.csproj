@@ -27,7 +27,7 @@
 		<PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
 		<PackageReference Include="Azure.Messaging.EventHubs" Version="5.9.2" />
 		<PackageReference Include="Azure.Messaging.EventHubs.Processor" Version="5.9.2" />
-		<PackageReference Include="Common.Diagnostics" Version="1.0.2.47" />
+		 <PackageReference Include="Common.Diagnostics" Version="1.0.2.48" /> 
 		<PackageReference Include="Common.SmartCache" Version="0.9.0.225" />
 		<PackageReference Include="log4net" Version="2.0.15" />
 		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
@@ -44,6 +44,8 @@
 
 	<ItemGroup>
 		<!--<ProjectReference Include="..\..\..\..\smartcache\Common.SmartCache\Common.SmartCache.csproj" />-->
+		<ProjectReference Include="..\..\..\..\smartcache\Common.SmartCache\Common.SmartCache.csproj" />
+		<!--<ProjectReference Include="..\..\..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" />-->
 		<ProjectReference Include="..\..\..\Common.ComponentBase\Common.ComponentBase.csproj" />
 		<ProjectReference Include="..\..\..\Common.EntityBase\Common.EntityBase.csproj" />
 		<ProjectReference Include="..\..\..\Common.PresentationBase.Azure\Common.PresentationBase.Azure.csproj" />
@@ -51,6 +53,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update=".config">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="log4netJson.config">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 		<None Update="log4net.config">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
@@ -70,7 +78,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Helper\" />
 		<Folder Include="Interface\" />
 		<Folder Include="Service\" />
 	</ItemGroup>

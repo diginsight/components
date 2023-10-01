@@ -81,7 +81,7 @@ namespace Common
             {
                 // Logger.Exception(ex); ret = ex;
             }
-            catch (SerializationException ex)
+            catch (SerializationException _)
             {
                 // Logger.Exception(ex); ret = ex;
             }

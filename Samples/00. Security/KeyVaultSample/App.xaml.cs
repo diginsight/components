@@ -32,6 +32,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Azure.ResourceManager.Resources;
 using Common.PresentationBase;
 using Common.SmartCache;
+using System.Security.Cryptography;
 //using Azure.Extensions.AspNetCore.Configuration.Secrets;
 #endregion
 
@@ -193,8 +194,8 @@ namespace KeyVaultSample
             Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
                     .ConfigureAppConfiguration((context, builder) =>
                     {
-                        var environmentName = context?.HostingEnvironment?.EnvironmentName; 
-                        scope.LogDebug(new { environmentName }, properties: PROPS.Get(new[] { ("Tags", "Variables,Event" as object), ("MaxMessageLen", 0) }));
+                        var environmentName = context?.HostingEnvironment?.EnvironmentName;
+                        scope.LogDebug(new { environmentName }, properties: PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
                         if (environmentName != null) { configurationManager.AddJsonFile($"appsettings.{environmentName}.json", true, reloadOnChange: true); }
 
                         builder.Sources.Clear();
@@ -211,15 +212,27 @@ namespace KeyVaultSample
                     {
                         loggingBuilder.ClearProviders();
 
-                        //var options = new Log4NetProviderOptions();
-                        //options.Log4NetConfigFileName = "log4net.config";
-                        //var log4NetProvider = new Log4NetProvider(options);
-                        //loggingBuilder.AddDiginsightFormatted(log4NetProvider, configuration);
+                        var options = new Log4NetProviderOptions();
+                        options.Log4NetConfigFileName = "log4net.config";
+                        var log4NetProvider = new Log4NetProvider(options);
+                        loggingBuilder.AddDiginsightFormatted(log4NetProvider, configuration);
 
-                        var options1 = new Log4NetProviderOptions();
-                        options1.Log4NetConfigFileName = "log4netJson.config";
-                        var log4NetProvider1 = new Log4NetProvider(options1);
-                        loggingBuilder.AddDiginsightJson(log4NetProvider1, configuration);
+                        //var options1 = new Log4NetProviderOptions();
+                        //options1.Log4NetConfigFileName = "log4netJson.config";
+                        //var log4NetProvider1 = new Log4NetProvider(options1);
+                        //loggingBuilder.AddDiginsightJson(log4NetProvider1, configuration);
+
+                        // add training logic
+                        configuration = context.Configuration;
+                        bool enablePreloading = configuration.GetValue<bool>("AppSettings:EnablePreloading", false);
+                        if (enablePreloading)
+                        {
+                            var trainingProvider = new SmartCacheTrainingProvider();
+                            loggingBuilder.AddProvider(trainingProvider);
+
+                            var preloadingProvider = new SmartCachePreloadingProvider();
+                            loggingBuilder.AddProvider(preloadingProvider);
+                        }
 
                         // TelemetryConfiguration telemetryConfiguration = new TelemetryConfiguration(appInsightKey);
                         // ApplicationInsightsLoggerOptions appinsightOptions = new ApplicationInsightsLoggerOptions();
@@ -256,11 +269,12 @@ namespace KeyVaultSample
             //object value = services.AddHttpContextAccessor();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IParallelService, ParallelService>();
-            
+
             services.AddClassConfiguration();
             services.AddCacheService(configuration, hostEnvironment);
 
             services.AddSingleton<IGraphAPIClientHttp, GraphAPIClientHttp>();
+            services.AddSingleton<IArmAPIClient, ArmAPIClient>();
 
             services.AddSingleton<Window>((IServiceProvider provider) =>
             {
@@ -301,7 +315,13 @@ namespace KeyVaultSample
                 OauthVersionSuffix = ConfigurationHelper.GetClassSetting<MainControl, string>(CONFIGVALUE_OAUTHVERSIONSUFFIX, DEFAULTVALUE_OAUTHVERSIONSUFFIX); // , CultureInfo.InvariantCulture
                 AppInsightKey = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_APPINSIGHTSKEY, DEFAULTVALUE_APPINSIGHTSKEY); // , CultureInfo.InvariantCulture SettingAccessType.SecretWithCredential, 
 
-                scope.LogDebug(new { ClientId, AppName, AppVersion, Scopes = Scopes.GetLogString(), OauthVersionSuffix, AppInsightKey }, properties: PROPS.Get(new[] { ("Tags", "Variables,Event" as object), ("MaxMessageLen", 0) }));
+                //scope.LogDebug(new { ClientId, AppName, AppVersion, Scopes = Scopes.GetLogString(), OauthVersionSuffix, AppInsightKey }, properties: PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("MaxMessageLen", 0) }));
+                scope.LogDebug(new { ClientId }, properties: PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
+                scope.LogDebug(new { AppName }, properties: PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
+                scope.LogDebug(new { AppVersion }, properties: PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
+                scope.LogDebug(new { Scopes = Scopes.GetLogString() }, properties: PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
+                scope.LogDebug(new { OauthVersionSuffix }, properties: PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
+                scope.LogDebug(new { AppInsightKey }, properties: PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
 
                 var scopesArray = Scopes?.Split(',');
 
@@ -342,11 +362,15 @@ namespace KeyVaultSample
                 case Microsoft.Graph.Models.Application w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case Identity w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case TenantData w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case TenantResource w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                //
                 //case EventProcessorClient w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 default:
                     break;
             }
             return null;
         }
+
+
     }
 }

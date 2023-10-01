@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Application = System.Windows.Application;
 #endregion
 
 namespace Common
@@ -416,5 +417,11 @@ namespace Common
         /// override this property's getter to return true.</summary>
         protected virtual bool ThrowOnInvalidPropertyName { get; private set; }
         #endregion
+
+        public static string GetUser()
+        {
+            var identity = ApplicationBase.Current?.Properties["Identity"] as Identity;
+            return identity?.Upn;
+        }
     }
 }

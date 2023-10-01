@@ -16,6 +16,7 @@ using Common.SmartCache;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 using System.Configuration;
+using Application = Microsoft.Graph.Models.Application;
 
 namespace Common.PresentationBase
 {
@@ -32,17 +33,18 @@ namespace Common.PresentationBase
 
         public async Task<IEnumerable<Application>> GetUserApplicationsAsync(Identity identity, string tenantId, Guid clientId, CacheContext cacheContext) // pageSize, $count
         {
-            using var scope = logger.BeginMethodScope(new { identity = identity.GetLogString(), tenantId, clientId }, properties: PROPS.Get(new[] { ("Tags", "Call,Event" as object), ("MaxMessageLen", 0) }));
+            //using var scope = logger.BeginMethodScope(new { identity = identity.GetLogString(), tenantId, clientId, cacheContext = cacheContext.GetLogString() }, properties: PROPS.Get(new[] { ("Tags", "Event,Call" as object),  ("User", ApplicationBase.GetUser()), ("MaxMessageLen", 0) }));
+            using var scope = logger.BeginMethodScope(new { upn = identity.Upn, tenantId, clientId, maxAge = cacheContext.MaxAge }, properties: PROPS.Get(new[] { ("Tags", "Event,Call" as object), ("User", ApplicationBase.GetUser()), ("MaxMessageLen", 0) }));
 
             EnsureCacheContext<IGraphAPIClientHttp>(ref cacheContext);
 
             var cacheKey = new GetUserApplicationsAsyncKey(identity.Upn, tenantId, clientId);
 
             var result = await cacheService.GetAsync(
-                cacheKey, async () => 
+                cacheKey, async () =>
                 {
-                    var applications = await GetUserApplicationsImplAsync(identity, tenantId, clientId); 
-                    return applications; 
+                    var applications = await GetUserApplicationsImplAsync(identity, tenantId, clientId);
+                    return applications;
                 },
                 cacheContext);
 
@@ -52,7 +54,7 @@ namespace Common.PresentationBase
         public async Task<IEnumerable<Application>> GetUserApplicationsImplAsync(Identity identity, string tenantId, Guid clientId)
         {
             using var scope = logger.BeginMethodScope(new { identity = identity.GetLogString(), tenantId, clientId });
-
+            
             var credentialOptions1 = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = identity.Upn, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
             credentialOptions1.TenantId = tenantId;
             var credential = new DefaultAzureCredential(credentialOptions1);

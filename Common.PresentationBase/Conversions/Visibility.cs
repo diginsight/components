@@ -6,7 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data; 
+using System.Windows.Data;
+using Application = System.Windows.Application;
 #endregion
 
 namespace Common

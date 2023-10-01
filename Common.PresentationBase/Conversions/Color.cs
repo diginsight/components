@@ -6,6 +6,9 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Binding = System.Windows.Data.Binding;
+using Color = System.Windows.Media.Color;
+using Rectangle = System.Windows.Shapes.Rectangle;
 #endregion
 
 namespace Common

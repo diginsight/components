@@ -15,6 +15,7 @@
 		<RepositoryType>git</RepositoryType>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<Configurations>Debug;Release;DebugWithProjectReference;DebugWithProjectReferences</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>

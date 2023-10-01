@@ -36,6 +36,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugWithProjectReference|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\DebugWithProjectReference\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <NoWarn>SA1633</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>11.0</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Common.Diagnostics, Version=1.0.2.5, Culture=neutral, PublicKeyToken=f87012e4294a7041, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Common.Diagnostics.1.0.2.5\lib\netstandard2.0\Common.Diagnostics.dll</HintPath>

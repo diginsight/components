@@ -12,4 +12,5 @@ namespace KeyVaultSample
         public static Dictionary<string, object> Get((string, object)[] props) { return props.ToDictionary(t => t.Item1, t => t.Item2); }
 
     }
+
 }

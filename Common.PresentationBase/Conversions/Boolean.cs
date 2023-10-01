@@ -7,7 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data; 
+using System.Windows.Data;
+using Binding = System.Windows.Data.Binding;
 #endregion
 
 namespace Common

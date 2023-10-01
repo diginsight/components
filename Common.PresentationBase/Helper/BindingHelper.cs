@@ -12,7 +12,14 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
-using System.Windows.Threading; 
+using System.Windows.Threading;
+using Binding = System.Windows.Data.Binding;
+using DataObject = System.Windows.DataObject;
+using DragEventArgs = System.Windows.DragEventArgs;
+using DragEventHandler = System.Windows.DragEventHandler;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using KeyEventHandler = System.Windows.Input.KeyEventHandler;
+using TextBox = System.Windows.Controls.TextBox;
 #endregion
 
 namespace Common

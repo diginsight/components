@@ -10,6 +10,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Brush = System.Windows.Media.Brush;
+using UserControl = System.Windows.Controls.UserControl;
 #endregion
 
 namespace Common

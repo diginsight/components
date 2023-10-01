@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using Application = System.Windows.Application;
 #endregion
 
 namespace Common

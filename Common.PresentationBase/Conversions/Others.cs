@@ -15,6 +15,8 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Application = System.Windows.Application;
+using Binding = System.Windows.Data.Binding;
 using Point = System.Windows.Point;
 #endregion
 

@@ -16,6 +16,7 @@
 		<PackageIcon>common.components.png</PackageIcon>
 		<RepositoryType>git</RepositoryType>
 		<LangVersion>10.0</LangVersion>
+		<Configurations>Debug;Release;DebugWithProjectReference;DebugWithProjectReferences</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>

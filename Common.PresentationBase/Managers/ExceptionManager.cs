@@ -17,6 +17,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Threading;
+using Application = System.Windows.Application;
+using UserControl = System.Windows.Controls.UserControl;
 #endregion
 
 namespace Common

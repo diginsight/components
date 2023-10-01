@@ -21,6 +21,8 @@ using System.Resources;
 using Common.Properties;
 using System.Collections.ObjectModel;
 using Microsoft.Extensions.Logging;
+using UserControl = System.Windows.Controls.UserControl;
+using Application = System.Windows.Application;
 #endregion
 
 namespace Common

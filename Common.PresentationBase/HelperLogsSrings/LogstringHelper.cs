@@ -9,7 +9,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls; 
+using System.Windows.Controls;
+using Button = System.Windows.Controls.Button;
 #endregion
 
 namespace Common
@@ -57,6 +58,13 @@ namespace Common
         {
             if (pthis == null) { return null; }
             string logString = $"{{TenantData:{{DisplayName:{pthis.DisplayName},DefaultDomain:{pthis.DefaultDomain},Id:{pthis.Id},TenantId:{pthis.TenantId},TenantType:{pthis.TenantType},TenantCategory:{pthis.TenantCategory},Country:{pthis.Country},CountryCode:{pthis.CountryCode},TenantBrandingLogoUri:{pthis.TenantBrandingLogoUri}}}}}";
+            return logString;
+        }
+        //
+        public static string ToLogStringInternal(TenantResource pthis)
+        {
+            if (pthis == null) { return null; }
+            string logString = $"{{TenantData:{{Id:{pthis.Id},Data:{pthis.Data.GetLogString()}}}}}";
             return logString;
         }
     }

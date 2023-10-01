@@ -7,6 +7,7 @@
 		<UseWPF>true</UseWPF>
 		<ApplicationIcon>ApplicationInsightQuery3.ico</ApplicationIcon>
 		<UserSecretsId>fdecdb50-e30b-48f2-bf50-2e58b6ec9bb5</UserSecretsId>
+		<Configurations>Debug;Release;DebugWithProjectReference;DebugWithProjectReferences</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -36,7 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		 <PackageReference Include="Common.Diagnostics" Version="1.0.2.48" /> 
+		<PackageReference Include="Common.Diagnostics" Version="$(DiginsightDiagnosticsVersion)" Condition="'$(Configuration)'!='DebugWithProjectReferences'"  />
 		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
 		<PackageReference Include="log4net" Version="2.0.15" />
 		<!--<PackageReference Include="Microsoft.Azure.ApplicationInsights.Query" Version="1.0.0" />-->
@@ -47,7 +48,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!--<ProjectReference Include="..\..\..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" />-->
+		<ProjectReference Include="..\..\..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
 		<ProjectReference Include="..\..\..\Common.AssemblyResolver\Common.AssemblyResolver.csproj" />
 		<ProjectReference Include="..\..\..\Common.ComponentBase\Common.ComponentBase.csproj" />
 		<ProjectReference Include="..\..\..\Common.EntityBase\Common.EntityBase.csproj" />

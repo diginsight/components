@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{AFAD762A-FE49-4C08-9E0E-860570ABA122}") = "Solution Items", "Solution Items", "{EAFC56DB-78AF-4DA5-947E-D671C72AFCEC}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "Tests\TestClient\TestClient\TestClient.csproj", "{4DE23BCA-924B-42B4-A0C8-00F340F11144}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.EntityBase", "Common.EntityBase\Common.EntityBase.csproj", "{D6CDF30D-72E0-43C2-A654-EF3461E535A1}"
@@ -10,6 +12,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.PresentationBase", "Common.PresentationBase\Common.PresentationBase.csproj", "{1F576DB8-00D2-414B-BC30-D1D1B5E0FE71}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{43A68957-141D-4F90-B419-9443939E1732}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestApps", "TestApps", "{0E6ABEED-3FA9-47B1-BA9C-8621C788AD22}"
 EndProject

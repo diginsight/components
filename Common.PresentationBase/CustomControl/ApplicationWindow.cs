@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Shapes;
 using System.Windows.Shell;
+using UserControl = System.Windows.Controls.UserControl;
 #endregion
 
 namespace Common

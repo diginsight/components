@@ -12,6 +12,10 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Shapes;
 using System.Windows.Shell;
+using Application = System.Windows.Application;
+using Cursors = System.Windows.Input.Cursors;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using Rectangle = System.Windows.Shapes.Rectangle;
 #endregion
 
 namespace Common

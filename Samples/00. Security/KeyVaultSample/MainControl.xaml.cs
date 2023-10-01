@@ -39,6 +39,7 @@ using Microsoft.Azure.Amqp.Framing;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Azure.Core;
 using System.Net.Sockets;
+using Common.SmartCache;
 #endregion
 
 namespace KeyVaultSample
@@ -72,7 +73,7 @@ namespace KeyVaultSample
             this.configuration = app.Host.Services.GetService<IConfiguration>();
             this.logger = app.Host.Services.GetService<ILogger<MainControl>>();
             this.authenticationService = this.App.Host.Services.GetService<AuthenticationService>();
-            scope.LogDebug(new { authenticationService = authenticationService.GetLogString() }, properties: PROPS.Get(new[] { ("Tags", "Variables,Event" as object), ("MaxMessageLen", 0) }));
+            scope.LogDebug(new { authenticationService = authenticationService.GetLogString() });
 
             InitializeComponent();
         }
@@ -97,6 +98,7 @@ namespace KeyVaultSample
             using var switchLocal = new SwitchOnDispose(this._lockIdentity_PropertyChanged, true);
 
             this.Identity = App.Properties["Identity"] as Identity;
+            scope.LogDebug(new { Login = this.Identity.Upn }, null, PROPS.Get(new[] { ("Tags", "Event,Application" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
         }
         private void KeyVaultAddress_OuterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -131,7 +133,7 @@ namespace KeyVaultSample
             if (DesignerProperties.GetIsInDesignMode(this)) { return; }
             using var scope = logger.BeginMethodScope(new { sender, e });
 
-            scope.LogDebug(new { authenticationService = authenticationService.GetLogString() }, properties: PROPS.Get(new[] { ("Tags", "Variables,Event" as object), ("MaxMessageLen", 0) }));
+            scope.LogDebug(new { authenticationService = authenticationService.GetLogString() });
 
             this.ExceptionEvent += MainControl_ExceptionEvent;
 
@@ -176,9 +178,13 @@ namespace KeyVaultSample
                     this.Identity = identity;
                     tenantId = App.TenantId; clientId = App.ClientId; clientSecret = App.ClientSecret;
                     App.ConnectionString = App.KeyVaultAddress = keyVaultAddress;
-
-                    scope.LogDebug(new { this.Identity, tenantId, clientId, clientSecret, keyVaultAddress }, null, PROPS.Get(new[] { ("Tags", "Variables,Event" as object), ("MaxMessageLen", 0) }) );
                 });
+                //scope.LogDebug(new { this.Identity, tenantId, clientId, clientSecret, keyVaultAddress }, null, PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("MaxMessageLen", 0) }));
+                scope.LogDebug(new { Login = identity.Upn }, null, PROPS.Get(new[] { ("Tags", "Event,Application" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
+                scope.LogDebug(new { tenantId }, null, PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
+                scope.LogDebug(new { clientId }, null, PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
+                scope.LogDebug(new { clientSecret }, null, PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
+                scope.LogDebug(new { keyVaultAddress }, null, PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
 
                 TokenCredential credential = null;
                 if (!string.IsNullOrEmpty(clientSecret)) { credential = new ClientSecretCredential(tenantId, clientId, clientSecret); }
@@ -242,7 +248,15 @@ namespace KeyVaultSample
             get { return (Identity)GetValue(IdentityProperty); }
             set { SetValue(IdentityProperty, value); }
         }
-        public static readonly DependencyProperty IdentityProperty = DependencyProperty.Register("Identity", typeof(Identity), typeof(MainControl), new PropertyMetadata());
+        public static readonly DependencyProperty IdentityProperty = DependencyProperty.Register("Identity", typeof(Identity), typeof(MainControl), new PropertyMetadata(null, new PropertyChangedCallback(IdentityChanged)));
+        static void IdentityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var pthis = d as MainControl;
+
+            var identity = e.NewValue as Identity;
+            App.Current.Properties["Identity"] = identity;
+        }
+
         #endregion
 
         #region VaultUri
@@ -323,7 +337,7 @@ namespace KeyVaultSample
         {
             using var scope = logger.BeginMethodScope();
 
-            scope.LogDebug(new { authenticationService = authenticationService.GetLogString() }, properties: PROPS.Get(new[] { ("Tags", "Variables,Event" as object), ("MaxMessageLen", 0) }));
+            scope.LogDebug(new { authenticationService = authenticationService.GetLogString() });
             if (authenticationService == null)
             {
                 var message = this.GetResourceValue<string>("Info.AuthHelperNotAvailable", "Authentication helper is not available");
@@ -356,6 +370,7 @@ namespace KeyVaultSample
             var secretClient = new SecretClient(new Uri(keyVaultAddress), credential);
             App.ConfigurationManager.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
             this.Identity = identity;
+            scope.LogDebug(new { Login = this.Identity.Upn }, null, PROPS.Get(new[] { ("Tags", "Event,Application" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
 
             var exceptions = ExceptionProperties.GetExceptions(this);
             var exception = exceptions.LastOrDefault();
@@ -369,7 +384,7 @@ namespace KeyVaultSample
             //App.BlobstorageConnectionString = ConfigurationHelper.GetClassSetting<App, string>("BlobstorageConnectionString", S_BLOBSTORAGECONNECTIONSTRING_DEFAULT);
             //App.CheckpointsContainer = ConfigurationHelper.GetClassSetting<App, string>("CheckpointsContainer", S_CHECKPOINTSCONTAINER_DEFAULT);
 
-            scope.LogDebug(new { ConnectionString = App.ConnectionString }, properties: PROPS.Get(new[] { ("Tags", "Variables,Event" as object), ("MaxMessageLen", 0) })); // , App.EventHubName, App.BlobstorageConnectionString, App.CheckpointsContainer
+            scope.LogDebug(new { ConnectionString = App.ConnectionString }, properties: PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) })); // , App.EventHubName, App.BlobstorageConnectionString, App.CheckpointsContainer
 
 
             string consumerGroup = EventHubConsumerClient.DefaultConsumerGroupName;
@@ -401,7 +416,7 @@ namespace KeyVaultSample
             var originalSource = e.OriginalSource as FrameworkElement;
 
             var listViewItem = UserControlHelper.FindAncestor<ListViewItem>(originalSource);
-            scope.LogDebug(new { listViewItem = listViewItem.GetLogString() }, properties: PROPS.Get(new[] { ("Tags", "Variables,Event" as object), ("MaxMessageLen", 0) }));
+            scope.LogDebug(new { listViewItem = listViewItem.GetLogString() });
 
             var isVisible0 = listViewItem.GetValue(AttachedProperties.IsVisible0Property) ?? false;
             listViewItem.SetValue(AttachedProperties.IsVisible0Property, !(bool)isVisible0);
@@ -413,7 +428,7 @@ namespace KeyVaultSample
 
             var originalSource = e.OriginalSource as FrameworkElement;
             var listView = UserControlHelper.FindAncestor<ListView>(originalSource);
-            scope.LogDebug(new { listView = listView.GetLogString() }, properties: PROPS.Get(new[] { ("Tags", "Variables,Event" as object), ("MaxMessageLen", 0) }));
+            scope.LogDebug(new { listView = listView.GetLogString() });
 
             var itemContainerGenerator = listView.ItemContainerGenerator;
 
@@ -424,7 +439,10 @@ namespace KeyVaultSample
             foreach (var item1 in listView.Items)
             {
                 var listViewItem1 = (ListViewItem)itemContainerGenerator.ContainerFromItem(item1);
-                listViewItem1.SetValue(AttachedProperties.IsVisible0Property, !(bool)isVisible0);
+                if (listViewItem1 != null)
+                {
+                    listViewItem1.SetValue(AttachedProperties.IsVisible0Property, !(bool)isVisible0);
+                }
             }
         }
         private void CopyCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
@@ -483,7 +501,8 @@ namespace KeyVaultSample
         }
         private void SettingsCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            using var scope = logger.BeginMethodScope();
+            //using var scope = logger.BeginMethodScope();
+            using var scope = logger.BeginMethodScope(properties: PROPS.Get(new[] { ("Tags", "Event,UI,Predict" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
 
             // TODO: new SettingsControl,
             // TODO: AddItem
@@ -610,7 +629,10 @@ namespace KeyVaultSample
             if (exceptions == null) { return null; }
 
             var exception = exceptions?.LastOrDefault();
-            scope.LogDebug(new { exception = exception.GetLogString(), exceptions = exceptions.GetLogString(), refreshCount }, properties: PROPS.Get(new[] { ("Tags", "Variables,Event" as object), ("MaxMessageLen", 0) }));
+            //scope.LogDebug(new { refreshCount, exception = exception.GetLogString(), exceptions = exceptions.GetLogString() }, properties: PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("MaxMessageLen", 0) }));
+            scope.LogDebug(new { exception = exception.GetLogString() }, properties: PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
+            scope.LogDebug(new { exceptions = exceptions.GetLogString() }, properties: PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
+            scope.LogDebug(new { refreshCount }, properties: PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
 
             return exception;
             // return new Exception(exception.Message, exception);

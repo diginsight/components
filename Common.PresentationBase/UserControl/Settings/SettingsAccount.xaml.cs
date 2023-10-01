@@ -51,6 +51,8 @@ using System.Windows.Markup;
 using System.Net;
 using Common.PresentationBase;
 using Common.SmartCache;
+using UserControl = System.Windows.Controls.UserControl;
+using ComboBox = System.Windows.Controls.ComboBox;
 //using Azure.Management.Resources;
 //using Azure.Management.Resources.Models;
 #endregion
@@ -83,6 +85,7 @@ namespace Common
         private AuthenticationService authenticationService;
         private IParallelService parallelService;
         private IGraphAPIClientHttp graphAPIClientHttp;
+        private IArmAPIClient armAPIClient;
 
         #region IsCollapsed
         public bool IsCollapsed
@@ -228,6 +231,8 @@ namespace Common
             this.parallelService = parallelService;
             var graphAPIClientHttp = this.App.Host.Services.GetService<IGraphAPIClientHttp>();
             this.graphAPIClientHttp = graphAPIClientHttp;
+            var armAPIClient = this.App.Host.Services.GetService<IArmAPIClient>();
+            this.armAPIClient = armAPIClient;
 
             scope.LogDebug(new { authenticationService = authenticationService.GetLogString() });
 
@@ -262,6 +267,7 @@ namespace Common
                 authTenantId = authenticationService.AuthenticationResult.TenantId;
 
                 // LoadState(this) 
+                
 
                 this.Dispatcher.Invoke(() =>
                 {
@@ -293,7 +299,7 @@ namespace Common
                     if (configurations?.Count == 1) { this.Configuration = configuration = configurations.FirstOrDefault(); }
                 });
 
-                var tenants = GetUserTenants(credential);
+                var tenants = await GetUserTenantsAsync(credential);
                 this.Dispatcher.Invoke(() =>
                 {
                     this.Tenants = tenants;
@@ -517,19 +523,23 @@ namespace Common
 
                         configurations.Add(tenantConfiguration);
                     }
-                    catch (Exception ex) { }
+                    catch (Exception _) { }
                 }
             }
             return configurations;
         }
 
-        private List<TenantData> GetUserTenants(TokenCredential credential)
+        private async Task<List<TenantData>> GetUserTenantsAsync(TokenCredential credential)
         {
             using var scope = logger.BeginMethodScope(new { credential = credential.GetLogString() });
 
             var tenants = new List<TenantData>();
-            var armClient = new ArmClient(credential);
-            var tenantObjects = armClient.GetTenants();
+
+            armAPIClient.Attach(credential);
+
+            var cacheContext = new CacheContext() { Enabled = true, MaxAge = 600 };
+            var tenantObjects = await armAPIClient.GetTenantsAsync(cacheContext: cacheContext);
+
             foreach (var tenantObj in tenantObjects)
             {
                 var tenantItem = tenantObj.Data;
@@ -537,6 +547,7 @@ namespace Common
                 tenants.Add(tenantItem);
             }
 
+            scope.Result = tenants;
             return tenants;
         }
 
@@ -596,7 +607,7 @@ namespace Common
                     }
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception _) { }
 
             return null;
         }
@@ -709,7 +720,7 @@ namespace Common
                     return;
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception _) { }
 
             e.CanExecute = true;
         }

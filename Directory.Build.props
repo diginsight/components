@@ -1,0 +1,42 @@
+<Project>
+
+  <PropertyGroup>
+    <LangVersion>11.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn>SA1633</NoWarn>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);**\zbkp\**</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <PropertyGroup>
+	  <DiginsightDiagnosticsVersion>1.0.2.49</DiginsightDiagnosticsVersion>
+  </PropertyGroup>
+
+  <!--<PropertyGroup>
+    <AbilityStorageInterfaceVersion></AbilityStorageInterfaceVersion>
+    <AbilityStorageCosmosDbVersion></AbilityStorageCosmosDbVersion>
+    <AbilityStorageMongoDbVersion></AbilityStorageMongoDbVersion>
+  </PropertyGroup>-->
+
+  <!--<ItemGroup>
+    <PackageReference Include="ABB.Ability.EL.Common.Storage.CosmosDb" Version="1.0.22046.81664" />
+    <PackageReference Include="ABB.Ability.EL.Common.Storage.Interface" Version="1.0.22046.81662" />
+    <PackageReference Include="ABB.Ability.EL.Common.Storage.MongoDb" Version="1.0.22061.83925" />
+  </ItemGroup>-->
+
+  <!--<PropertyGroup>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)ABBRuleset.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime;build;native;contentfiles;analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>-->
+
+</Project>

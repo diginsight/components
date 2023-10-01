@@ -10,6 +10,8 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Cursors = System.Windows.Input.Cursors;
+using Rectangle = System.Windows.Shapes.Rectangle;
 
 namespace Common
 {

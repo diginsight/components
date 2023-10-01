@@ -35,6 +35,7 @@ using System.Diagnostics;
 using Microsoft.Rest.Azure.OData;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using System.Net;
+using UserControl = System.Windows.Controls.UserControl;
 #endregion
 
 namespace Common

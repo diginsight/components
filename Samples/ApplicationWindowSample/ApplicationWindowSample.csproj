@@ -5,6 +5,7 @@
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<RuntimeIdentifiers>win</RuntimeIdentifiers>
 		<UseWPF>true</UseWPF>
+		<Configurations>Debug;Release;DebugWithProjectReference;DebugWithProjectReferences</Configurations>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\Common.EntityBase\Common.EntityBase.csproj" />

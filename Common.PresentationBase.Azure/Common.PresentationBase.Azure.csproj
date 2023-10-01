@@ -14,7 +14,8 @@
 		<PackageIcon>common.components.png</PackageIcon>
 		<RepositoryUrl>https://github.com/diginsight/components.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<LangVersion>8.0</LangVersion>
+		<LangVersion>10.0</LangVersion>
+		<Configurations>Debug;Release;DebugWithProjectReference;DebugWithProjectReferences</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -29,12 +30,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		 <PackageReference Include="Common.Diagnostics" Version="1.0.2.48" /> 
+		<PackageReference Include="Common.Diagnostics" Version="$(DiginsightDiagnosticsVersion)" Condition="'$(Configuration)'!='DebugWithProjectReferences'"  />
 		<PackageReference Include="Microsoft.Rest.ClientRuntime.Azure" Version="3.3.19" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <!--<ProjectReference Include="..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" />-->
+	  <ProjectReference Include="..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
 	  <ProjectReference Include="..\Common.EntityBase\Common.EntityBase.csproj" />
 	  <ProjectReference Include="..\Common.PresentationBase\Common.PresentationBase.csproj" />
 	</ItemGroup>

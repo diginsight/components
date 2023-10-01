@@ -11,6 +11,7 @@
 	  <PackageIcon>common.components.png</PackageIcon>
 	  <RepositoryUrl>https://github.com/diginsight/components.git</RepositoryUrl>
 	  <RepositoryType>git</RepositoryType>
+	  <Configurations>Debug;Release;DebugWithProjectReference;DebugWithProjectReferences</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

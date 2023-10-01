@@ -6,6 +6,7 @@
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
 		<UserSecretsId>b7040a7d-b4ed-4fcd-94a2-c33c0cfa95f3</UserSecretsId>
+		<Configurations>Debug;Release;DebugWithProjectReference;DebugWithProjectReferences</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -16,7 +17,7 @@
 		<PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
 		<PackageReference Include="Azure.Messaging.EventHubs" Version="5.9.2" />
 		<PackageReference Include="Azure.Messaging.EventHubs.Processor" Version="5.9.2" />
-		 <PackageReference Include="Common.Diagnostics" Version="1.0.2.48" /> 
+		<PackageReference Include="Common.Diagnostics" Version="$(DiginsightDiagnosticsVersion)" Condition="'$(Configuration)'!='DebugWithProjectReferences'"  />
 		<PackageReference Include="log4net" Version="2.0.15" />
 		<PackageReference Include="Microsoft.Azure.Common" Version="2.2.1" />
 		<PackageReference Include="Microsoft.Azure.Devices.Client" Version="1.42.0" />
@@ -32,7 +33,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <!--<ProjectReference Include="..\..\..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" />-->
+	  <ProjectReference Include="..\..\..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
 	  <ProjectReference Include="..\..\..\Common.ComponentBase.Abstractions\Common.ComponentBase.Abstractions.csproj" />
 	  <ProjectReference Include="..\..\..\Common.ComponentBase\Common.ComponentBase.csproj" />
 	  <ProjectReference Include="..\..\..\Common.EntityBase\Common.EntityBase.csproj" />

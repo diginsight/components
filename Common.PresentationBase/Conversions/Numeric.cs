@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using Binding = System.Windows.Data.Binding;
 
 namespace Common
 {

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application = Microsoft.Graph.Models.Application;
+//using Application = System.Windows.Application;
 
 namespace Common.PresentationBase
 {

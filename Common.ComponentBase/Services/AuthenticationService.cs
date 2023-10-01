@@ -41,6 +41,7 @@ using System.Windows.Interop;
 using Microsoft.Identity.Client.Extensibility;
 using Microsoft.Extensions.Logging;
 using Common.Abstractions;
+using MessageBox = System.Windows.MessageBox;
 //using Microsoft.Identity.Client.Broker;
 #endregion
 

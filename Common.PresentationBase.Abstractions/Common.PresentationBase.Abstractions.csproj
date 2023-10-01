@@ -16,6 +16,7 @@
 	  <AssemblyOriginatorKeyFile>diginsight.snk</AssemblyOriginatorKeyFile>
 	  <PackageIcon>common.components.png</PackageIcon>
 	  <RepositoryType>git</RepositoryType>
+	  <Configurations>Debug;Release;DebugWithProjectReference;DebugWithProjectReferences</Configurations>
 	  <!--<LangVersion>8.0</LangVersion>-->
   </PropertyGroup>
 

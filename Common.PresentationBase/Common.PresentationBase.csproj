@@ -15,6 +15,7 @@
 		<RepositoryUrl>https://github.com/diginsight/components.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<LangVersion>10.0</LangVersion>
+		<Configurations>Debug;Release;DebugWithProjectReference;DebugWithProjectReferences</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -334,8 +335,8 @@
 		<PackageReference Include="Azure.Identity" Version="1.9.0" />
 		<PackageReference Include="Azure.ResourceManager" Version="1.7.0" />
 		<PackageReference Include="Azure.ResourceManager.Resources" Version="1.6.0" />
-		 <PackageReference Include="Common.Diagnostics" Version="1.0.2.48" /> 
-		<PackageReference Include="Common.SmartCache" Version="0.9.0.225" />
+		<PackageReference Include="Common.Diagnostics" Version="$(DiginsightDiagnosticsVersion)" Condition="'$(Configuration)'!='DebugWithProjectReferences'"  />
+		<!--<PackageReference Include="Common.SmartCache" Version="0.9.0.225" />-->
 		<PackageReference Include="Microsoft.Graph" Version="5.21.0" />
 		<PackageReference Include="Microsoft.Graph.Core" Version="3.0.9" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.55.0" />
@@ -412,9 +413,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!--<ProjectReference Include="..\..\smartcache\Common.SmartCache\Common.SmartCache.csproj" />-->
 		<ProjectReference Include="..\..\smartcache\Common.SmartCache\Common.SmartCache.csproj" />
-		<!--<ProjectReference Include="..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" />-->
+		<ProjectReference Include="..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
 		<ProjectReference Include="..\Common.ComponentBase\Common.ComponentBase.csproj" />
 		<ProjectReference Include="..\Common.EntityBase\Common.EntityBase.csproj" />
 	</ItemGroup>

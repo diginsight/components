@@ -34,11 +34,11 @@ namespace Common
                     return match.Groups[1].Value + domainName;
                 }
             }
-            catch (RegexMatchTimeoutException e)
+            catch (RegexMatchTimeoutException _)
             {
                 return false;
             }
-            catch (ArgumentException e)
+            catch (ArgumentException _)
             {
                 return false;
             }

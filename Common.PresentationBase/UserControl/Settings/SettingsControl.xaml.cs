@@ -19,6 +19,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Binding = System.Windows.Data.Binding;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using UserControl = System.Windows.Controls.UserControl;
 #endregion
 
 namespace Common

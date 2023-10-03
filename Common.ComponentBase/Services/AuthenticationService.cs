@@ -110,7 +110,7 @@ namespace Common
         }
         public AuthenticationService(string tenantId, string applicationId, string appName, string appVersion, string redirectUri, string[] scopes, string oauthVersion, Window window) // ApplicationInfo appInfo, 
         {
-            using var scope = logger.BeginMethodScope(new { tenantId, applicationId, appName, appVersion, redirectUri, scopes, oauthVersion, window = window.GetLogString() }); // new { appInfo = appInfo.GetLogString() }
+            using var scope = logger.BeginMethodScope(new { tenantId, applicationId, appName, appVersion, redirectUri, scopes, oauthVersion, window }); // new { appInfo = appInfo.GetLogString() }
 
             this.tenantId = tenantId;
             if (string.IsNullOrEmpty(this.tenantId)) { this.tenantId = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID); } // , CultureInfo.InvariantCulture
@@ -553,6 +553,7 @@ namespace Common
             using var scope = logger.BeginMethodScope();
 
             var accounts = await publicClientApp.GetAccountsAsync();
+            scope.LogDebug(new { accounts });
             scope.LogDebug($"(await publicClientApp.GetAccountsAsync()).ToList(); returned {accounts.GetLogString()}");
 
             try

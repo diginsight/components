@@ -180,7 +180,7 @@ namespace KeyVaultSample
                     App.ConnectionString = App.KeyVaultAddress = keyVaultAddress;
                 });
                 //scope.LogDebug(new { this.Identity, tenantId, clientId, clientSecret, keyVaultAddress }, null, PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("MaxMessageLen", 0) }));
-                scope.LogDebug(new { Login = identity.Upn }, null, PROPS.Get(new[] { ("Tags", "Event,Application" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
+                scope.LogDebug(new { Login = identity?.Upn }, null, PROPS.Get(new[] { ("Tags", "Event,Application" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
                 scope.LogDebug(new { tenantId }, null, PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
                 scope.LogDebug(new { clientId }, null, PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
                 scope.LogDebug(new { clientSecret }, null, PROPS.Get(new[] { ("Tags", "Event,Variables" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));

@@ -47,7 +47,7 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace Common
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : IAuthenticationService, ISupportLogString
     {
         #region constants
         private static readonly Type T = typeof(AuthenticationService);
@@ -171,7 +171,7 @@ namespace Common
         /// <returns>The OAuth2 token for the user</returns>
         public string AcquireToken(Identity identity, string authority, string resource, string claims)
         {
-            using var scope = logger.BeginMethodScope(new { identity = identity.GetLogString(), authority, resource, claims });
+            using var scope = logger.BeginMethodScope(new { identity, authority, resource, claims });
 
             var ret = "";
             ret = Task.Run(async () => { return await AcquireTokenAsync(identity, authority, resource, claims); }).GetAwaiter().GetResult();
@@ -181,7 +181,7 @@ namespace Common
         #region AcquireTokenAsync
         public async Task<string> AcquireTokenAsync(Identity identity, string authority, string resource, string claims)
         {
-            using var scope = logger.BeginMethodScope(new { identity = identity.GetLogString(), authority, resource, claims });
+            using var scope = logger.BeginMethodScope(new { identity, authority, resource, claims });
 
             try
             {
@@ -190,7 +190,7 @@ namespace Common
 
                 var accounts = await publicClientApp.GetAccountsAsync(); scope.LogDebug($"await app.GetAccountsAsync(); returned {accounts.GetLogString()}");
                 var firstAccount = accounts.FirstOrDefault();
-                scope.LogDebug(new { firstAccount = firstAccount.GetLogString() });
+                scope.LogDebug(new { firstAccount });
 
                 try
                 {
@@ -259,7 +259,7 @@ namespace Common
 
                     var accounts = await publicClientApp.GetAccountsAsync(); scope.LogDebug($"await app.GetAccountsAsync(); returned {accounts.GetLogString()}");
                     var firstAccount = accounts.FirstOrDefault();
-                    scope.LogDebug(new { firstAccount = firstAccount.GetLogString() });
+                    scope.LogDebug(new { firstAccount });
 
                     var scopes = this.scopes;
                     try
@@ -299,7 +299,7 @@ namespace Common
                         throw;
                     }
 
-                    scope.Result = identity.GetLogString();
+                    scope.Result = identity;
                     return identity;
                 }
                 catch (Exception ex)
@@ -329,7 +329,7 @@ namespace Common
 
                     var accounts = await publicClientApp.GetAccountsAsync(); scope.LogDebug($"await app.GetAccountsAsync(); returned {accounts.GetLogString()}");
                     var firstAccount = accounts.FirstOrDefault();
-                    scope.LogDebug(new { firstAccount = firstAccount.GetLogString() });
+                    scope.LogDebug(new { firstAccount });
 
                     var scopes = this.scopes;
                     if (true)
@@ -464,7 +464,7 @@ namespace Common
                         }
                     }
 
-                    scope.Result = identity.GetLogString();
+                    scope.Result = identity;
                     return identity;
                 }
                 catch (Exception ex)
@@ -639,6 +639,12 @@ namespace Common
             }
 
             return null;
+        }
+
+        public string ToLogString()
+        {
+            var logString = $"{{{nameof(AuthenticationService)}:{{Identity:{this.Identity.GetLogString()},ApplicationId:{this.ApplicationId},TenantId:{this.TenantId},AuthenticationResult:{this.AuthenticationResult.GetLogString()} }}}}";
+            return logString;
         }
     }
 }

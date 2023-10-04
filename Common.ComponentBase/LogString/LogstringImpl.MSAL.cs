@@ -41,6 +41,11 @@ namespace Common
             string logString = $"{{Identity:{{Name:{pthis.Name},Email:{pthis.Email},Upn:{pthis.Upn},Manager:{pthis.Manager.GetLogString()}}}}}";
             return logString;
         }
+        public static string ToLogStringInternal(TokenCacheNotificationArgs pthis)
+        {
+            var logString = $"{{TokenCacheNotificationArgs:{{Account:{pthis.Account.GetLogString()},RequestTenantId:{pthis.RequestTenantId},ClientId:{pthis.ClientId},CorrelationId:{pthis.CorrelationId},HasTokens:{pthis.HasTokens},IsApplicationCache:{pthis.IsApplicationCache},PiiLoggingEnabled:{pthis.PiiLoggingEnabled},HasStateChanged:{pthis.HasStateChanged},SuggestedCacheExpiry:{pthis.SuggestedCacheExpiry}}}}}";
+            return logString;
+        }
 
         public string ToLogString(object t, HandledEventArgs arg)
         {
@@ -54,6 +59,7 @@ namespace Common
                 case IPublicClientApplication obj: arg.Handled = true; return Common.LogstringImpl.ToLogStringInternal(obj);
                 case IAccount obj: arg.Handled = true; return Common.LogstringImpl.ToLogStringInternal(obj);
                 case AuthenticationResult obj: arg.Handled = true; return Common.LogstringImpl.ToLogStringInternal(obj);
+                case TokenCacheNotificationArgs obj: arg.Handled = true; return Common.LogstringImpl.ToLogStringInternal(obj);
                 default: break;
             }
             return null;

@@ -56,7 +56,7 @@ namespace Common
                     scope.LogInformation($"getting user's manager", "User");
                     var userProfile = SerializationHelper.DeserializeJsonObject<UserProfile>(stringContent);
 
-                    scope.LogDebug(new { userProfile = userProfile.GetLogString() });
+                    scope.LogDebug(new { userProfile });
                     return userProfile;
                 }
             }

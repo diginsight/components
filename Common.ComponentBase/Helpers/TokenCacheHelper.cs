@@ -60,7 +60,7 @@ namespace Common
 
         public static void BeforeAccessNotification(TokenCacheNotificationArgs args)
         {
-            using var sec = TraceLogger.BeginMethodScope(T, new { args = args.GetLogString() });
+            using var sec = TraceLogger.BeginMethodScope(T, new { args  });
 
             lock (FileLock)
             {
@@ -77,7 +77,7 @@ namespace Common
 
         public static void AfterAccessNotification(TokenCacheNotificationArgs args)
         {
-            using var sec = TraceLogger.BeginMethodScope(T, new { args = args.GetLogString() });
+            using var sec = TraceLogger.BeginMethodScope(T, new { args });
 
             // if the access operation resulted in a cache update
             if (args.HasStateChanged)
@@ -98,7 +98,7 @@ namespace Common
 
         internal static void EnableSerialization(ITokenCache tokenCache)
         {
-            using (var scope = TraceLogger.BeginMethodScope(T, new { tokenCache = tokenCache.GetLogString() }))
+            using (var scope = TraceLogger.BeginMethodScope(T, new { tokenCache }))
             {
                 tokenCache.SetBeforeAccess(BeforeAccessNotification);
                 tokenCache.SetAfterAccess(AfterAccessNotification);

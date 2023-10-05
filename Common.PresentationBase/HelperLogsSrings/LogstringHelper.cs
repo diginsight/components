@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Button = System.Windows.Controls.Button;
 #endregion
 
@@ -27,6 +28,18 @@ namespace Common
         {
             if (pthis == null) { return null; }
             string logString = $"{{PropertyChangedEventArgs:{{PropertyName:{pthis.PropertyName}}}}}";
+            return logString;
+        }
+        public static string ToLogStringInternal(ExecutedRoutedEventArgs pthis)
+        {
+            if (pthis == null) { return null; }
+            string logString = $"{{ExecutedRoutedEventArgs:{{Parameter:Command:{pthis.Command.GetLogString()},{pthis.Parameter.GetLogString()},RoutedEvent:{pthis.RoutedEvent.GetLogString()},Source:{pthis.Source},OriginalSource:{pthis.OriginalSource}}}}}";
+            return logString;
+        }
+        public static string ToLogStringInternal(RoutedUICommand pthis)
+        {
+            if (pthis == null) { return null; }
+            string logString = $"{{RoutedUICommand:{{Name:{pthis.Name},Text:{pthis.Text},OwnerType:{pthis.OwnerType},InputGestures:{pthis.InputGestures.GetLogString()}}}}}";
             return logString;
         }
         public static string ToLogStringInternal(Button pthis)
@@ -60,7 +73,6 @@ namespace Common
             string logString = $"{{TenantData:{{DisplayName:{pthis.DisplayName},DefaultDomain:{pthis.DefaultDomain},Id:{pthis.Id},TenantId:{pthis.TenantId},TenantType:{pthis.TenantType},TenantCategory:{pthis.TenantCategory},Country:{pthis.Country},CountryCode:{pthis.CountryCode},TenantBrandingLogoUri:{pthis.TenantBrandingLogoUri}}}}}";
             return logString;
         }
-        //
         public static string ToLogStringInternal(TenantResource pthis)
         {
             if (pthis == null) { return null; }

@@ -33,6 +33,7 @@ using Azure.ResourceManager.Resources;
 using Common.PresentationBase;
 using Common.SmartCache;
 using System.Security.Cryptography;
+using System.Windows.Input;
 //using Azure.Extensions.AspNetCore.Configuration.Secrets;
 #endregion
 
@@ -358,12 +359,14 @@ namespace KeyVaultSample
                 case Window w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case System.Windows.Controls.Button w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case PropertyChangedEventArgs w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case ExecutedRoutedEventArgs w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case RoutedUICommand w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case Thread w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case Microsoft.Graph.Models.Application w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case Identity w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case TenantData w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case TenantResource w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
-                //
+
                 //case EventProcessorClient w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 default:
                     break;

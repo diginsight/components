@@ -181,7 +181,7 @@ namespace Common
             }
             finally
             {
-                TraceLogger.LogDebug($"ret:{ret.GetLogString()}");
+                scope.Result = ret;
             }
 
             return ret;
@@ -240,9 +240,8 @@ namespace Common
             }
             finally
             {
-                TraceLogger.LogDebug($"ret:{ret.GetLogString()}");
+                scope.Result = ret;
             }
-
             return ret;
         }
         #endregion

@@ -237,7 +237,7 @@ namespace Common
             var parallelService = this.App.Host.Services.GetService<IParallelService>();
             this.parallelService = parallelService;
 
-            scope.LogDebug(new { authenticationService = authenticationService.GetLogString() });
+            scope.LogDebug(new { authenticationService });
 
             InitializeComponent();
         }
@@ -303,7 +303,7 @@ namespace Common
                     clientSecret = this.ClientSecret = this.App.Properties["ClientSecret"] as string;
                     keyVaultAddress = this.KeyVaultAddress = this.App.Properties["KeyVaultAddress"] as string;
                 });
-                scope.LogDebug(new { identity = identity.GetLogString() });
+                scope.LogDebug(new { identity });
                 scope.LogDebug(new { tenantId, authTenantId, clientId, clientSecret, keyVaultAddress });
 
                 TokenCredential credential = null;
@@ -407,7 +407,7 @@ namespace Common
         #region GetUserTenants
         private List<TenantData> GetUserTenants(TokenCredential credential)
         {
-            using var scope = logger.BeginMethodScope(new { credential = credential.GetLogString() });
+            using var scope = logger.BeginMethodScope(new { credential });
 
             var tenants = new List<TenantData>();
             var armClient = new ArmClient(credential);
@@ -426,7 +426,7 @@ namespace Common
         #region GetOwnedApplicationAsync
         async Task<Microsoft.Graph.Models.Application> GetOwnedApplicationAsync(Identity identity, string tenantId, string clientId)
         {
-            using var scope = logger.BeginMethodScope(new { identity = identity.GetLogString(), tenantId, clientId });
+            using var scope = logger.BeginMethodScope(new { identity, tenantId, clientId });
 
             try // GetApplication(tenantId, clientId)
             {
@@ -473,7 +473,7 @@ namespace Common
                                 PublisherDomain = publisherDomain,
                                 IdentifierUris = identifierUris
                             };
-                            scope.LogDebug(new { application = application.GetLogString() });
+                            scope.LogDebug(new { application });
 
                             if (application.AppId == clientId) { return application; }
                         }
@@ -489,12 +489,12 @@ namespace Common
         #region KeyVaultAddressChanged_ConvertEvent2
         private object KeyVaultAddressChanged_ConvertEvent2(DependencyObject source, object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            using var scope = logger.BeginMethodScope(new { values = values.GetLogString(), targetType, parameter = parameter.GetLogString(), source, culture });
+            using var scope = logger.BeginMethodScope(new { values, targetType, parameter, source, culture });
 
             int i = 0;
             var keyVaults = values != null && values.Length > i ? values[i] as List<GenericResourceData> : null; i++;
             var keyVaultAddress = values != null && values.Length > i ? values[i] as string : null; i++;
-            scope.LogDebug(new { keyVaults = keyVaults.GetLogString() });
+            scope.LogDebug(new { keyVaults });
             scope.LogDebug(new { keyVaultAddress });
 
             if (keyVaults == null) { return null; }
@@ -507,15 +507,15 @@ namespace Common
         #endregion
         private async void tenantChanged_ConvertEvent2Async(DoWorkContext worker, DependencyObject source, object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            using var scope = logger.BeginMethodScope(new { values = values.GetLogString(), targetType, parameter = parameter.GetLogString(), source, culture });
+            using var scope = logger.BeginMethodScope(new { values, targetType, parameter, source, culture });
 
             int i = 0;
             var identity = values != null && values.Length > i ? values[i] as Identity : null; i++;
             var tenant = values != null && values.Length > i ? values[i] as TenantData : null; i++;
             var keyVaultAddress = values != null && values.Length > i ? values[i] as string : null; i++;
-            scope.LogDebug(new { identity = identity.GetLogString() });
-            scope.LogDebug(new { tenant = tenant.GetLogString() });
-            scope.LogDebug(new { keyVaultAddress, tenant = tenant.GetLogString() });
+            scope.LogDebug(new { identity });
+            scope.LogDebug(new { tenant });
+            scope.LogDebug(new { keyVaultAddress });
 
             if (identity == null) { return /*null*/; }
             if (tenant == null) { return /*null*/; }
@@ -560,7 +560,7 @@ namespace Common
                 this.KeyVault = keyVault;
             });
 
-            scope.LogDebug(new { keyVaults = keyVaults.GetLogString(), keyVault = keyVault.GetLogString() });
+            scope.LogDebug(new { keyVaults, keyVault });
 
             return /*null*/;
         }

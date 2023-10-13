@@ -27,6 +27,7 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.IdentityModel;
 using System.IO;
 using System.Security.Cryptography;
 using Common;
@@ -55,29 +56,42 @@ namespace Common
             CacheFilePath = $"{tempPath}iam\\{executingAssembly.GetName().Name}.msalcache.bin3";
 
             sec.LogDebug(new { CacheFilePath });
-
         }
 
         public static void BeforeAccessNotification(TokenCacheNotificationArgs args)
         {
-            using var sec = TraceLogger.BeginMethodScope(T, new { args  });
+            using var scope = TraceLogger.BeginMethodScope(T, new { args });
 
             lock (FileLock)
             {
                 try
                 {
-                    args.TokenCache.DeserializeMsalV3(File.Exists(CacheFilePath)
-                            ? ProtectedData.Unprotect(File.ReadAllBytes(CacheFilePath), null, DataProtectionScope.CurrentUser)
-                            : null);
+                    var cacheFileExists = File.Exists(CacheFilePath); scope.LogDebug($"File.Exists({CacheFilePath}); returned {cacheFileExists}");
+                    var unprotectData = default(byte[]);
+
+                    if (cacheFileExists)
+                    {
+                        unprotectData = ProtectedData.Unprotect(File.ReadAllBytes(CacheFilePath), null, DataProtectionScope.CurrentUser);
+                        scope.LogDebug($"ProtectedData.Unprotect(File.ReadAllBytes({CacheFilePath}), null, {DataProtectionScope.CurrentUser}); returned unprotectData");
+                    }
+
+                    args.TokenCache.DeserializeMsalV3(unprotectData); scope.LogDebug($"args.TokenCache.DeserializeMsalV3(unprotectData);");
                 }
-                catch (Exception ex) { sec.LogException(ex); }
+                catch (Exception ex) { scope.LogException(ex); }
             }
 
         }
 
+        public static Task BeforeAccessNotificationAsync(TokenCacheNotificationArgs args)
+        {
+            using var scope = TraceLogger.BeginMethodScope(T, new { args });
+
+            return Task.CompletedTask;
+        }
+
         public static void AfterAccessNotification(TokenCacheNotificationArgs args)
         {
-            using var sec = TraceLogger.BeginMethodScope(T, new { args });
+            using var scope = TraceLogger.BeginMethodScope(T, new { args });
 
             // if the access operation resulted in a cache update
             if (args.HasStateChanged)
@@ -86,15 +100,33 @@ namespace Common
                 {
                     try
                     {
-                        // reflect changesgs in the persistent store
-                        var path = Path.GetDirectoryName(CacheFilePath);
-                        Directory.CreateDirectory(path);
+                        var path = Path.GetDirectoryName(CacheFilePath); scope.LogDebug($"Path.GetDirectoryName({CacheFilePath}); returned {path}");
+                        Directory.CreateDirectory(path); scope.LogDebug($"Directory.CreateDirectory({path});");
                         File.WriteAllBytes(CacheFilePath, ProtectedData.Protect(args.TokenCache.SerializeMsalV3(), null, DataProtectionScope.CurrentUser));
+                        scope.LogDebug($"File.WriteAllBytes({CacheFilePath}, ProtectedData.Protect(args.TokenCache.SerializeMsalV3(), null, {DataProtectionScope.CurrentUser}));");
                     }
-                    catch (Exception ex) { sec.LogException(ex); }
+                    catch (Exception ex) { scope.LogException(ex); }
                 }
             }
         }
+        public static Task AfterAccessNotificationAsync(TokenCacheNotificationArgs args)
+        {
+            using var scope = TraceLogger.BeginMethodScope(T, new { args });
+
+            return Task.CompletedTask;
+        }
+
+        public static void BeforeWriteNotification(TokenCacheNotificationArgs args)
+        {
+            using var scope = TraceLogger.BeginMethodScope(T, new { args });
+        }
+        public static Task BeforeWriteNotificationAsync(TokenCacheNotificationArgs args)
+        {
+            using var scope = TraceLogger.BeginMethodScope(T, new { args });
+
+            return Task.CompletedTask;
+        }
+
 
         internal static void EnableSerialization(ITokenCache tokenCache)
         {
@@ -102,6 +134,11 @@ namespace Common
             {
                 tokenCache.SetBeforeAccess(BeforeAccessNotification);
                 tokenCache.SetAfterAccess(AfterAccessNotification);
+                tokenCache.SetBeforeWrite(BeforeWriteNotification);
+                
+                tokenCache.SetBeforeAccessAsync(BeforeAccessNotificationAsync);
+                tokenCache.SetAfterAccessAsync(AfterAccessNotificationAsync);
+                tokenCache.SetBeforeWriteAsync(BeforeWriteNotificationAsync);
             }
         }
     }

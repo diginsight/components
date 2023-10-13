@@ -34,6 +34,8 @@ using Common.PresentationBase;
 using Common.SmartCache;
 using System.Security.Cryptography;
 using System.Windows.Input;
+using Microsoft.Identity.Client;
+using ApplicationBase = Common.ApplicationBase;
 //using Azure.Extensions.AspNetCore.Configuration.Secrets;
 #endregion
 
@@ -366,6 +368,7 @@ namespace KeyVaultSample
                 case Identity w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case TenantData w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case TenantResource w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                case TokenCacheNotificationArgs w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
 
                 //case EventProcessorClient w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 default:

@@ -332,16 +332,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Azure.Identity" Version="1.9.0" />
+		<PackageReference Include="Azure.Identity" Version="1.10.2" />
 		<PackageReference Include="Azure.ResourceManager" Version="1.7.0" />
 		<PackageReference Include="Azure.ResourceManager.Resources" Version="1.6.0" />
-		<PackageReference Include="Common.Diagnostics" Version="$(DiginsightDiagnosticsVersion)" Condition="'$(Configuration)'!='DebugWithProjectReferences'"  />
+		<PackageReference Include="Common.Diagnostics" Version="$(DiginsightDiagnosticsVersion)" Condition="'$(Configuration)'!='DebugWithProjectReferences'" />
 		<!--<PackageReference Include="Common.SmartCache" Version="0.9.0.225" />-->
-		<PackageReference Include="Microsoft.Graph" Version="5.21.0" />
-		<PackageReference Include="Microsoft.Graph.Core" Version="3.0.9" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.55.0" />
+		<PackageReference Include="Microsoft.Graph" Version="5.30.0" />
+		<PackageReference Include="Microsoft.Graph.Core" Version="3.0.11" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.56.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="SharpVectors" Version="1.8.1" />
+		<PackageReference Include="SharpVectors" Version="1.8.2" />
 		<PackageReference Include="System.ComponentModel" Version="4.3.0" />
 		<!--<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />-->
 		<PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />

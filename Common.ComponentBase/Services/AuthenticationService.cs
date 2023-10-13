@@ -1,30 +1,4 @@
 ﻿#region using
-/*
-*
-* Copyright (c) Microsoft Corporation.
-* All rights reserved.
-*
-* This code is licensed under the MIT License.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files(the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions :
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-*
-*/
 using System;
 using System.Configuration;
 //using Microsoft.InformationProtection;
@@ -42,6 +16,7 @@ using Microsoft.Identity.Client.Extensibility;
 using Microsoft.Extensions.Logging;
 using Common.Abstractions;
 using MessageBox = System.Windows.MessageBox;
+//using static System.Formats.Asn1.AsnWriter;
 //using Microsoft.Identity.Client.Broker;
 #endregion
 
@@ -79,8 +54,9 @@ namespace Common
         private string Instance = "https://login.microsoftonline.com/";
         private IPublicClientApplication publicClientApp;
         //Set the scope for API call to user.read
-        string[] scopes = new string[] { "openid", "user.read", "user.read.all", "profile" }; // "openid", "user.read", "user.read.all", "profile" "https://aadrm.com/user_impersonation", "email", "groupmember.read.all", "group.read.all", "https://aadrm.com/user_impersonation", "https://psor.o365syncservice.com/UnifiedPolicy.User.Read" 
-        string[] scopesAADRM = new string[] { "https://aadrm.com/user_impersonation" }; // , , "https://psor.o365syncservice.com/UnifiedPolicy.User.Read" 
+        string[] scopes = new string[] { "openid", "user.read", "profile", "https://vault.azure.net/.default" }; // "user.read.all", "openid", "user.read", "user.read.all", "profile" "https://aadrm.com/user_impersonation", "email", "groupmember.read.all", "group.read.all", "https://aadrm.com/user_impersonation", "https://psor.o365syncservice.com/UnifiedPolicy.User.Read" 
+        string[] scopesAADRM = new string[] { "https://aadrm.com/user_impersonation" }; // ,, "https://aadrm.com/user_impersonation" "https://vault.azure.net/.default"  , "https://vault.azure.net/.default", "https://psor.o365syncservice.com/UnifiedPolicy.User.Read" 
+        string[] scopesAKV = new string[] { "https://vault.azure.net/user_impersonation" }; // ,, "https://aadrm.com/user_impersonation" "https://vault.azure.net/.default"  , "https://vault.azure.net/.default", "https://psor.o365syncservice.com/UnifiedPolicy.User.Read" 
         string[] scopesO365syncservice = new string[] { "https://psor.o365syncservice.com/UnifiedPolicy.User.Read" };
         #endregion
 
@@ -104,7 +80,7 @@ namespace Common
                                 .WithAuthority($"https://login.microsoftonline.com/{tenantId}{oauthVersionSuffix}", true) //$"{Instance}{tenantId}"
                                 .WithDefaultRedirectUri();
 
-            publicClientApp = builder.Build(); scope.LogDebug($@"_clientApp = PublicClientApplicationBuilder.Create(applicationId).WithAuthority($'{Instance}{tenantId}', true).WithRedirectUri({this.redirectUri}).Build();");
+            publicClientApp = builder.Build(); scope.LogDebug($@"_clientApp = PublicClientApplicationBuilder.Create({applicationId}).WithAuthority($'{Instance}{tenantId}', true).WithRedirectUri({this.redirectUri}).Build();");
 
             TokenCacheHelper.EnableSerialization(publicClientApp.UserTokenCache); scope.LogDebug($"TokenCacheHelper.EnableSerialization({publicClientApp.UserTokenCache}); completed");
         }
@@ -127,6 +103,7 @@ namespace Common
             {
                 var scopesString = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_SCOPES, DEFAULTVALUE_SCOPES);
                 this.scopes = scopesString?.Split(',');
+                scope.LogDebug(() => new { this.scopes });
             }
 
             this.window = window;
@@ -198,7 +175,7 @@ namespace Common
                     if (resource.StartsWith("https://aadrm.com", StringComparison.InvariantCultureIgnoreCase)) { scopes = scopesAADRM; }
                     if (resource.StartsWith("https://syncservice.o365syncservice.com/", StringComparison.InvariantCultureIgnoreCase)) { scopes = scopesO365syncservice; }
 
-                    authResult = await app.AcquireTokenSilent(scopes, firstAccount).ExecuteAsync(); scope.LogDebug($"await app.AcquireTokenSilent({scopesAADRM.GetLogString()}, firstAccount).ExecuteAsync(); returned {authResult.GetLogString()}");
+                    authResult = await app.AcquireTokenSilent(scopes, firstAccount).ExecuteAsync(); scope.LogDebug($"await app.AcquireTokenSilent({scopes.GetLogString()}, firstAccount).ExecuteAsync(); returned {authResult.GetLogString()}");
                 }
                 catch (MsalUiRequiredException ex)
                 {
@@ -211,17 +188,17 @@ namespace Common
                         {
                             IntPtr handle = new WindowInteropHelper(window).Handle;
 
-                            authResult = await app.AcquireTokenInteractive(scopesAADRM).WithAccount(firstAccount)
+                            authResult = await app.AcquireTokenInteractive(scopes).WithAccount(firstAccount)
                                                   .WithParentActivityOrWindow(handle)
                                                   .WithPrompt(Prompt.SelectAccount).ExecuteAsync();
                         }
                         else
                         {
                             //var handle = new WindowInteropHelper(_window).Handle;
-                            authResult = await app.AcquireTokenInteractive(scopesAADRM).WithAccount(firstAccount)
+                            authResult = await app.AcquireTokenInteractive(scopes).WithAccount(firstAccount)
                                                   .WithPrompt(Prompt.SelectAccount).ExecuteAsync();
                         }
-                        scope.LogDebug($"await app.AcquireTokenInteractive({scopesAADRM.GetLogString()}).WithAccount(firstAccount).WithParentActivityOrWindow(new WindowInteropHelper(this).Handle).WithPrompt({Prompt.SelectAccount.GetLogString()}).ExecuteAsync(); returned {authResult.GetLogString()}");
+                        scope.LogDebug($"await app.AcquireTokenInteractive({scopes.GetLogString()}).WithAccount(firstAccount).WithParentActivityOrWindow(new WindowInteropHelper(this).Handle).WithPrompt({Prompt.SelectAccount.GetLogString()}).ExecuteAsync(); returned {authResult.GetLogString()}");
                     }
                     catch (MsalException msalex)
                     {
@@ -513,14 +490,14 @@ namespace Common
             using var scope = logger.BeginMethodScope();
 
             var accounts = await publicClientApp.GetAccountsAsync();
-            logger.LogDebug($"await publicClientApp.GetAccountsAsync(); returned {accounts.GetLogString()}");
+            scope.LogDebug($"await publicClientApp.GetAccountsAsync(); returned {accounts.GetLogString()}");
 
             if (accounts.Any())
             {
                 try
                 {
                     var result = await publicClientApp.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync().ConfigureAwait(true);
-                    logger.LogDebug($"await _app.AcquireTokenSilent(Scopes, accounts.FirstOrDefault()).ExecuteAsync().ConfigureAwait(true); returned {result.GetLogString()}");
+                    scope.LogDebug($"await _app.AcquireTokenSilent({scopes.GetLogString()}, {accounts.FirstOrDefault().GetLogString()}).ExecuteAsync().ConfigureAwait(true); returned {result.GetLogString()}");
 
                     this.authenticationResult = result;
                     var account = result.Account;
@@ -537,6 +514,8 @@ namespace Common
                     //var email = token?.Claims?.FirstOrDefault(c => c.Type == "email")?.Value;
                     //var tid = token?.Claims?.FirstOrDefault(c => c.Type == "tid")?.Value;
                     var identity = result != null && result.Account != null ? new Identity(upn, email, name ?? result.Account.Username) : null; // , email ?? upn, manager, IsDeclassifier
+
+                    scope.Result = identity;
                     return identity;
                 }
                 catch (MsalUiRequiredException ex)
@@ -558,8 +537,12 @@ namespace Common
 
             try
             {
+                //var scopeTemp = new List<string>(scopes);
+                //scopeTemp.AddRange(scopesAADRM);
+                //scopes = scopeTemp.ToArray();
+
                 var result = await publicClientApp.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync().ConfigureAwait(true);
-                logger.LogDebug($"await _app.AcquireTokenSilent(Scopes, accounts.FirstOrDefault()).ExecuteAsync().ConfigureAwait(true); returned {result.GetLogString()}");
+                scope.LogDebug($"await _app.AcquireTokenSilent({scopes.GetLogString()}, {accounts.FirstOrDefault().GetLogString()}).ExecuteAsync().ConfigureAwait(true); returned {result.GetLogString()}");
 
                 var account = result.Account;
                 var claims = result.ClaimsPrincipal.Claims;
@@ -575,6 +558,8 @@ namespace Common
                 //var email = token?.Claims?.FirstOrDefault(c => c.Type == "email")?.Value;
                 //var tid = token?.Claims?.FirstOrDefault(c => c.Type == "tid")?.Value;
                 var identity = result != null && result.Account != null ? new Identity(upn, email, name ?? result.Account.Username) : null; // , email ?? upn, manager, IsDeclassifier
+
+                scope.Result = identity;
                 return identity;
             }
             catch (MsalUiRequiredException)
@@ -583,8 +568,10 @@ namespace Common
                 {
                     // Force a sign-in (Prompt.SelectAccount), as the MSAL web browser might contain cookies for the current user
                     // and we don't necessarily want to re-sign-in the same user
-                    var builder = publicClientApp.AcquireTokenInteractive(scopes).WithAccount(accounts.FirstOrDefault()).WithPrompt(Prompt.SelectAccount);
-                    logger.LogDebug($"_app.AcquireTokenInteractive({scopes.GetLogString()}).WithAccount({accounts.FirstOrDefault().GetLogString()}).WithPrompt({Prompt.SelectAccount}); returned {builder.GetLogString()}");
+                    var builder = publicClientApp.AcquireTokenInteractive(scopes)
+                                                 //.WithExtraScopesToConsent(new[] { "https://vault.azure.net/user_impersonation" })
+                                                 .WithAccount(accounts.FirstOrDefault()).WithPrompt(Prompt.SelectAccount);
+                    scope.LogDebug($"_app.AcquireTokenInteractive({scopes.GetLogString()}).WithAccount({accounts.FirstOrDefault().GetLogString()}).WithPrompt({Prompt.SelectAccount}); returned {builder.GetLogString()}");
 
                     var isEmbeddedWebViewAvailable = publicClientApp.IsEmbeddedWebViewAvailable(); scope.LogDebug($"_app.IsEmbeddedWebViewAvailable() returned {isEmbeddedWebViewAvailable}");
                     if (!isEmbeddedWebViewAvailable)
@@ -595,8 +582,9 @@ namespace Common
                         builder = builder.WithUseEmbeddedWebView(false); logger.LogDebug($"builder.WithUseEmbeddedWebView(false); returned {builder.GetLogString()}");
                     }
 
+                    scope.LogDebug($"calling await builder.ExecuteAsync().ConfigureAwait(true);");
                     var result = await builder.ExecuteAsync().ConfigureAwait(true);
-                    logger.LogDebug($"await builder.ExecuteAsync().ConfigureAwait(true); returned {result.GetLogString()}");
+                    scope.LogDebug($"await builder.ExecuteAsync().ConfigureAwait(true); returned {result.GetLogString()}");
                     var account = result.Account;
                     var claims = result.ClaimsPrincipal.Claims;
 
@@ -611,6 +599,9 @@ namespace Common
                     //var email = token?.Claims?.FirstOrDefault(c => c.Type == "email")?.Value;
                     //var tid = token?.Claims?.FirstOrDefault(c => c.Type == "tid")?.Value;
                     var identity = account != null ? new Identity(upn, email, name ?? result.Account.Username) : null; // , email ?? upn, manager, IsDeclassifier
+
+                    this.AuthenticationResult = result;
+                    scope.Result = identity;
                     return identity;
                 }
                 catch (MsalException ex)

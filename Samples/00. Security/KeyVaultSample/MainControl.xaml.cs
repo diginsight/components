@@ -40,6 +40,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Azure.Core;
 using System.Net.Sockets;
 using Common.SmartCache;
+using Microsoft.Rest;
 #endregion
 
 namespace KeyVaultSample
@@ -280,7 +281,7 @@ namespace KeyVaultSample
         private void RunCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
         private void RunCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            using var scope = logger.BeginMethodScope();
+            using var scope = logger.BeginMethodScope(new { sender, e });
 
             var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS);
             if (App.ConnectionString is not null) { keyVaultAddress = App.ConnectionString; }
@@ -297,7 +298,17 @@ namespace KeyVaultSample
             }
             if (credential == null)
             {
-                var credentialOptions = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = this.Identity.Upn, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
+                var credentialOptions = new DefaultAzureCredentialOptions
+                {
+                    SharedTokenCacheUsername = this.Identity.Upn,
+                    ExcludeInteractiveBrowserCredential = false,
+                    ExcludeSharedTokenCacheCredential = false,
+                    ExcludeAzureCliCredential = false,
+                    ExcludeEnvironmentCredential = true,
+                    ExcludeManagedIdentityCredential = true,
+                    ExcludeVisualStudioCodeCredential = true,
+                    ExcludeVisualStudioCredential = true
+                };
                 credential = new DefaultAzureCredential(credentialOptions);
             }
 
@@ -308,7 +319,7 @@ namespace KeyVaultSample
                 this.VaultUri = client.VaultUri;
 
                 secretValues = new Dictionary<string, string>();
-                IEnumerable<SecretProperties> secrets = client.GetPropertiesOfSecrets();
+                var secrets = client.GetPropertiesOfSecrets(); scope.LogDebug($"client.GetPropertiesOfSecrets(); returned {secrets.GetLogString()}");
                 this.Secrets = secrets;
                 foreach (var secret in secrets)
                 {
@@ -337,7 +348,7 @@ namespace KeyVaultSample
         {
             using var scope = logger.BeginMethodScope();
 
-            scope.LogDebug(new { authenticationService = authenticationService.GetLogString() });
+            scope.LogDebug(new { authenticationService });
             if (authenticationService == null)
             {
                 var message = this.GetResourceValue<string>("Info.AuthHelperNotAvailable", "Authentication helper is not available");
@@ -351,6 +362,10 @@ namespace KeyVaultSample
             var identity = await authenticationService.LoginAsync();
 
             TokenCredential credential = null;
+            //SystemWebViewOptions options = new SystemWebViewOptions() { };
+            //var msalCredential = new MSALPublicApplicationCredential(authenticationService, options);
+            //credential = msalCredential;
+
             var clientSecret = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_CLIENTSECRET, DEFAULTVALUE_CLIENTSECRET);
             if (!string.IsNullOrEmpty(clientSecret)) { credential = new ClientSecretCredential(tenantId, clientId, clientSecret); }
             if (identity == null && credential == null)

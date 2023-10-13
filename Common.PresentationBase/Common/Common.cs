@@ -288,9 +288,5 @@ namespace Common
 
             return null; // could also return string.Empty
         }
-
-
     }
-
-
 }

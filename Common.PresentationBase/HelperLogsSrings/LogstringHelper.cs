@@ -1,6 +1,7 @@
 ﻿#region using
 using Azure.ResourceManager.Resources;
 using Common;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -65,6 +66,12 @@ namespace Common
         {
             if (pthis == null) { return null; }
             string logString = $"{{Identity:{{Name:{pthis.Name},Email:{pthis.Email},Upn:{pthis.Upn},Manager:{pthis.Manager}}}}}";
+            return logString;
+        }
+        public static string ToLogStringInternal(TokenCacheNotificationArgs pthis)
+        {
+            if (pthis == null) { return null; }
+            string logString = $"{{TokenCacheNotificationArgs:{{Account:{pthis.Account.GetLogString()},HasStateChanged:{pthis.HasStateChanged},RequestScopes:{pthis.RequestScopes.GetLogString()},SuggestedCacheExpiry:{pthis.SuggestedCacheExpiry},SuggestedCacheKey:{pthis.SuggestedCacheKey},TelemetryData:{pthis.TelemetryData},TokenCache:{pthis.TokenCache.GetLogString()},ClientId:{pthis.ClientId},PiiLoggingEnabled:{pthis.PiiLoggingEnabled},CorrelationId:{pthis.CorrelationId}}}}}";
             return logString;
         }
         public static string ToLogStringInternal(TenantData pthis)

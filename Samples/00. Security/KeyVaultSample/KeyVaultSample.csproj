@@ -25,6 +25,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.0.0-beta.8" />
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="$(ApplicationInsightsVersion)" />
+		<PackageReference Include="Microsoft.ApplicationInsights.TraceListener" Version="$(ApplicationInsightsVersion)" />
+		<PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.5.0-rc.1" />
+		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.6.0" />
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.6.0" />
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.6.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.5.0-beta.1" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.5.0-beta.1" />
 		<PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
 		<PackageReference Include="Azure.Messaging.EventHubs" Version="5.9.3" />
 		<PackageReference Include="Azure.Messaging.EventHubs.Processor" Version="5.9.3" />

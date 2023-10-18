@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KeyVaultSample.Helper
+namespace KeyVaultSample
 {
     internal sealed class LatencyTrackingHandler : DelegatingHandler
     {
@@ -127,5 +127,4 @@ namespace KeyVaultSample.Helper
 
         public sealed record Options(StrongBox<float?> LatencyWarningThresholdBox, CodeSectionScope Scope);
     }
-
 }

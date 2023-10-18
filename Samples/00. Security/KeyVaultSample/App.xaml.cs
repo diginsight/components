@@ -36,6 +36,7 @@ using System.Security.Cryptography;
 using System.Windows.Input;
 using Microsoft.Identity.Client;
 using ApplicationBase = Common.ApplicationBase;
+using System.Diagnostics;
 //using Azure.Extensions.AspNetCore.Configuration.Secrets;
 #endregion
 
@@ -60,6 +61,7 @@ namespace KeyVaultSample
         const string CONFIGVALUE_SCOPES = "Scopes"; const string DEFAULTVALUE_SCOPES = "";
         const string CONFIGVALUE_OAUTHVERSIONSUFFIX = "OauthVersionSuffix"; const string DEFAULTVALUE_OAUTHVERSIONSUFFIX = "/2.0";
         #endregion
+        public static readonly ActivitySource ActivitySource = new("KeyVaultSample");
 
         private ILogger<App> logger;
         //public IHost Host { get; set; }
@@ -204,6 +206,8 @@ namespace KeyVaultSample
                         builder.Sources.Clear();
                         builder.AddConfiguration(configuration);
 
+                        //builder.UseObservability();
+
                         // builder.AddUserSecrets(this.GetType().Assembly);
                         // var secretClient = new SecretClient(new Uri(keyVaultAddress), new DefaultAzureCredential());
                         // builder.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
@@ -274,6 +278,10 @@ namespace KeyVaultSample
             services.AddSingleton<IParallelService, ParallelService>();
 
             services.AddClassConfiguration();
+
+            var aiConnectionString = configuration.GetValue<string>(StringConstants.APPINSIGHTSCONNECTIONSTRING);
+            services.AddObservability(aiConnectionString);
+
             services.AddCacheService(configuration, hostEnvironment);
 
             services.AddSingleton<IGraphAPIClientHttp, GraphAPIClientHttp>();

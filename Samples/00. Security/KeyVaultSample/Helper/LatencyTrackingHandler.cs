@@ -21,10 +21,8 @@ namespace KeyVaultSample
 
         public LatencyTrackingHandler(
             ILogger<LatencyTrackingHandler> logger,
-            //ITestService testService,
             IConfiguration configuration)
         {
-            //this.testService = testService;
             this.configuration = configuration;
             this.logger = logger;
         }
@@ -41,8 +39,6 @@ namespace KeyVaultSample
             (StrongBox<float?> latencyWarningThresholdBox, CodeSectionScope scope) = lto;
             localScope.LogDebug(() => new { latencyWarningThreshold = latencyWarningThresholdBox.Value });
 
-            //Action<TestResult> setResult = tr => { tr.Action = $"{request.Method} {request.RequestUri}"; };
-
             var traceRequestBody = configuration.GetValue("AppSettings:TraceRequestBody", true);
             if (traceRequestBody)
             {
@@ -51,12 +47,6 @@ namespace KeyVaultSample
                 {
                     localScope.LogDebug($"Request body ({(double)requestString.Length / 1024:#,##0} KB): {requestString}", null, new Dictionary<string, object>() { { "MaxMessageLen", 0 } });
                 }
-
-                //setResult += tr =>
-                //{
-                //    tr.Payload = requestString;
-                //    tr.PayloadSize = (requestString?.Length ?? 0).ToString();
-                //};
             }
 
             try
@@ -65,8 +55,6 @@ namespace KeyVaultSample
 
                 var responseContent = response.Content;
                 var traceResponseBody = configuration.GetValue("AppSettings:TraceResponseBody", !response.IsSuccessStatusCode);
-                //if (traceResponseBody)
-                //{
 
                 string? responseString = traceResponseBody ? await responseContent.ReadAsStringAsync(cancellationToken) : null;
                 if (response.IsSuccessStatusCode)
@@ -86,28 +74,6 @@ namespace KeyVaultSample
                     responseString ??= await responseContent.ReadAsStringAsync(cancellationToken);
                     localScope.LogDebug($"Response body ({(double)responseString.Length / 1024:#,##0} KB): {responseString}", null, new Dictionary<string, object>() { { "MaxMessageLen", 0 } });
                 }
-
-                //setResult += tr => { tr.Response = responseString; };
-                //}
-                //else
-                //{
-                //    var contentLength = response?.Content?.Headers?.ContentLength ?? 0;
-                //    if (response.IsSuccessStatusCode)
-                //    {
-                //        scopeLocal.LogDebug($"Response body ({(double)contentLength / 1024:#,##0} KB)", null, new Dictionary<string, object>() { { "MaxMessageLen", 0 } });
-                //    }
-                //    else
-                //    {
-                //        string responseString = await responseContent.ReadAsStringAsync(cancellationToken);
-                //        scopeLocal.LogDebug($"Response body ({(double)responseString.Length / 1024:#,##0} KB): {responseString}", null, new Dictionary<string, object>() { { "MaxMessageLen", 0 } });
-                //    }
-                //}
-
-                //setResult += tr =>
-                //{
-                //    tr.Result = response.StatusCode.ToString("G");
-                //    tr.ResponseSize = response.Content.Headers.ContentLength ?? 0;
-                //};
 
                 return response;
             }

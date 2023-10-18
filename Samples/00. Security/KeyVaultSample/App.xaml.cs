@@ -279,8 +279,8 @@ namespace KeyVaultSample
 
             services.AddClassConfiguration();
 
-            var aiConnectionString = configuration.GetValue<string>(StringConstants.APPINSIGHTSCONNECTIONSTRING);
-            services.AddObservability(aiConnectionString);
+            var aiConnectionString = configuration.GetValue<string>(Constants.APPINSIGHTSCONNECTIONSTRING);
+            services.AddObservability(aiConnectionString, this.GetType().Name, this.GetType().Namespace, this.GetType().FullName);
 
             services.AddCacheService(configuration, hostEnvironment);
 

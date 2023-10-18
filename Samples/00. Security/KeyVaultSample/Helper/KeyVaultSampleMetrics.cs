@@ -36,9 +36,6 @@ namespace KeyVaultSample
             Boundaries = new double[] { 0, 500, 1000, 5000, 10_000, 50_000, 100_000, 250_000, 500_000, 1_000_000, 5_000_000 },
         };
     }
-   
-
-
     public class KeyVaultSampleMetrics : CustomMetrics
     {
         public static readonly KeyVaultSampleMetrics Instance = new();

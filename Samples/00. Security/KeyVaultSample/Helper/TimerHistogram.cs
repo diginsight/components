@@ -23,11 +23,7 @@ public sealed class TimerHistogram
     private TimerMark CoreCreateMark(IEnumerable<KeyValuePair<string, object?>> tags, bool start)
     {
         TimerMark mark = new(histogram, tags);
-        if (start)
-        {
-            _ = mark.Start();
-        }
-
+        if (start) { _ = mark.Start(); }
         return mark;
     }
 }

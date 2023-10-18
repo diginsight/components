@@ -384,7 +384,5 @@ namespace KeyVaultSample
             }
             return null;
         }
-
-
     }
 }

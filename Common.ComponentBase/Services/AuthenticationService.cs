@@ -568,8 +568,9 @@ namespace Common
                 {
                     // Force a sign-in (Prompt.SelectAccount), as the MSAL web browser might contain cookies for the current user
                     // and we don't necessarily want to re-sign-in the same user
+                    var scopes = new List<string> { "openid", "user.read", "profile" }; // , "https://vault.azure.net/.default"
                     var builder = publicClientApp.AcquireTokenInteractive(scopes)
-                                                 //.WithExtraScopesToConsent(new[] { "https://vault.azure.net/user_impersonation" })
+                                                 //.WithExtraScopesToConsent(new[] { "https://vault.azure.net/.default" }) // https://vault.azure.net/user_impersonation"
                                                  .WithAccount(accounts.FirstOrDefault()).WithPrompt(Prompt.SelectAccount);
                     scope.LogDebug($"_app.AcquireTokenInteractive({scopes.GetLogString()}).WithAccount({accounts.FirstOrDefault().GetLogString()}).WithPrompt({Prompt.SelectAccount}); returned {builder.GetLogString()}");
 

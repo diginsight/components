@@ -54,6 +54,9 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\..\smartcache\Common.SmartCache\Common.SmartCache.csproj" />
+		<ProjectReference Include="..\..\..\..\telemetry\Common.Diagnostics.Logstrings.Azure\Common.Diagnostics.Logstrings.Azure.csproj" />
+		<ProjectReference Include="..\..\..\..\telemetry\Common.Diagnostics.Logstrings.Identity\Common.Diagnostics.Logstrings.Identity.csproj" />
+		<ProjectReference Include="..\..\..\..\telemetry\Common.Diagnostics.Logstrings.Wpf\Common.Diagnostics.Logstrings.Wpf.csproj" />
 		<ProjectReference Include="..\..\..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
 		<ProjectReference Include="..\..\..\Common.ComponentBase\Common.ComponentBase.csproj" />
 		<ProjectReference Include="..\..\..\Common.EntityBase\Common.EntityBase.csproj" />

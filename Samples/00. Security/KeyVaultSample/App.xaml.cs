@@ -175,6 +175,7 @@ namespace KeyVaultSample
             //this.Activated += App_Activated;
             //this.LoadCompleted += App_LoadCompleted;
             LogStringExtensions.RegisterLogstringProvider(this);
+            LogStringExtensions.RegisterLogstringProvider(new LogStringProviderWpf());
         }
         #endregion
 
@@ -196,7 +197,7 @@ namespace KeyVaultSample
             this.Description = ConfigurationHelper.GetClassSetting<App, string>("Description", S_DESCRIPTION_DEFAULT);
             this.Path = ConfigurationHelper.GetClassSetting<App, string>("Path", S_PATH_DEFAULT);
 
-            Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
+            var hostBuilder = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
                     .ConfigureAppConfiguration((context, builder) =>
                     {
                         var environmentName = context?.HostingEnvironment?.EnvironmentName;
@@ -248,11 +249,15 @@ namespace KeyVaultSample
                         // loggingBuilder.AddDiginsightJson(new ApplicationInsightsLoggerProvider(tco, aio), configuration);
 
                         // loggingBuilder.AddFilter<ApplicationInsightsLoggerProvider>("", LogLevel.Trace);
-                    }).Build();
+                    });
+
+            Host = hostBuilder.Build();
 
             Host.InitTraceLogger();
 
             logger = Host.GetLogger<App>();
+
+            var tl = Host.Services.GetService<TraceLogger>();
 
             // LogStringExtensions.RegisterLogstringProvider(this);
             await Host.StartAsync(); scope.LogDebug($"await Host.StartAsync();");
@@ -366,11 +371,11 @@ namespace KeyVaultSample
         {
             switch (t)
             {
-                case Window w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
-                case System.Windows.Controls.Button w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
-                case PropertyChangedEventArgs w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
-                case ExecutedRoutedEventArgs w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
-                case RoutedUICommand w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                //case Window w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                //case System.Windows.Controls.Button w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                //case PropertyChangedEventArgs w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                //case ExecutedRoutedEventArgs w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
+                //case RoutedUICommand w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case Thread w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case Microsoft.Graph.Models.Application w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);
                 case Identity w: arg.Handled = true; return LogstringHelper.ToLogStringInternal(w);

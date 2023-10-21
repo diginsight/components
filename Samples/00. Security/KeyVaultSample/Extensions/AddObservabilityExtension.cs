@@ -2,6 +2,7 @@ using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Azure.Monitor.OpenTelemetry.Exporter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -19,7 +20,7 @@ namespace KeyVaultSample
             return app;
         }
 
-        public static IServiceCollection AddObservability(this IServiceCollection services, string aiConnectionString, string cloudRoleNamespace, string cloudRoleName, string cloudRoleInstance)
+        public static IServiceCollection AddObservability(this IServiceCollection services, string aiConnectionString, string cloudRoleName, string cloudRoleNamespace, string cloudRoleInstance)
         {
             // https://learn.microsoft.com/en-us/azure/azure-monitor/app/opentelemetry-configuration?tabs=aspnetcore
             // Create a dictionary of resource attributes.
@@ -28,13 +29,23 @@ namespace KeyVaultSample
                 { "service.namespace", cloudRoleNamespace },
                 { "service.instance.id", cloudRoleInstance }};
 
+            //.AddTraceProvider();
+            //services.AddOpenTelemetryTracing((builder) => builder
+            //    // Configure the resource attribute `service.name` to MyServiceName
+            //    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("MyServiceName"))
+            //    // Add tracing of the AspNetCore instrumentation library
+            //    .AddAspNetCoreInstrumentation()
+            //    .AddConsoleExporter()
+            //);
+
             services.ConfigureOpenTelemetryTracerProvider((sp, builder) =>
             {
                 builder.ConfigureResource(resourceBuilder => resourceBuilder.AddAttributes(resourceAttributes));
-                
+
                 builder.AddAspNetCoreInstrumentation();
                 builder.AddHttpClientInstrumentation();
                 builder.AddConsoleExporter();
+                //builder.AddConsoleExporter(options => options.Targets = ConsoleExporterOutputTargets.Debug); 
                 builder.AddAzureMonitorTraceExporter();
                 // builder.AddRedisInstrumentation();
 

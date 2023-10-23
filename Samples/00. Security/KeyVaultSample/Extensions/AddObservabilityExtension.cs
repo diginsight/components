@@ -38,14 +38,14 @@ namespace KeyVaultSample
             //    .AddConsoleExporter()
             //);
 
-            services.ConfigureOpenTelemetryTracerProvider((sp, builder) =>
+            services.AddOpenTelemetry().WithTracing(builder =>
             {
                 builder.ConfigureResource(resourceBuilder => resourceBuilder.AddAttributes(resourceAttributes));
 
                 builder.AddAspNetCoreInstrumentation();
                 builder.AddHttpClientInstrumentation();
-                builder.AddConsoleExporter();
-                //builder.AddConsoleExporter(options => options.Targets = ConsoleExporterOutputTargets.Debug); 
+                //builder.AddConsoleExporter();
+                builder.AddConsoleExporter(options => options.Targets = ConsoleExporterOutputTargets.Debug);
                 builder.AddAzureMonitorTraceExporter();
                 // builder.AddRedisInstrumentation();
 
@@ -57,7 +57,28 @@ namespace KeyVaultSample
                 //    {
                 //        options.Endpoint = new Uri(openTelemetryOptions.OltpEndpoint);
                 //    });
+
             });
+            //services.ConfigureOpenTelemetryTracerProvider((sp, builder) =>
+            //{
+            //    builder.ConfigureResource(resourceBuilder => resourceBuilder.AddAttributes(resourceAttributes));
+
+            //    builder.AddAspNetCoreInstrumentation();
+            //    builder.AddHttpClientInstrumentation();
+            //    //builder.AddConsoleExporter();
+            //    builder.AddConsoleExporter(options => options.Targets = ConsoleExporterOutputTargets.Debug);
+            //    builder.AddAzureMonitorTraceExporter();
+            //    // builder.AddRedisInstrumentation();
+
+            //    builder.AddSource("Azure.*");
+            //    builder.AddSource(App.ActivitySource.Name);
+            //    builder.AddSource(KeyVaultSampleMetrics.Instance.ObservabilityName);
+            //    //builder.SetSampler(serviceProvider => new HttpHeaderSampler(serviceProvider, new ParentBasedSampler(new TraceIdRatioBasedSampler(openTelemetryOptions.TracingSamplingRatio))));
+            //    //builder.AddOtlpExporter(options =>
+            //    //    {
+            //    //        options.Endpoint = new Uri(openTelemetryOptions.OltpEndpoint);
+            //    //    });
+            //});
 
             services.ConfigureOpenTelemetryMeterProvider((sp, builder) =>
             {

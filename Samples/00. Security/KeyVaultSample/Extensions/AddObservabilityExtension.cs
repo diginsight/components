@@ -58,7 +58,7 @@ namespace KeyVaultSample
                 //builder.AddOtlpExporter(options =>
                 //    {
                 //        options.Endpoint = new Uri(openTelemetryOptions.OltpEndpoint);
-                //    });
+                //    }); 
 
             });
             //services.ConfigureOpenTelemetryTracerProvider((sp, builder) =>

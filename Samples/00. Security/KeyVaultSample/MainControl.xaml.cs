@@ -149,8 +149,8 @@ namespace KeyVaultSample
 
             try
             {
-                //await Task.Run(async () => await ctlMain_InitializedAsync(sender, e));
-                await ctlMain_InitializedAsync(sender, e);
+                await Task.Run(async () => await ctlMain_InitializedAsync(sender, e));
+                //await ctlMain_InitializedAsync(sender, e);
 
                 var environment = TraceManager.EnvironmentName;
                 var panelInfo = new SettingsPanelInfo<SettingsAppInsightKeyControl>() { Name = "AppInsight", Description = "AppInsight", InternalName = "", Position = 0, Type = null };
@@ -174,9 +174,9 @@ namespace KeyVaultSample
         }
         private async Task ctlMain_InitializedAsync(object sender, EventArgs e)
         {
-            //using var scope = logger.BeginMethodScope(new { sender, e });
-            //using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { sender, e });
+            using var scope = logger.BeginMethodScope(new { sender, e });
+            using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName()); // , new { sender, e }
+            using var scope1 = App.ActivitySource.StartMethodActivity(logger, new { sender, e });
 
             try
             {

@@ -37,6 +37,9 @@ using System.Windows.Input;
 using Microsoft.Identity.Client;
 using ApplicationBase = Common.ApplicationBase;
 using System.Diagnostics;
+using Microsoft.Azure.Amqp.Framing;
+using System.Text.RegularExpressions;
+//using Microsoft.Graph.Models.ExternalConnectors;
 //using Azure.Extensions.AspNetCore.Configuration.Secrets;
 #endregion
 
@@ -171,7 +174,8 @@ namespace KeyVaultSample
         #region .ctor
         public App()
         {
-            using var scope = logger.BeginMethodScope();
+            //using var scope = logger.BeginMethodScope();
+            using var scope = App.ActivitySource.StartMethodActivity(logger);
             //this.Activated += App_Activated;
             //this.LoadCompleted += App_LoadCompleted;
             LogStringExtensions.RegisterLogstringProvider(this);
@@ -181,7 +185,8 @@ namespace KeyVaultSample
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            using var scope = logger.BeginMethodScope(new { e });
+            //using var scope = logger.BeginMethodScope(new { e });
+            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e });
 
             var configurationManager = new ConfigurationManager(); // use .net 6 configuration manager to support partial configuration load
             var configurationBuilder = configurationManager as IConfigurationBuilder;
@@ -274,7 +279,9 @@ namespace KeyVaultSample
 
         private void ConfigureServices(IConfiguration configuration, IServiceCollection services, IHostEnvironment hostEnvironment)
         {
-            using var scope = logger.BeginMethodScope(new { configuration, services });
+            //using var scope = logger.BeginMethodScope(new { configuration, services });
+            using var scope = App.ActivitySource.StartMethodActivity(logger, new { configuration, services });
+
             ConfigurationHelper.Init(configuration); // set full configuration with secrets 
                                                      //var logger = Host.GetLogger<App>();
 
@@ -350,7 +357,9 @@ namespace KeyVaultSample
 
         protected override async void OnExit(ExitEventArgs e)
         {
-            using var scope = logger.BeginMethodScope(new { e });
+            //using var scope = logger.BeginMethodScope(new { e });
+            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e });
+
             //var logger = Host.GetLogger<App>();
             using (Host)
             {
@@ -363,7 +372,8 @@ namespace KeyVaultSample
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             //var logger = Host.GetLogger<App>();
-            using var scope = logger.BeginMethodScope(new { sender, e });
+            //using var scope = logger.BeginMethodScope(new { sender, e });
+            using var scope = App.ActivitySource.StartMethodActivity(logger, new { sender, e });
 
         }
 

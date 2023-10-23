@@ -1,5 +1,6 @@
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Azure.Monitor.OpenTelemetry.Exporter;
+using Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Exporter;
@@ -42,6 +43,7 @@ namespace KeyVaultSample
             {
                 builder.ConfigureResource(resourceBuilder => resourceBuilder.AddAttributes(resourceAttributes));
 
+                builder.AddProcessor<ObservabilityLogProcessor>();
                 builder.AddAspNetCoreInstrumentation();
                 builder.AddHttpClientInstrumentation();
                 //builder.AddConsoleExporter();
@@ -63,7 +65,7 @@ namespace KeyVaultSample
             //{
             //    builder.ConfigureResource(resourceBuilder => resourceBuilder.AddAttributes(resourceAttributes));
 
-            //    builder.AddAspNetCoreInstrumentation();
+            //    //builder.AddAspNetCoreInstrumentation();
             //    builder.AddHttpClientInstrumentation();
             //    //builder.AddConsoleExporter();
             //    builder.AddConsoleExporter(options => options.Targets = ConsoleExporterOutputTargets.Debug);
@@ -82,7 +84,7 @@ namespace KeyVaultSample
 
             services.ConfigureOpenTelemetryMeterProvider((sp, builder) =>
             {
-                builder.AddAspNetCoreInstrumentation();
+                //builder.AddAspNetCoreInstrumentation();
                 builder.AddHttpClientInstrumentation();
                 builder.AddConsoleExporter();
                 builder.AddPrometheusExporter();

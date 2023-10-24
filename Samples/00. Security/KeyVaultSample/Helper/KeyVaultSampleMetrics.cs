@@ -47,7 +47,7 @@ namespace KeyVaultSample
             ("push_data_object_size", MetricConfigurations.MediumSizeHistogram),
         };
 
-        public readonly TimerHistogram WatticsPushDataDuration;
+        public readonly TimerHistogram ActivityDuration;
         public readonly Counter<int> Sites;
         public readonly Counter<int> Equipments;
         public readonly Counter<int> SitesOnBlackList;
@@ -56,7 +56,7 @@ namespace KeyVaultSample
 
         private KeyVaultSampleMetrics()
         {
-            WatticsPushDataDuration = Meter.CreateTimer("push_data_duration");
+            ActivityDuration = Meter.CreateTimer("MethodDuration");
             Sites = Meter.CreateCounter<int>("sites_count");
             Equipments = Meter.CreateCounter<int>("equipment_count");
             SitesOnBlackList = Meter.CreateCounter<int>("sites_on_blacklist_count");

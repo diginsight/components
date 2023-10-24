@@ -39,11 +39,53 @@ namespace KeyVaultSample
             //    .AddConsoleExporter()
             //);
 
-            services.AddOpenTelemetry().WithTracing(builder =>
+            //services.ConfigureOpenTelemetryTracerProvider((sp, builder) =>
+            //{
+            //    builder.ConfigureResource(resourceBuilder => resourceBuilder.AddAttributes(resourceAttributes));
+
+            //    //builder.AddAspNetCoreInstrumentation();
+            //    builder.AddHttpClientInstrumentation();
+            //    //builder.AddConsoleExporter();
+            //    builder.AddConsoleExporter(options => options.Targets = ConsoleExporterOutputTargets.Debug); // 
+            //    builder.AddAzureMonitorTraceExporter();
+            //    // builder.AddRedisInstrumentation();
+
+            //    builder.AddSource("Azure.*");
+            //    builder.AddSource(App.ActivitySource.Name);
+            //    builder.AddSource(KeyVaultSampleMetrics.Instance.ObservabilityName);
+            //    //builder.SetSampler(serviceProvider => new HttpHeaderSampler(serviceProvider, new ParentBasedSampler(new TraceIdRatioBasedSampler(openTelemetryOptions.TracingSamplingRatio))));
+            //    //builder.AddOtlpExporter(options =>
+            //    //    {
+            //    //        options.Endpoint = new Uri(openTelemetryOptions.OltpEndpoint);
+            //    //    });
+            //});
+
+            ObservabilityDefaults.ActivitySource = App.ActivitySource;
+            ObservabilityDefaults.Meter = KeyVaultSampleMetrics.Instance.Meter;  // KeyVaultSample / SpanDuration
+
+            services.ConfigureOpenTelemetryMeterProvider((sp, builder) =>
+            {
+                //builder.AddAspNetCoreInstrumentation();
+                builder.AddHttpClientInstrumentation();
+                builder.AddConsoleExporter();
+                builder.AddPrometheusExporter();
+
+                //builder.AddOtlpExporter();
+                builder.AddMetrics<KeyVaultSampleMetrics>();
+                builder.AddMeter(KeyVaultSampleMetrics.StaticObservabilityName);
+                
+                builder.AddAzureMonitorMetricExporter();
+                builder.ConfigureResource(resourceBuilder => resourceBuilder.AddAttributes(resourceAttributes));
+            });
+
+            //var builder = services.AddOpenTelemetry();
+            var builder = services.AddOpenTelemetry().WithTracing(builder =>
             {
                 builder.ConfigureResource(resourceBuilder => resourceBuilder.AddAttributes(resourceAttributes));
 
                 builder.AddProcessor<ObservabilityLogProcessor>();
+                builder.AddProcessor<DurationMetricProcessor>();
+
                 builder.AddAspNetCoreInstrumentation();
                 builder.AddHttpClientInstrumentation();
                 //builder.AddConsoleExporter();
@@ -59,44 +101,7 @@ namespace KeyVaultSample
                 //    {
                 //        options.Endpoint = new Uri(openTelemetryOptions.OltpEndpoint);
                 //    }); 
-
             });
-            //services.ConfigureOpenTelemetryTracerProvider((sp, builder) =>
-            //{
-            //    builder.ConfigureResource(resourceBuilder => resourceBuilder.AddAttributes(resourceAttributes));
-
-            //    //builder.AddAspNetCoreInstrumentation();
-            //    builder.AddHttpClientInstrumentation();
-            //    //builder.AddConsoleExporter();
-            //    builder.AddConsoleExporter(options => options.Targets = ConsoleExporterOutputTargets.Debug);
-            //    builder.AddAzureMonitorTraceExporter();
-            //    // builder.AddRedisInstrumentation();
-
-            //    builder.AddSource("Azure.*");
-            //    builder.AddSource(App.ActivitySource.Name);
-            //    builder.AddSource(KeyVaultSampleMetrics.Instance.ObservabilityName);
-            //    //builder.SetSampler(serviceProvider => new HttpHeaderSampler(serviceProvider, new ParentBasedSampler(new TraceIdRatioBasedSampler(openTelemetryOptions.TracingSamplingRatio))));
-            //    //builder.AddOtlpExporter(options =>
-            //    //    {
-            //    //        options.Endpoint = new Uri(openTelemetryOptions.OltpEndpoint);
-            //    //    });
-            //});
-
-            services.ConfigureOpenTelemetryMeterProvider((sp, builder) =>
-            {
-                //builder.AddAspNetCoreInstrumentation();
-                builder.AddHttpClientInstrumentation();
-                builder.AddConsoleExporter();
-                builder.AddPrometheusExporter();
-
-                //builder.AddOtlpExporter();
-                builder.AddMetrics<KeyVaultSampleMetrics>();
-                builder.AddMeter(KeyVaultSampleMetrics.StaticObservabilityName);
-                builder.AddAzureMonitorMetricExporter();
-                builder.ConfigureResource(resourceBuilder => resourceBuilder.AddAttributes(resourceAttributes));
-            });
-
-            var builder = services.AddOpenTelemetry();
 
             builder.ConfigureResource(builder => builder.AddService(serviceName: cloudRoleName));
 

@@ -290,6 +290,7 @@ namespace KeyVaultSample
             services.AddSingleton<IParallelService, ParallelService>();
 
             services.AddClassConfiguration();
+            services.AddScoped<IScopedConfiguration, ScopedConfiguration>();
 
             var aiConnectionString = configuration.GetValue<string>(Constants.APPINSIGHTSCONNECTIONSTRING);
             var assembly = this.GetType().Assembly;

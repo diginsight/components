@@ -51,7 +51,7 @@ namespace KeyVaultSample
             //    // builder.AddRedisInstrumentation();
 
             //    builder.AddSource("Azure.*");
-            //    builder.AddSource(App.ActivitySource.Name);
+            //    builder.AddSource(TraceLogger.ActivitySource.Name);
             //    builder.AddSource(KeyVaultSampleMetrics.Instance.ObservabilityName);
             //    //builder.SetSampler(serviceProvider => new HttpHeaderSampler(serviceProvider, new ParentBasedSampler(new TraceIdRatioBasedSampler(openTelemetryOptions.TracingSamplingRatio))));
             //    //builder.AddOtlpExporter(options =>
@@ -60,7 +60,7 @@ namespace KeyVaultSample
             //    //    });
             //});
 
-            ObservabilityDefaults.ActivitySource = App.ActivitySource;
+            ObservabilityDefaults.ActivitySource = TraceLogger.ActivitySource;
             ObservabilityDefaults.Meter = KeyVaultSampleMetrics.Instance.Meter;  // KeyVaultSample / SpanDuration
 
             services.ConfigureOpenTelemetryMeterProvider((sp, builder) =>
@@ -94,7 +94,7 @@ namespace KeyVaultSample
                 // builder.AddRedisInstrumentation();
 
                 builder.AddSource("Azure.*");
-                builder.AddSource(App.ActivitySource.Name);
+                builder.AddSource(TraceLogger.ActivitySource.Name);
                 builder.AddSource(KeyVaultSampleMetrics.Instance.ObservabilityName);
                 //builder.SetSampler(serviceProvider => new HttpHeaderSampler(serviceProvider, new ParentBasedSampler(new TraceIdRatioBasedSampler(openTelemetryOptions.TracingSamplingRatio))));
                 //builder.AddOtlpExporter(options =>

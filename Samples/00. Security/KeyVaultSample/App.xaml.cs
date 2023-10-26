@@ -64,7 +64,7 @@ namespace KeyVaultSample
         const string CONFIGVALUE_SCOPES = "Scopes"; const string DEFAULTVALUE_SCOPES = "";
         const string CONFIGVALUE_OAUTHVERSIONSUFFIX = "OauthVersionSuffix"; const string DEFAULTVALUE_OAUTHVERSIONSUFFIX = "/2.0";
         #endregion
-        public static readonly ActivitySource ActivitySource = new("KeyVaultSample");
+        //public static readonly ActivitySource ActivitySource = new("KeyVaultSample");
 
         private ILogger<App> logger;
         //public IHost Host { get; set; }
@@ -175,7 +175,7 @@ namespace KeyVaultSample
         public App()
         {
             //using var scope = logger.BeginMethodScope();
-            using var scope = App.ActivitySource.StartMethodActivity(logger);
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger);
             //this.Activated += App_Activated;
             //this.LoadCompleted += App_LoadCompleted;
             LogStringExtensions.RegisterLogstringProvider(this);
@@ -186,7 +186,7 @@ namespace KeyVaultSample
         protected override async void OnStartup(StartupEventArgs e)
         {
             //using var scope = logger.BeginMethodScope(new { e });
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e });
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e });
 
             var configurationManager = new ConfigurationManager(); // use .net 6 configuration manager to support partial configuration load
             var configurationBuilder = configurationManager as IConfigurationBuilder;
@@ -280,7 +280,7 @@ namespace KeyVaultSample
         private void ConfigureServices(IConfiguration configuration, IServiceCollection services, IHostEnvironment hostEnvironment)
         {
             //using var scope = logger.BeginMethodScope(new { configuration, services });
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { configuration, services });
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { configuration, services });
 
             ConfigurationHelper.Init(configuration); // set full configuration with secrets 
                                                      //var logger = Host.GetLogger<App>();
@@ -288,9 +288,7 @@ namespace KeyVaultSample
             //object value = services.AddHttpContextAccessor();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IParallelService, ParallelService>();
-
             services.AddClassConfiguration();
-            services.AddScoped<IScopedConfiguration, ScopedConfiguration>();
 
             var aiConnectionString = configuration.GetValue<string>(Constants.APPINSIGHTSCONNECTIONSTRING);
             var assembly = this.GetType().Assembly;
@@ -361,7 +359,7 @@ namespace KeyVaultSample
         protected override async void OnExit(ExitEventArgs e)
         {
             //using var scope = logger.BeginMethodScope(new { e });
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e });
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e });
 
             //var logger = Host.GetLogger<App>();
             using (Host)
@@ -376,7 +374,7 @@ namespace KeyVaultSample
         {
             //var logger = Host.GetLogger<App>();
             //using var scope = logger.BeginMethodScope(new { sender, e });
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { sender, e });
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { sender, e });
 
         }
 

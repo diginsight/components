@@ -65,9 +65,9 @@ namespace KeyVaultSample
         public MainControl()
         {
             //using var scope = logger.BeginMethodScope();
-            using var scope = App.ActivitySource.StartMethodActivity(logger);
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger);
             if (DesignerProperties.GetIsInDesignMode(this)) { return; }
-            using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
+            using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
 
             var app = App.Current as App;
             this.App = app;
@@ -84,8 +84,8 @@ namespace KeyVaultSample
         private void App_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope(new { e, Value = App.Properties[e.PropertyName], sender });
-            //using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, Value = App.Properties[e.PropertyName], sender });
+            //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, Value = App.Properties[e.PropertyName], sender });
 
             switch (e.PropertyName)
             {
@@ -98,8 +98,8 @@ namespace KeyVaultSample
         private void Identity_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope(new { e, Value = App.Properties[e.PropertyName], sender });
-            //using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, Value = App.Properties[e.PropertyName], sender });
+            //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, Value = App.Properties[e.PropertyName], sender });
 
             if (this._lockIdentity_PropertyChanged.Value) { return; }
             using var switchLocal = new SwitchOnDispose(this._lockIdentity_PropertyChanged, true);
@@ -110,7 +110,7 @@ namespace KeyVaultSample
         private void KeyVaultAddress_OuterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope(new { e, Value = App.Properties[e.PropertyName], sender });
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, Value = App.Properties[e.PropertyName], sender });
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, Value = App.Properties[e.PropertyName], sender });
 
             //if (this._lockKeyVault_PropertyChanged.Value) { return; }
             //using var switchLocal = new SwitchOnDispose(this._lockKeyVault_PropertyChanged, true);
@@ -140,8 +140,8 @@ namespace KeyVaultSample
         {
             if (DesignerProperties.GetIsInDesignMode(this)) { return; }
             //using var scope = logger.BeginMethodScope(new { sender, e });
-            //using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, sender });
+            //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
 
             scope.LogDebug(new { authenticationService = authenticationService.GetLogString() });
 
@@ -175,8 +175,8 @@ namespace KeyVaultSample
         private async Task ctlMain_InitializedAsync(object sender, EventArgs e)
         {
             using var scope = logger.BeginMethodScope(new { sender, e });
-            using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName()); // , new { sender, e }
-            using var scope1 = App.ActivitySource.StartMethodActivity(logger, new { sender, e });
+            using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName()); // , new { sender, e }
+            using var scope1 = TraceLogger.ActivitySource.StartMethodActivity(logger, new { sender, e });
 
             try
             {
@@ -238,7 +238,7 @@ namespace KeyVaultSample
         private void ctlMain_Loaded(object sender, RoutedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope();
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, sender });
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
             // CommandManager.InvalidateRequerySuggested();
             // bndSelf.UpdateTarget();
             // UserControlHelper.UpdateTargets(bndSelf);
@@ -295,8 +295,8 @@ namespace KeyVaultSample
         private void RunCommand(object sender, ExecutedRoutedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope(new { sender, e });
-            //using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, sender });
+            //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
 
             var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS);
             if (App.ConnectionString is not null) { keyVaultAddress = App.ConnectionString; }
@@ -355,8 +355,8 @@ namespace KeyVaultSample
         private void LoginToggleCommand(object sender, ExecutedRoutedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope();
-            //using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, sender });
+            //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
 
             if (Identity == null) { Commands.Login.Execute(null, this); }
             else { Commands.Logout.Execute(null, this); }
@@ -365,8 +365,8 @@ namespace KeyVaultSample
         private async void LoginCommand(object sender, ExecutedRoutedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope();
-            //using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, sender });
+            //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
 
             scope.LogDebug(new { authenticationService });
             if (authenticationService == null)
@@ -428,8 +428,8 @@ namespace KeyVaultSample
         private async void LogoutCommand(object sender, ExecutedRoutedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope();
-            //using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, sender });
+            //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
 
             if (authenticationService == null) { return; }
             await authenticationService.LogoutAsync(); scope.LogDebug($"await authenticationService.LogoutAsync(); completed");
@@ -447,8 +447,8 @@ namespace KeyVaultSample
         private async void WatchCommand(object sender, ExecutedRoutedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
-            //using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, sender });
+            //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
 
             var secret = e.Parameter as SecretProperties;
 
@@ -464,8 +464,8 @@ namespace KeyVaultSample
         private async void WatchAllCommand(object sender, ExecutedRoutedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
-            //using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, sender });
+            //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
 
 
             var originalSource = e.OriginalSource as FrameworkElement;
@@ -491,8 +491,8 @@ namespace KeyVaultSample
         private async void CopyCommand(object sender, ExecutedRoutedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope();
-            //using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, sender });
+            //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
 
             var secret = e.Parameter as SecretProperties;
             if (!secret.Enabled.GetValueOrDefault()) { Clipboard.SetText($"secret '{secret.Name}' is disabled"); return; }
@@ -546,10 +546,10 @@ namespace KeyVaultSample
         private void SettingsCommand(object sender, ExecutedRoutedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope();
-            //using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            //using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, sender });
+            //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
+            //using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
             //using var scope = logger.BeginMethodScope(properties: PROPS.Get(new[] { ("Tags", "Event,UI,Predict" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, sender }, properties: PROPS.Get(new[] { ("Tags", "Event,UI,Predict" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender }, properties: PROPS.Get(new[] { ("Tags", "Event,UI,Predict" as object), ("User", App.GetUser()), ("MaxMessageLen", 0) }));
 
             // TODO: new SettingsControl,
             // TODO: AddItem
@@ -572,8 +572,8 @@ namespace KeyVaultSample
         private void HideSettingsCommand(object sender, ExecutedRoutedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope();
-            //using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, sender });
+            //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
 
             ShowSettingsPanel = false;
         }
@@ -581,8 +581,8 @@ namespace KeyVaultSample
         private void closeButton_Click(object sender, RoutedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope(new { sender = sender.GetLogString(), e = e.GetLogString() });
-            //using Activity activity = App.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, sender });
+            //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
 
         }
 
@@ -601,7 +601,7 @@ namespace KeyVaultSample
         private void MainControl_ExceptionEvent(object sender, RoutedEventArgs e)
         {
             //using var scope = logger.BeginMethodScope(new { sender, e });
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { e, sender });
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
 
             var exArg = e as ExceptionEventArgs;
             var ex = exArg.Exception;
@@ -665,7 +665,7 @@ namespace KeyVaultSample
         private object firstOrDefaultLocal_ConvertEvent(DependencyObject source, object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             //using var scope = logger.BeginMethodScope(new { value });
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { value, parameter, culture, source, targetType });
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { value, parameter, culture, source, targetType });
 
             var exceptions = value != null && value is IList<Exception> ? value as IList<Exception> : null;
             var exception = exceptions.LastOrDefault();
@@ -676,7 +676,7 @@ namespace KeyVaultSample
         private object firstOrDefaultLocal_ConvertEvent2(DependencyObject source, object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             //using var scope = logger.BeginMethodScope(new { values });
-            using var scope = App.ActivitySource.StartMethodActivity(logger, new { values, parameter, culture, source, targetType });
+            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { values, parameter, culture, source, targetType });
 
             int i = 0;
             var exceptions = values != null && values.Length > i && values[i] is IList<Exception> ? values[i] as IList<Exception> : null; i++;
@@ -694,7 +694,7 @@ namespace KeyVaultSample
         }
         private object onChangeIsMouseOver_ConvertEvent(DependencyObject source, object value, Type targetType, object parameter, CultureInfo culture)
         {
-            //using var scope = App.ActivitySource.StartMethodActivity(logger, new { values, parameter, culture, source, targetType });
+            //using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { values, parameter, culture, source, targetType });
 
             bool isMouseOver = (bool)value;
             if (isMouseOver == false)

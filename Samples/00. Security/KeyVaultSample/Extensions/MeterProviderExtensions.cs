@@ -3,7 +3,6 @@ using System.Diagnostics.Metrics;
 using System.Reflection;
 //using ABB.Ability.ELSP.Common.OpenTelemetry.Metrics.Custom;
 
-// THIS IS A CHOICE, NOT AN ERROR: https://github.com/open-telemetry/opentelemetry-dotnet/tree/main/docs/trace/extending-the-sdk#tracerproviderbuilder-extension-methods
 namespace OpenTelemetry.Metrics; 
 
 public static class MeterProviderExtensions

@@ -2,6 +2,7 @@ using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Azure.Monitor.OpenTelemetry.Exporter;
 using Common;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
@@ -21,8 +22,13 @@ namespace KeyVaultSample
             return app;
         }
 
-        public static IServiceCollection AddObservability(this IServiceCollection services, string aiConnectionString, string cloudRoleName, string cloudRoleNamespace, string cloudRoleInstance)
+        public static IServiceCollection AddObservability(this IServiceCollection services, IConfiguration configuration)
         {
+            var cloudRoleName = typeof(App).Assembly.GetName().Name;
+            var cloudRoleNamespace = typeof(App).Assembly.GetName().FullName;
+            var cloudRoleInstance = typeof(App).Assembly.GetName().FullName;
+            var aiConnectionString = configuration["ApplicationInsights:ConnectionString"];
+
             // https://learn.microsoft.com/en-us/azure/azure-monitor/app/opentelemetry-configuration?tabs=aspnetcore
             // Create a dictionary of resource attributes.
             var resourceAttributes = new Dictionary<string, object> {
@@ -30,7 +36,9 @@ namespace KeyVaultSample
                 { "service.namespace", cloudRoleNamespace },
                 { "service.instance.id", cloudRoleInstance }};
 
-            //.AddTraceProvider();
+            ObservabilityDefaults.ActivitySource = TraceLogger.ActivitySource;
+            ObservabilityDefaults.Meter = KeyVaultSampleMetrics.Instance.Meter;  // KeyVaultSample / SpanDuration
+
             //services.AddOpenTelemetryTracing((builder) => builder
             //    // Configure the resource attribute `service.name` to MyServiceName
             //    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("MyServiceName"))
@@ -38,6 +46,21 @@ namespace KeyVaultSample
             //    .AddAspNetCoreInstrumentation()
             //    .AddConsoleExporter()
             //);
+
+            services.ConfigureOpenTelemetryMeterProvider((sp, builder) =>
+            {
+                //builder.AddAspNetCoreInstrumentation();
+                builder.AddHttpClientInstrumentation();
+                builder.AddConsoleExporter();
+                builder.AddPrometheusExporter();
+
+                //builder.AddOtlpExporter();
+                builder.AddMetrics<KeyVaultSampleMetrics>();
+                builder.AddMeter(KeyVaultSampleMetrics.StaticObservabilityName);
+                
+                builder.AddAzureMonitorMetricExporter();
+                builder.ConfigureResource(resourceBuilder => resourceBuilder.AddAttributes(resourceAttributes));
+            });
 
             //services.ConfigureOpenTelemetryTracerProvider((sp, builder) =>
             //{
@@ -60,25 +83,6 @@ namespace KeyVaultSample
             //    //    });
             //});
 
-            ObservabilityDefaults.ActivitySource = TraceLogger.ActivitySource;
-            ObservabilityDefaults.Meter = KeyVaultSampleMetrics.Instance.Meter;  // KeyVaultSample / SpanDuration
-
-            services.ConfigureOpenTelemetryMeterProvider((sp, builder) =>
-            {
-                //builder.AddAspNetCoreInstrumentation();
-                builder.AddHttpClientInstrumentation();
-                builder.AddConsoleExporter();
-                builder.AddPrometheusExporter();
-
-                //builder.AddOtlpExporter();
-                builder.AddMetrics<KeyVaultSampleMetrics>();
-                builder.AddMeter(KeyVaultSampleMetrics.StaticObservabilityName);
-                
-                builder.AddAzureMonitorMetricExporter();
-                builder.ConfigureResource(resourceBuilder => resourceBuilder.AddAttributes(resourceAttributes));
-            });
-
-            //var builder = services.AddOpenTelemetry();
             var builder = services.AddOpenTelemetry().WithTracing(builder =>
             {
                 builder.ConfigureResource(resourceBuilder => resourceBuilder.AddAttributes(resourceAttributes));

@@ -1,28 +1,66 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿#region using
+using Common;
+using Common.Core.Blazor;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using System;
-using Common;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+//using BlazorPro.BlazorSize;
+#endregion
 
 namespace KeyVaultSampleBlazor.Client.Shared
 {
-    public partial class NavMenu : ComponentBase
+    public partial class NavMenu : ComponentBase, IDisposable
     {
-        [Inject]
-        protected ILogger<NavMenu> _logger { get; set; }
+        [Parameter] public EventCallback<string> OnClick { get; set; }
+        [Inject] protected ILogger<NavMenu> _logger { get; set; }
+        [Inject] protected BrowserService Service { get; set; }
 
-        private bool collapseNavMenu = true;
+        private bool collapseNavMenu = false;
 
-        private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-        private void ToggleNavMenu()
+        #region .ctor
+        public NavMenu()
         {
-            using (var scope = _logger.BeginMethodScope())
+            using var scope = _logger.BeginMethodScope();
+
+        }
+        #endregion
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            using var scope = _logger.BeginMethodScope();
+
+            if (firstRender)
             {
-                collapseNavMenu = !collapseNavMenu;
             }
+        }
+
+        private async void ToggleNavMenu()
+        {
+            using var scope = _logger.BeginMethodScope();
+
+            collapseNavMenu = !collapseNavMenu;
+            await OnClick.InvokeAsync("");
+        }
+        private async void ToggleNavMenuSmall()
+        {
+            using var scope = _logger.BeginMethodScope();
+
+            var dimension = await Service.GetDimensions();
+            var width = dimension.Width;
+            scope.LogDebug($"Width:{width}");
+
+            if (width > 641) { return; }
+            collapseNavMenu = !collapseNavMenu;
+            await OnClick.InvokeAsync("");
+        }
+
+        void IDisposable.Dispose()
+        {
+            using var scope = _logger.BeginMethodScope();
+
         }
     }
 }

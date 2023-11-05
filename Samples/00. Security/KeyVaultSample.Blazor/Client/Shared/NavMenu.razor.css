@@ -1,6 +1,11 @@
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
+    /*border:thick*/
 }
+    .navbar-toggler ::deep a:hover {
+        background-color: rgba(255,255,255,0.1);
+        color: white;
+    }
 
 .top-row {
     height: 3.5rem;
@@ -50,13 +55,13 @@
     color: white;
 }
 
-@media (min-width: 641px) {
+/*@media (min-width: 641px) {
     .navbar-toggler {
         display: none;
     }
 
-    .collapse {
+    .collapse {*/
         /* Never collapse the sidebar for wide screens */
-        display: block;
+        /*display: block;
     }
-}
+}*/

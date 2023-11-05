@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   sodipodi:docname="03.1 Settings.svg"
+   id="svg13"
+   version="1.1"
+   class="st2"
+   color-interpolation-filters="sRGB"
+   xml:space="preserve"
+   viewBox="0 0 90.799972 90.800036"
+   height="1.2611141in"
+   width="1.2611141in"><metadata
+   id="metadata19"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+   id="defs17" /><sodipodi:namedview
+   inkscape:current-layer="svg13"
+   inkscape:window-maximized="0"
+   inkscape:window-y="154"
+   inkscape:window-x="3779"
+   inkscape:cy="60.53552"
+   inkscape:cx="62.702236"
+   inkscape:zoom="5.9721602"
+   showgrid="false"
+   id="namedview15"
+   inkscape:window-height="1120"
+   inkscape:window-width="2025"
+   inkscape:pageshadow="2"
+   inkscape:pageopacity="0"
+   guidetolerance="10"
+   gridtolerance="10"
+   objecttolerance="10"
+   borderopacity="1"
+   bordercolor="#666666"
+   pagecolor="#ffffff" />
+	<v:documentProperties
+   v:viewMarkup="false"
+   v:metric="true"
+   v:langID="2057" />
+
+	<style
+   id="style2"
+   type="text/css">
+	<![CDATA[
+		.st1 {fill:#FFFFFF;stroke:none;stroke-linecap:butt;stroke-width:0.75}
+		.st2 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<g
+   transform="translate(-0.75,-0.75)"
+   id="g11"
+   v:groupContext="foregroundPage"
+   v:index="1"
+   v:mID="0">
+		<title
+   id="title4">Page-1</title>
+		<v:pageProperties
+   v:shadowOffsetY="-8.50394"
+   v:shadowOffsetX="8.50394"
+   v:drawingUnits="24"
+   v:pageScale="0.0393701"
+   v:drawingScale="0.0393701" />
+		<g
+   transform="translate(0.75,-0.75)"
+   v:groupContext="shape"
+   v:mID="1"
+   id="shape1-1">
+			<title
+   id="title6">Configure</title>
+			<v:userDefs>
+				<v:ud
+   v:val="VT4(Icon)"
+   v:prompt=""
+   v:nameU="msvShapeCategories" />
+				<v:ud
+   v:val="VT0(15):26"
+   v:prompt=""
+   v:nameU="visVersion" />
+			</v:userDefs>
+			<path
+   id="path8"
+   class="st1"
+   d="M 83.29,58.48 C 81.53,57.74 75.9,55.36 75.9,55.36 l 0.36,-4.69 0.3,-3.92 -0.5,-7.52 3.71,-2.14 c 0,0 1.88,-0.77 3.63,-1.49 -1.26,-3.08 -1.79,-4.35 -3.05,-7.43 -1.77,0.73 -7.58,3.13 -7.58,3.13 l -2.89,-3.6 c -1.39,-1.75 -3.11,-3.4 -5.27,-5.08 l -3.42,-2.64 1.38,-4.18 c 0,0 0.81,-1.97 1.59,-3.85 -3.08,-1.26 -4.34,-1.78 -7.41,-3.04 -0.81,1.95 -3.24,7.89 -3.24,7.89 l -4.52,-0.45 c -2.3,-0.23 -4.69,-0.18 -7.08,0.14 l -4.3,0.58 -2,-3.95 c 0,0 -0.88,-2.09 -1.74,-4.12 -3.06,1.29 -4.32,1.83 -7.38,3.12 0.91,2.15 3.48,8.24 3.48,8.24 l -3.49,2.9 c -1.65,1.37 -3.19,2.99 -4.71,4.97 l -2.62,3.41 -4.19,-1.35 c 0,0 -2.28,-0.91 -4.53,-1.81 -1.23,3.08 -1.74,4.36 -2.98,7.45 2.28,0.91 8.36,3.35 8.36,3.35 0,0 -0.38,6.9 -0.41,7.45 0.03,0.5 0.13,2.04 0.14,2.06 0,0.01 0.34,3.66 0.34,3.66 l -2.18,1.98 c -0.67,0.68 -0.9,0.85 -6.36,3 1.21,3.09 1.71,4.37 2.92,7.47 2.27,-0.88 8.63,-3.36 8.63,-3.36 l 3.29,4.49 c 1,1.25 2.4,2.66 4.13,4.12 l 3.22,2.72 -1.42,4.04 c 0,0 -0.98,2.27 -1.95,4.51 3.05,1.32 4.3,1.87 7.35,3.18 0.9,-2.08 3.54,-8.18 3.54,-8.18 l 4.62,0.63 c 2.17,0.32 4.52,0.36 6.96,0.15 l 4.2,-0.37 1.87,3.88 c 0,0 0.85,2.14 1.68,4.21 3.09,-1.23 4.36,-1.74 7.44,-2.98 -0.77,-1.91 -3.21,-8.02 -3.21,-8.02 l 4.61,-3.32 c 1.31,-1.06 2.81,-2.57 4.35,-4.46 l 2.69,-3.27 4.12,1.41 c 0,0 1.94,0.82 3.79,1.6 1.29,-3.07 1.83,-4.34 3.12,-7.4 z m -1.4,-7.08 c 0,0 -0.02,0.16 -0.04,0.31 0.78,0.33 8.87,3.74 8.87,3.74 L 83.2,73.31 c 0,0 -8.27,-3.49 -9.05,-3.82 -0.09,0.12 -0.19,0.25 -0.19,0.25 -1.79,2.19 -3.56,3.97 -5.42,5.46 0,0 -0.61,0.44 -1.01,0.73 0.32,0.82 3.67,9.17 3.67,9.17 l -17.98,7.2 c 0,0 -3.48,-8.69 -3.79,-9.47 -0.15,0.01 -0.31,0.02 -0.31,0.02 -2.88,0.26 -5.67,0.19 -8.26,-0.17 0,0 -0.16,-0.03 -0.31,-0.05 -0.34,0.79 -4.08,9.44 -4.08,9.44 L 18.7,84.38 c 0,0 3.85,-8.91 4.19,-9.69 -0.12,-0.1 -0.24,-0.2 -0.24,-0.2 -2.01,-1.7 -3.67,-3.37 -5.06,-5.11 0,0 -0.42,-0.58 -0.7,-0.97 -0.82,0.32 -9.86,3.84 -9.86,3.84 L 0,54.21 c 0,0 9.69,-3.78 9.69,-3.8 0,0 0.15,-0.05 0.29,-0.1 C 9.94,49.83 9.87,49.17 9.87,49.17 L 9.72,46.76 c 0,0 0.16,-3.02 0.2,-3.73 C 9.16,42.72 0.08,39.09 0.08,39.09 L 7.27,21.1 c 0,0 9,3.6 9.8,3.92 0.09,-0.12 0.2,-0.25 0.2,-0.25 1.77,-2.31 3.6,-4.24 5.59,-5.88 0,0 0.12,-0.11 0.24,-0.2 C 22.77,17.91 19.06,9.1 19.06,9.1 L 36.9,1.56 c 0,0 3.6,8.55 3.94,9.34 0.15,-0.02 0.31,-0.04 0.31,-0.04 2.84,-0.38 5.66,-0.43 8.4,-0.16 0,0 0.16,0.02 0.31,0.03 0.32,-0.78 3.79,-9.23 3.79,-9.23 l 17.9,7.36 c 0,0 -3.4,8.29 -3.72,9.09 0.12,0.09 0.25,0.19 0.25,0.19 2.52,1.95 4.55,3.91 6.21,5.99 0,0 0.12,0.15 0.25,0.3 0.78,-0.32 8.9,-3.66 8.9,-3.66 l 7.36,17.92 c 0,0 -8.08,3.33 -8.87,3.65 0.01,0.15 0.03,0.31 0.03,0.31 0.19,1.57 0.27,2.88 0.27,4.1 0,1.39 -0.11,2.86 -0.34,4.65 z m -28.3,4.92 c 5.25,-4.21 6.11,-11.88 1.9,-17.15 -4.2,-5.26 -11.87,-6.11 -17.13,-1.9 -5.25,4.2 -6.11,11.88 -1.91,17.14 4.21,5.27 11.88,6.12 17.14,1.91 z M 47.94,29.03 c 4.75,0.53 9,2.87 11.99,6.6 6.15,7.7 4.89,18.97 -2.8,25.12 -3.73,2.99 -8.39,4.34 -13.13,3.81 -4.75,-0.53 -9,-2.88 -11.98,-6.61 -2.63,-3.28 -3.9,-7.23 -3.9,-11.14 0,-5.25 2.29,-10.45 6.69,-13.98 3.73,-2.98 8.39,-4.33 13.13,-3.8 z" />
+		</g>
+	</g>
+</svg>

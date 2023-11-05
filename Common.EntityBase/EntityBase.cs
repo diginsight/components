@@ -182,43 +182,43 @@ namespace Common
         #endregion
     }
     #endregion
-    //#region class EntityBase<T>
-    //public abstract class EntityBase<T> : EntityBase, ISupportsKey<T>, ISupportsKey
-    //{
-    //    #region GetHashCode
-    //    public override int GetHashCode()
-    //    {
-    //        return (Key == null) ? base.GetHashCode() : Key.GetHashCode();
-    //    }
-    //    #endregion
-    //    #region Equals
-    //    public override bool Equals(object obj)
-    //    {
-    //        EntityBase<T> entita = obj as EntityBase<T>; // null keys --> fallback su ReferenceEquals
-    //        if (this.Key == null || entita == null || entita.Key == null) { return object.ReferenceEquals(this, obj); }
+    #region class EntityBase<T>
+    public abstract class EntityBase<T> : EntityBase, ISupportsKey<T>, ISupportsKey
+    {
+        #region GetHashCode
+        public override int GetHashCode()
+        {
+            return (Key == null) ? base.GetHashCode() : Key.GetHashCode();
+        }
+        #endregion
+        #region Equals
+        public override bool Equals(object obj)
+        {
+            EntityBase<T> entita = obj as EntityBase<T>; // null keys --> fallback su ReferenceEquals
+            if (this.Key == null || entita == null || entita.Key == null) { return object.ReferenceEquals(this, obj); }
 
-    //        bool result = false; // potenziamente non simmetrica !!! (con inheritance strane)
-    //        if (this.Key.Equals(entita.Key) && (this.GetType().IsInstanceOfType(obj) || obj.GetType().IsInstanceOfType(this)))
-    //        {
-    //            result = true;
-    //        }
+            bool result = false; // potenziamente non simmetrica !!! (con inheritance strane)
+            if (this.Key.Equals(entita.Key) && (this.GetType().IsInstanceOfType(obj) || obj.GetType().IsInstanceOfType(this)))
+            {
+                result = true;
+            }
 
-    //        return result;
-    //    }
-    //    #endregion
+            return result;
+        }
+        #endregion
 
-    //    #region Key
-    //    protected abstract T Key { get; }
-    //    T ISupportsKey<T>.Key
-    //    {
-    //        get { return this.Key; }
-    //    }
-    //    #endregion
-    //    #region ISupportsKey.Key
-    //    object ISupportsKey.Key { get { return this.Key; } }
-    //    #endregion
-    //}
-    //#endregion
+        #region Key
+        protected abstract T Key { get; }
+        T ISupportsKey<T>.Key
+        {
+            get { return this.Key; }
+        }
+        #endregion
+        #region ISupportsKey.Key
+        object ISupportsKey.Key { get { return this.Key; } }
+        #endregion
+    }
+    #endregion
     #region class EntityCollectionBase<T>
     public class EntityCollectionBase<T> : List<T>, IList, ICollection, IEnumerable, IDisposable
         where T : EntityBase, new()

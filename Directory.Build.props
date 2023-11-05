@@ -1,9 +1,9 @@
 <Project>
 
   <PropertyGroup>
-    <LangVersion>11.0</LangVersion>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>11</LangVersion>
     <NoWarn>SA1633</NoWarn>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
@@ -13,30 +13,34 @@
   </PropertyGroup>
 
   <PropertyGroup>
-	  <DiginsightDiagnosticsVersion>1.0.2.49</DiginsightDiagnosticsVersion>
+    <Authors>diginsight</Authors>
+    <Product>Diginsight</Product>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/diginsight/telemetry</PackageProjectUrl>
+    <PackageTags>diginsight;telemetry</PackageTags>
+    <!-- TODO <PackageIcon> -->
+    <!-- TODO <Description> in each csproj -->
+    
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)diginsight.snk</AssemblyOriginatorKeyFile>
+
   </PropertyGroup>
 
-  <!--<PropertyGroup>
-    <AbilityStorageInterfaceVersion></AbilityStorageInterfaceVersion>
-    <AbilityStorageCosmosDbVersion></AbilityStorageCosmosDbVersion>
-    <AbilityStorageMongoDbVersion></AbilityStorageMongoDbVersion>
-  </PropertyGroup>-->
-
-  <!--<ItemGroup>
-    <PackageReference Include="ABB.Ability.EL.Common.Storage.CosmosDb" Version="1.0.22046.81664" />
-    <PackageReference Include="ABB.Ability.EL.Common.Storage.Interface" Version="1.0.22046.81662" />
-    <PackageReference Include="ABB.Ability.EL.Common.Storage.MongoDb" Version="1.0.22061.83925" />
-  </ItemGroup>-->
-
-  <!--<PropertyGroup>
-    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)ABBRuleset.ruleset</CodeAnalysisRuleSet>
+  <PropertyGroup>
+	  <OpenTelemetryVersion>1.*</OpenTelemetryVersion>
+	  <OpenTelemetryBetaVersion>1.5.*-*</OpenTelemetryBetaVersion>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.*">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime;build;native;contentfiles;analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>-->
+  <PropertyGroup>
+
+
+    <DefaultItemExcludes>$(DefaultItemExcludes);**\zbkp\**</DefaultItemExcludes>
+  </PropertyGroup>
 
 </Project>

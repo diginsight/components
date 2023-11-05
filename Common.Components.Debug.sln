@@ -93,6 +93,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Diagnostics.Logstrin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Diagnostics.Logstrings.Azure", "..\telemetry\Common.Diagnostics.Logstrings.Azure\Common.Diagnostics.Logstrings.Azure.csproj", "{A05A92D5-581A-46FF-80CE-1395B8EA7AC6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyVaultSampleBlazor.Shared", "Samples\00. Security\KeyVaultSample.Blazor\Shared\KeyVaultSampleBlazor.Shared.csproj", "{3BD426DC-5385-4C77-9890-E0B7D23F889D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyVaultSampleBlazor.Server", "Samples\00. Security\KeyVaultSample.Blazor\Server\KeyVaultSampleBlazor.Server.csproj", "{2D64F4F2-303B-4942-96A8-4E7FFCC954C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyVaultSampleBlazor.Client", "Samples\00. Security\KeyVaultSample.Blazor\Client\KeyVaultSampleBlazor.Client.csproj", "{BCCA252C-3A7D-419F-BFD0-FF8D788D8AD4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -290,6 +296,24 @@ Global
 		{A05A92D5-581A-46FF-80CE-1395B8EA7AC6}.DebugWithProjectReferences|Any CPU.Build.0 = Debug|Any CPU
 		{A05A92D5-581A-46FF-80CE-1395B8EA7AC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A05A92D5-581A-46FF-80CE-1395B8EA7AC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BD426DC-5385-4C77-9890-E0B7D23F889D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BD426DC-5385-4C77-9890-E0B7D23F889D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BD426DC-5385-4C77-9890-E0B7D23F889D}.DebugWithProjectReferences|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BD426DC-5385-4C77-9890-E0B7D23F889D}.DebugWithProjectReferences|Any CPU.Build.0 = Debug|Any CPU
+		{3BD426DC-5385-4C77-9890-E0B7D23F889D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BD426DC-5385-4C77-9890-E0B7D23F889D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D64F4F2-303B-4942-96A8-4E7FFCC954C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D64F4F2-303B-4942-96A8-4E7FFCC954C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D64F4F2-303B-4942-96A8-4E7FFCC954C1}.DebugWithProjectReferences|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D64F4F2-303B-4942-96A8-4E7FFCC954C1}.DebugWithProjectReferences|Any CPU.Build.0 = Debug|Any CPU
+		{2D64F4F2-303B-4942-96A8-4E7FFCC954C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D64F4F2-303B-4942-96A8-4E7FFCC954C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCCA252C-3A7D-419F-BFD0-FF8D788D8AD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCCA252C-3A7D-419F-BFD0-FF8D788D8AD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCCA252C-3A7D-419F-BFD0-FF8D788D8AD4}.DebugWithProjectReferences|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCCA252C-3A7D-419F-BFD0-FF8D788D8AD4}.DebugWithProjectReferences|Any CPU.Build.0 = Debug|Any CPU
+		{BCCA252C-3A7D-419F-BFD0-FF8D788D8AD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCCA252C-3A7D-419F-BFD0-FF8D788D8AD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -335,6 +359,9 @@ Global
 		{D3C1E089-D509-4518-956C-F50EFB9D3D70} = {C67834F5-0EA5-4666-B4D5-FA819053AC88}
 		{D7571709-69BC-4965-B2AB-18E41E89DC3D} = {C67834F5-0EA5-4666-B4D5-FA819053AC88}
 		{A05A92D5-581A-46FF-80CE-1395B8EA7AC6} = {C67834F5-0EA5-4666-B4D5-FA819053AC88}
+		{3BD426DC-5385-4C77-9890-E0B7D23F889D} = {8F685748-B1CE-4DFA-B367-17A12C9E8FBE}
+		{2D64F4F2-303B-4942-96A8-4E7FFCC954C1} = {8F685748-B1CE-4DFA-B367-17A12C9E8FBE}
+		{BCCA252C-3A7D-419F-BFD0-FF8D788D8AD4} = {8F685748-B1CE-4DFA-B367-17A12C9E8FBE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B75EF8D-0D79-4B04-8149-CADF5FDBF419}

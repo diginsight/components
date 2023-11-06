@@ -3,9 +3,7 @@
 
 <div class="page container-fluid p-0">
     @*style="background-color: lightblue"*@
-    <div class="sidebar @(collapseNavMenu ? "auto" : null) bg-dark">
-        @* style="width:auto" *@
-        @*<NavMenuRM OnClick="ToggleNavMenu" />*@
+    <div class="sidebar @(collapseNavMenu ? "auto" : null) bg-dark" >
         @{
             int il = 0;
             var componentsL = Components?.Where(c => c.Location != null && (new[] { "left", "navbar" }).Contains(c.Location, StringComparer.InvariantCultureIgnoreCase));
@@ -46,7 +44,7 @@
                             Application: @* @RoleManagerApplication?.Description *@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            @* @foreach (var app in GetMenuApplications(RoleManagerApplications))
+                            @* @foreach (var app in GetMenuApplications(Items))
                             {
                                 @if (app.Description == "-")
                                 {

@@ -23,7 +23,10 @@ namespace KeyVaultSampleBlazor.Client
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            var configuration = builder.Configuration;
+            var currentDirectory = Directory.GetCurrentDirectory();
+            Console.WriteLine($"currentDirectory:{currentDirectory}");
+            builder.Configuration.SetBasePath(currentDirectory);
+            builder.Configuration.AddJsonFile("secrets.json", optional: true, reloadOnChange: true);
 
             builder.RootComponents.Add<App>("#app");
 
@@ -41,7 +44,7 @@ namespace KeyVaultSampleBlazor.Client
 
             var serviceProvider = builder.Services.BuildServiceProvider();
             //serviceProvider = builder.Services.BuildServiceProvider();
-            
+
             ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
             Console.WriteLine($"loggerFactory: '{loggerFactory}'");
             var logger = loggerFactory.CreateLogger<Program>();// gets a logger from the ILoggerFactory
@@ -49,10 +52,23 @@ namespace KeyVaultSampleBlazor.Client
 
             builder.Services.AddMsalAuthentication(options =>
             {
+                using var scope = logger.BeginNamedScope("AddMsalAuthentication");
+
+                var configuration = builder.Configuration;
+                var scopeForAccessToken1 = configuration["CallApi:ScopeForAccessToken"];
+                Console.WriteLine($"scopeForAccessToken1:{scopeForAccessToken1}");
+                var dev = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                scopeForAccessToken1 = Environment.GetEnvironmentVariable("AzureAd--ClientId");
+                Console.WriteLine($"scopeForAccessToken1:{scopeForAccessToken1}, dev:{dev}");
+
                 builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
-                options.ProviderOptions.DefaultAccessTokenScopes.Add(configuration["CallApi:ScopeForAccessToken"]);
+                var scopeForAccessToken = configuration["CallApi:ScopeForAccessToken"];
+                scope.LogDebug(new { scopeForAccessToken });
+                options.ProviderOptions.DefaultAccessTokenScopes.Add(scopeForAccessToken);
                 options.ProviderOptions.DefaultAccessTokenScopes.Add("User.Read");
             });
+
+            var configuration = builder.Configuration;
             ConfigureServices(builder.Services, configuration);
 
             using (var scope = logger.BeginMethodScope())
@@ -115,7 +131,8 @@ namespace KeyVaultSampleBlazor.Client
             services.AddScoped<BrowserService>();
             services.AddBlazorise(options =>
             {
-                options.ChangeTextOnKeyPress = true;
+                //options.cha
+                //options.ChangeTextOnKeyPress = true;
             }).AddBootstrapProviders()
             .AddFontAwesomeIcons();
         }

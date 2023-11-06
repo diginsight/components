@@ -292,7 +292,7 @@ namespace KeyVaultSample
 
             var aiConnectionString = configuration.GetValue<string>(Constants.APPINSIGHTSCONNECTIONSTRING);
             var assembly = this.GetType().Assembly;
-            services.AddObservability(aiConnectionString, assembly.GetName().Name, $"{assembly.GetName().Name}.{assembly.GetName().Version}", assembly.FullName);
+            //services.AddObservability(aiConnectionString, assembly.GetName().Name, $"{assembly.GetName().Name}.{assembly.GetName().Version}", assembly.FullName);
 
 
             services.AddCacheService(configuration, hostEnvironment);

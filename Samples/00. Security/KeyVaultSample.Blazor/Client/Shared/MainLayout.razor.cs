@@ -73,8 +73,8 @@ namespace KeyVaultSampleBlazor.Client.Shared
                 commandManager.CommandBindings.Add(new CommandBinding(WebCommands.RemoveItem, RemoveItemExecuted, RemoveItemCanExecute));
                 scope.LogDebug(new { commandManager.CommandBindings });
 
-                var user = (await AuthenticationStateTask).User;
-                scope.LogDebug(new { user = user.GetLogString() });
+                var user = (await AuthenticationStateTask)?.User;
+                scope.LogDebug(new { user });
 
                 scope.LogDebug($"Http.BaseAddress: {Http.BaseAddress?.AbsolutePath?.GetLogString()}");
                 

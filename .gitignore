@@ -349,3 +349,5 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 *packages.lock.json
+/Samples/00. Security/KeyVaultSample.Blazor/Client/wwwroot/secrets.json
+/Samples/00. Security/KeyVaultSample.Blazor/Client/wwwroot/appsettings.secrets.json

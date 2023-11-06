@@ -10,29 +10,26 @@ namespace KeyVaultSampleBlazor.Client.Pages
 {
     public partial class Counter : ComponentBase
     {
-        [Inject]
-        protected ILogger<Counter> _logger { get; set; }
+        [Inject] protected ILogger<Counter> logger { get; set; }
 
         private int currentCount = 0;
 
         private void IncrementCount()
         {
-            using (var scope = _logger.BeginMethodScope())
-            {
-                IncrementCounterImpl();
-            }
+            using var scope = logger.BeginMethodScope();
+
+            IncrementCounterImpl();
         }
 
 
         public int IncrementCounterImpl()
         {
-            using (var scope = _logger.BeginMethodScope())
-            {
-                currentCount++;
+            using var scope = logger.BeginMethodScope();
 
-                scope.Result = currentCount;
-                return currentCount;
-            }
+            currentCount++;
+
+            scope.Result = currentCount;
+            return currentCount;
         }
     }
 }

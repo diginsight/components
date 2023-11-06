@@ -55,15 +55,11 @@ namespace KeyVaultSampleBlazor.Client
                 using var scope = logger.BeginNamedScope("AddMsalAuthentication");
 
                 var configuration = builder.Configuration;
-                var scopeForAccessToken1 = configuration["CallApi:ScopeForAccessToken"];
-                Console.WriteLine($"scopeForAccessToken1:{scopeForAccessToken1}");
-                var dev = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-                scopeForAccessToken1 = Environment.GetEnvironmentVariable("AzureAd--ClientId");
-                Console.WriteLine($"scopeForAccessToken1:{scopeForAccessToken1}, dev:{dev}");
-
-                builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
+                configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
+                
                 var scopeForAccessToken = configuration["CallApi:ScopeForAccessToken"];
                 scope.LogDebug(new { scopeForAccessToken });
+                
                 options.ProviderOptions.DefaultAccessTokenScopes.Add(scopeForAccessToken);
                 options.ProviderOptions.DefaultAccessTokenScopes.Add("User.Read");
             });

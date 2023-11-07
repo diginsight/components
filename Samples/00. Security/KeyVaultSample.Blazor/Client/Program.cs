@@ -72,7 +72,10 @@ namespace KeyVaultSampleBlazor.Client
                 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
                 var host = builder.Build();
-                Common.ActivityExtensions.InitTraceLogger(host.Services);
+                var ihost = new WebAssemblyIHostAdapter(host) as IHost;
+                ihost.InitTraceLogger(); scope.LogDebug($"ihost.InitTraceLogger();");
+                ihost.UseCommandManager(); // gives the application host to CommandManager
+                //Common.ActivityExtensions.InitTraceLogger(host.Services);
 
                 await host.RunAsync();
             }

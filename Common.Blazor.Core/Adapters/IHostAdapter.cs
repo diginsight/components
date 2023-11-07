@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks; 
 #endregion
 
-namespace dbo.app
+namespace Common.Core.Blazor
 {
     public class WebAssemblyIHostAdapter : IHost
     {

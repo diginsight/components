@@ -351,3 +351,4 @@ MigrationBackup/
 *packages.lock.json
 /Samples/00. Security/KeyVaultSample.Blazor/Client/wwwroot/secrets.json
 /Samples/00. Security/KeyVaultSample.Blazor/Client/wwwroot/appsettings.secrets.json
+/Samples/05. OpenAI/OpenAISample.Blazor/Client/wwwroot/appsettings.secrets.json

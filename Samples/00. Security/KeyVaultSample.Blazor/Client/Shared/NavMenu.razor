@@ -12,29 +12,33 @@
     </button>
 </div>
 
-<div class="bg-dark  d-flex flex-column flex-fill" @onclick="ToggleNavMenuSmall" >
+<div class="bg-dark  d-flex flex-column flex-fill" @onclick="ToggleNavMenuSmall">
     <ul class="nav flex-column flex-fill">
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All" >
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span><span class="@(collapseNavMenu ? "collapse" : null)"> Home</span>
             </NavLink>
         </li>
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="rlm_homepage">
                 <span aria-hidden="true">
-                    <img src="01. RoleManager.svg" class="rounded align-self-start mr-1 text-white" style="width:16px;height:16px"></span><span class="@(collapseNavMenu ? "collapse" : null) pl-2">Azure Key Vault</span>
+                    <img src="01. RoleManager.svg" class="rounded align-self-start mr-1 text-white" style="width:16px;height:16px">
+                </span>
+                <span class="@(collapseNavMenu ? "collapse" : null) pl-2">
+                    Azure Key Vault
+                </span>
             </NavLink>
         </li>
         @*<li class="nav-item px-3">
-            <NavLink class="nav-link" href="rlm_applicationuserspage">
-                <span class="oi oi-people" aria-hidden="true"></span>
-                <span class="@(collapseNavMenu ? "collapse" : null)"> Users</span>
-            </NavLink>
+        <NavLink class="nav-link" href="rlm_applicationuserspage">
+        <span class="oi oi-people" aria-hidden="true"></span>
+        <span class="@(collapseNavMenu ? "collapse" : null)"> Users</span>
+        </NavLink>
         </li>*@
         @* <li class="nav-item px-3">
-            <NavLink class="nav-link" href="rlm_applicationroleuserpage">
-                <span aria-hidden="true"><img src="02. NotificationManager.svg" class="rounded align-self-start mr-1 text-white" style="width:16px;height:16px"></span><span class="@(collapseNavMenu ? "collapse" : null) pl-2">Notifications</span>
-            </NavLink>
+        <NavLink class="nav-link" href="rlm_applicationroleuserpage">
+        <span aria-hidden="true"><img src="02. NotificationManager.svg" class="rounded align-self-start mr-1 text-white" style="width:16px;height:16px"></span><span class="@(collapseNavMenu ? "collapse" : null) pl-2">Notifications</span>
+        </NavLink>
         </li> *@
     </ul>
 </div>

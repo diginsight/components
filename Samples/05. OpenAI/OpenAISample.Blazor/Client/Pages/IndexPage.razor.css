@@ -1,0 +1,13 @@
+.card {
+    background-color: #6c757d;
+}
+
+    .card:hover {
+        background-color: #0d6efd
+        /*2e92fa;*/
+    }
+/*
+h1 {
+    color: red;
+}
+*/

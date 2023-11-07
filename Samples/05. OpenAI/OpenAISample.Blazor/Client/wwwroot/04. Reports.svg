@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   sodipodi:docname="04. Reports.svg"
+   id="svg26"
+   version="1.1"
+   class="st2"
+   color-interpolation-filters="sRGB"
+   xml:space="preserve"
+   viewBox="0 0 145.93276 142.96001"
+   height="1.9855576in"
+   width="2.0268493in"><metadata
+   id="metadata32"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+   id="defs30" /><sodipodi:namedview
+   inkscape:current-layer="svg26"
+   inkscape:window-maximized="0"
+   inkscape:window-y="265"
+   inkscape:window-x="4113"
+   inkscape:cy="109.73744"
+   inkscape:cx="97.289429"
+   inkscape:zoom="3.3186608"
+   showgrid="false"
+   id="namedview28"
+   inkscape:window-height="1242"
+   inkscape:window-width="1918"
+   inkscape:pageshadow="2"
+   inkscape:pageopacity="0"
+   guidetolerance="10"
+   gridtolerance="10"
+   objecttolerance="10"
+   borderopacity="1"
+   bordercolor="#666666"
+   pagecolor="#ffffff" />
+	<v:documentProperties
+   v:viewMarkup="false"
+   v:metric="true"
+   v:langID="2057" />
+
+	<style
+   id="style2"
+   type="text/css">
+	<![CDATA[
+		.st1 {fill:#FFFFFF;stroke:none;stroke-linecap:butt;stroke-width:0.75}
+		.st2 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<g
+   transform="translate(-0.75012507,-0.75)"
+   id="g24"
+   v:groupContext="foregroundPage"
+   v:index="1"
+   v:mID="0">
+		<title
+   id="title4">Page-1</title>
+		<v:pageProperties
+   v:shadowOffsetY="-8.50394"
+   v:shadowOffsetX="8.50394"
+   v:drawingUnits="24"
+   v:pageScale="0.0393701"
+   v:drawingScale="0.0393701" />
+		<g
+   v:groupContext="group"
+   v:mID="1"
+   transform="translate(0.75,-22.4)"
+   id="group1-1">
+			<title
+   id="title6">Graph</title>
+			<g
+   transform="translate(11.913,-11.9279)"
+   v:groupContext="shape"
+   v:mID="2"
+   id="shape2-2">
+				<title
+   id="title8">Sheet.2</title>
+				<path
+   id="path10"
+   class="st1"
+   d="M 99.18,102.28 58.04,154.14 24.09,124.5 0.91,144.37 0,143.41 v 22.7 h 134.02 v -43.78 z" />
+			</g>
+			<g
+   transform="translate(11.913,-40.796)"
+   v:groupContext="shape"
+   v:mID="3"
+   id="shape3-4">
+				<title
+   id="title13">Sheet.3</title>
+				<path
+   id="path15"
+   class="st1"
+   d="M 96.5,69.89 48.25,126.05 10.72,115.84 0,131.15 v 29.14 l 24.16,-20.72 30.38,26.54 40.31,-50.18 39.17,22.88 V 78.3 Z" />
+			</g>
+			<g
+   v:groupContext="shape"
+   v:mID="4"
+   id="shape4-6">
+				<title
+   id="title18">Sheet.4</title>
+				<path
+   id="path20"
+   class="st1"
+   d="m 5.84,160.15 v -137 H 0 v 137 0.85 5.11 h 145.93 v -5.96 z" />
+			</g>
+		</g>
+	</g>
+</svg>

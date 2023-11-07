@@ -1,0 +1,129 @@
+﻿@inherits Common.Core.Blazor.LayoutComponentBaseCore
+@inject HttpClient Http
+
+<div class="page container-fluid p-0">
+    @*style="background-color: lightblue"*@
+    <div class="sidebar @(collapseNavMenu ? "auto" : null) bg-dark" >
+        @{
+            int il = 0;
+            var componentsL = Components?.Where(c => c.Location != null && (new[] { "left", "navbar" }).Contains(c.Location, StringComparer.InvariantCultureIgnoreCase));
+        }
+        @if (componentsL != null)
+        {
+            @foreach (var componentL in componentsL)
+            {
+                il++;
+                <div class="position-absolute w-100 d-flex flex-column flex-fill" style="background-color: rgb(160 160 160 / 0.7);z-index:@(10*il)">
+                    <div class="align-self-center bg-light w-100  d-flex flex-column flex-fill">
+                        @* justify-content-center align-items-center *@
+                        @componentL.RenderFragment
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    @*<div id="resizer"></div>*@
+    <div class="main d-flex flex-column" style="position:relative">
+        @*background-color:lightcoral;*@
+        <nav class="navbar navbar-expand-lg navbar-light bg-light flex-row">
+            <div class="navbar-collapse">
+                @*class="top-row px-4"*@
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active oi oi-home pl-0 " href="#" style="font-size:1rem">  Home</a>
+                        @*<span class="oi oi-home" aria-hidden="true"></span><span class="@(collapseNavMenu ? "collapse" : null)"> Home</span>*@
+                    </li>
+                    @*<li class="nav-item" >
+                        <a class="nav-link" href="#">:</a>
+                        </li>*@
+                    <li class="nav-item dropdown ">
+                        @*Role Manager
+                        @(Application?.Description!="Role Manager" ? "collapse" : null)
+                        *@
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Application: @* @RoleManagerApplication?.Description *@
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            @* @foreach (var app in GetMenuApplications(Items))
+                            {
+                                @if (app.Description == "-")
+                                {
+                                    <div class="dropdown-divider"></div>
+                                }
+                                else
+                                {
+                                    <a class="dropdown-item" @onclick="@(() => { SelectApplication(app?.Description); } )">@app?.Description</a>
+                                }
+                            } *@
+                            @*<a class="dropdown-item" @onclick="@(() => { SelectApplication("Ekip Connect Mobile");  })">Ekip Connect Mobile</a>
+                                <a class="dropdown-item" @onclick="@(() => { SelectApplication("Backoffice Application");  })">Backoffice Application</a>*@
+                        </div>
+                    </li>
+                    @*<div class="btn-group dropdown">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" id="navbarDropdown1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Right-aligned menu example
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                        <li><button class="dropdown-item" type="button">Action</button></li>
+                        <li><button class="dropdown-item" type="button">Another action</button></li>
+                        <li><button class="dropdown-item" type="button">Something else here</button></li>
+                        </ul>
+                        </div>*@
+                    @*<li class="nav-item">
+                        <a class="nav-link disabled" href="#">Disabled</a>
+                        </li>*@
+                </ul>
+                @*<form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>*@
+                @*<i class="fal fa-user-circle"></i>*@
+                @*<i class="fas fa-user-circle" style="user-select: auto;"></i>*@
+                <a class="nav-link fas fa-user-circle pl-0 pr-3" href="#" style="font-size:1.5rem"></a>
+                @*<a href="http://blazor.net" target="_blank" class="ml-0">Login</a>*@
+                <LoginDisplay />
+
+                <a href="http://blazor.net" target="_blank" class="ml-md-3">About</a>
+            </div>
+        </nav>
+        <div class="content px-4 d-flex flex-column" style="flex:auto">
+            @*background-color:lightyellow;*@
+            @Body
+        </div>
+        @{
+            int ir = 0;
+            var componentsR = Components?.Where(c => c.Location != null && (new[] { "main", "right", "body" }).Contains(c.Location, StringComparer.InvariantCultureIgnoreCase));
+        }
+        @if (componentsR != null)
+        {
+            @foreach (var componentR in componentsR)
+            {
+                ir++;
+                <div class="position-absolute w-100 h-100 d-flex flex-column pt-5" style="background-color: rgb(160 160 160 / 0.7); z-index:@(10*ir)">
+                    <div class="align-self-center bg-light" style="min-height:90%;width:90%">
+                        @* justify-content-center align-items-center *@
+                        @componentR.RenderFragment
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    @{
+        int j = 0;
+        var components = Components?.Where(c => c.Location == null || (new[] { "page" }).Contains(c.Location, StringComparer.InvariantCultureIgnoreCase));
+    }
+    @if (components != null)
+    {
+        @foreach (var component in components)
+        {
+            j++;
+            <div class="position-absolute w-100 h-100 d-flex flex-column pt-5" style="background-color: rgb(160 160 160 / 0.7); z-index:@(100 + 100*j)">
+                <div class="align-self-center bg-light" style="min-height:90%;width:90%">
+                    @* justify-content-center align-items-center *@
+                    @component.RenderFragment
+                </div>
+            </div>
+        }
+    }
+</div>

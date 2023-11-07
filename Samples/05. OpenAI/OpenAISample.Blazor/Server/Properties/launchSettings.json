@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "KeyVaultSampleBlazor.Server": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AzureAd--ClientId": "d84a01aa-6c08-4e25-a4a2-863c69dc18a1",
+        "CallApi--ScopeForAccessToken": "api://0acaf19a-be71-4605-aff3-982c02a449f1/access_as_user"
+      },
+      "applicationUrl": "https://localhost:63881;http://localhost:63882" // 7084
+    }
+  }
+}

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   sodipodi:docname="02. NotificationManager.svg"
+   id="svg16"
+   version="1.1"
+   class="st2"
+   color-interpolation-filters="sRGB"
+   xml:space="preserve"
+   viewBox="0 0 189.22549 227.69951"
+   height="3.1624973in"
+   width="2.6281295in"><metadata
+   id="metadata22"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+   id="defs20" /><sodipodi:namedview
+   inkscape:current-layer="svg16"
+   inkscape:window-maximized="0"
+   inkscape:window-y="279"
+   inkscape:window-x="4120"
+   inkscape:cy="161.31653"
+   inkscape:cx="125.86653"
+   inkscape:zoom="1.9831608"
+   showgrid="false"
+   id="namedview18"
+   inkscape:window-height="974"
+   inkscape:window-width="1968"
+   inkscape:pageshadow="2"
+   inkscape:pageopacity="0"
+   guidetolerance="10"
+   gridtolerance="10"
+   objecttolerance="10"
+   borderopacity="1"
+   bordercolor="#666666"
+   pagecolor="#ffffff" />
+	<v:documentProperties
+   v:viewMarkup="false"
+   v:metric="true"
+   v:langID="2057">
+		<v:userDefs>
+			<v:ud
+   v:val="VT0(1):26"
+   v:nameU="msvNoAutoConnect" />
+		</v:userDefs>
+	</v:documentProperties>
+
+	<style
+   id="style2"
+   type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.25}
+		.st2 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<g
+   transform="translate(-18.429516,-17.995296)"
+   id="g14"
+   v:groupContext="foregroundPage"
+   v:index="1"
+   v:mID="0">
+		<title
+   id="title4">Page-1</title>
+		<v:pageProperties
+   v:shadowOffsetY="-8.50394"
+   v:shadowOffsetX="8.50394"
+   v:drawingUnits="24"
+   v:pageScale="0.0393701"
+   v:drawingScale="0.0393701" />
+		<v:layer
+   v:index="0"
+   v:name="Common Icons" />
+		<g
+   v:layerMember="0"
+   v:groupContext="group"
+   v:mID="1"
+   transform="translate(18,-32.4)"
+   id="group1-1">
+			<v:userDefs>
+				<v:ud
+   v:val="VT0(17):26"
+   v:prompt=""
+   v:nameU="visVersion" />
+				<v:ud
+   v:val="VT4(Notification)"
+   v:prompt=""
+   v:nameU="visAltText" />
+				<v:ud
+   v:val="VT4(Notification Icon.)"
+   v:prompt=""
+   v:nameU="visAltDescription" />
+				<v:ud
+   v:val="VT0(243):26"
+   v:prompt=""
+   v:nameU="Font" />
+			</v:userDefs>
+			<title
+   id="title6">Notification</title>
+			<g
+   v:layerMember="0"
+   v:groupContext="shape"
+   v:mID="2"
+   id="shape2-2">
+				<title
+   id="title8">Sheet.2</title>
+				<path
+   id="path10"
+   class="st1"
+   d="M 185.07,227.87 C 174.76,204.52 149.4,196.27 147.72,127.1 v 0.28 c -0.83,-19.92 -12.26,-36.72 -28.43,-45.26 0.56,-1.99 0.84,-3.98 0.84,-5.98 0,-14.23 -11.15,-25.62 -25.08,-25.62 -13.94,0 -25.09,11.39 -25.09,25.62 0,2 0.28,4.27 0.84,5.98 -16.17,8.54 -27.6,25.62 -28.43,45.26 v -0.28 c -1.68,69.17 -27.04,77.42 -37.35,100.77 -2.79,3.7 -4.46,7.4 -4.46,11.67 -0.56,21.35 41.81,38.43 94.21,38.43 52.4,0 94.76,-17.08 94.76,-38.43 0,-3.99 -1.39,-7.97 -4.46,-11.67 z M 94.77,61.63 c 7.8,0 13.93,6.26 13.93,14.23 0,0.57 0,1.14 -0.28,1.99 -4.18,-1.42 -8.91,-1.99 -13.65,-1.99 -4.74,0 -9.48,0.57 -13.66,1.99 0,-0.57 -0.28,-1.14 -0.28,-1.99 0,-7.97 6.13,-14.23 13.94,-14.23 z m 0,199.26 c -48.78,0 -75.26,-15.09 -78.05,-21.35 2.23,-5.41 23.7,-18.22 63,-20.78 -1.12,2.27 -1.96,5.12 -1.96,7.97 0,9.39 7.53,17.08 17.01,17.08 9.47,0 17,-7.69 17,-17.08 0,-2.85 -0.84,-5.7 -1.95,-7.97 39.3,2.56 60.76,15.37 62.99,20.78 -2.79,6.26 -29.27,21.35 -78.04,21.35 z" />
+			</g>
+		</g>
+	</g>
+</svg>

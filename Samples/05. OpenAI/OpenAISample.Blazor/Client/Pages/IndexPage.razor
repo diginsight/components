@@ -1,0 +1,89 @@
+﻿@page "/"
+@inherits Common.Core.Blazor.ComponentBaseCore
+
+<h1>OpenAI Sample</h1>
+
+<div class="content d-flex px-4 flex-column" style="flex:auto">
+    @*background-color:lightyellow;*@
+    <div class="row d-flex h-100 align-content-center justify-content-center">
+        @* style="background-color:lightcoral"
+        justify-content-center align-self-center align-items-center
+        container pt-5 pb-4 align-content-center row *@
+        <div class="row ml-5 mr-5 row-cols-4 text-white" style="max-width:1000px">
+            @* <div class="card border-dark mb-4 mr-4" @onclick="@(() => { SelectApplication("Key Vault"); })">
+                <div class="card-header border-0 py-3 d-flex align-items-center">
+                    <img src="01. RoleManager.svg" class="rounded align-self-start mr-1 text-white" style="width:46px;height:46px">
+                    <div>
+                        <h4 class="card-title mb-0">Key Vault</h4>
+                        <h6 class="card-subtitle pt-2 text-white-50">application</h6>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Use Azure Key Vault manager to access an Azure Key Vault.</p>
+                </div>
+                <div class="card-footer bg-transparent"><p class="card-text"><small class="text-white-50">Last updated 3 mins ago</small></p></div>
+            </div> *@
+            <div class="card border-dark mb-4 mr-4" @onclick="@(() => { SelectApplication("EnergyManagerChat"); })">
+                <div class="card-header border-0 py-3 d-flex align-items-center">
+                    <img src="02. NotificationManager.svg" class="rounded align-self-start mr-1 text-white" style="width:46px;height:46px">
+                    <div>
+                        <h4 class="card-title mb-0">Energy Manager Chat</h4>
+                        <h6 class="card-subtitle pt-2 text-white-50">Chat</h6>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Use Energy Manager Chat ask information about your site.</p>
+                </div>
+                <div class="card-footer bg-transparent"><p class="card-text"><small class="text-white-50">Last updated 3 mins ago</small></p></div>
+            </div>
+            <div class="card border-dark mb-4 mr-4" @onclick="@(() => { SelectApplication("SettingsTool"); })">
+                <div class="card-header border-0 py-3 d-flex align-items-center">
+                    <img src="03.1 Settings.svg" class="rounded align-self-start mr-1" style="width:46px;height:46px">
+                    <div>
+                        <h4 class="card-title mb-0">Configurations</h4>
+                        <h6 class="card-subtitle pt-2 text-white-50">Tool</h6>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Use configurations manager to manage ABB configurations.</p>
+                </div>
+                <div class="card-footer bg-transparent"><p class="card-text"><small class="text-white-50">Last updated 3 mins ago</small></p></div>
+            </div>
+            @* <div class="card border-dark mb-4 mr-4" @onclick="@(() => { SelectApplication("ReportsTool"); })">
+                <div class="card-header border-0 py-3 d-flex align-items-center">
+                    <img src="04. Reports.svg" class="rounded align-self-start mr-1" style="width:46px;height:46px">
+                    <div>
+                        <h4 class="card-title mb-0">Reports</h4>
+                        <h6 class="card-subtitle pt-2 text-white-50">Tool</h6>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Use the reporting application to access all Backoffice reports</p>
+                </div>
+                <div class="card-footer bg-transparent"><p class="card-text"><small class="text-white-50">Last updated 3 mins ago</small></p></div>
+            </div> *@
+            @* <div class="card border-dark mb-4 mr-4" @onclick="@(() => { SelectApplication("FirmwareUpdateTool"); })">
+                <div class="card-header border-0 py-3 d-flex align-items-center">
+                    <img src="07. Firmware Update.svg" class="rounded align-self-start mr-1" style="width:46px;height:46px">
+                    <div>
+                        <h4 class="card-title mb-0">FW Update</h4>
+                        <h6 class="card-subtitle pt-2 text-white-50">Tool</h6>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Use the firmware update tool update remote devices</p>
+                </div>
+                <div class="card-footer bg-transparent"><p class="card-text"><small class="text-white-50">Last updated 3 mins ago</small></p></div>
+            </div> *@
+
+        </div>
+    </div>
+</div>
+
+
+@* <h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+ *@

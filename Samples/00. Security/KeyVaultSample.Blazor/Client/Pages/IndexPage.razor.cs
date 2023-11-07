@@ -79,13 +79,13 @@ namespace KeyVaultSampleBlazor.Client.Pages
 
         private async void SelectApplication(string applicationName)
         {
-            using (var scope = _logger.BeginMethodScope(new { applicationName }))
-            {
-                //if (applicationName != null && applicationName.Equals("rolemanager", StringComparison.InvariantCultureIgnoreCase))
-                //{
-                //    NavManager.NavigateTo("/rlm_homepage");
-                //}
-            }
+            using var scope = _logger.BeginMethodScope(new { applicationName });
+
+            //if (applicationName != null && applicationName.Equals("rolemanager", StringComparison.InvariantCultureIgnoreCase))
+            //{
+            NavManager.NavigateTo("/secretspage");
+            //}
+
         }
     }
 }

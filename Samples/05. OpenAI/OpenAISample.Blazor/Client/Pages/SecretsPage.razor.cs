@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 #endregion
 
-namespace KeyVaultSampleBlazor.Client.Pages
+namespace OpenAISampleBlazor.Client.Pages
 {
     public partial class SecretsPage : ComponentBaseCore
     {

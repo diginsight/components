@@ -7,7 +7,7 @@ using System.Linq;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
-namespace KeyVaultSampleBlazor.Client.Pages
+namespace OpenAISampleBlazor.Client.Pages
 {
     public partial class FetchData : ComponentBase
     {

@@ -16,7 +16,7 @@ using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 
-namespace KeyVaultSampleBlazor.Client
+namespace OpenAISampleBlazor.Client
 {
     public class Program
     {

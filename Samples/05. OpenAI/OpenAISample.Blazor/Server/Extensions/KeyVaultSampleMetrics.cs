@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KeyVaultSampleBlazor.Server;
+namespace OpenAISampleBlazor.Server;
 
     public abstract class CustomMetrics
     {
@@ -40,8 +40,8 @@ namespace KeyVaultSampleBlazor.Server;
     {
         public static readonly EasySampleMetrics Instance = new();
 
-        public override string ObservabilityName => "KeyVaultSampleBlazor.Server";
-        public static string StaticObservabilityName => "KeyVaultSampleBlazor.Server";
+        public override string ObservabilityName => "OpenAISampleBlazor.Server";
+        public static string StaticObservabilityName => "OpenAISampleBlazor.Server";
 
         public override (string, MetricStreamConfiguration)[] Views => new[]{
             ("push_data_object_size", MetricConfigurations.MediumSizeHistogram),

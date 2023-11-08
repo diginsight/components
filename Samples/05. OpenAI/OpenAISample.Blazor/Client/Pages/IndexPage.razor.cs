@@ -1,7 +1,7 @@
 ﻿#region using
 using Common;
 using Common.Core.Blazor;
-using KeyVaultSampleBlazor.Client.Shared;
+using OpenAISampleBlazor.Client.Shared;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -14,7 +14,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 #endregion
 
-namespace KeyVaultSampleBlazor.Client.Pages
+namespace OpenAISampleBlazor.Client.Pages
 {
     public partial class IndexPage : ComponentBaseCore
     {

@@ -1,6 +1,6 @@
 {
-  "name": "KeyVaultSampleBlazor",
-  "short_name": "KeyVaultSampleBlazor",
+  "name": "OpenAISampleBlazor",
+  "short_name": "OpenAISampleBlazor",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

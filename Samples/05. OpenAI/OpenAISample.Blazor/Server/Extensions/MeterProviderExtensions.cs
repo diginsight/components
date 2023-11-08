@@ -1,4 +1,4 @@
-using KeyVaultSampleBlazor.Server;
+using OpenAISampleBlazor.Server;
 using System.Diagnostics.Metrics;
 using System.Reflection;
 //using ABB.Ability.ELSP.Common.OpenTelemetry.Metrics.Custom;

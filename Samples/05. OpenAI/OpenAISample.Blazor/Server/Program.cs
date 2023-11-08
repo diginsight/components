@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging.AzureAppServices;
 using OpenTelemetry.Trace;
 #endregion
 
-namespace KeyVaultSampleBlazor.Server
+namespace OpenAISampleBlazor.Server
 {
     public class Program
     {

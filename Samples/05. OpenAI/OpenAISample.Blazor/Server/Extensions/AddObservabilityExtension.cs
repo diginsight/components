@@ -9,7 +9,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
-namespace KeyVaultSampleBlazor.Server;
+namespace OpenAISampleBlazor.Server;
 
 
 public class OpenTelemetryOptions

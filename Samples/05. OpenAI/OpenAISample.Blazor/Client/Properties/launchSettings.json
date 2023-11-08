@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "KeyVaultSampleBlazor.Client": {
+    "OpenAISampleBlazor.Client": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

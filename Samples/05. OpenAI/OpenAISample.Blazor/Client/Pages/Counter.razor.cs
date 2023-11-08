@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common;
 
-namespace KeyVaultSampleBlazor.Client.Pages
+namespace OpenAISampleBlazor.Client.Pages
 {
     public partial class Counter : ComponentBase
     {

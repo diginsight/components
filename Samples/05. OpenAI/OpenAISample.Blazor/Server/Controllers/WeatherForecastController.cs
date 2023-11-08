@@ -1,5 +1,5 @@
 ﻿#region using
-using KeyVaultSampleBlazor.Shared;
+using OpenAISampleBlazor.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks; 
 #endregion
 
-namespace KeyVaultSampleBlazor.Server.Controllers
+namespace OpenAISampleBlazor.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]

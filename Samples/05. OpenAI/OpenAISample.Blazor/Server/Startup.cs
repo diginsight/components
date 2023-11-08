@@ -13,7 +13,7 @@ using System;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 #endregion
 
-namespace KeyVaultSampleBlazor.Server
+namespace OpenAISampleBlazor.Server
 {
     public class Startup
     {

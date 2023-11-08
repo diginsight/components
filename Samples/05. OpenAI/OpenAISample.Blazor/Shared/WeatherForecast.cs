@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace KeyVaultSampleBlazor.Shared
+namespace OpenAISampleBlazor.Shared
 {
     public class WeatherForecast: ISupportLogString
     {

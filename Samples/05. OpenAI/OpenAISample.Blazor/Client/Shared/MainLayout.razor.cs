@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 #endregion
 
-namespace KeyVaultSampleBlazor.Client.Shared
+namespace OpenAISampleBlazor.Client.Shared
 {
     public partial class MainLayout : LayoutComponentBaseCore
     {

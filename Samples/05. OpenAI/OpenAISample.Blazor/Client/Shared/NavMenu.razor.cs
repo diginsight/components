@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 //using BlazorPro.BlazorSize;
 #endregion
 
-namespace KeyVaultSampleBlazor.Client.Shared
+namespace OpenAISampleBlazor.Client.Shared
 {
     public partial class NavMenu : ComponentBase, IDisposable
     {

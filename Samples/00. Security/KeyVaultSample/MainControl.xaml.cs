@@ -175,8 +175,8 @@ namespace KeyVaultSample
         private async Task ctlMain_InitializedAsync(object sender, EventArgs e)
         {
             using var scope = logger.BeginMethodScope(new { sender, e });
-            using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName()); // , new { sender, e }
-            using var scope1 = TraceLogger.ActivitySource.StartMethodActivity(logger, new { sender, e });
+            //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName()); // , new { sender, e }
+            //using var scope1 = TraceLogger.ActivitySource.StartMethodActivity(logger, new { sender, e });
 
             try
             {
@@ -294,9 +294,9 @@ namespace KeyVaultSample
         private void RunCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = true; }
         private void RunCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            //using var scope = logger.BeginMethodScope(new { sender, e });
+            using var scope = logger.BeginMethodScope(new { sender, e });
             //using Activity activity = TraceLogger.ActivitySource.StartActivity(TraceLogger.GetMethodName());
-            using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
+            //using var scope = TraceLogger.ActivitySource.StartMethodActivity(logger, new { e, sender });
 
             var keyVaultAddress = ConfigurationHelper.GetClassSetting<App, string>(CONFIGVALUE_KEYVAULTADDRESS, DEFAULTVALUE_KEYVAULTADDRESS);
             if (App.ConnectionString is not null) { keyVaultAddress = App.ConnectionString; }

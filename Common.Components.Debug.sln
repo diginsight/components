@@ -103,6 +103,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenAISampleBlazor.Client",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenAISampleBlazor.Server", "Samples\05. OpenAI\OpenAISample.Blazor\Server\OpenAISampleBlazor.Server.csproj", "{5E1382B7-01D7-4AC7-A490-9E0807BFD254}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyVaultSampleBlazor.Shared", "Samples\00. Security\KeyVaultSample.Blazor\Shared\KeyVaultSampleBlazor.Shared.csproj", "{FFDBE96E-6266-4F0A-9A74-4FADD21D5980}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyVaultSampleBlazor.Client", "Samples\00. Security\KeyVaultSample.Blazor\Client\KeyVaultSampleBlazor.Client.csproj", "{B269F79C-B49F-4FA6-AB02-7B3C5832A8EE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyVaultSampleBlazor.Server", "Samples\00. Security\KeyVaultSample.Blazor\Server\KeyVaultSampleBlazor.Server.csproj", "{D3BD42F5-D7CD-4541-BFF7-1E8C3202E11C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -324,6 +330,24 @@ Global
 		{5E1382B7-01D7-4AC7-A490-9E0807BFD254}.DebugWithProjectReferences|Any CPU.Build.0 = Debug|Any CPU
 		{5E1382B7-01D7-4AC7-A490-9E0807BFD254}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E1382B7-01D7-4AC7-A490-9E0807BFD254}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFDBE96E-6266-4F0A-9A74-4FADD21D5980}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFDBE96E-6266-4F0A-9A74-4FADD21D5980}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFDBE96E-6266-4F0A-9A74-4FADD21D5980}.DebugWithProjectReferences|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFDBE96E-6266-4F0A-9A74-4FADD21D5980}.DebugWithProjectReferences|Any CPU.Build.0 = Debug|Any CPU
+		{FFDBE96E-6266-4F0A-9A74-4FADD21D5980}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFDBE96E-6266-4F0A-9A74-4FADD21D5980}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B269F79C-B49F-4FA6-AB02-7B3C5832A8EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B269F79C-B49F-4FA6-AB02-7B3C5832A8EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B269F79C-B49F-4FA6-AB02-7B3C5832A8EE}.DebugWithProjectReferences|Any CPU.ActiveCfg = Debug|Any CPU
+		{B269F79C-B49F-4FA6-AB02-7B3C5832A8EE}.DebugWithProjectReferences|Any CPU.Build.0 = Debug|Any CPU
+		{B269F79C-B49F-4FA6-AB02-7B3C5832A8EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B269F79C-B49F-4FA6-AB02-7B3C5832A8EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3BD42F5-D7CD-4541-BFF7-1E8C3202E11C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3BD42F5-D7CD-4541-BFF7-1E8C3202E11C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3BD42F5-D7CD-4541-BFF7-1E8C3202E11C}.DebugWithProjectReferences|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3BD42F5-D7CD-4541-BFF7-1E8C3202E11C}.DebugWithProjectReferences|Any CPU.Build.0 = Debug|Any CPU
+		{D3BD42F5-D7CD-4541-BFF7-1E8C3202E11C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3BD42F5-D7CD-4541-BFF7-1E8C3202E11C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -374,6 +398,9 @@ Global
 		{5A0B14A8-34B3-497F-B95B-8F89BAB24958} = {42330C41-74E1-4C01-B673-190CDD75EA19}
 		{D3211B60-F285-4238-B357-6B570A7B2F01} = {42330C41-74E1-4C01-B673-190CDD75EA19}
 		{5E1382B7-01D7-4AC7-A490-9E0807BFD254} = {42330C41-74E1-4C01-B673-190CDD75EA19}
+		{FFDBE96E-6266-4F0A-9A74-4FADD21D5980} = {8F685748-B1CE-4DFA-B367-17A12C9E8FBE}
+		{B269F79C-B49F-4FA6-AB02-7B3C5832A8EE} = {8F685748-B1CE-4DFA-B367-17A12C9E8FBE}
+		{D3BD42F5-D7CD-4541-BFF7-1E8C3202E11C} = {8F685748-B1CE-4DFA-B367-17A12C9E8FBE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B75EF8D-0D79-4B04-8149-CADF5FDBF419}

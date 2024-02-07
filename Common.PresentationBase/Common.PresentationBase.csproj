@@ -4,7 +4,7 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<UseWindowsForms>true</UseWindowsForms>
 		<UseWPF>true</UseWPF>
-		<TargetFrameworks>net6.0-windows</TargetFrameworks><!--net462;-->
+		<TargetFrameworks>net8.0-windows</TargetFrameworks><!--net462;-->
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>diginsight.snk</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -332,33 +332,33 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Azure.Identity" Version="1.10.2" />
-		<PackageReference Include="Azure.ResourceManager" Version="1.7.0" />
-		<PackageReference Include="Azure.ResourceManager.Resources" Version="1.6.0" />
+		<PackageReference Include="Azure.Identity" Version="1.10.4" />
+		<PackageReference Include="Azure.ResourceManager" Version="1.10.1" />
+		<PackageReference Include="Azure.ResourceManager.Resources" Version="1.7.0" />
 		<PackageReference Include="Common.Diagnostics" Version="$(DiginsightDiagnosticsVersion)" Condition="'$(Configuration)'!='DebugWithProjectReferences'" />
 		<!--<PackageReference Include="Common.SmartCache" Version="0.9.0.225" />-->
-		<PackageReference Include="Microsoft.Graph" Version="5.30.0" />
-		<PackageReference Include="Microsoft.Graph.Core" Version="3.0.11" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.56.0" />
+		<PackageReference Include="Microsoft.Graph" Version="5.41.0" />
+		<PackageReference Include="Microsoft.Graph.Core" Version="3.1.6" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.59.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="SharpVectors" Version="1.8.2" />
+		<PackageReference Include="SharpVectors" Version="1.8.3" />
 		<PackageReference Include="System.ComponentModel" Version="4.3.0" />
 		<!--<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />-->
 		<PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
-		<PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
-		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.1" />
 		<PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
-		<PackageReference Include="System.IO.Packaging" Version="7.0.0" />
+		<PackageReference Include="System.IO.Packaging" Version="8.0.0" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
-		<PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
+		<PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
 		<PackageReference Include="System.Private.DataContractSerialization" Version="4.3.0" />
 		<PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
 		<PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
 		<PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
 		<PackageReference Include="System.Runtime.Serialization.Xml" Version="4.3.0" />
 		<PackageReference Include="System.Security.AccessControl" Version="6.0.0" />
-		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="7.0.1" />
-		<PackageReference Include="System.Text.Json" Version="7.0.3" />
+		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
+		<PackageReference Include="System.Text.Json" Version="8.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -456,6 +456,10 @@
 	  <Page Update="Themes\Styles.window.generic.xaml">
 	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 	  </Page>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
 	</ItemGroup>
 
 </Project>

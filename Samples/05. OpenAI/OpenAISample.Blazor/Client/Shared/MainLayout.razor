@@ -1,7 +1,7 @@
 ﻿@inherits Common.Core.Blazor.LayoutComponentBaseCore
 @inject HttpClient Http
 
-<div class="page container-fluid p-0">
+<div class="page container-fluid p-0" >
     @*style="background-color: lightblue"*@
     <div class="sidebar @(collapseNavMenu ? "auto" : null) bg-dark" >
         @{
@@ -30,21 +30,18 @@
                 @*class="top-row px-4"*@
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link active oi oi-home pl-0 " href="#" style="font-size:1rem">  Home</a>
-                        @*<span class="oi oi-home" aria-hidden="true"></span><span class="@(collapseNavMenu ? "collapse" : null)"> Home</span>*@
+                        <h2><a class="nav-link active oi oi-home pl-0 " href="#" style="position: revert" >  OpenAI Sample</a></h2>
+                        @* style="font-size:1rem" <span class="oi oi-home" aria-hidden="true"></span><span class="@(collapseNavMenu ? "collapse" : null)"> Home</span>*@
                     </li>
                     @*<li class="nav-item" >
                         <a class="nav-link" href="#">:</a>
                         </li>*@
-                    <li class="nav-item dropdown ">
-                        @*Role Manager
-                        @(Application?.Description!="Role Manager" ? "collapse" : null)
-                        *@
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Application: @* @RoleManagerApplication?.Description *@
+                    @* <li class="nav-item dropdown "> *@
+                        @* <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Application: @RoleManagerApplication?.Description
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            @* @foreach (var app in GetMenuApplications(Items))
+                            @foreach (var app in GetMenuApplications(Items))
                             {
                                 @if (app.Description == "-")
                                 {
@@ -54,11 +51,11 @@
                                 {
                                     <a class="dropdown-item" @onclick="@(() => { SelectApplication(app?.Description); } )">@app?.Description</a>
                                 }
-                            } *@
+                            }
+                        </div> *@
                             @*<a class="dropdown-item" @onclick="@(() => { SelectApplication("Ekip Connect Mobile");  })">Ekip Connect Mobile</a>
                                 <a class="dropdown-item" @onclick="@(() => { SelectApplication("Backoffice Application");  })">Backoffice Application</a>*@
-                        </div>
-                    </li>
+                    @* </li> *@
                     @*<div class="btn-group dropdown">
                         <button type="button" class="btn btn-secondary dropdown-toggle" id="navbarDropdown1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         Right-aligned menu example

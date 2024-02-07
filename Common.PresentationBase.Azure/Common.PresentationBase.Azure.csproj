@@ -4,7 +4,7 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<UseWindowsForms>true</UseWindowsForms>
 		<UseWPF>true</UseWPF>
-		<TargetFrameworks>net6.0-windows</TargetFrameworks><!--net462;-->
+		<TargetFrameworks>net8.0-windows</TargetFrameworks><!--net462;-->
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>diginsight.snk</AssemblyOriginatorKeyFile>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -32,6 +32,7 @@
 	<ItemGroup>
 		<PackageReference Include="Common.Diagnostics" Version="$(DiginsightDiagnosticsVersion)" Condition="'$(Configuration)'!='DebugWithProjectReferences'"  />
 		<PackageReference Include="Microsoft.Rest.ClientRuntime.Azure" Version="3.3.19" />
+		<PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

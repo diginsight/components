@@ -34,12 +34,12 @@ using Azure.Identity;
 using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using Microsoft.Azure;
 using System.Security.Claims;
-using Microsoft.Identity.Client.NativeInterop;
+//using Microsoft.Identity.Client.NativeInterop;
 using Microsoft.Azure.Amqp.Framing;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Azure.Core;
 using System.Net.Sockets;
-using Common.SmartCache;
+//using Common.SmartCache;
 using Microsoft.Rest;
 using System.Diagnostics;
 #endregion

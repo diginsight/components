@@ -50,7 +50,7 @@ using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using System.Windows.Markup;
 using System.Net;
 using Common.PresentationBase;
-using Common.SmartCache;
+//using Common.SmartCache;
 using UserControl = System.Windows.Controls.UserControl;
 using ComboBox = System.Windows.Controls.ComboBox;
 //using Azure.Management.Resources;
@@ -257,7 +257,7 @@ namespace Common
 
             try
             {
-                var cacheContext = new CacheContext() { Enabled = true, MaxAge = 600 };
+                //var cacheContext = new CacheContext() { Enabled = true, MaxAge = 600 };
                 var tenantId = default(string);
                 var authTenantId = default(string);
                 var clientId = default(string);
@@ -311,8 +311,8 @@ namespace Common
                 var applicationTenantId = configuration.ClientTenantId;
                 if (!string.IsNullOrEmpty(applicationTenantId))
                 {
-                    cacheContext = new CacheContext() { Enabled = true, MaxAge = 600 };
-                    var apps = await graphAPIClientHttp.GetUserApplicationsAsync(identity, applicationTenantId, Guid.Parse(clientId), cacheContext);
+                    //cacheContext = new CacheContext() { Enabled = true, MaxAge = 600 };
+                    var apps = await graphAPIClientHttp.GetUserApplicationsAsync(identity, applicationTenantId, Guid.Parse(clientId));
                     application = apps.FirstOrDefault(app => app.AppId == clientId);
                     //application = await GetOwnedApplicationAsync(identity, applicationTenantId, clientId);
                 }
@@ -324,8 +324,8 @@ namespace Common
                     {
                         //application = await GetOwnedApplicationAsync(identity, applicationTenantId, clientId);
                         applicationTenantId = tenant.TenantId.ToString();
-                        cacheContext = new CacheContext() { Enabled = true, MaxAge = 600 };
-                        var apps = await graphAPIClientHttp.GetUserApplicationsAsync(identity, applicationTenantId, Guid.Parse(clientId), cacheContext);
+                        //cacheContext = new CacheContext() { Enabled = true, MaxAge = 600 };
+                        var apps = await graphAPIClientHttp.GetUserApplicationsAsync(identity, applicationTenantId, Guid.Parse(clientId));
                         application = apps?.FirstOrDefault(app => app.AppId == clientId);
                         if (application != null) { var breakException = new BreakLoopException(); breakException.Data["item"] = tenant; throw breakException; }
                     });
@@ -355,8 +355,8 @@ namespace Common
                 //var ownedObjects = client.Me.OwnedObjects.GetAsync();
                 //var onenote = await client.Me.Onenote.GetAsync();
 
-                cacheContext = new CacheContext() { Enabled = true, MaxAge = 600 };
-                var applications = (await graphAPIClientHttp.GetUserApplicationsAsync(identity, applicationTenantId, Guid.Parse(clientId), cacheContext))?.ToList();
+                //cacheContext = new CacheContext() { Enabled = true, MaxAge = 600 };
+                var applications = (await graphAPIClientHttp.GetUserApplicationsAsync(identity, applicationTenantId, Guid.Parse(clientId)))?.ToList();
 
                 //var credentialOptions1 = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = identity.Upn, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
                 //credentialOptions1.TenantId = clientTenantId;
@@ -537,8 +537,8 @@ namespace Common
 
             armAPIClient.Attach(credential);
 
-            var cacheContext = new CacheContext() { Enabled = true, MaxAge = 600 };
-            var tenantObjects = await armAPIClient.GetTenantsAsync(cacheContext: cacheContext);
+            //var cacheContext = new CacheContext() { Enabled = true, MaxAge = 600 };
+            var tenantObjects = await armAPIClient.GetTenantsAsync();
 
             foreach (var tenantObj in tenantObjects)
             {

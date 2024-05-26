@@ -21,49 +21,49 @@ using System.Threading;
 
 namespace Common
 {
-    public class SmartCacheRecorder : ILogger
-    {
-        private readonly List<TraceEntrySurrogate> traceEntries = new List<TraceEntrySurrogate>();
+    //public class SmartCacheRecorder : ILogger
+    //{
+    //    private readonly List<TraceEntrySurrogate> traceEntries = new List<TraceEntrySurrogate>();
 
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            Debug.WriteLine(state);
-            return null;
-        }
+    //    public IDisposable BeginScope<TState>(TState state)
+    //    {
+    //        Debug.WriteLine(state);
+    //        return null;
+    //    }
 
-        public bool IsEnabled(LogLevel logLevel)
-        {
-            return true;
-        }
+    //    public bool IsEnabled(LogLevel logLevel)
+    //    {
+    //        return true;
+    //    }
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
-        {
-            var isTraceEnty = state is TraceEntry;
-            TraceEntry entry = default;
+    //    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+    //    {
+    //        var isTraceEnty = state is TraceEntry;
+    //        TraceEntry entry = default;
 
-            if (isTraceEnty)
-            {
-                // reset action => reset
+    //        if (isTraceEnty)
+    //        {
+    //            // reset action => reset
 
 
-                // Get TraceEntrySurrogate corresponding to action
-                // Accumulate traceEntrySurrogate action
-                // if sequence closing action => send for training 
-            }
-        }
-    }
-    public class SmartCacheTrainingProvider : ILoggerProvider
-    {
-        public SmartCacheTrainingProvider() { }
+    //            // Get TraceEntrySurrogate corresponding to action
+    //            // Accumulate traceEntrySurrogate action
+    //            // if sequence closing action => send for training 
+    //        }
+    //    }
+    //}
+    //public class SmartCacheTrainingProvider : ILoggerProvider
+    //{
+    //    public SmartCacheTrainingProvider() { }
 
-        public ILogger CreateLogger(string categoryName)
-        {
-            var logger = new SmartCacheRecorder();
-            return logger;
-        }
-        public void Dispose()
-        {
-            ;
-        }
-    }
+    //    public ILogger CreateLogger(string categoryName)
+    //    {
+    //        var logger = new SmartCacheRecorder();
+    //        return logger;
+    //    }
+    //    public void Dispose()
+    //    {
+    //        ;
+    //    }
+    //}
 }

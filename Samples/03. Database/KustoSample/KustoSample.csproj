@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net7.0-windows</TargetFramework>
+		<TargetFramework>net8.0-windows7.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
 		<UserSecretsId>b7040a7d-b4ed-4fcd-94a2-c33c0cfa95f3</UserSecretsId>
@@ -21,19 +21,19 @@
 		<PackageReference Include="log4net" Version="2.0.15" />
 		<PackageReference Include="Microsoft.Azure.Common" Version="2.2.1" />
 		<PackageReference Include="Microsoft.Azure.Devices.Client" Version="1.42.2" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.56.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.59.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="System.Text.Json" Version="7.0.3" />
+		<PackageReference Include="System.Text.Json" Version="8.0.3" />
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
+	  <ProjectReference Include="..\..\..\..\telemetry_legacy\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
 	  <ProjectReference Include="..\..\..\Common.ComponentBase.Abstractions\Common.ComponentBase.Abstractions.csproj" />
 	  <ProjectReference Include="..\..\..\Common.ComponentBase\Common.ComponentBase.csproj" />
 	  <ProjectReference Include="..\..\..\Common.EntityBase\Common.EntityBase.csproj" />

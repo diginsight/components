@@ -31,7 +31,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Azure.ResourceManager.Resources;
 using Common.PresentationBase;
-using Common.SmartCache;
+//using Common.SmartCache;
 using System.Security.Cryptography;
 using System.Windows.Input;
 using Microsoft.Identity.Client;
@@ -235,17 +235,17 @@ namespace KeyVaultSample
                         //var log4NetProvider1 = new Log4NetProvider(options1);
                         //loggingBuilder.AddDiginsightJson(log4NetProvider1, configuration);
 
-                        // add training logic
-                        configuration = context.Configuration;
-                        bool enablePreloading = configuration.GetValue<bool>("AppSettings:EnablePreloading", false);
-                        if (enablePreloading)
-                        {
-                            var trainingProvider = new SmartCacheTrainingProvider();
-                            loggingBuilder.AddProvider(trainingProvider);
+                        //// add training logic
+                        //configuration = context.Configuration;
+                        //bool enablePreloading = configuration.GetValue<bool>("AppSettings:EnablePreloading", false);
+                        //if (enablePreloading)
+                        //{
+                        //    var trainingProvider = new SmartCacheTrainingProvider();
+                        //    loggingBuilder.AddProvider(trainingProvider);
 
-                            var preloadingProvider = new SmartCachePreloadingProvider();
-                            loggingBuilder.AddProvider(preloadingProvider);
-                        }
+                        //    var preloadingProvider = new SmartCachePreloadingProvider();
+                        //    loggingBuilder.AddProvider(preloadingProvider);
+                        //}
 
                         // TelemetryConfiguration telemetryConfiguration = new TelemetryConfiguration(appInsightKey);
                         // ApplicationInsightsLoggerOptions appinsightOptions = new ApplicationInsightsLoggerOptions();
@@ -295,7 +295,7 @@ namespace KeyVaultSample
             //services.AddObservability(aiConnectionString, assembly.GetName().Name, $"{assembly.GetName().Name}.{assembly.GetName().Version}", assembly.FullName);
 
 
-            services.AddCacheService(configuration, hostEnvironment);
+            //services.AddCacheService(configuration, hostEnvironment);
 
             services.AddSingleton<IGraphAPIClientHttp, GraphAPIClientHttp>();
             services.AddSingleton<IArmAPIClient, ArmAPIClient>();

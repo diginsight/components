@@ -12,7 +12,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Common.SmartCache;
+//using Common.SmartCache;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 using System.Configuration;
@@ -23,38 +23,37 @@ namespace Common.PresentationBase
     public class GraphAPIClientHttp : IGraphAPIClientHttp
     {
         private ILogger<GraphAPIClientHttp> logger;
-        private readonly ICacheService cacheService;
+        //private readonly ICacheService cacheService;
 
-        public GraphAPIClientHttp(ILogger<GraphAPIClientHttp> logger, ICacheService cacheService)
+        public GraphAPIClientHttp(ILogger<GraphAPIClientHttp> logger)
         {
             this.logger = logger;
-            this.cacheService = cacheService;
+            //this.cacheService = cacheService;
         }
 
-        public async Task<IEnumerable<Application>> GetUserApplicationsAsync(Identity identity, string tenantId, Guid clientId, CacheContext cacheContext) // pageSize, $count
+        public async Task<IEnumerable<Application>> GetUserApplicationsAsync(Identity identity, string tenantId, Guid clientId) // pageSize, $count
         {
-            //using var scope = logger.BeginMethodScope(new { identity = identity.GetLogString(), tenantId, clientId, cacheContext = cacheContext.GetLogString() }, properties: PROPS.Get(new[] { ("Tags", "Event,Call" as object),  ("User", ApplicationBase.GetUser()), ("MaxMessageLen", 0) }));
-            using var scope = logger.BeginMethodScope(new { upn = identity.Upn, tenantId, clientId, maxAge = cacheContext.MaxAge }, properties: PROPS.Get(new[] { ("Tags", "Event,Call" as object), ("User", ApplicationBase.GetUser()), ("MaxMessageLen", 0) }));
+            using var scope = logger.BeginMethodScope(new { upn = identity.Upn, tenantId, clientId }, properties: PROPS.Get(new[] { ("Tags", "Event,Call" as object), ("User", ApplicationBase.GetUser()), ("MaxMessageLen", 0) }));
 
-            EnsureCacheContext<IGraphAPIClientHttp>(ref cacheContext);
+            //EnsureCacheContext<IGraphAPIClientHttp>(ref cacheContext);
 
-            var cacheKey = new GetUserApplicationsAsyncKey(identity.Upn, tenantId, clientId);
+            //var cacheKey = new GetUserApplicationsAsyncKey(identity.Upn, tenantId, clientId);
 
-            var result = await cacheService.GetAsync(
-                cacheKey, async () =>
-                {
-                    var applications = await GetUserApplicationsImplAsync(identity, tenantId, clientId);
-                    return applications;
-                },
-                cacheContext);
+            var applications = await GetUserApplicationsImplAsync(identity, tenantId, clientId);
+            return applications;
+            //var result = await cacheService.GetAsync(
+            //    cacheKey, async () =>
+            //    {
+            //    },
+            //    cacheContext);
 
-            return result;
+            //return result;
         }
 
         public async Task<IEnumerable<Application>> GetUserApplicationsImplAsync(Identity identity, string tenantId, Guid clientId)
         {
             using var scope = logger.BeginMethodScope(new { identity = identity.GetLogString(), tenantId, clientId });
-            
+
             var credentialOptions1 = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = identity.Upn, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
             credentialOptions1.TenantId = tenantId;
             var credential = new DefaultAzureCredential(credentialOptions1);
@@ -144,24 +143,24 @@ namespace Common.PresentationBase
             return applications;
         }
 
-        protected static void EnsureCacheContext<T>(ref CacheContext cacheContext)
-        {
-            cacheContext ??= new CacheContext();
-            cacheContext.InterfaceType = typeof(T);
-        }
+        //protected static void EnsureCacheContext<T>()
+        //{
+        //    cacheContext ??= new CacheContext();
+        //    cacheContext.InterfaceType = typeof(T);
+        //}
 
-        private sealed record GetUserApplicationsAsyncKey(string upn, string tenantId, Guid clientId) : ICacheKey //, IInvalidatable
-        {
-            //public bool IsInvalidatedBy(IInvalidationRule r, out Func<Task>? ic)
-            //{
-            //    ic = null;
-            //    return r is GroupInvalidationRule gir
-            //        && gir.OrganizationId == OrganizationId
-            //        && gir.SiteId == SiteId
-            //        && gir.GroupId == GroupId;
-            //}
+        //private sealed record GetUserApplicationsAsyncKey(string upn, string tenantId, Guid clientId) //: ICacheKey //, IInvalidatable
+        //{
+        //    //public bool IsInvalidatedBy(IInvalidationRule r, out Func<Task>? ic)
+        //    //{
+        //    //    ic = null;
+        //    //    return r is GroupInvalidationRule gir
+        //    //        && gir.OrganizationId == OrganizationId
+        //    //        && gir.SiteId == SiteId
+        //    //        && gir.GroupId == GroupId;
+        //    //}
 
-            public string ToLogString() => ToString();
-        }
+        //    public string ToLogString() => ToString();
+        //}
     }
 }

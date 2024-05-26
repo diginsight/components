@@ -358,7 +358,7 @@
 		<PackageReference Include="System.Runtime.Serialization.Xml" Version="4.3.0" />
 		<PackageReference Include="System.Security.AccessControl" Version="6.0.0" />
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
-		<PackageReference Include="System.Text.Json" Version="8.0.1" />
+		<PackageReference Include="System.Text.Json" Version="8.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -413,8 +413,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\smartcache\Common.SmartCache\Common.SmartCache.csproj" />
-		<ProjectReference Include="..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
+		<!--<ProjectReference Include="..\..\smartcache\Common.SmartCache\Common.SmartCache.csproj" />-->
+		<ProjectReference Include="..\..\telemetry_legacy\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
 		<ProjectReference Include="..\Common.ComponentBase\Common.ComponentBase.csproj" />
 		<ProjectReference Include="..\Common.EntityBase\Common.EntityBase.csproj" />
 	</ItemGroup>

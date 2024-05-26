@@ -33,7 +33,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-	  <OpenTelemetryVersion>1.*</OpenTelemetryVersion>
+    <DiginsightDiagnosticsVersion>2.*</DiginsightDiagnosticsVersion>
+    <OpenTelemetryVersion>1.*</OpenTelemetryVersion>
 	  <OpenTelemetryBetaVersion>1.5.*-*</OpenTelemetryBetaVersion>
   </PropertyGroup>
 

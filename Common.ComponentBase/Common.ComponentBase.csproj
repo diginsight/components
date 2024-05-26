@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<TargetFrameworks>net8.0-windows</TargetFrameworks>
+		<TargetFrameworks>net4.8;net8.0-windows</TargetFrameworks>
 		<UseWindowsForms>true</UseWindowsForms>
 		<UseWPF>true</UseWPF>
 		<RootNamespace>Common.ComponentBase</RootNamespace>
@@ -42,12 +42,11 @@
 	<ItemGroup>
 		<PackageReference Include="Azure.Identity" Version="1.10.4" />
 		<PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.5.0" />
-		<PackageReference Include="Common.Diagnostics" Version="$(DiginsightDiagnosticsVersion)" Condition="'$(Configuration)'!='DebugWithProjectReferences'" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.59.0" />
 		<!--<PackageReference Include="Microsoft.Identity.Client.Broker" Version="4.54.0" />-->
 		<!--<PackageReference Include="Microsoft.Identity.Client.Broker" Version="4.54.0" />-->
@@ -68,7 +67,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
+		<PackageReference Include="Common.Diagnostics" Version="$(DiginsightDiagnosticsVersion)" Condition="'$(Configuration)'!='DebugWithProjectReferences'" />
+		<ProjectReference Include="..\..\telemetry_legacy\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
 		<ProjectReference Include="..\Common.ComponentBase.Abstractions\Common.ComponentBase.Abstractions.csproj" />
 		<ProjectReference Include="..\Common.EntityBase\Common.EntityBase.csproj" />
 	</ItemGroup>

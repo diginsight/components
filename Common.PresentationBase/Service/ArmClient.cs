@@ -12,7 +12,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Common.SmartCache;
+//using Common.SmartCache;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 using System.Configuration;
@@ -25,13 +25,13 @@ namespace Common.PresentationBase
     public class ArmAPIClient : IArmAPIClient
     {
         private ILogger<ArmAPIClient> logger;
-        private readonly ICacheService cacheService;
+        //private readonly ICacheService cacheService;
         private TokenCredential credential;
 
-        public ArmAPIClient(ILogger<ArmAPIClient> logger, ICacheService cacheService)
+        public ArmAPIClient(ILogger<ArmAPIClient> logger)
         {
             this.logger = logger;
-            this.cacheService = cacheService;
+            //this.cacheService = cacheService;
         }
 
         public void Attach(TokenCredential credential)
@@ -39,11 +39,11 @@ namespace Common.PresentationBase
             this.credential = credential;
         }
 
-        public async Task<TenantCollection> GetTenantsAsync(CacheContext cacheContext) // pageSize, $count
+        public async Task<TenantCollection> GetTenantsAsync() // pageSize, $count
         {
-            using var scope = logger.BeginMethodScope(new { cacheContext = cacheContext.GetLogString() }, properties: PROPS.Get(new[] { ("Tags", "Event,Call" as object), ("Identity", ApplicationBase.Current?.Properties?["Identity"]), ("User", ApplicationBase.GetUser()), ("MaxMessageLen", 0) }));
+            using var scope = logger.BeginMethodScope(new {  }, properties: PROPS.Get(new[] { ("Tags", "Event,Call" as object), ("Identity", ApplicationBase.Current?.Properties?["Identity"]), ("User", ApplicationBase.GetUser()), ("MaxMessageLen", 0) }));
 
-            EnsureCacheContext<IArmAPIClient>(ref cacheContext);
+            //EnsureCacheContext<IArmAPIClient>(ref cacheContext);
 
             if (credential == null)
             {
@@ -52,39 +52,42 @@ namespace Common.PresentationBase
                 credential = new DefaultAzureCredential(credentialOptions);
             }
 
-            var cacheKey = new GetTenantsAsyncKey();
+            var armClient = new ArmClient(credential);
+            var tenantObjects = armClient.GetTenants();
+            return tenantObjects;
+            //var cacheKey = new GetTenantsAsyncKey();
 
-            var result = await cacheService.GetAsync(
-                cacheKey, async () =>
-                {
-                    var armClient = new ArmClient(credential);
-                    var tenantObjects = armClient.GetTenants();
-                    return tenantObjects;
-                },
-                cacheContext);
+            //var result = await cacheService.GetAsync(
+            //    cacheKey, async () =>
+            //    {
+            //        var armClient = new ArmClient(credential);
+            //        var tenantObjects = armClient.GetTenants();
+            //        return tenantObjects;
+            //    },
+            //    cacheContext);
 
-            scope.Result = result;
-            return result;
+            //scope.Result = result;
+            //return result;
         }
 
-        protected static void EnsureCacheContext<T>(ref CacheContext cacheContext)
-        {
-            cacheContext ??= new CacheContext();
-            cacheContext.InterfaceType = typeof(T);
-        }
+        //protected static void EnsureCacheContext<T>(ref CacheContext cacheContext)
+        //{
+        //    cacheContext ??= new CacheContext();
+        //    cacheContext.InterfaceType = typeof(T);
+        //}
 
-        private sealed record GetTenantsAsyncKey() : ICacheKey //, IInvalidatable
-        {
-            //public bool IsInvalidatedBy(IInvalidationRule r, out Func<Task>? ic)
-            //{
-            //    ic = null;
-            //    return r is GroupInvalidationRule gir
-            //        && gir.OrganizationId == OrganizationId
-            //        && gir.SiteId == SiteId
-            //        && gir.GroupId == GroupId;
-            //}
+        //private sealed record GetTenantsAsyncKey() : ICacheKey //, IInvalidatable
+        //{
+        //    //public bool IsInvalidatedBy(IInvalidationRule r, out Func<Task>? ic)
+        //    //{
+        //    //    ic = null;
+        //    //    return r is GroupInvalidationRule gir
+        //    //        && gir.OrganizationId == OrganizationId
+        //    //        && gir.SiteId == SiteId
+        //    //        && gir.GroupId == GroupId;
+        //    //}
 
-            public string ToLogString() => ToString();
-        }
+        //    public string ToLogString() => ToString();
+        //}
     }
 }

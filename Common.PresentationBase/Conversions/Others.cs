@@ -242,7 +242,7 @@ namespace Common
                     object[] attributes = converter.GetType().GetCustomAttributes(typeof(ValueConversionAttribute), false);
                     if (attributes.Length != 1) { throw new InvalidOperationException("All value converters added to a ValueConverterGroup must be decorated with the ValueConversionAttribute attribute exactly once."); }
 
-                    this.cachedAttributes.Add(converter, attributes[0] as ValueConversionAttribute);
+                    //this.cachedAttributes.Add(converter, attributes[0] as ValueConversionAttribute);
                 }
             }
         }

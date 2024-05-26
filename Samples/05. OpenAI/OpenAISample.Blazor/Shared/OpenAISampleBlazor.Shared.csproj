@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" />
+    <ProjectReference Include="..\..\..\..\..\telemetry_legacy\Common.Diagnostics\Common.Diagnostics.csproj" />
   </ItemGroup>
 
   <ItemGroup>

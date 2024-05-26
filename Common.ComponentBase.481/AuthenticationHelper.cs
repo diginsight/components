@@ -40,15 +40,17 @@ using System.Diagnostics;
 //using System.Windows.Interop;
 using Microsoft.Identity.Client.Extensibility;
 using Microsoft.Extensions.Logging;
+using System.Windows.Interop;
+//using Microsoft.Identity.Client.Broker;
 //using Microsoft.Identity.Client.Broker;
 #endregion
 
 namespace Common
 {
-    public class AuthenticationHelper //: IAuthDelegate
+    public class AuthenticationService //: IAuthDelegate
     {
         #region constants
-        private static readonly Type T = typeof(AuthenticationHelper);
+        private static readonly Type T = typeof(AuthenticationService);
         const string CONFIGVALUE_TENANTID = "TenantId"; const string DEFAULTVALUE_TENANTID = "common";
         const string CONFIGVALUE_CLIENTID = "ClientId"; const string DEFAULTVALUE_CLIENTID = "";
         const string CONFIGVALUE_APPNAME = "AppName"; const string DEFAULTVALUE_APPNAME = "";
@@ -61,7 +63,7 @@ namespace Common
         #endregion
 
         #region internal state
-        private ILogger<AuthenticationHelper> logger;
+        private ILogger<AuthenticationService> logger;
         // ADAL: Set the redirect URI from the AAD Application Registration.
         string tenantId;
         string applicationId;
@@ -88,24 +90,24 @@ namespace Common
         public IPublicClientApplication App { get => publicClientApp; set => publicClientApp = value; }
 
         #region .ctor
-        public AuthenticationHelper(string tenantId, string applicationId, string appName, string appVersion, string redirectUri, string[] scopes, string oauthVersion, Window window) // ApplicationInfo appInfo, 
+        public AuthenticationService(string tenantId, string applicationId, string appName, string appVersion, string redirectUri, string[] scopes, string oauthVersion, Window window) // ApplicationInfo appInfo, 
         {
             using (var scope = logger.BeginMethodScope(new { tenantId, applicationId, appName, appVersion, redirectUri, scopes, oauthVersion, window = window.GetLogString() }))
             {
                 this.tenantId = tenantId;
-                if (string.IsNullOrEmpty(this.tenantId)) { this.tenantId = ConfigurationHelper.GetClassSetting<AuthenticationHelper, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID); } // , CultureInfo.InvariantCulture
+                if (string.IsNullOrEmpty(this.tenantId)) { this.tenantId = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID); } // , CultureInfo.InvariantCulture
                 this.applicationId = applicationId;
-                if (string.IsNullOrEmpty(this.applicationId)) { this.applicationId = ConfigurationHelper.GetClassSetting<AuthenticationHelper, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID); } // , CultureInfo.InvariantCulture
+                if (string.IsNullOrEmpty(this.applicationId)) { this.applicationId = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_TENANTID, DEFAULTVALUE_TENANTID); } // , CultureInfo.InvariantCulture
                 this.appName = appName;
-                if (string.IsNullOrEmpty(this.appName)) { this.appName = ConfigurationHelper.GetClassSetting<AuthenticationHelper, string>(CONFIGVALUE_APPNAME, DEFAULTVALUE_APPNAME); } // , CultureInfo.InvariantCulture
+                if (string.IsNullOrEmpty(this.appName)) { this.appName = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_APPNAME, DEFAULTVALUE_APPNAME); } // , CultureInfo.InvariantCulture
                 this.appVersion = appVersion;
-                if (string.IsNullOrEmpty(this.appVersion)) { this.appVersion = ConfigurationHelper.GetClassSetting<AuthenticationHelper, string>(CONFIGVALUE_APPVERSION, DEFAULTVALUE_APPVERSION); } // , CultureInfo.InvariantCulture
+                if (string.IsNullOrEmpty(this.appVersion)) { this.appVersion = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_APPVERSION, DEFAULTVALUE_APPVERSION); } // , CultureInfo.InvariantCulture
                 this.redirectUri = redirectUri;
-                if (string.IsNullOrEmpty(this.redirectUri)) { this.redirectUri = ConfigurationHelper.GetClassSetting<AuthenticationHelper, string>(CONFIGVALUE_REDIRECTURI, DEFAULTVALUE_REDIRECTURI); } // , CultureInfo.InvariantCulture
+                if (string.IsNullOrEmpty(this.redirectUri)) { this.redirectUri = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_REDIRECTURI, DEFAULTVALUE_REDIRECTURI); } // , CultureInfo.InvariantCulture
                 this.scopes = scopes;
                 if (this.scopes == null)
                 {
-                    var scopesString = ConfigurationHelper.GetClassSetting<AuthenticationHelper, string>(CONFIGVALUE_SCOPES, DEFAULTVALUE_SCOPES);
+                    var scopesString = ConfigurationHelper.GetClassSetting<AuthenticationService, string>(CONFIGVALUE_SCOPES, DEFAULTVALUE_SCOPES);
                     scopes = scopesString?.Split(',');
                 }
 
@@ -116,13 +118,13 @@ namespace Common
                                     .WithDefaultRedirectUri();
 
                 //// Use of Broker Requires redirect URI "ms-appx-web://microsoft.aad.brokerplugin/{client_id}" in app registration
-                //var useWam = false;
-                //if (useWam)
-                //{
-                //    BrokerOptions brokerOptions = new BrokerOptions(BrokerOptions.OperatingSystems.Windows);
-                //    brokerOptions.ListOperatingSystemAccounts = true;
-                //    builder.WithBroker(brokerOptions); //
-                //}
+                var useWam = false;
+                if (useWam)
+                {
+                    WindowsBrokerOptions brokerOptions = new WindowsBrokerOptions();
+                    //brokerOptions.ListOperatingSystemAccounts = true;
+                    builder.WithWindowsBrokerOptions(brokerOptions); //
+                }
 
                 //.WithRedirectUri(this.redirectUri)
                 publicClientApp = builder.Build(); scope.LogDebug($@"_clientApp = PublicClientApplicationBuilder.Create(applicationId).WithAuthority($'{Instance}{tenantId}', true).WithRedirectUri({this.redirectUri}).Build();");

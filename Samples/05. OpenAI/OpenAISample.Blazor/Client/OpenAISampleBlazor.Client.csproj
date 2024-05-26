@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
 		<UserSecretsId>652d05fb-ed26-4515-9961-a867c338e5ec</UserSecretsId>
 	</PropertyGroup>
@@ -24,12 +24,12 @@
 		<PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
 
-		<PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
+		<PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" />
+		<ProjectReference Include="..\..\..\..\..\telemetry_legacy\Common.Diagnostics\Common.Diagnostics.csproj" />
 		<ProjectReference Include="..\..\..\..\Common.Blazor.Core\Common.Core.Blazor.csproj" />
 		<ProjectReference Include="..\Shared\OpenAISampleBlazor.Shared.csproj" />
 	</ItemGroup>

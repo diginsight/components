@@ -36,7 +36,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
+	  <ProjectReference Include="..\..\telemetry_legacy\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
 	  <ProjectReference Include="..\Common.EntityBase\Common.EntityBase.csproj" />
 	  <ProjectReference Include="..\Common.PresentationBase\Common.PresentationBase.csproj" />
 	</ItemGroup>

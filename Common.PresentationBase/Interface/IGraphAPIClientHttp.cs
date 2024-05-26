@@ -1,4 +1,4 @@
-﻿using Common.SmartCache;
+﻿//using Common.SmartCache;
 using Microsoft.Graph.Models;
 using Microsoft.Graph.Models.ExternalConnectors;
 using System;
@@ -13,6 +13,6 @@ namespace Common.PresentationBase
 {
     public interface IGraphAPIClientHttp
     {
-        Task<IEnumerable<Application>> GetUserApplicationsAsync(Identity identity, string tenantId, Guid clientId, CacheContext cacheContext);
+        Task<IEnumerable<Application>> GetUserApplicationsAsync(Identity identity, string tenantId, Guid clientId);
     }
 }

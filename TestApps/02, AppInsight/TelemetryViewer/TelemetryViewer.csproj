@@ -41,12 +41,12 @@
 		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
 		<PackageReference Include="log4net" Version="2.0.15" />
 		<PackageReference Include="Microsoft.Rest.ClientRuntime.Azure.Authentication" Version="2.4.1" />
-		<PackageReference Include="System.Text.Json" Version="8.0.1" />
+		<PackageReference Include="System.Text.Json" Version="8.0.3" />
 	</ItemGroup>
 
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
+		<ProjectReference Include="..\..\..\..\telemetry_legacy\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
 		<ProjectReference Include="..\..\..\Common.AssemblyResolver\Common.AssemblyResolver.csproj" />
 		<ProjectReference Include="..\..\..\Common.ComponentBase\Common.ComponentBase.csproj" />
 		<ProjectReference Include="..\..\..\Common.EntityBase\Common.EntityBase.csproj" />

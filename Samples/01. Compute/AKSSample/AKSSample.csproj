@@ -29,11 +29,11 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.59.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="System.Text.Json" Version="8.0.1" />
+		<PackageReference Include="System.Text.Json" Version="8.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\..\telemetry\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
+		<ProjectReference Include="..\..\..\..\telemetry_legacy\Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(Configuration)'=='DebugWithProjectReferences'" />
 		<ProjectReference Include="..\..\..\Common.ComponentBase.Abstractions\Common.ComponentBase.Abstractions.csproj" />
 		<ProjectReference Include="..\..\..\Common.ComponentBase\Common.ComponentBase.csproj" />
 		<ProjectReference Include="..\..\..\Common.EntityBase\Common.EntityBase.csproj" />

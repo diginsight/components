@@ -1,6 +1,6 @@
 ﻿using Azure.Core;
 using Microsoft.Identity.Client;
-using Microsoft.Identity.Client.NativeInterop;
+//using Microsoft.Identity.Client.NativeInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -40,6 +40,7 @@ using Diginsight.Diagnostics.Log4Net;
 using log4net.Appender;
 using System.IO;
 using log4net.Repository.Hierarchy;
+using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 #endregion
 
 namespace AuthenticationSample
@@ -48,8 +49,8 @@ namespace AuthenticationSample
     public partial class App : Application
     {
         const string CONFIGVALUE_APPINSIGHTSKEY = "AppInsightsKey", DEFAULTVALUE_APPINSIGHTSKEY = "";
-        internal static readonly DeferredLoggerFactory DeferredLoggerFactory;
-        internal static readonly ActivitySource DeferredActivitySource = new(typeof(App).Namespace ?? typeof(App).Name!);
+        private static readonly IDeferredLoggerFactory DeferredLoggerFactory;
+        internal static ILoggerFactory LoggerFactory { get; private set; }
         internal static readonly ActivitySource ActivitySource = new(typeof(App).Namespace ?? typeof(App).Name!);
         static Type T = typeof(App);
         public static IHost Host;
@@ -58,27 +59,23 @@ namespace AuthenticationSample
         static App()
         {
             DiginsightActivitiesOptions activitiesOptions = new() { LogActivities = true };
-            DeferredLoggerFactory = new DeferredLoggerFactory(activitiesOptions: activitiesOptions);
-            var logger = DeferredLoggerFactory.CreateLogger<App>();
-            DeferredActivitySource = DeferredLoggerFactory.ActivitySource;
+            var deferredLoggerFactory = new DeferredLoggerFactory(activitiesOptions: activitiesOptions);
+            deferredLoggerFactory.ActivitySources.Add(ActivitySource);
+            LoggerFactory = DeferredLoggerFactory = deferredLoggerFactory;
+            var logger = LoggerFactory.CreateLogger<App>();
 
-            using var activity = DeferredActivitySource.StartMethodActivity(logger);
-
+            using var activity = ActivitySource.StartMethodActivity(logger);
             try
             {
-                // logger.LogDebug("this is a debug trace");
-                // logger.LogInformation("this is a Information trace");
-                // logger.LogWarning("this is a Warning trace");
-                // logger.LogError("this is a error trace");
-                throw new InvalidOperationException("this is an exception");
+
             }
             catch (Exception /*ex*/) { /*sec.Exception(ex);*/ }
         }
 
         public App()
         {
-            var logger = DeferredLoggerFactory.CreateLogger<App>();
-            using var activity = DeferredActivitySource.StartMethodActivity(logger);
+            var logger = LoggerFactory.CreateLogger<App>();
+            using var activity = ActivitySource.StartMethodActivity(logger);
 
             //var logger = Host.Services.GetRequiredService<ILogger<App>>();
             //using var activity = ActivitySource.StartMethodActivity(logger, new { });
@@ -86,8 +83,8 @@ namespace AuthenticationSample
         }
         protected override async void OnStartup(StartupEventArgs e)
         {
-            var logger = DeferredLoggerFactory.CreateLogger<App>();
-            using var activity = DeferredActivitySource.StartMethodActivity(logger);
+            var logger = LoggerFactory.CreateLogger<App>();
+            using var activity = ActivitySource.StartMethodActivity(logger);
 
             var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development";
             var configuration = new ConfigurationBuilder()
@@ -102,7 +99,7 @@ namespace AuthenticationSample
             Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration(builder =>
                 {
-                    using var innerActivity = DeferredActivitySource.StartRichActivity(logger, "ConfigureAppConfiguration.Callback", new { builder });
+                    using var innerActivity = ActivitySource.StartRichActivity(logger, "ConfigureAppConfiguration.Callback", new { builder });
 
                     builder.Sources.Clear();
                     builder.AddConfiguration(configuration);
@@ -110,20 +107,17 @@ namespace AuthenticationSample
                     builder.AddEnvironmentVariables();
                 }).ConfigureServices((context, services) =>
                 {
-                    using var innerActivity = DeferredActivitySource.StartRichActivity(logger, "ConfigureServices.Callback", new { context, services });
-                    services.TryAddSingleton(DeferredActivitySource);
+                    using var innerActivity = ActivitySource.StartRichActivity(logger, "ConfigureServices.Callback", new { context, services });
                     services.FlushOnCreateServiceProvider(DeferredLoggerFactory);
 
                     ConfigureServices(context.Configuration, services);
                 })
                 .ConfigureLogging((context, loggingBuilder) =>
                 {
-                    using var innerActivity = DeferredActivitySource.StartRichActivity(logger, "ConfigureLogging.Callback", new { context, loggingBuilder });
+                    using var innerActivity = ActivitySource.StartRichActivity(logger, "ConfigureLogging.Callback", new { context, loggingBuilder });
 
                     loggingBuilder.AddConfiguration(context.Configuration.GetSection("Logging"));
                     loggingBuilder.ClearProviders();
-                    //var classConfigurationGetter = new ClassConfigurationGetter<App>(context.Configuration);
-                    //var appInsightKey = classConfigurationGetter.Get(CONFIGVALUE_APPINSIGHTSKEY, DEFAULTVALUE_APPINSIGHTSKEY);
 
                     var services = loggingBuilder.Services;
                     services.AddLogging(
@@ -193,7 +187,10 @@ namespace AuthenticationSample
 
             //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddHttpContextAccessor();
-            //services.AddClassConfiguration();
+
+            services.ConfigureClassAware<AppSettingsOptions>(configuration.GetSection("AppSettings"));
+            services.ConfigureClassAware<FeatureFlagOptions>(configuration.GetSection("AppSettings"));
+            services.ConfigureClassAware<AzureOptions>(configuration.GetSection("AzureKeyVault"));
 
             //var appSettingsSection = configuration.GetSection(nameof(AppSettings));
             //var settings = appSettingsSection.Get<AppSettings>();

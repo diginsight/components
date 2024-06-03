@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Diginsight.Component
+{
+    public class Identity
+    {
+        public Identity(string upn)
+        {
+            this.Upn = upn;
+        }
+        public Identity(string upn, string email)
+        {
+            this.Upn = upn;
+            this.Email = email;
+        }
+        public Identity(string upn, string email, string name)
+        {
+            this.Upn = upn;
+            this.Email = email;
+            this.Name = name;
+        }
+
+        public string Upn { get; set; } // upn da clais del token
+        public string Email { get; set; }
+        public string Name { get; set; }
+        public Identity Manager { get; set; } // upn da clais del token
+    }
+}

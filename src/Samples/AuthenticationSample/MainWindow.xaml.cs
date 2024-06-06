@@ -140,20 +140,18 @@ namespace AuthenticationSample
                             .WithRedirectUri(redirectUri)
                             .Build();
                 string[] scopes = Constants.Scopes;
-                
-                //AuthenticationResult result = await app.AcquireTokenInteractive(scopes).ExecuteAsync();
+
                 IdentityClient = app;
-
-                var token = await GetAuthenticationToken();
-
-                // this.AuthenticationResult = result;
-                // this.ClaimsPrincipal = result.ClaimsPrincipal;
-                // var identity = this.ClaimsPrincipal.Identity; // getClaim name
+                //AuthenticationResult result = await app.AcquireTokenInteractive(scopes).ExecuteAsync();
+                AuthenticationResult result = await GetAuthenticationToken();
+                this.AuthenticationResult = result;
+                this.ClaimsPrincipal = result.ClaimsPrincipal;
+                var identity = this.ClaimsPrincipal.Identity; // getClaim name
             }
             catch (Exception _) { }
         }
 
-        public async Task<AuthenticationToken> GetAuthenticationToken()
+        public async Task<AuthenticationResult> GetAuthenticationToken()
         {
             using var activity = App.ActivitySource.StartMethodActivity(logger);
 
@@ -161,8 +159,7 @@ namespace AuthenticationSample
             AuthenticationResult? result = null;
             try
             {
-                result = await IdentityClient
-                    .AcquireTokenSilent(Constants.Scopes, accounts.FirstOrDefault())
+                result = await IdentityClient.AcquireTokenSilent(Constants.Scopes, accounts.FirstOrDefault())
                     .ExecuteAsync();
             }
             catch (MsalUiRequiredException)
@@ -177,13 +174,8 @@ namespace AuthenticationSample
                 Debug.WriteLine($"Error: Authentication failed: {ex.Message}");
             }
 
-            return new AuthenticationToken
-            {
-                DisplayName = result?.Account?.Username ?? "",
-                ExpiresOn = result?.ExpiresOn ?? DateTimeOffset.MinValue,
-                Token = result?.AccessToken ?? "",
-                UserId = result?.Account?.Username ?? ""
-            };
+            var name = result?.ClaimsPrincipal?.Claims?.FirstOrDefault(c => c.Type == "name")?.Value;
+            return result;
         }
 
     }

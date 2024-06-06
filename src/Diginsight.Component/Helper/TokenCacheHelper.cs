@@ -35,6 +35,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 #endregion
 
+#nullable enable    
 
 namespace Diginsight.Component
 {

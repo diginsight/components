@@ -1,47 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+#nullable enable    
+
 namespace Diginsight.Component
 {
-    public delegate object INotifyPropertyChangedDelegate2(object source, object[] values, Type targetType, object parameter, CultureInfo culture);
+    public delegate object? INotifyPropertyChangedDelegate2(object source, object[] values, Type? targetType, object? parameter, CultureInfo? culture);
 
     public class NotifyPropertyBinding : IDisposable
     {
         #region .ctor
-        public NotifyPropertyBinding(INotifyPropertyChanged source, INotifyPropertyChangedDelegate2 del, object[] values, params string[] properties)
+        public NotifyPropertyBinding(INotifyPropertyChanged source, INotifyPropertyChangedDelegate2 del, object[]? values, params string[]? properties)
         {
             this.Source = source;
             this.Delegate = del;
             this.Properties = properties;
             this.Values = values;
+            this.Name = string.Empty;
+            this.Description = string.Empty;
             source.PropertyChanged += this.source_PropertyChanged;
             source_PropertyChanged(this, new PropertyChangedEventArgs(""));
         }
         #endregion
 
-        INotifyPropertyChanged Source { get; set; }
-        INotifyPropertyChangedDelegate2 Delegate { get; set; }
+        INotifyPropertyChanged? Source { get; set; }
+        INotifyPropertyChangedDelegate2? Delegate { get; set; }
         string Name { get; set; }
         string Description { get; set; }
-        object[] Values { get; set; }
-        string[] Properties { get; set; }
+        object[]? Values { get; set; }
+        string[]? Properties { get; set; }
 
-        public void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void source_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             var propertyName = e.PropertyName;
-            if (this.Source != null && this.Delegate != null && (string.IsNullOrEmpty(propertyName) || this.Properties.Contains(propertyName)))
+            if (this.Delegate != null && (string.IsNullOrEmpty(propertyName) || (this.Properties?.Contains(propertyName) ?? false)))
             {
                 var propertyValues = Values != null ? new List<object>(Values) : new List<object>();
-                var sourceType = this.Source.GetType(); //.GetProperty(propertyName).GetValue(car, null); ;
+                var sourceType = this.Source?.GetType(); //.GetProperty(propertyName).GetValue(car, null); ;
                 this.Properties?.ToList().ForEach((name) =>
                 {
                     // var propertyValue = source[name]; // Reflection
-                    var propertyInfo = sourceType.GetProperty(name);
+                    var propertyInfo = sourceType?.GetProperty(name);
                     var propertyValue = propertyInfo?.GetValue(this.Source, null);
                     if (propertyValue != null) { propertyValues.Add(propertyValue); }
                 });
@@ -62,17 +67,19 @@ namespace Diginsight.Component
             this.Source = source;
             this.Delegate = del;
             this.Properties = properties;
+            this.Name = string.Empty;
+            this.Description = string.Empty;
             source.PropertyChanged += this.source_PropertyChanged;
         }
         #endregion
 
         string Name { get; set; }
         string Description { get; set; }
-        INotifyPropertyChanged Source { get; set; }
-        INotifyPropertyChangedDelegate2 Delegate { get; set; }
+        INotifyPropertyChanged? Source { get; set; }
+        INotifyPropertyChangedDelegate2? Delegate { get; set; }
         string[] Properties { get; set; }
 
-        public void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void source_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             var propertyName = e.PropertyName;
             if (this.Source != null && this.Delegate != null && (this.Properties?.Contains(propertyName) ?? false))

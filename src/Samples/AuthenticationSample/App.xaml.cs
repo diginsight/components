@@ -190,7 +190,9 @@ namespace AuthenticationSample
 
             services.ConfigureClassAware<AppSettingsOptions>(configuration.GetSection("AppSettings"));
             services.ConfigureClassAware<FeatureFlagOptions>(configuration.GetSection("AppSettings"));
-            services.ConfigureClassAware<AzureOptions>(configuration.GetSection("AzureKeyVault"));
+            services.ConfigureClassAware<AzureKeyVaultOptions>(configuration.GetSection("AzureKeyVault"));
+            services.ConfigureClassAware<AzureAdOptions>(configuration.GetSection("AzureAd"));
+            
 
             //var appSettingsSection = configuration.GetSection(nameof(AppSettings));
             //var settings = appSettingsSection.Get<AppSettings>();

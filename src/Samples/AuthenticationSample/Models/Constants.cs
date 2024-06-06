@@ -18,5 +18,23 @@ namespace AuthenticationSample
         public const string INCLUDEOPERATIONID = "ApplicationInsights:IncludeOperationId";
         public const string INCLUDEREQUESTBODY = "ApplicationInsights:IncludeRequestBody";
         public const string INCLUDEHEADERS = "ApplicationInsights:IncludeHeaders";
+
+        /// <summary>
+        /// The base URI for the Datasync service.
+        /// </summary>
+        public static string ServiceUri = "https://localhost";
+
+        ///// <summary>
+        ///// The application (client) ID for the native app within Microsoft Entra ID
+        ///// </summary>
+        //public static string ApplicationId = "<client-id>";
+
+        /// <summary>
+        /// The list of scopes to request
+        /// </summary>
+        public static string[] Scopes = new[]
+        {
+          "user.read"
+        };
     }
 }

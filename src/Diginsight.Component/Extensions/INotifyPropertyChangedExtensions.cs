@@ -24,10 +24,10 @@ namespace Diginsight.Component
         }
         #endregion
 
-        string Name { get; set; }
-        string Description { get; set; }
         INotifyPropertyChanged Source { get; set; }
         INotifyPropertyChangedDelegate2 Delegate { get; set; }
+        string Name { get; set; }
+        string Description { get; set; }
         object[] Values { get; set; }
         string[] Properties { get; set; }
 
@@ -42,8 +42,8 @@ namespace Diginsight.Component
                 {
                     // var propertyValue = source[name]; // Reflection
                     var propertyInfo = sourceType.GetProperty(name);
-                    var propertyValue = propertyInfo.GetValue(this.Source, null);
-                    propertyValues.Add(propertyValue);
+                    var propertyValue = propertyInfo?.GetValue(this.Source, null);
+                    if (propertyValue != null) { propertyValues.Add(propertyValue); }
                 });
                 this.Delegate(this, propertyValues.ToArray(), null, null, null);
             }
@@ -53,7 +53,7 @@ namespace Diginsight.Component
             if (this.Source != null) { this.Source.PropertyChanged -= source_PropertyChanged; this.Source = null; };
         }
     }
-    
+
     public class NotifyPropertyTask : IDisposable
     {
         #region .ctor
@@ -75,15 +75,15 @@ namespace Diginsight.Component
         public void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var propertyName = e.PropertyName;
-            if (this.Source != null && this.Delegate != null && this.Properties.Contains(propertyName))
+            if (this.Source != null && this.Delegate != null && (this.Properties?.Contains(propertyName) ?? false))
             {
                 var propertyValues = new List<object>();
                 var sourceType = this.Source.GetType(); //.GetProperty(propertyName).GetValue(car, null); ;
                 this.Properties?.ToList().ForEach((name) =>
                 {
                     var propertyInfo = sourceType.GetProperty(name);
-                    var propertyValue = propertyInfo.GetValue(this.Source, null);
-                    propertyValues.Add(propertyValue);
+                    var propertyValue = propertyInfo?.GetValue(this.Source, null);
+                    if (propertyValue != null) { propertyValues.Add(propertyValue); }
                 });
 
                 // if ()

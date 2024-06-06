@@ -8,14 +8,15 @@ namespace Diginsight.Component
 {
     public class Identity
     {
-        public Identity(string upn)
-        {
-            this.Upn = upn;
-        }
+        //public Identity(string upn)
+        //{
+        //    this.Upn = upn;
+        //}
         public Identity(string upn, string email)
         {
             this.Upn = upn;
             this.Email = email;
+            this.Name = null;
         }
         public Identity(string upn, string email, string name)
         {

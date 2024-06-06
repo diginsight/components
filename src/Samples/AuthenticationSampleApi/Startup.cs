@@ -13,6 +13,7 @@ using Diginsight.SmartCache.Externalization.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Logging;
 using System.Reflection;
+using Microsoft.Identity.Web;
 
 namespace SampleWebApi
 {
@@ -33,7 +34,11 @@ namespace SampleWebApi
             services.AddObservability(configuration);
             services.AddDynamicLogLevel<DefaultDynamicLogLevelInjector>();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi(configuration);
+            services.AddAuthorization();
+            //.AddJwtBearer();
+
             IdentityModelEventSource.ShowPII = true;
 
             services.ConfigureClassAware<FeatureFlagOptions>(configuration.GetSection("FeatureManagement"))

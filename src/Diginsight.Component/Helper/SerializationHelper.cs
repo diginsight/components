@@ -35,7 +35,7 @@ namespace Common
             defaultOptions = new JsonSerializerOptions
             {
                 IgnoreReadOnlyProperties = true,
-                IgnoreNullValues = true,
+                //IgnoreNullValues = true,
                 ReadCommentHandling = JsonCommentHandling.Skip,
                 AllowTrailingCommas = true,
                 WriteIndented = true

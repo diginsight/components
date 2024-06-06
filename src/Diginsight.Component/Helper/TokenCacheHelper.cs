@@ -78,7 +78,7 @@ namespace Diginsight.Component
 
                     args.TokenCache.DeserializeMsalV3(unprotectData); // logger.LogDebug($"args.TokenCache.DeserializeMsalV3(unprotectData);");
                 }
-                catch (Exception ex)
+                catch (Exception _)
                 {
                     //logger.LogException(ex);
                 }
@@ -105,11 +105,11 @@ namespace Diginsight.Component
                     try
                     {
                         var path = Path.GetDirectoryName(CacheFilePath); // logger.LogDebug($"Path.GetDirectoryName({CacheFilePath}); returned {path}");
-                        Directory.CreateDirectory(path); // logger.LogDebug($"Directory.CreateDirectory({path});");
+                        if (path != null) { Directory.CreateDirectory(path); } // logger.LogDebug($"Directory.CreateDirectory({path});");
                         File.WriteAllBytes(CacheFilePath, ProtectedData.Protect(args.TokenCache.SerializeMsalV3(), null, DataProtectionScope.CurrentUser));
                         //logger.LogDebug($"File.WriteAllBytes({CacheFilePath}, ProtectedData.Protect(args.TokenCache.SerializeMsalV3(), null, {DataProtectionScope.CurrentUser}));");
                     }
-                    catch (Exception ex)
+                    catch (Exception _)
                     {
                         //logger.LogException(ex);
                     }

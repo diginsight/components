@@ -25,7 +25,7 @@ namespace Common
         const string GRAPHAPI_GROUP_MEMBER = "https://graph.microsoft.com/v1.0/groups/?$filter=mail eq '{upn}'&$expand=members";
         const string CONFIGVALUE_DATADECLASSGROUPNAME = "GFSCL_DATADECLASS_USERS";
         #endregion
-        private ILogger<GraphHelper> logger;
+        //private ILogger<GraphHelper> logger;
 
         //public static async Task<UserProfile> GetMe(HttpClient client = null)
         //{

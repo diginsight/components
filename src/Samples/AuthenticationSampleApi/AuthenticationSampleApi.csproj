@@ -19,6 +19,7 @@
     <PackageReference Include="Diginsight.Diagnostics" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
     <PackageReference Include="Diginsight.Diagnostics.AspNetCore.OpenTelemetry" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
     <PackageReference Include="Diginsight.Diagnostics.Log4Net" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="2.19.0" />
     
     <ProjectReference Include="$(DiginsightSmartCacheSolutionDirectory)Diginsight.SmartCache.Externalization.AspNetCore\Diginsight.SmartCache.Externalization.AspNetCore.csproj" Condition="'$(DiginsightSmartCacheDirectImport)' == 'true'" />
     <ProjectReference Include="$(DiginsightSmartCacheSolutionDirectory)Diginsight.SmartCache.Externalization.ServiceBus\Diginsight.SmartCache.Externalization.ServiceBus.csproj" Condition="'$(DiginsightSmartCacheDirectImport)' == 'true'" />

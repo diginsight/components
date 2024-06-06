@@ -18,7 +18,7 @@ namespace Common
         private static readonly Type T = typeof(HttpHelper);
         //private ILogger<HttpHelper> logger;
 
-        public static HttpClient GetHttpClient(string mediaType, string authToken = null)
+        public static HttpClient GetHttpClient(string mediaType, string authToken = default)
         {
             //using (var scope = TraceLogger.BeginMethodScope(T, new { mediaType }))
             //{

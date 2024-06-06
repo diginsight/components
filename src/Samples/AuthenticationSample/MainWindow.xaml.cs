@@ -32,6 +32,10 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Metrics = System.Collections.Generic.Dictionary<string, object>;
 using Window = System.Windows.Window; // $$$
 using AuthenticationToken = Microsoft.Datasync.Client.AuthenticationToken;
+using AuthenticationSample.Service;
+using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
+using Azure.Identity;
+using Azure.Core;
 #endregion
 
 namespace AuthenticationSample
@@ -48,8 +52,7 @@ namespace AuthenticationSample
 
         private string GetScope([CallerMemberName] string memberName = "") { return memberName; }
 
-
-
+        public static IPublicClientApplication IdentityClient { get; set; }
         #region AuthenticationResult
         public AuthenticationResult AuthenticationResult
         {
@@ -67,19 +70,7 @@ namespace AuthenticationSample
         public static readonly DependencyProperty ClaimsPrincipalProperty = DependencyProperty.Register("ClaimsPrincipal", typeof(ClaimsPrincipal), typeof(MainWindow), new PropertyMetadata());
         #endregion
 
-        public static IPublicClientApplication IdentityClient { get; set; }
-        #region AuthenticationToken
-        public AuthenticationToken AuthenticationToken
-        {
-            get { return (AuthenticationToken)GetValue(AuthenticationTokenProperty); }
-            set { SetValue(AuthenticationTokenProperty, value); }
-        }
-        public static readonly DependencyProperty AuthenticationTokenProperty = DependencyProperty.Register("AuthenticationToken", typeof(AuthenticationToken), typeof(MainWindow), new PropertyMetadata());
-        #endregion
-
-
-
-
+        #region .ctor
         static MainWindow()
         {
             var host = App.Host;
@@ -90,20 +81,32 @@ namespace AuthenticationSample
                           IClassAwareOptionsMonitor<AppSettingsOptions> appSettingsOptionsMonitor,
                           IClassAwareOptionsMonitor<FeatureFlagOptions> featureFlagOptionsMonitor,
                           IClassAwareOptionsMonitor<AzureKeyVaultOptions> azureKeyVaultOptionsMonitor,
-                          IClassAwareOptionsMonitor<AzureAdOptions> azureAdOptionsMonitor
-               )
+                          IClassAwareOptionsMonitor<AzureAdOptions> azureAdOptionsMonitor)
         {
             this.logger = logger;
             using var activity = App.ActivitySource.StartMethodActivity(logger, new { logger });
-            
+
             this.featureFlagOptionsMonitor = featureFlagOptionsMonitor;
             this.appSettingsOptionsMonitor = appSettingsOptionsMonitor;
             this.azureKeyVaultOptionsMonitor = azureKeyVaultOptionsMonitor;
             this.azureAdOptionsMonitor = azureAdOptionsMonitor;
 
+            var clientId = azureAdOptionsMonitor.CurrentValue.ClientId;
+            var tenantId = azureAdOptionsMonitor.CurrentValue.TenantId;
+            var redirectUri = azureAdOptionsMonitor.CurrentValue.RedirectUri;
+
+            var app = PublicClientApplicationBuilder
+                        .Create(clientId)
+                        .WithAuthority(AzureCloudInstance.AzurePublic, tenantId)
+                        .WithRedirectUri(redirectUri)
+                        .Build();
+            IdentityClient = app;
+
             InitializeComponent();
-        }
-        private async void MainWindow_Initialized(object sender, EventArgs e)
+        } 
+        #endregion
+
+        private void MainWindow_Initialized(object sender, EventArgs e)
         {
             using var activity = App.ActivitySource.StartMethodActivity(logger, new { sender, e });
 
@@ -112,12 +115,27 @@ namespace AuthenticationSample
 
 
         int i = 0;
-        private void btnRun_Click(object sender, RoutedEventArgs e)
+        private async void btnRun_Click(object sender, RoutedEventArgs e)
         {
             using var activity = App.ActivitySource.StartMethodActivity(logger, new { sender, e });
 
             try
             {
+
+                // call AuthenticationSampleApi with token
+                //var token = this.AuthenticationResult.AccessToken;
+
+                //var api = new AuthenticationSampleApi(token);
+                var credentialOptions = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = this.AuthenticationResult.ClaimsPrincipal.Identity.Name, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
+                var credential = new DefaultAzureCredential(credentialOptions);
+                //var credentialOptions = new SharedTokenCacheCredentialOptions() { };
+                //var credential = new SharedTokenCacheCredential();
+
+                // create credential from this.AuthenticationResult Access token
+
+
+                var service = new RestSharpService(credential);
+                var res = await service.Get("https://localhost:7213/api/Plants/getplants", null, null);
 
 
             }
@@ -130,23 +148,14 @@ namespace AuthenticationSample
 
             try
             {
-                var clientId = azureAdOptionsMonitor.CurrentValue.ClientId;
-                var tenantId = azureAdOptionsMonitor.CurrentValue.TenantId;
-                var redirectUri = azureAdOptionsMonitor.CurrentValue.RedirectUri;
-
-                var app = PublicClientApplicationBuilder
-                            .Create(clientId)
-                            .WithAuthority(AzureCloudInstance.AzurePublic, tenantId)
-                            .WithRedirectUri(redirectUri)
-                            .Build();
                 string[] scopes = Constants.Scopes;
 
-                IdentityClient = app;
-                //AuthenticationResult result = await app.AcquireTokenInteractive(scopes).ExecuteAsync();
                 AuthenticationResult result = await GetAuthenticationToken();
                 this.AuthenticationResult = result;
                 this.ClaimsPrincipal = result.ClaimsPrincipal;
                 var identity = this.ClaimsPrincipal.Identity; // getClaim name
+
+                
             }
             catch (Exception _) { }
         }

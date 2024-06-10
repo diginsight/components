@@ -38,8 +38,12 @@ namespace AuthenticationSample.Service
                 }
             }
 
-            var token = await credential.GetTokenAsync(new TokenRequestContext() { }, cancellationToken ?? CancellationToken.None);
-            request.AddHeader("Authorization", token.Token);
+            var token = await credential.GetTokenAsync(new TokenRequestContext(Constants.Scopes), cancellationToken ?? CancellationToken.None);
+            request.AddHeader("Authorization", $"Bearer {token.Token}");
+            request.AddHeader("Content-Type", "application/json");
+            //request.AddHeader("ZUMO-API-VERSION", "3.0.0");
+
+
             var response = await client.ExecuteAsync(request);
             return response;
         }

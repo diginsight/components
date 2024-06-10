@@ -12,8 +12,8 @@ using static Google.Protobuf.Compiler.CodeGeneratorResponse.Types;
 
 namespace SampleWebApi.Controllers
 {
-    [ApiController]
     [Authorize]
+    [ApiController]
     [Route("api/[controller]")]
     [ApiExplorerSettings(GroupName = "common")]
     public class PlantsController : ControllerBase

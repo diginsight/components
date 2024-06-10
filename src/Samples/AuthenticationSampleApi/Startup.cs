@@ -35,9 +35,8 @@ namespace SampleWebApi
             services.AddDynamicLogLevel<DefaultDynamicLogLevelInjector>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(configuration);
+                    .AddMicrosoftIdentityWebApi(configuration); //.AddJwtBearer() 
             services.AddAuthorization();
-            //.AddJwtBearer();
 
             IdentityModelEventSource.ShowPII = true;
 
@@ -135,19 +134,16 @@ namespace SampleWebApi
             if (IsSwaggerEnabled)
             {
                 app.UseSwaggerDocumentation();
-
                 //app.UseSwagger(); scope.LogDebug($"app.UseSwagger();");
                 //app.UseSwaggerUI(options => options.OAuthClientId(builder.Configuration["SwaggerAuthentication:WebAppClientId"])); scope.LogDebug($"app.UseSwaggerUI(options => options.OAuthClientId(builder.Configuration[\"SwaggerAuthentication:WebAppClientId\"]));");
             }
 
-            app.UseHttpsRedirection();
-
+            //app.UseHttpsRedirection();
             app.UseRouting();
+            //app.UseCors();
 
             app.UseAuthentication(); // If you have this, it should be before UseAuthorization
             app.UseAuthorization();  // Make sure this is between UseRouting and UseEndpoints
-
-            app.UseCors();
 
             //app.UseMiddleware<HandleExceptionsMiddleware>(); scope.LogDebug($"app.UseMiddleware<HandleExceptionsMiddleware>();");
 

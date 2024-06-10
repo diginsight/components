@@ -28,7 +28,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+//using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Metrics = System.Collections.Generic.Dictionary<string, object>;
 using Window = System.Windows.Window; // $$$
 using AuthenticationToken = Microsoft.Datasync.Client.AuthenticationToken;
@@ -103,7 +103,7 @@ namespace AuthenticationSample
             IdentityClient = app;
 
             InitializeComponent();
-        } 
+        }
         #endregion
 
         private void MainWindow_Initialized(object sender, EventArgs e)
@@ -121,20 +121,38 @@ namespace AuthenticationSample
 
             try
             {
-
                 // call AuthenticationSampleApi with token
                 //var token = this.AuthenticationResult.AccessToken;
 
                 //var api = new AuthenticationSampleApi(token);
-                var credentialOptions = new DefaultAzureCredentialOptions { SharedTokenCacheUsername = this.AuthenticationResult.ClaimsPrincipal.Identity.Name, ExcludeInteractiveBrowserCredential = false, ExcludeSharedTokenCacheCredential = false, ExcludeAzureCliCredential = false, ExcludeEnvironmentCredential = true, ExcludeManagedIdentityCredential = true, ExcludeVisualStudioCodeCredential = true, ExcludeVisualStudioCredential = true };
-                var credential = new DefaultAzureCredential(credentialOptions);
-                //var credentialOptions = new SharedTokenCacheCredentialOptions() { };
-                //var credential = new SharedTokenCacheCredential();
+                //var credentialOptions = new DefaultAzureCredentialOptions
+                //{
+                //    SharedTokenCacheUsername = this.AuthenticationResult.ClaimsPrincipal.Identity.Name,
+                //    ExcludeInteractiveBrowserCredential = false,
+                //    ExcludeSharedTokenCacheCredential = false,
+                //    ExcludeAzureCliCredential = false,
+                //    ExcludeEnvironmentCredential = true,
+                //    ExcludeManagedIdentityCredential = true,
+                //    ExcludeVisualStudioCodeCredential = true,
+                //    ExcludeVisualStudioCredential = true, 
+                //    TenantId = "common"
+                //};
+                //var credential = new DefaultAzureCredential(credentialOptions);
+
+                //var credentialOptions = new SharedTokenCacheCredentialOptions( ) { };
+                //var credential = new SharedTokenCacheCredential(credentialOptions);
+
+                var credential = DelegatedTokenCredential.Create(null, async (tokenRequestContext, cancellationToken) =>
+                {
+                    AuthenticationResult result = await GetAuthenticationToken();
+                    return new AccessToken(result.AccessToken, result.ExpiresOn);
+                });
 
                 // create credential from this.AuthenticationResult Access token
 
 
                 var service = new RestSharpService(credential);
+                //var res1 = await service.Get("https://localhost:7178/tables/todoitem", null, null);
                 var res = await service.Get("https://localhost:7213/api/Plants/getplants", null, null);
 
 
@@ -149,13 +167,10 @@ namespace AuthenticationSample
             try
             {
                 string[] scopes = Constants.Scopes;
-
                 AuthenticationResult result = await GetAuthenticationToken();
                 this.AuthenticationResult = result;
                 this.ClaimsPrincipal = result.ClaimsPrincipal;
                 var identity = this.ClaimsPrincipal.Identity; // getClaim name
-
-                
             }
             catch (Exception _) { }
         }

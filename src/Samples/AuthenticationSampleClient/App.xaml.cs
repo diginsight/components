@@ -181,9 +181,10 @@ namespace AuthenticationSample
 
 
         }
+        
         private void ConfigureServices(IConfiguration configuration, IServiceCollection services)
         {
-            using var activity = ActivitySource.StartMethodActivity(logger, new { configuration, services });
+            using var activity = ActivitySource.StartMethodActivity(logger, () => new { configuration, services });
 
             //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddHttpContextAccessor();
@@ -199,6 +200,7 @@ namespace AuthenticationSample
             //services.AddApplicationInsightsTelemetry();
             //var aiConnectionString = configuration.GetValue<string>(Constants.APPINSIGHTSCONNECTIONSTRING);
             //services.AddObservability(configuration);
+
 
             services.AddSingleton<MainWindow>();
 

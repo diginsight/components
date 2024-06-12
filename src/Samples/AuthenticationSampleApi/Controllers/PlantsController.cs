@@ -51,7 +51,13 @@ namespace SampleWebApi.Controllers
 
             var result = default(IEnumerable<Plant>);
 
-            Thread.Sleep(1000);
+            var latency = 1000;
+            Thread.Sleep(latency);
+
+            logger.LogDebug("Thread.Sleep({latency});", latency); // Structured logging
+            logger.LogDebug($"Thread.Sleep({latency});"); // interpolation
+            // logger.LogDebug(() => $"Thread.Sleep({latency});"); // interpolation with delegate notation
+            // logger.LogDebug(new { result }); // variables loggin
 
             // read string plantsString from content file /Content/plants.json
             var plantsString = await System.IO.File.ReadAllTextAsync("Content/plants.json");
@@ -88,7 +94,7 @@ namespace SampleWebApi.Controllers
 
             var options = new SmartCacheOperationOptions() { MaxAge = TimeSpan.FromMinutes(10) };
             var cacheKey = new MethodCallCacheKey(cacheKeyService, typeof(PlantsController), nameof(GetPlantsAsync));
-            
+
             var plants = await smartCache.GetAsync(cacheKey, _ => GetPlantsImplAsync(), options);
 
             activity?.SetOutput(plants);

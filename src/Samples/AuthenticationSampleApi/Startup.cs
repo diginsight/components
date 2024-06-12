@@ -14,18 +14,21 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Logging;
 using System.Reflection;
 using Microsoft.Identity.Web;
+using Diginsight.Diagnostics;
 
 namespace AuthenticationSampleApi
 {
     public class Startup
     {
+        private readonly IDeferredLoggerFactory deferredLoggerFactory;
         private static readonly string SmartCacheServiceBusSubscriptionName = Guid.NewGuid().ToString("N");
 
         private readonly IConfiguration configuration;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IDeferredLoggerFactory deferredLoggerFactory)
         {
             this.configuration = configuration;
+            this.deferredLoggerFactory = deferredLoggerFactory;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -33,6 +36,7 @@ namespace AuthenticationSampleApi
             services.AddHttpContextAccessor();
             services.AddObservability(configuration);
             services.AddDynamicLogLevel<DefaultDynamicLogLevelInjector>();
+            services.FlushOnCreateServiceProvider(deferredLoggerFactory);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddMicrosoftIdentityWebApi(configuration); //.AddJwtBearer() 

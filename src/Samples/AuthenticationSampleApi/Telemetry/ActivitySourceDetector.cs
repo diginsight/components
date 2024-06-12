@@ -1,7 +1,7 @@
 ﻿using Diginsight.Diagnostics;
 using System.Diagnostics;
 
-namespace SampleWebApi;
+namespace AuthenticationSampleApi;
 
 internal sealed class ActivitySourceDetector : IActivityListenerLogic
 {

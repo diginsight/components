@@ -1,7 +1,7 @@
 ﻿
 using Diginsight.CAOptions;
 
-namespace SampleWebApi;
+namespace AuthenticationSampleApi;
 
 public sealed class OpenTelemetryOptions : IDynamicallyPostConfigurable
 {

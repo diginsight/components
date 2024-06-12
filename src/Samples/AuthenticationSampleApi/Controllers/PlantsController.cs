@@ -10,7 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using static Google.Protobuf.Compiler.CodeGeneratorResponse.Types;
 
-namespace SampleWebApi.Controllers
+namespace AuthenticationSampleApi
 {
     [Authorize]
     [ApiController]

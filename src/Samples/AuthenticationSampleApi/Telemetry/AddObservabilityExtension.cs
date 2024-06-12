@@ -18,7 +18,7 @@ using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Text;
 
-namespace SampleWebApi;
+namespace AuthenticationSampleApi;
 
 public static class AddObservabilityExtension
 {

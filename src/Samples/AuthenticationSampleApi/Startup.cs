@@ -15,7 +15,7 @@ using Microsoft.IdentityModel.Logging;
 using System.Reflection;
 using Microsoft.Identity.Web;
 
-namespace SampleWebApi
+namespace AuthenticationSampleApi
 {
     public class Startup
     {

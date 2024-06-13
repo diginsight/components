@@ -41,9 +41,11 @@ using log4net.Appender;
 using System.IO;
 using log4net.Repository.Hierarchy;
 using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 #endregion
 
-namespace AuthenticationSample
+namespace AuthenticationSampleClient
 {
     /// <summary>Interaction logic for App.xaml</summary>
     public partial class App : Application
@@ -193,9 +195,11 @@ namespace AuthenticationSample
             services.ConfigureClassAware<FeatureFlagOptions>(configuration.GetSection("AppSettings"));
             services.ConfigureClassAware<AzureKeyVaultOptions>(configuration.GetSection("AzureKeyVault"));
             services.ConfigureClassAware<AzureAdOptions>(configuration.GetSection("AzureAd"));
-            
-            //var appSettingsSection = configuration.GetSection(nameof(AppSettings));
-            //var settings = appSettingsSection.Get<AppSettings>();
+
+            services.AddHttpClient();
+            services.AddResponseCompression();
+            services.AddHttpContextAccessor();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             //services.AddApplicationInsightsTelemetry();
             //var aiConnectionString = configuration.GetValue<string>(Constants.APPINSIGHTSCONNECTIONSTRING);

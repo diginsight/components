@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AuthenticationSample.Service
+namespace AuthenticationSampleClient
 {
     public interface IRestSharpService
     {

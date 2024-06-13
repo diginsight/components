@@ -32,13 +32,19 @@ using System.Windows.Shapes;
 using Metrics = System.Collections.Generic.Dictionary<string, object>;
 using Window = System.Windows.Window; // $$$
 using AuthenticationToken = Microsoft.Datasync.Client.AuthenticationToken;
-using AuthenticationSample.Service;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using Azure.Identity;
 using Azure.Core;
+using System.Net.Http;
+using Microsoft.AspNetCore.Http;
+using Refit;
+using static System.Formats.Asn1.AsnWriter;
+using System.Net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 #endregion
 
-namespace AuthenticationSample
+namespace AuthenticationSampleClient
 {
     /// <summary>Interaction logic for MainWindow.xaml</summary>
     public partial class MainWindow : Window
@@ -49,6 +55,7 @@ namespace AuthenticationSample
         private readonly IClassAwareOptionsMonitor<FeatureFlagOptions> featureFlagOptionsMonitor;
         private readonly IClassAwareOptionsMonitor<AzureKeyVaultOptions> azureKeyVaultOptionsMonitor;
         private readonly IClassAwareOptionsMonitor<AzureAdOptions> azureAdOptionsMonitor;
+        private readonly HttpClient httpClient;
 
         private string GetScope([CallerMemberName] string memberName = "") { return memberName; }
 
@@ -74,14 +81,14 @@ namespace AuthenticationSample
         static MainWindow()
         {
             var host = App.Host;
-
-
         }
         public MainWindow(ILogger<MainWindow> logger,
                           IClassAwareOptionsMonitor<AppSettingsOptions> appSettingsOptionsMonitor,
                           IClassAwareOptionsMonitor<FeatureFlagOptions> featureFlagOptionsMonitor,
                           IClassAwareOptionsMonitor<AzureKeyVaultOptions> azureKeyVaultOptionsMonitor,
-                          IClassAwareOptionsMonitor<AzureAdOptions> azureAdOptionsMonitor)
+                          IClassAwareOptionsMonitor<AzureAdOptions> azureAdOptionsMonitor,
+                          HttpClient httpClient,
+                          IHttpContextAccessor httpContextAccessor)
         {
             this.logger = logger;
             using var activity = App.ActivitySource.StartMethodActivity(logger, new { logger });
@@ -102,6 +109,8 @@ namespace AuthenticationSample
                         .Build();
             IdentityClient = app;
 
+            this.httpClient = httpClient;
+
             InitializeComponent();
         }
         #endregion
@@ -115,50 +124,54 @@ namespace AuthenticationSample
 
 
         int i = 0;
-        private async void btnRun_Click(object sender, RoutedEventArgs e)
+        private async void btnRestSharpCall_Click(object sender, RoutedEventArgs e)
         {
             using var activity = App.ActivitySource.StartMethodActivity(logger, new { sender, e });
 
             try
             {
-                // call AuthenticationSampleApi with token
-                //var token = this.AuthenticationResult.AccessToken;
+                var credential = DelegatedTokenCredential.Create(null, async (tokenRequestContext, cancellationToken) =>
+                {
+                    AuthenticationResult result = await GetAuthenticationToken();
+                    return new AccessToken(result.AccessToken, result.ExpiresOn);
+                });
+                var service = new RestSharpService(credential);
+                var res = await service.Get("https://localhost:7213/api/Plants/getplants", null, null);
 
-                //var api = new AuthenticationSampleApi(token);
-                //var credentialOptions = new DefaultAzureCredentialOptions
-                //{
-                //    SharedTokenCacheUsername = this.AuthenticationResult.ClaimsPrincipal.Identity.Name,
-                //    ExcludeInteractiveBrowserCredential = false,
-                //    ExcludeSharedTokenCacheCredential = false,
-                //    ExcludeAzureCliCredential = false,
-                //    ExcludeEnvironmentCredential = true,
-                //    ExcludeManagedIdentityCredential = true,
-                //    ExcludeVisualStudioCodeCredential = true,
-                //    ExcludeVisualStudioCredential = true, 
-                //    TenantId = "common"
-                //};
-                //var credential = new DefaultAzureCredential(credentialOptions);
+            }
+            catch (Exception _) { }
+        }
+        private async void btnHttpClientCall_Click(object sender, RoutedEventArgs e)
+        {
+            using var activity = App.ActivitySource.StartMethodActivity(logger, new { sender, e });
 
-                //var credentialOptions = new SharedTokenCacheCredentialOptions( ) { };
-                //var credential = new SharedTokenCacheCredential(credentialOptions);
-
+            try
+            {
                 var credential = DelegatedTokenCredential.Create(null, async (tokenRequestContext, cancellationToken) =>
                 {
                     AuthenticationResult result = await GetAuthenticationToken();
                     return new AccessToken(result.AccessToken, result.ExpiresOn);
                 });
 
-                // create credential from this.AuthenticationResult Access token
+                const string action = "https://localhost:7213/api/Plants/getplants";
+                //using HttpResponseMessage responseMessage = await httpClient.GetAsync("api/v1/timezones");
+                using var request = new HttpRequestMessage(HttpMethod.Get, action);
+                //request.Content = MakeJsonContent(profileImage);
+                var token = await credential.GetTokenAsync(new TokenRequestContext(Constants.Scopes), CancellationToken.None);
+                request.Headers.Add("Authorization", $"Bearer {token.Token}");
 
+                using var responseMessage = await httpClient.SendAsync(request);
 
-                var service = new RestSharpService(credential);
-                //var res1 = await service.Get("https://localhost:7178/tables/todoitem", null, null);
-                var res = await service.Get("https://localhost:7213/api/Plants/getplants", null, null);
+                var requestString = request?.Content != null ? await request?.Content?.ReadAsStringAsync() : null;
 
+                await ThrowExceptionIfNotSuccessAsync(responseMessage);
+
+                var plants = await ReadDeserializedContentAsync<IEnumerable<Plant>>(responseMessage);
 
             }
             catch (Exception _) { }
         }
+
 
         private async void Login_Click(object sender, RoutedEventArgs e)
         {
@@ -202,5 +215,68 @@ namespace AuthenticationSample
             return result;
         }
 
+        protected static async Task ThrowExceptionIfNotSuccessAsync(HttpResponseMessage responseMessage, params HttpStatusCode[] additionalSuccessCodes)
+        {
+            if (!responseMessage.IsSuccessStatusCode && additionalSuccessCodes?.Contains(responseMessage.StatusCode) != true)
+            {
+                throw await MakeExceptionAsync(responseMessage);
+            }
+        }
+        protected static async Task<DownstreamApiException> MakeExceptionAsync(HttpResponseMessage responseMessage)
+        {
+            //TraceLogger.LogError($"Error '{responseMessage.StatusCode}' calling endpoint '{responseMessage.RequestMessage!.RequestUri}'");
+
+            var requestContent = responseMessage.RequestMessage?.Content;
+            if (requestContent != null)
+            {
+                var requestString = await requestContent.ReadAsStringAsync();
+                //TraceLogger.LogError($"Request body: {requestString}");
+            }
+
+            var responseString = await responseMessage.Content.ReadAsStringAsync();
+            //TraceLogger.LogError($"Response content  ({(double)responseString.Length / 1024:#,##0} KB): {responseString}");
+
+            HttpRequestMessage requestMessage = responseMessage.RequestMessage!;
+            return new DownstreamApiException(
+                requestMessage.Method,
+                requestMessage.RequestUri!,
+                responseMessage.StatusCode,
+                await responseMessage.Content.ReadAsByteArrayAsync()
+            );
+        }
+
+        protected static async Task<TContent> ReadDeserializedContentAsync<TContent>(HttpResponseMessage responseMessage)
+        {
+            //if (DumpFullRequestResponse)
+            //{
+            //    var requestContent = responseMessage.RequestMessage?.Content;
+            //    if (requestContent != null)
+            //    {
+            //        var requestString = await requestContent.ReadAsStringAsync();
+            //        TraceLogger.LogDebug($"Request body ({(double)requestString.Length / 1024:#,##0} KB): {requestString}", null, new Dictionary<string, object>() { { "MaxMessageLen", 0 } });
+            //    }
+            //}
+
+            string rawContent = await responseMessage.Content.ReadAsStringAsync();
+            //if (DumpFullRequestResponse)
+            //{
+            //    TraceLogger.LogDebug($"Response content  ({(double)rawContent.Length / 1024:#,##0} KB): {rawContent}", null, new Dictionary<string, object>() { { "MaxMessageLen", LONGMESSAGELEN } });
+            //}
+
+            return responseMessage.Content.Headers.ContentType?.MediaType == "text/plain" && typeof(TContent) == typeof(string)
+                ? (TContent)(object)rawContent
+                : JsonConvert.DeserializeObject<TContent>(rawContent, Statics.SerializerSettings);
+        }
+
+    }
+
+    file static class Statics
+    {
+        public static readonly JsonSerializerSettings SerializerSettings = new()
+        {
+            ContractResolver = new DefaultContractResolver() { NamingStrategy = new CamelCaseNamingStrategy() },
+            DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+        };
     }
 }

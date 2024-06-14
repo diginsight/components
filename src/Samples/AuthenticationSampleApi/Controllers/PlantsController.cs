@@ -39,7 +39,7 @@ namespace AuthenticationSampleApi
             this.smartCache = smartCache;
             this.cacheKeyService = cacheKeyService;
 
-            using var activity = Program.ActivitySource.StartMethodActivity(logger); // , new { foo, bar }
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger); // , new { foo, bar }
 
         }
 
@@ -47,7 +47,7 @@ namespace AuthenticationSampleApi
         [ApiVersion(ApiVersions.V_2024_04_26.Name)]
         public async Task<IEnumerable<Plant>> GetPlantsImplAsync()
         {
-            using var activity = Program.ActivitySource.StartMethodActivity(logger); // , new { foo, bar }
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger); // , new { foo, bar }
 
             var result = default(IEnumerable<Plant>);
 
@@ -71,7 +71,7 @@ namespace AuthenticationSampleApi
         [ApiVersion(ApiVersions.V_2024_04_26.Name)]
         public async Task<Plant> GetPlantByIdImplAsync([FromRoute] Guid id)
         {
-            using var activity = Program.ActivitySource.StartMethodActivity(logger, new { id });
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { id });
 
             var result = default(IEnumerable<Plant>);
 
@@ -90,7 +90,7 @@ namespace AuthenticationSampleApi
         [ApiVersion(ApiVersions.V_2024_04_26.Name)]
         public async Task<IEnumerable<Plant>> GetPlantsAsync()
         {
-            using var activity = Program.ActivitySource.StartMethodActivity(logger);
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
             var options = new SmartCacheOperationOptions() { MaxAge = TimeSpan.FromMinutes(10) };
             var cacheKey = new MethodCallCacheKey(cacheKeyService, typeof(PlantsController), nameof(GetPlantsAsync));
@@ -105,7 +105,7 @@ namespace AuthenticationSampleApi
         [ApiVersion(ApiVersions.V_2024_04_26.Name)]
         public async Task<Plant> GetPlantByIdAsync([FromRoute] Guid plantId)
         {
-            using var activity = Program.ActivitySource.StartMethodActivity(logger);
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
             var options = new SmartCacheOperationOptions() { MaxAge = TimeSpan.FromMinutes(10) };
             var cacheKey = new MethodCallCacheKey(cacheKeyService, typeof(PlantsController), nameof(GetPlantByIdAsync), plantId);
@@ -121,7 +121,7 @@ namespace AuthenticationSampleApi
         [ApiVersion(ApiVersions.V_2024_04_26.Name)]
         public async Task<IEnumerable<Plant>> CreateOrUpdatePlant(Plant newplant)
         {
-            using var activity = Program.ActivitySource.StartMethodActivity(logger); // , new { foo, bar }
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger); // , new { foo, bar }
 
             var plants = (await GetPlantsImplAsync())?.ToList();
 

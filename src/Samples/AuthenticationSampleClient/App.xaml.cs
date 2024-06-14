@@ -51,22 +51,20 @@ namespace AuthenticationSampleClient
     public partial class App : Application
     {
         const string CONFIGVALUE_APPINSIGHTSKEY = "AppInsightsKey", DEFAULTVALUE_APPINSIGHTSKEY = "";
-        private static readonly IDeferredLoggerFactory DeferredLoggerFactory;
-        internal static ILoggerFactory LoggerFactory { get; private set; }
-        internal static readonly ActivitySource ActivitySource = new(typeof(App).Namespace ?? typeof(App).Name!);
+        public static IDeferredLoggerFactory DeferredLoggerFactory;
+
         static Type T = typeof(App);
         public static IHost Host;
-        private ILogger<App> logger;
+        //private ILogger<App> logger;
 
         static App()
         {
-            DiginsightActivitiesOptions activitiesOptions = new() { LogActivities = true };
-            var deferredLoggerFactory = new DeferredLoggerFactory(activitiesOptions: activitiesOptions);
-            deferredLoggerFactory.ActivitySources.Add(ActivitySource);
-            LoggerFactory = DeferredLoggerFactory = deferredLoggerFactory;
-            var logger = LoggerFactory.CreateLogger<App>();
+            var activitiesOptions = new DiginsightActivitiesOptions() { LogActivities = true };
+            DeferredLoggerFactory = new DeferredLoggerFactory(activitiesOptions: activitiesOptions);
+            DeferredLoggerFactory.ActivitySources.Add(Observability.ActivitySource);
+            var logger = DeferredLoggerFactory.CreateLogger<App>();
 
-            using var activity = ActivitySource.StartMethodActivity(logger);
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger);
             try
             {
 
@@ -76,8 +74,8 @@ namespace AuthenticationSampleClient
 
         public App()
         {
-            var logger = LoggerFactory.CreateLogger<App>();
-            using var activity = ActivitySource.StartMethodActivity(logger);
+            var logger = DeferredLoggerFactory.CreateLogger<App>();
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
             //var logger = Host.Services.GetRequiredService<ILogger<App>>();
             //using var activity = ActivitySource.StartMethodActivity(logger, new { });
@@ -85,8 +83,8 @@ namespace AuthenticationSampleClient
         }
         protected override async void OnStartup(StartupEventArgs e)
         {
-            var logger = LoggerFactory.CreateLogger<App>();
-            using var activity = ActivitySource.StartMethodActivity(logger);
+            var logger = DeferredLoggerFactory.CreateLogger<App>();
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
             var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development";
             var configuration = new ConfigurationBuilder()
@@ -101,7 +99,7 @@ namespace AuthenticationSampleClient
             Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration(builder =>
                 {
-                    using var innerActivity = ActivitySource.StartRichActivity(logger, "ConfigureAppConfiguration.Callback", new { builder });
+                    using var innerActivity = Observability.ActivitySource.StartRichActivity(logger, "ConfigureAppConfiguration.Callback", new { builder });
 
                     builder.Sources.Clear();
                     builder.AddConfiguration(configuration);
@@ -109,14 +107,14 @@ namespace AuthenticationSampleClient
                     builder.AddEnvironmentVariables();
                 }).ConfigureServices((context, services) =>
                 {
-                    using var innerActivity = ActivitySource.StartRichActivity(logger, "ConfigureServices.Callback", new { context, services });
+                    using var innerActivity = Observability.ActivitySource.StartRichActivity(logger, "ConfigureServices.Callback", new { context, services });
                     services.FlushOnCreateServiceProvider(DeferredLoggerFactory);
 
                     ConfigureServices(context.Configuration, services);
                 })
                 .ConfigureLogging((context, loggingBuilder) =>
                 {
-                    using var innerActivity = ActivitySource.StartRichActivity(logger, "ConfigureLogging.Callback", new { context, loggingBuilder });
+                    using var innerActivity = Observability.ActivitySource.StartRichActivity(logger, "ConfigureLogging.Callback", new { context, loggingBuilder });
 
                     loggingBuilder.AddConfiguration(context.Configuration.GetSection("Logging"));
                     loggingBuilder.ClearProviders();
@@ -186,7 +184,8 @@ namespace AuthenticationSampleClient
         
         private void ConfigureServices(IConfiguration configuration, IServiceCollection services)
         {
-            using var activity = ActivitySource.StartMethodActivity(logger, () => new { configuration, services });
+            var logger = DeferredLoggerFactory.CreateLogger<App>();
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { configuration, services });
 
             //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddHttpContextAccessor();
@@ -211,7 +210,8 @@ namespace AuthenticationSampleClient
         }
         protected override async void OnExit(ExitEventArgs e)
         {
-            using var activity = ActivitySource.StartMethodActivity(logger, new { e });
+            var logger = DeferredLoggerFactory.CreateLogger<App>();
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { e });
 
             using (Host)
             {
@@ -228,7 +228,7 @@ namespace AuthenticationSampleClient
         static async Task DoSomeWork(string foo, int bar)
         {
             var logger = Host.Services.GetRequiredService<ILogger<App>>();
-            using var activity = ActivitySource.StartMethodActivity(logger, new { foo, bar });
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { foo, bar });
 
             await StepOne();
             await StepTwo();
@@ -237,7 +237,7 @@ namespace AuthenticationSampleClient
         static async Task StepOne()
         {
             var logger = Host.Services.GetRequiredService<ILogger<App>>();
-            using var activity = ActivitySource.StartMethodActivity(logger, new { });
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { });
 
             await Task.Delay(500);
         }
@@ -245,7 +245,7 @@ namespace AuthenticationSampleClient
         static async Task StepTwo()
         {
             var logger = Host.Services.GetRequiredService<ILogger<App>>();
-            using var activity = ActivitySource.StartMethodActivity(logger, new { });
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { });
 
             await Task.Delay(1000);
         }

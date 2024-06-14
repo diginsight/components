@@ -42,6 +42,7 @@ using static System.Formats.Asn1.AsnWriter;
 using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Microsoft.Extensions.Configuration;
 #endregion
 
 namespace AuthenticationSampleClient
@@ -80,6 +81,9 @@ namespace AuthenticationSampleClient
         #region .ctor
         static MainWindow()
         {
+            var logger = App.DeferredLoggerFactory.CreateLogger<MainWindow>();
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger);
+
             var host = App.Host;
         }
         public MainWindow(ILogger<MainWindow> logger,
@@ -91,7 +95,7 @@ namespace AuthenticationSampleClient
                           IHttpContextAccessor httpContextAccessor)
         {
             this.logger = logger;
-            using var activity = App.ActivitySource.StartMethodActivity(logger, new { logger });
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { logger });
 
             this.featureFlagOptionsMonitor = featureFlagOptionsMonitor;
             this.appSettingsOptionsMonitor = appSettingsOptionsMonitor;
@@ -117,7 +121,7 @@ namespace AuthenticationSampleClient
 
         private void MainWindow_Initialized(object sender, EventArgs e)
         {
-            using var activity = App.ActivitySource.StartMethodActivity(logger, new { sender, e });
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { sender, e });
 
 
         }
@@ -126,7 +130,7 @@ namespace AuthenticationSampleClient
         int i = 0;
         private async void btnRestSharpCall_Click(object sender, RoutedEventArgs e)
         {
-            using var activity = App.ActivitySource.StartMethodActivity(logger, new { sender, e });
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { sender, e });
 
             try
             {
@@ -143,7 +147,7 @@ namespace AuthenticationSampleClient
         }
         private async void btnHttpClientCall_Click(object sender, RoutedEventArgs e)
         {
-            using var activity = App.ActivitySource.StartMethodActivity(logger, new { sender, e });
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { sender, e });
 
             try
             {
@@ -175,7 +179,7 @@ namespace AuthenticationSampleClient
 
         private async void Login_Click(object sender, RoutedEventArgs e)
         {
-            using var activity = App.ActivitySource.StartMethodActivity(logger, new { sender, e });
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { sender, e });
 
             try
             {
@@ -190,7 +194,7 @@ namespace AuthenticationSampleClient
 
         public async Task<AuthenticationResult> GetAuthenticationToken()
         {
-            using var activity = App.ActivitySource.StartMethodActivity(logger);
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
             var accounts = await IdentityClient.GetAccountsAsync();
             AuthenticationResult? result = null;

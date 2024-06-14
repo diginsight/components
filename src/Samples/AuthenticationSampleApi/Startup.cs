@@ -15,24 +15,30 @@ using Microsoft.IdentityModel.Logging;
 using System.Reflection;
 using Microsoft.Identity.Web;
 using Diginsight.Diagnostics;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace AuthenticationSampleApi
 {
     public class Startup
     {
-        private readonly IDeferredLoggerFactory deferredLoggerFactory;
         private static readonly string SmartCacheServiceBusSubscriptionName = Guid.NewGuid().ToString("N");
-
         private readonly IConfiguration configuration;
+        private readonly IHostEnvironment hostEnvironment;
+        private readonly IDeferredLoggerFactory deferredLoggerFactory;
 
-        public Startup(IConfiguration configuration, IDeferredLoggerFactory deferredLoggerFactory)
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment, IDeferredLoggerFactory deferredLoggerFactory = null)
         {
             this.configuration = configuration;
             this.deferredLoggerFactory = deferredLoggerFactory;
+            this.hostEnvironment = hostEnvironment;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var logger = deferredLoggerFactory.CreateLogger<Startup>();
+            using var innerActivity = Observability.ActivitySource.StartMethodActivity(logger, new { services });
+
             services.AddHttpContextAccessor();
             services.AddObservability(configuration);
             services.AddDynamicLogLevel<DefaultDynamicLogLevelInjector>();
@@ -97,18 +103,25 @@ namespace AuthenticationSampleApi
             //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-            SmartCacheBuilder smartCacheBuilder = services.AddSmartCache().AddHttpHeaderSupport();
+            SmartCacheBuilder smartCacheBuilder = services.AddSmartCache(configuration, hostEnvironment, deferredLoggerFactory)
+                                                          .AddHttpHeaderSupport();
+            
             IConfigurationSection smartCacheServiceBusConfiguration = configuration.GetSection("Diginsight:SmartCache:ServiceBus");
             if (!string.IsNullOrEmpty(smartCacheServiceBusConfiguration[nameof(SmartCacheServiceBusOptions.ConnectionString)]) &&
                 !string.IsNullOrEmpty(smartCacheServiceBusConfiguration[nameof(SmartCacheServiceBusOptions.TopicName)]))
             {
                 smartCacheBuilder.SetServiceBusCompanion(
-                        sbo =>
-                        {
-                            smartCacheServiceBusConfiguration.Bind(sbo);
-                            sbo.SubscriptionName = SmartCacheServiceBusSubscriptionName; // add a GUID as a service bus subscription
-                        }
-                    );
+                    static (c, _) =>
+                    {
+                        IConfiguration sbc = c.GetSection("Diginsight:SmartCache:ServiceBus");
+                        return !string.IsNullOrEmpty(sbc[nameof(SmartCacheServiceBusOptions.ConnectionString)])
+                            && !string.IsNullOrEmpty(sbc[nameof(SmartCacheServiceBusOptions.TopicName)]);
+                    },
+                    sbo =>
+                    {
+                        configuration.GetSection("Diginsight:SmartCache:ServiceBus").Bind(sbo);
+                        sbo.SubscriptionName = SmartCacheServiceBusSubscriptionName;
+                    });
             }
             services.TryAddSingleton<ICacheKeyProvider, MyCacheKeyProvider>();
 
@@ -123,6 +136,9 @@ namespace AuthenticationSampleApi
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var logger = deferredLoggerFactory.CreateLogger<Startup>();
+            using var innerActivity = Observability.ActivitySource.StartMethodActivity(logger, new { app, env });
+
             if (env.IsDevelopment())
             {
                 //IdentityModelEventSource.ShowPII = true;

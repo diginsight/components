@@ -43,6 +43,7 @@ using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.Extensions.Configuration;
+using AuthenticationSampleClient.Models;
 #endregion
 
 namespace AuthenticationSampleClient
@@ -160,7 +161,8 @@ namespace AuthenticationSampleClient
                 const string action = "https://localhost:7213/api/Plants/getplants";
                 //using HttpResponseMessage responseMessage = await httpClient.GetAsync("api/v1/timezones");
                 using var request = new HttpRequestMessage(HttpMethod.Get, action);
-                //request.Content = MakeJsonContent(profileImage);
+                // request.Content = MakeJsonContent(profileImage);
+
                 var token = await credential.GetTokenAsync(new TokenRequestContext(Constants.Scopes), CancellationToken.None);
                 request.Headers.Add("Authorization", $"Bearer {token.Token}");
 
@@ -174,6 +176,36 @@ namespace AuthenticationSampleClient
 
             }
             catch (Exception _) { }
+        }
+        private async void btnRefItCall_Click(object sender, RoutedEventArgs e)
+        {
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { sender, e });
+
+            var credential = DelegatedTokenCredential.Create(null, async (tokenRequestContext, cancellationToken) =>
+            {
+                AuthenticationResult result = await GetAuthenticationToken();
+                return new AccessToken(result.AccessToken, result.ExpiresOn);
+            });
+            HttpClient client = new HttpClient { BaseAddress = new Uri("https://localhost:7213") };
+            var token = await credential.GetTokenAsync(new TokenRequestContext(Constants.Scopes), CancellationToken.None);
+            if (client.DefaultRequestHeaders.Contains("Authorization")) { client.DefaultRequestHeaders.Remove("Authorization"); }
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Token}");
+            var restApiService = RestService.For<IAuthenticationSampleApi>(client);
+
+            //var settings = new RefitSettings();
+            //settings.AuthorizationHeaderValueGetter = async (r, c) => {
+            //    var token = await credential.GetTokenAsync(new TokenRequestContext(Constants.Scopes), CancellationToken.None);
+            //    var bearer = "Bearer " + token.Token;
+            //    r.Headers.Add("Authorization", bearer);
+            //    return bearer;
+            //};
+            //var builder = RequestBuilder.ForType<IAuthenticationSampleApi>(settings);
+            //var restApiService = RestService.For<IAuthenticationSampleApi>(client, builder); 
+
+
+            var result1 = await restApiService.GetPlants();
+
+            activity.SetOutput(result1);
         }
 
 

@@ -22,6 +22,7 @@
 
 		<PackageReference Include="Microsoft.Identity.Web" Version="2.*" />
 
+
 		<ProjectReference Include="$(DiginsightSmartCacheSolutionDirectory)Diginsight.SmartCache.Externalization.AspNetCore\Diginsight.SmartCache.Externalization.AspNetCore.csproj" Condition="'$(DiginsightSmartCacheDirectImport)' == 'true'" />
 		<ProjectReference Include="$(DiginsightSmartCacheSolutionDirectory)Diginsight.SmartCache.Externalization.ServiceBus\Diginsight.SmartCache.Externalization.ServiceBus.csproj" Condition="'$(DiginsightSmartCacheDirectImport)' == 'true'" />
 		<PackageReference Include="Diginsight.SmartCache.Externalization.AspNetCore" Version="$(DiginsightSmartcacheVersion)" Condition="'$(DiginsightSmartcacheDirectImport)' != 'true'" />

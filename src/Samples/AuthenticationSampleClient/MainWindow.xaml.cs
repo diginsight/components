@@ -162,14 +162,11 @@ namespace AuthenticationSampleClient
                 //using HttpResponseMessage responseMessage = await httpClient.GetAsync("api/v1/timezones");
                 using var request = new HttpRequestMessage(HttpMethod.Get, action);
                 // request.Content = MakeJsonContent(profileImage);
-
                 var token = await credential.GetTokenAsync(new TokenRequestContext(Constants.Scopes), CancellationToken.None);
                 request.Headers.Add("Authorization", $"Bearer {token.Token}");
-
                 using var responseMessage = await httpClient.SendAsync(request);
 
                 var requestString = request?.Content != null ? await request?.Content?.ReadAsStringAsync() : null;
-
                 await ThrowExceptionIfNotSuccessAsync(responseMessage);
 
                 var plants = await ReadDeserializedContentAsync<IEnumerable<Plant>>(responseMessage);

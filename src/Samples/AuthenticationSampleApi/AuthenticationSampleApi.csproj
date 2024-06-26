@@ -42,6 +42,7 @@
 
 		<PackageReference Include="log4net" Version="2.*" />
 		<PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.*-*" />
+		<PackageReference Include="OpenTelemetry" Version="1.*" />
 		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.*" />
 		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.*" />
 		<PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.*-*" />
@@ -49,6 +50,7 @@
 		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.*" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.*" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.*" />
+
 
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.*" />

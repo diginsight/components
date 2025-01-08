@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-windows;net9.0-windows</TargetFrameworks>
+    <PackageIcon>common.components.png</PackageIcon>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>1.0.0.0</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows|AnyCPU'">
+    <NoWarn>1701;1702;0168:</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows|AnyCPU'">
+    <NoWarn>1701;1702;CS0168;</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\images\01. Project image\common.components.png" Link="common.components.png">
+      <PackagePath></PackagePath>
+      <Pack>True</Pack>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--<PackageReference Include="Azure.Identity" Version="1.*" />-->
+    <!--<PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.*" />-->
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.*" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.*" />
+    <!--<PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.*" />-->
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.*" />
+    <!--<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.*" />-->
+    <!--<PackageReference Include="Microsoft.Identity.Client.Broker" Version="4.54.0" />-->
+    <!--<PackageReference Include="Microsoft.Identity.Client.Broker" Version="4.54.0" />-->
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.*" />
+    <PackageReference Include="System.Net.Security" Version="4.3.2" />
+    <PackageReference Include="System.Security.AccessControl" Version="6.*" />
+    <PackageReference Include="System.Security.Claims" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
+    <!--<PackageReference Include="System.Security.Cryptography.Cng" Version="5.*" />-->
+    <PackageReference Include="System.Security.Cryptography.Csp" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.Encoding" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
+    <PackageReference Include="System.Security.Principal" Version="4.3.0" />
+
+    <ProjectReference Include="..\Diginsight.Components.Abstractions\Diginsight.Components.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

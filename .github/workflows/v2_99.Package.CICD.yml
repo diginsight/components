@@ -12,6 +12,11 @@ on:
     paths:
       - 'src/Diginsight.Components*/**'
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run the workflow'
+        required: true
+        default: 'Testms'
   
 jobs:
   installActions:

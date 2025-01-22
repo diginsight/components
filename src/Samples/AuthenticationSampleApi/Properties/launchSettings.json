@@ -19,7 +19,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "https": {
+    "Testms": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

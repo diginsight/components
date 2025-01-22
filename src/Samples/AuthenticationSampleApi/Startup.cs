@@ -76,7 +76,7 @@ namespace AuthenticationSampleApi
                     );
             }
 
-            //services.AddDiginsightOpenTelemetry().WithTracing(b => b.SetSampler(new AlwaysOnSampler()));
+            services.AddDiginsightOpenTelemetry().WithTracing(b => b.SetSampler(new AlwaysOnSampler()));
             //services.TryAddEnumerable(ServiceDescriptor.Singleton<IActivityListenerRegistration, ControllerActivityTaggerRegistration>());
 
             services.AddDynamicLogLevel<DefaultDynamicLogLevelInjector>();

@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using static Google.Protobuf.Compiler.CodeGeneratorResponse.Types;
 using OpenTelemetry.Trace;
 
 namespace AuthenticationSampleApi

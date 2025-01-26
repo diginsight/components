@@ -60,7 +60,9 @@ namespace AuthenticationSampleClient
         /// </summary>
         public static string[] Scopes = new[]
         {
-          "api://7ceef305-d076-4f0c-8d2c-ed7810935a8f/access_as_user"
+          //"api://7ceef305-d076-4f0c-8d2c-ed7810935a8f/access_as_user",
+          "api://9c90b0e2-405f-44c1-9610-e7803621e68a/access_as_user"
+          //"api://9c90b0e2-405f-44c1-9610-e7803621e68a/.default"
         };
     }
 }

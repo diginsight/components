@@ -58,42 +58,41 @@ public static class HostBuilderExtensions
         {
             var externalConfigurationFolderDirectoryInfo = new DirectoryInfo(externalConfigurationFolder!);
 
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var currentDirectoryInfo = new DirectoryInfo(currentDirectory);
+            var repositoryRoot = DirectoryHelper.GetRepositoryRoot(currentDirectory)!;
+            var repositoryRootInfo = new DirectoryInfo(repositoryRoot);
+
+            var currentDirectoryParts = new List<string>();
+            while (currentDirectoryInfo != null && currentDirectoryInfo.Exists)
+            {
+                currentDirectoryParts.Insert(0, currentDirectoryInfo.Name);
+                currentDirectoryInfo = currentDirectoryInfo.Parent;
+                if (currentDirectoryInfo == null || currentDirectoryInfo.FullName.Equals(repositoryRootInfo.FullName)) { break; }
+            }
+
+            var found = false;
             var potentialAppsettingsFolder = externalConfigurationFolderDirectoryInfo.FullName;
-            var potentialFilePath = Path.Combine(potentialAppsettingsFolder, appsettingsFileName);
-            if (File.Exists(potentialFilePath))
+            while (currentDirectoryParts.Count() >= 0)
             {
-                appsettingsFilePath = potentialFilePath;
-            }
-            else
-            {
-                var currentDirectory = Directory.GetCurrentDirectory();
-                var currentDirectoryInfo = new DirectoryInfo(currentDirectory);
-                var repositoryRoot = DirectoryHelper.GetRepositoryRoot(currentDirectory)!;
-                var repositoryRootInfo = new DirectoryInfo(repositoryRoot);
-
-                var currentDirectoryParts = new List<string>();
-                while (currentDirectoryInfo != null && currentDirectoryInfo.Exists)
+                var potentialSubfolder = currentDirectoryParts.Any() ? Path.Combine(currentDirectoryParts.ToArray()) : string.Empty;
+                var potentialFolder = Path.Combine(potentialAppsettingsFolder, potentialSubfolder);
+                var potentialFilePath = Path.Combine(potentialFolder, appsettingsFileName);
+                if (File.Exists(potentialFilePath))
                 {
-                    currentDirectoryParts.Insert(0, currentDirectoryInfo.Name);
-                    currentDirectoryInfo = currentDirectoryInfo.Parent;
-                    if (currentDirectoryInfo == null || currentDirectoryInfo.FullName.Equals(repositoryRootInfo.FullName)) { break; }
+                    appsettingsFileFolder = potentialFolder;
+                    appsettingsFilePath = potentialFilePath;
+                    found = true;
+                    break;
                 }
-
-                foreach (var part in currentDirectoryParts)
-                {
-                    potentialAppsettingsFolder = Path.Combine(potentialAppsettingsFolder, part);
-                    potentialFilePath = Path.Combine(potentialAppsettingsFolder, appsettingsFileName);
-                    if (File.Exists(potentialFilePath))
-                    {
-                        appsettingsFileFolder = potentialAppsettingsFolder;
-                        appsettingsFilePath = potentialFilePath;
-                        break;
-                    }
-                }
+                if (currentDirectoryParts.Any()) { currentDirectoryParts.RemoveAt(currentDirectoryParts.Count() - 1); }
             }
 
-            AppendLocalJsonFile(appsettingsFilePath, appsettingsEnvironmentIndex, builder, isLocal);
-            builder.Sources.RemoveAt(appsettingsEnvironmentIndex);
+            if (found)
+            {
+                AppendLocalJsonFile(appsettingsFilePath, appsettingsEnvironmentIndex, builder, isLocal);
+                builder.Sources.RemoveAt(appsettingsEnvironmentIndex);
+            }
         }
 
         if (isLocal)

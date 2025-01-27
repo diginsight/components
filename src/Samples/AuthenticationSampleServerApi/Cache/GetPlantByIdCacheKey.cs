@@ -3,16 +3,16 @@ using Diginsight.SmartCache;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 
-public record PlantInvalidationRule(Guid PlantId) : IInvalidationRule;
+public record UserInvalidationRule(Guid UserId) : IInvalidationRule;
 
 
 //[SuppressMessage("ReSharper", "NotAccessedPositionalProperty.Local")]
-//internal sealed record GetPlantByIdCacheKey(Guid PlantId) : IInvalidatable
+//internal sealed record GetUserByIdCacheKey(Guid UserId) : IInvalidatable
 //{
 //    public bool IsInvalidatedBy(IInvalidationRule invalidationRule, out Func<Task> ic)
 //    {
 //        ic = null;
-//        if (invalidationRule is PlantInvalidationRule pir && (PlantId == Guid.Empty || pir.PlantId == PlantId))
+//        if (invalidationRule is UserInvalidationRule pir && (UserId == Guid.Empty || pir.UserId == UserId))
 //        {
 //            return true;
 //        }
@@ -20,27 +20,27 @@ public record PlantInvalidationRule(Guid PlantId) : IInvalidationRule;
 //    }
 //}
 
-internal sealed class GetPlantByIdCacheKey : IInvalidatable
+internal sealed class GetUserByIdCacheKey : IInvalidatable
 {
     private readonly EqualityCore equalityCore;
 
     public Func<Task> ReloadAsync { private get; set; }
 
     [JsonProperty]
-    private Guid PlantId => equalityCore.PlantId;
+    private Guid UserId => equalityCore.UserId;
 
-    public GetPlantByIdCacheKey(
+    public GetUserByIdCacheKey(
         ICacheKeyService cacheKeyService,
         Guid plantId
     ) : this(new EqualityCore(plantId)) { }
 
     [JsonConstructor]
-    private GetPlantByIdCacheKey(Guid plantId) : this(new EqualityCore(plantId)) { }
-    private GetPlantByIdCacheKey(EqualityCore equalityCore) { this.equalityCore = equalityCore; }
+    private GetUserByIdCacheKey(Guid plantId) : this(new EqualityCore(plantId)) { }
+    private GetUserByIdCacheKey(EqualityCore equalityCore) { this.equalityCore = equalityCore; }
 
     public bool IsInvalidatedBy(IInvalidationRule invalidationRule, out Func<Task> ic)
     {
-        if (invalidationRule is PlantInvalidationRule air && (PlantId == Guid.Empty || air.PlantId == PlantId))
+        if (invalidationRule is UserInvalidationRule air && (UserId == Guid.Empty || air.UserId == UserId))
         {
             ic = ReloadAsync;
             return true;
@@ -50,7 +50,7 @@ internal sealed class GetPlantByIdCacheKey : IInvalidatable
         return false;
     }
 
-    public override bool Equals(object obj) => equalityCore == (obj as GetPlantByIdCacheKey)?.equalityCore;
+    public override bool Equals(object obj) => equalityCore == (obj as GetUserByIdCacheKey)?.equalityCore;
 
     public override int GetHashCode() => equalityCore.GetHashCode();
 
@@ -63,6 +63,6 @@ internal sealed class GetPlantByIdCacheKey : IInvalidatable
     }
 
     [SuppressMessage("ReSharper", "NotAccessedPositionalProperty.Local")]
-    internal sealed record EqualityCore(Guid PlantId);
+    internal sealed record EqualityCore(Guid UserId);
 }
 

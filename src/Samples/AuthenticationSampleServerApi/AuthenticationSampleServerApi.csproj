@@ -8,6 +8,7 @@
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<DocumentationFile>AuthenticationSampleServerApi.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <UserSecretsId>b6714794-3702-42aa-a722-0b5d769d5e28</UserSecretsId>
 	</PropertyGroup>
 
   <Choose>
@@ -46,7 +47,7 @@
 
 		<PackageReference Include="RestSharp" Version="112.*" />
 
-		<PackageReference Include="Scrutor" Version="5.*" />
+		<PackageReference Include="Scrutor" Version="6.*" />
     
 		<PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.*" />
     <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.*" />
@@ -67,10 +68,6 @@
 
 	<ItemGroup>
 		<PackageReference Update="Microsoft.SourceLink.GitHub" Version="9.*" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Content\" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -13,11 +13,36 @@
 
 
   <ItemGroup>
-    <None Include="..\..\images\01. Project image\common.components.png" Link="common.components.png" >
+    <None Include="..\..\images\01. Project image\common.components.png" Link="common.components.png">
       <PackagePath></PackagePath>
       <Pack>True</Pack>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.*" />
+
+    <PackageReference Include="Microsoft.Identity.Web" Version="3.*" />
+
+    <PackageReference Include="Asp.Versioning.Abstractions" Version="8.*" />
+    <PackageReference Include="Asp.Versioning.Http" Version="8.*" />
+    <PackageReference Include="Asp.Versioning.Http.Client" Version="8.*" />
+
+    <PackageReference Include="RestSharp" Version="112.*" />
+
+    <PackageReference Include="Scrutor" Version="6.*" />
+
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.*" />
+    <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.*" />
+
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Diginsight.Components.Abstractions\Diginsight.Components.Abstractions.csproj" />
+    <ProjectReference Include="..\Diginsight.Components.Presentation.Abstractions\Diginsight.Components.Presentation.Abstractions.csproj" />
   </ItemGroup>
   
 </Project>

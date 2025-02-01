@@ -6,63 +6,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AuthenticationSampleClient
+namespace AuthenticationSampleClient;
+
+public static class Constants
 {
-    //public class CustomTokenCredential : TokenCredential
-    //{
-    //    private readonly ClientCredentialProvider _provider;
-    //    private readonly string[] _scopes;
-    //    private readonly IAccount _account;
+    public static Type T = typeof(Constants);
+    public const string LOGGINGCONFIGSECTION = "Logging";
+    public const string APPINSIGHTSCONFIGSECTION = "ApplicationInsights";
+    public const string APPINSIGHTSINSTRUMENTATIONKEY = "ApplicationInsights:InstrumentationKey";
+    public const string APPINSIGHTSCONNECTIONSTRING = "ApplicationInsights:ConnectionString";
+    public const string ENABLEREQUESTTRACKINGTELEMETRYMODULE = "ApplicationInsights:EnableRequestTrackingTelemetryModule";
+    public const string INCLUDEOPERATIONID = "ApplicationInsights:IncludeOperationId";
+    public const string INCLUDEREQUESTBODY = "ApplicationInsights:IncludeRequestBody";
+    public const string INCLUDEHEADERS = "ApplicationInsights:IncludeHeaders";
 
-    //    public CustomTokenCredential(ClientCredentialProvider provider, string[] scopes, IAccount account)
-    //    {
-    //        _provider = provider;
-    //        _scopes = scopes;
-    //        _account = account;
-    //    }
+    /// <summary>
+    /// The base URI for the Datasync service.
+    /// </summary>
+    public static string ServiceUri = "https://localhost";
 
-    //    public override async ValueTask<AccessToken> GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
-    //    {
-    //        var token = await _provider.GetTokenForUserAsync(_scopes, _account);
-    //        return new AccessToken(token.AccessToken, token.ExpiresOn);
-    //    }
+    ///// <summary>
+    ///// The application (client) ID for the native app within Microsoft Entra ID
+    ///// </summary>
+    //public static string ApplicationId = "<client-id>";
 
-    //    public override AccessToken GetToken(TokenRequestContext requestContext, CancellationToken cancellationToken)
-    //    {
-    //        return GetTokenAsync(requestContext, cancellationToken).Result;
-    //    }
-    //}
-
-    public static class Constants
+    /// <summary>
+    /// The list of scopes to request
+    /// </summary>
+    public static string[] Scopes = new[]
     {
-        public static Type T = typeof(Constants);
-        public const string LOGGINGCONFIGSECTION = "Logging";
-        public const string APPINSIGHTSCONFIGSECTION = "ApplicationInsights";
-        public const string APPINSIGHTSINSTRUMENTATIONKEY = "ApplicationInsights:InstrumentationKey";
-        public const string APPINSIGHTSCONNECTIONSTRING = "ApplicationInsights:ConnectionString";
-        public const string ENABLEREQUESTTRACKINGTELEMETRYMODULE = "ApplicationInsights:EnableRequestTrackingTelemetryModule";
-        public const string INCLUDEOPERATIONID = "ApplicationInsights:IncludeOperationId";
-        public const string INCLUDEREQUESTBODY = "ApplicationInsights:IncludeRequestBody";
-        public const string INCLUDEHEADERS = "ApplicationInsights:IncludeHeaders";
-
-        /// <summary>
-        /// The base URI for the Datasync service.
-        /// </summary>
-        public static string ServiceUri = "https://localhost";
-
-        ///// <summary>
-        ///// The application (client) ID for the native app within Microsoft Entra ID
-        ///// </summary>
-        //public static string ApplicationId = "<client-id>";
-
-        /// <summary>
-        /// The list of scopes to request
-        /// </summary>
-        public static string[] Scopes = new[]
-        {
-          //"api://7ceef305-d076-4f0c-8d2c-ed7810935a8f/access_as_user",
-          "api://9c90b0e2-405f-44c1-9610-e7803621e68a/access_as_user"
-          //"api://9c90b0e2-405f-44c1-9610-e7803621e68a/.default"
-        };
-    }
+      //"api://7ceef305-d076-4f0c-8d2c-ed7810935a8f/access_as_user",
+      "api://9c90b0e2-405f-44c1-9610-e7803621e68a/access_as_user"
+      //"api://f8e6e695-51dc-44df-80f0-00e1f144da4c/access_as_user"
+    };
 }

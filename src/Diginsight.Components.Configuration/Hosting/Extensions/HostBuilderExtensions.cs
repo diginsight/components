@@ -109,9 +109,9 @@ public static class HostBuilderExtensions
         var kvUri = configuration["AzureKeyVault:Uri"];
         if (!string.IsNullOrEmpty(kvUri))
         {
-            var clientId = configuration["AzureKeyVault:ClientId"];
-            var tenantId = configuration["AzureKeyVault:TenantId"];
-            var clientSecret = configuration["AzureKeyVault:ClientSecret"];
+            var clientId = configuration["AzureKeyVault:ClientId"].HardTrim();
+            var tenantId = configuration["AzureKeyVault:TenantId"].HardTrim();
+            var clientSecret = configuration["AzureKeyVault:ClientSecret"].HardTrim();
             var applicationCredentialProvider = new ApplicationCredentialProvider(environment);
 
             var credential = applicationCredentialProvider.Get(tenantId, clientId, clientSecret);

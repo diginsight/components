@@ -1,0 +1,77 @@
+﻿using Microsoft.Extensions.Options;
+using Microsoft.Identity.Client;
+using Microsoft.Identity.Client.AppConfig;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
+
+namespace Diginsight.Components.Configuration;
+
+
+public sealed class DelegatedAuthenticationHandler : DelegatingHandler
+{
+    private readonly IOptionsMonitor<AuthenticatedClientOptions> authenticatedClientOptionsMonitor;
+
+    public DelegatedAuthenticationHandler(IOptionsMonitor<AuthenticatedClientOptions> authenticatedClientOptionsMonitor)
+    {
+        this.authenticatedClientOptionsMonitor = authenticatedClientOptionsMonitor;
+    }
+
+    public async Task<AuthenticationResult> AcquiresTokenForClientAsync(string clientName, CancellationToken cancellationToken)
+    {
+        IAuthenticatedClientOptions aco = authenticatedClientOptionsMonitor.Get(clientName);
+        if (aco.Scope is not { } joinedScopes ||
+            joinedScopes.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) is not { Length: > 0 } scopes)
+        {
+            throw new InvalidOperationException($"{nameof(IAuthenticatedClientOptions.Scope)} is empty");
+        }
+
+        if (aco.TenantId is not { } tenantId)
+        {
+            throw new InvalidOperationException($"{nameof(IAuthenticatedClientOptions.TenantId)} is empty");
+        }
+        if (aco.AppRegistrationClientId is not { } appRegistrationClientId)
+        {
+            throw new InvalidOperationException($"{nameof(IAuthenticatedClientOptions.AppRegistrationClientId)} is empty");
+        }
+        if (aco.AppRegistrationClientSecret is not { } appRegistrationClientSecret)
+        {
+            throw new InvalidOperationException($"{nameof(IAuthenticatedClientOptions.AppRegistrationClientSecret)} is empty");
+        }
+
+        IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
+            .Create(appRegistrationClientId)
+            .WithTenantId(tenantId)
+            .WithClientSecret(appRegistrationClientSecret)
+            .Build();
+
+
+        var builder = confidentialClientApplication.AcquireTokenForClient(scopes);
+        var result = await builder.ExecuteAsync(cancellationToken);
+        return result;
+    }
+
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        if (request.Headers.Authorization is null)
+        {
+            AuthenticationResult authenticationResult = await AcquiresTokenForClientAsync("", cancellationToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue(authenticationResult.TokenType, authenticationResult.AccessToken);
+        }
+
+        return await base.SendAsync(request, cancellationToken);
+    }
+
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    IManagedIdentityApplication CreateManagedIdentityApplication(string clientId)
+    {
+        return ManagedIdentityApplicationBuilder.Create(
+                clientId is { } managedIdentityClientId ? ManagedIdentityId.WithUserAssignedClientId(managedIdentityClientId) : ManagedIdentityId.SystemAssigned
+            ).Build();
+    }
+
+
+
+}

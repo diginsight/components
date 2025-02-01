@@ -44,6 +44,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.Extensions.Configuration;
 using AuthenticationSampleClient.Models;
+using Microsoft.Extensions.Options;
+using Diginsight.Components;
 #endregion
 
 namespace AuthenticationSampleClient
@@ -52,11 +54,15 @@ namespace AuthenticationSampleClient
     public partial class MainWindow : Window
     {
         static Type T = typeof(MainWindow);
+        private readonly IServiceProvider serviceProvider;
         private ILogger<MainWindow> logger;
         private readonly IClassAwareOptionsMonitor<AppSettingsOptions> appSettingsOptionsMonitor;
         private readonly IClassAwareOptionsMonitor<FeatureFlagOptions> featureFlagOptionsMonitor;
-        private readonly IClassAwareOptionsMonitor<AzureKeyVaultOptions> azureKeyVaultOptionsMonitor;
         private readonly IClassAwareOptionsMonitor<AzureAdOptions> azureAdOptionsMonitor;
+        private readonly IOptionsMonitor<HttpClientOptions> authenticationSampleApiOptionsMonitor;
+        private readonly HttpClientOptions authenticationSampleApiOptions;
+
+        private readonly IHttpClientFactory httpClientFactory;
         private readonly HttpClient httpClient;
 
         private string GetScope([CallerMemberName] string memberName = "") { return memberName; }
@@ -87,31 +93,39 @@ namespace AuthenticationSampleClient
 
             var host = App.Host;
         }
-        public MainWindow(ILogger<MainWindow> logger,
+        public MainWindow(
+                          IServiceProvider serviceProvider,
+                          ILogger<MainWindow> logger,
                           IClassAwareOptionsMonitor<AppSettingsOptions> appSettingsOptionsMonitor,
                           IClassAwareOptionsMonitor<FeatureFlagOptions> featureFlagOptionsMonitor,
-                          IClassAwareOptionsMonitor<AzureKeyVaultOptions> azureKeyVaultOptionsMonitor,
                           IClassAwareOptionsMonitor<AzureAdOptions> azureAdOptionsMonitor,
+                          //IClassAwareOptionsMonitor<AuthenticationSampleApiOptions> authenticationSampleApiOptionsMonitor,
+                          IHttpClientFactory httpClientFactory,
                           HttpClient httpClient,
                           IHttpContextAccessor httpContextAccessor)
         {
+            this.serviceProvider = serviceProvider;
             this.logger = logger;
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { logger });
 
             this.featureFlagOptionsMonitor = featureFlagOptionsMonitor;
             this.appSettingsOptionsMonitor = appSettingsOptionsMonitor;
-            this.azureKeyVaultOptionsMonitor = azureKeyVaultOptionsMonitor;
             this.azureAdOptionsMonitor = azureAdOptionsMonitor;
+            //this.authenticationSampleApiOptionsMonitor = authenticationSampleApiOptionsMonitor;
+            this.httpClientFactory = httpClientFactory;
+
+            this.authenticationSampleApiOptions = serviceProvider.GetRequiredService<IOptionsMonitor<HttpClientOptions>>().Get("AuthenticationSampleApi");
 
             var clientId = azureAdOptionsMonitor.CurrentValue.ClientId;
             var tenantId = azureAdOptionsMonitor.CurrentValue.TenantId;
             var redirectUri = azureAdOptionsMonitor.CurrentValue.RedirectUri;
-
+            
             var app = PublicClientApplicationBuilder
                         .Create(clientId)
                         .WithAuthority(AzureCloudInstance.AzurePublic, tenantId)
                         .WithRedirectUri(redirectUri)
                         .Build();
+
             IdentityClient = app;
 
             this.httpClient = httpClient;
@@ -127,7 +141,6 @@ namespace AuthenticationSampleClient
 
         }
 
-
         int i = 0;
         private async void btnRestSharpCall_Click(object sender, RoutedEventArgs e)
         {
@@ -140,8 +153,11 @@ namespace AuthenticationSampleClient
                     AuthenticationResult result = await GetAuthenticationToken();
                     return new AccessToken(result.AccessToken, result.ExpiresOn);
                 });
+
+                //var authenticationSampleApiOptions = authenticationSampleApiOptionsMonitor.CurrentValue;
+                
                 var service = new RestSharpService(credential);
-                var res = await service.Get("https://localhost:7213/api/Plants/getplants", null, null);
+                var res = await service.Get($"{authenticationSampleApiOptions.BaseUrl}api/Plants/getplants", null, null);
 
             }
             catch (Exception _) { }
@@ -158,7 +174,8 @@ namespace AuthenticationSampleClient
                     return new AccessToken(result.AccessToken, result.ExpiresOn);
                 });
 
-                const string action = "https://localhost:7213/api/Plants/getplants";
+                //var authenticationSampleApiOptions = authenticationSampleApiOptionsMonitor.CurrentValue;
+                string action = $"{authenticationSampleApiOptions.BaseUrl}api/Plants/getplants";
                 //using HttpResponseMessage responseMessage = await httpClient.GetAsync("api/v1/timezones");
                 using var request = new HttpRequestMessage(HttpMethod.Get, action);
                 // request.Content = MakeJsonContent(profileImage);
@@ -183,7 +200,8 @@ namespace AuthenticationSampleClient
                 AuthenticationResult result = await GetAuthenticationToken();
                 return new AccessToken(result.AccessToken, result.ExpiresOn);
             });
-            HttpClient client = new HttpClient { BaseAddress = new Uri("https://localhost:7213") };
+            //var authenticationSampleApiOptions = authenticationSampleApiOptionsMonitor.CurrentValue;
+            HttpClient client = new HttpClient { BaseAddress = authenticationSampleApiOptions.BaseUrl };
             var token = await credential.GetTokenAsync(new TokenRequestContext(Constants.Scopes), CancellationToken.None);
             if (client.DefaultRequestHeaders.Contains("Authorization")) { client.DefaultRequestHeaders.Remove("Authorization"); }
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Token}");

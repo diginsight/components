@@ -47,7 +47,4 @@ namespace AuthenticationSampleClient
             info.AddValue("RawContent", RawContent);
         }
     }
-
-
-
 }

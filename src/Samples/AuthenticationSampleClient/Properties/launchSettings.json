@@ -1,10 +1,12 @@
 {
   "profiles": {
-    "AuthenticationSample600v3": {
+    "AuthenticationSampleApi.Testms": {
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DOTNET_ENVIRONMENT": "Development"
+        "DOTNET_ENVIRONMENT": "Development",
+        "AppsettingsEnvironmentName": "Testms",
+        "ExternalConfigurationFolder": "..\\..\\..\\..\\components.internal"
       }
     }
   }

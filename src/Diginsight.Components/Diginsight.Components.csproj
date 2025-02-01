@@ -1,10 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0-windows;net9.0-windows</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <PackageIcon>common.components.png</PackageIcon>
-    <UseWindowsForms>true</UseWindowsForms>
-    <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -32,6 +30,7 @@
     <!--<PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.*" />-->
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.*" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.*" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.*" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.*" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -54,6 +53,13 @@
     <PackageReference Include="System.Security.Principal" Version="4.3.0" />
 
     <ProjectReference Include="..\Diginsight.Components.Abstractions\Diginsight.Components.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Core\Diginsight.Core.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
+    <ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Diagnostics\Diginsight.Diagnostics.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
+    <PackageReference Include="Diginsight.Core" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
+    <PackageReference Include="Diginsight.Diagnostics" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
   </ItemGroup>
 
 </Project>

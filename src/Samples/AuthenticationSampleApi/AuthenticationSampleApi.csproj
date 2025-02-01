@@ -1,14 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-		<Nullable>enable</Nullable>
+		<!--<TargetFrameworks>net8.0;net9.0</TargetFrameworks>-->
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>23ff649e-5c90-4e70-85dc-f30a3eca5742</UserSecretsId>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<DocumentationFile>AuthenticationSampleApi.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <PlatformTarget>x64</PlatformTarget>
 	</PropertyGroup>
 
   <Choose>
@@ -22,8 +24,15 @@
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.*" />
       </ItemGroup>
     </Otherwise>
-  </Choose>	
-  
+  </Choose>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <PackageReference Include="Microsoft.AspNetCore.AzureAppServices.HostingStartup">
+      <Version>9.*</Version>
+    </PackageReference>
+  </ItemGroup>
+
+
   <ItemGroup>
 		<ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Core\Diginsight.Core.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
 		<ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Diagnostics.Log4Net\Diginsight.Diagnostics.Log4Net.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
@@ -38,8 +47,18 @@
 		<PackageReference Include="Diginsight.SmartCache.Externalization.AspNetCore" Version="$(DiginsightSmartcacheVersion)" Condition="'$(DiginsightSmartcacheDirectImport)' != 'true'" />
 		<PackageReference Include="Diginsight.SmartCache.Externalization.ServiceBus" Version="$(DiginsightSmartcacheVersion)" Condition="'$(DiginsightSmartcacheDirectImport)' != 'true'" />
 		<ProjectReference Include="..\..\Diginsight.Components.Configuration\Diginsight.Components.Configuration.csproj" />
+		<ProjectReference Include="..\..\Diginsight.Components\Diginsight.Components.csproj" />
+  </ItemGroup>
 
-		<PackageReference Include="Microsoft.Identity.Web" Version="3.*" />
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.12" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.IISIntegration" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="3.*" />
+    <PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="3.*" />
+    <PackageReference Include="Microsoft.Identity.Web.MicrosoftGraph" Version="3.*" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="3.*" />
 
     <PackageReference Include="Asp.Versioning.Abstractions" Version="8.*" />
     <PackageReference Include="Asp.Versioning.Http" Version="8.*" />
@@ -72,6 +91,8 @@
 
 	<ItemGroup>
 		<Folder Include="Content\" />
+		<Folder Include="Properties\PublishProfiles\" />
+		<Folder Include="Properties\ServiceDependencies\" />
 	</ItemGroup>
 
 </Project>

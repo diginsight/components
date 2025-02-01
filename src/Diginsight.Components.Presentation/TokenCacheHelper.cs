@@ -36,7 +36,7 @@ using Microsoft.Identity.Client;
 
 #nullable enable    
 
-namespace Diginsight.Components;
+namespace Diginsight.Components.Presentation;
 
 static class TokenCacheHelper
 {

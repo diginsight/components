@@ -24,6 +24,9 @@ using Diginsight.Components.Configuration;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using OpenTelemetry;
 using OpenTelemetry.Trace;
+using Microsoft.Extensions.Options;
+using Diginsight.Components;
+using Diginsight.Components.Extensions;
 
 namespace AuthenticationSampleApi
 {
@@ -44,7 +47,7 @@ namespace AuthenticationSampleApi
         public void ConfigureServices(IServiceCollection services)
         {
             var logger = deferredLoggerFactory.CreateLogger<Startup>();
-            using var innerActivity = Observability.ActivitySource.StartMethodActivity(logger, new { services });
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { services });
 
             services.AddHttpContextAccessor();
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
@@ -120,8 +123,6 @@ namespace AuthenticationSampleApi
             //.AddAnalysis()
             //.Configure<AnalysisOptions>(configuration.GetSection("Observability:Analysis"));
 
-
-
             //services.Configure<LogStringTypeContractAccessor>(ConfigureTypeContracts);
             services.ConfigureRedisCacheSettings(configuration);
 
@@ -182,6 +183,25 @@ namespace AuthenticationSampleApi
             //services.TryAddSingleton<IActivityTagger, ActivityTagger>();
 
 
+
+            services
+                .Configure<AuthenticatedClientOptions>("AuthenticationSampleServerApi", configuration.GetSection("AuthenticationSampleServerApi"))
+                .Configure<HttpClientOptions>("AuthenticationSampleServerApi", configuration.GetSection("AuthenticationSampleServerApi"))
+                .AddHttpClient("AuthenticationSampleServerApi")
+                .ConfigureHttpClient(
+                    static (sp, hc) =>
+                    {
+                        IHttpClientOptions httpClientOptions = sp.GetRequiredService<IOptionsMonitor<HttpClientOptions>>().Get("AuthenticationSampleServerApi");
+                        hc.BaseAddress = httpClientOptions.BaseUrl;
+
+                        // if any => APIM subscription key
+                    }
+                )
+                .AddApplicationPermissionAuthentication()
+                .AddBodyLoggingHandler();
+
+
+
             IsSwaggerEnabled = configuration.GetValue<bool>("IsSwaggerEnabled");
             if (IsSwaggerEnabled)
             {
@@ -193,7 +213,7 @@ namespace AuthenticationSampleApi
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             var logger = deferredLoggerFactory.CreateLogger<Startup>();
-            using var innerActivity = Observability.ActivitySource.StartMethodActivity(logger, new { app, env });
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { app, env });
 
             if (env.IsDevelopment())
             {

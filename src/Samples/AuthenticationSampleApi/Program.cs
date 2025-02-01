@@ -16,6 +16,8 @@ public class Program
         DeferredLoggerFactory.ActivitySourceFilter = (activitySource) => true; // activitySource.Name.StartsWith($"AuthenticationSampleApi") || activitySource.Name.StartsWith($"Diginsight.Components")
         var logger = DeferredLoggerFactory.CreateLogger<Program>();
 
+        //System.Diagnostics.Debugger.Launch();
+
         IWebHost host;
         using (var activity = Observability.ActivitySource.StartMethodActivity(logger, new { args }))
         {

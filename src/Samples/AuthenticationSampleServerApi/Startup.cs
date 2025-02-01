@@ -24,6 +24,7 @@ using Diginsight.Components.Configuration;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using OpenTelemetry;
 using OpenTelemetry.Trace;
+using Microsoft.Extensions.Options;
 
 namespace AuthenticationSampleServerApi
 {
@@ -82,7 +83,7 @@ namespace AuthenticationSampleServerApi
             services.AddDynamicLogLevel<DefaultDynamicLogLevelInjector>();
             services.FlushOnCreateServiceProvider(deferredLoggerFactory);
 
-
+            //services.AddMicrosoftIdentityWebApiAuthentication(this.configuration);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddMicrosoftIdentityWebApi(configuration); //.AddJwtBearer() 
             services.AddAuthorization();
@@ -119,8 +120,6 @@ namespace AuthenticationSampleServerApi
             //services
             //.AddAnalysis()
             //.Configure<AnalysisOptions>(configuration.GetSection("Observability:Analysis"));
-
-
 
             //services.Configure<LogStringTypeContractAccessor>(ConfigureTypeContracts);
             services.ConfigureRedisCacheSettings(configuration);
@@ -180,7 +179,6 @@ namespace AuthenticationSampleServerApi
             }
             services.TryAddSingleton<ICacheKeyProvider, MyCacheKeyProvider>();
             //services.TryAddSingleton<IActivityTagger, ActivityTagger>();
-
 
             IsSwaggerEnabled = configuration.GetValue<bool>("IsSwaggerEnabled");
             if (IsSwaggerEnabled)

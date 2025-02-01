@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net8.0-windows7.0</TargetFramework>
-		<UseWPF>true</UseWPF>
+    <TargetFrameworks>net8.0-windows;net9.0-windows</TargetFrameworks>
+    <UseWPF>true</UseWPF>
 		<UserSecretsId>24d38bd0-a6a9-4190-8efa-894bedba7e23</UserSecretsId>
 	</PropertyGroup>
 
@@ -61,9 +61,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Diginsight.Core" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
 		<PackageReference Include="Diginsight.Diagnostics" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
 		<PackageReference Include="Diginsight.Diagnostics.Log4Net" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
@@ -73,6 +70,8 @@
 		<ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Core\Diginsight.Core.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
 		<ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Diagnostics.Log4Net\Diginsight.Diagnostics.Log4Net.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
 		<ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Diagnostics\Diginsight.Diagnostics.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
+		<ProjectReference Include="..\..\Diginsight.Components.Configuration\Diginsight.Components.Configuration.csproj" />
+		<ProjectReference Include="..\..\Diginsight.Components\Diginsight.Components.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -93,10 +92,6 @@
 		<Folder Include="Extensions\" />
 		<Folder Include="Image\" />
 		<Folder Include="Services\" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<!--<PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />-->
 	</ItemGroup>
 
 </Project>

@@ -18,6 +18,15 @@ public sealed class ApplicationCredentialProvider //: ICredentialProvider
     {
         ICollection<TokenCredential> credentials = new List<TokenCredential>();
 
+        if (tenantId is not null && clientId is not null && clientSecret is not null)
+        {
+            ClientSecretCredentialOptions credentialOptions3 = new();
+            SetAuthorityHost(credentialOptions3);
+            credentials.Add(new ClientSecretCredential(tenantId, clientId, clientSecret, credentialOptions3));
+        }
+
+        //if (!credentials.Any())
+        //{
         if (environment.IsDevelopment())
         {
             AzureCliCredentialOptions credentialOptions4 = new();
@@ -34,22 +43,15 @@ public sealed class ApplicationCredentialProvider //: ICredentialProvider
         }
         else
         {
-            WorkloadIdentityCredentialOptions credentialOptions1 = new();
-            SetAuthorityHost(credentialOptions1);
-            credentials.Add(new WorkloadIdentityCredential(credentialOptions1));
+            //WorkloadIdentityCredentialOptions credentialOptions1 = new();
+            //SetAuthorityHost(credentialOptions1);
+            //credentials.Add(new WorkloadIdentityCredential(credentialOptions1));
 
             TokenCredentialOptions credentialOptions2 = new();
             SetAuthorityHost(credentialOptions2);
             credentials.Add(new ManagedIdentityCredential(clientId, credentialOptions2));
         }
-
-        if (tenantId is not null && clientId is not null && clientSecret is not null)
-        {
-            ClientSecretCredentialOptions credentialOptions3 = new();
-            SetAuthorityHost(credentialOptions3);
-            credentials.Add(new ClientSecretCredential(tenantId, clientId, clientSecret, credentialOptions3));
-        }
-
+        //}
         return new ChainedTokenCredential(credentials.ToArray());
     }
 

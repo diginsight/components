@@ -38,14 +38,14 @@ using System.Net.Http.Headers;
 using System.Diagnostics;
 //using System.Windows.Interop;
 using Microsoft.Identity.Client.Extensibility;
-using Microsoft.Extensions.Logging;
+//using Microsoft.Extensions.Logging;
 //using System.Windows.Interop;
 //using Microsoft.Identity.Client.Broker;
 using System.Security.Principal;
 using System.Windows.Interop;
-//using Microsoft.Identity.Client.Broker;
+using Microsoft.Extensions.Logging;
 #endregion
-namespace Diginsight.Components
+namespace Diginsight.Components.Presentation
 {
     public class AuthenticationService //: IAuthDelegate
     {
@@ -87,13 +87,13 @@ namespace Diginsight.Components
         public IPublicClientApplication App { get => publicClientApp; set => publicClientApp = value; }
 
         #region .ctor
-        public AuthenticationService(string tenantId, 
-                                     string applicationId, 
-                                     string appName, 
-                                     string appVersion, 
-                                     string redirectUri, 
-                                     string[] scopes, 
-                                     string oauthVersion, 
+        public AuthenticationService(string tenantId,
+                                     string applicationId,
+                                     string appName,
+                                     string appVersion,
+                                     string redirectUri,
+                                     string[] scopes,
+                                     string oauthVersion,
                                      Window window) // ApplicationInfo appInfo, 
         {
             // using (var scope = logger.BeginMethodScope(new { tenantId, applicationId, appName, appVersion, redirectUri, scopes, oauthVersion, window = window }))

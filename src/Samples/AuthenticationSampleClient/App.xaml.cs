@@ -35,6 +35,7 @@ using System.Threading.Tasks;
 using Refit;
 using Polly;
 using Diginsight;
+using Diginsight.Logging;
 using Diginsight.Diagnostics;
 using Diginsight.Diagnostics.Log4Net;
 using log4net.Appender;
@@ -44,6 +45,9 @@ using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Diginsight.Stringify;
+using Diginsight.Components;
+using Diginsight.Components.Configuration;
+using Diginsight.Components.Extensions;
 #endregion
 
 namespace AuthenticationSampleClient
@@ -88,34 +92,54 @@ namespace AuthenticationSampleClient
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
             var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development";
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables()
-                .AddUserSecrets<App>()
-                .Build();
-            logger.LogDebug($"var configuration = new ConfigurationBuilder()....Build() comleted");
-            logger.LogDebug("environment:{environment},configuration:{Configuration}", environment, configuration);
+            //var configuration = new ConfigurationBuilder()
+            //    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            //    .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
+            //    .AddEnvironmentVariables()
+            //    .AddUserSecrets<App>()
+            //    .Build();
+
+            //logger.LogDebug($"var configuration = new ConfigurationBuilder()....Build() comleted");
+            //logger.LogDebug("environment:{environment},configuration:{Configuration}", environment, configuration);
 
             Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
-                .ConfigureAppConfiguration(builder =>
-                {
-                    using var innerActivity = Observability.ActivitySource.StartRichActivity(logger, "ConfigureAppConfiguration.Callback", new { builder });
+                .ConfigureAppConfiguration2(DeferredLoggerFactory, static tags => tags.ContainsKey("AppSettings"))
+                //.ConfigureAppConfiguration(builder =>
+                //{
+                //    using var innerActivity = Observability.ActivitySource.StartRichActivity(logger, "ConfigureAppConfiguration.Callback", new { builder });
 
-                    builder.Sources.Clear();
-                    builder.AddConfiguration(configuration);
-                    builder.AddUserSecrets<App>();
-                    builder.AddEnvironmentVariables();
-                }).ConfigureServices((context, services) =>
+                //    builder.Sources.Clear();
+                //    builder.AddConfiguration(configuration);
+                //    builder.AddUserSecrets<App>();
+                //    builder.AddEnvironmentVariables();
+                //})
+                .ConfigureServices((context, services) =>
                 {
                     using var innerActivity = Observability.ActivitySource.StartRichActivity(logger, "ConfigureServices.Callback", new { context, services });
                     services.FlushOnCreateServiceProvider(DeferredLoggerFactory);
+                    
+                    var configuration = context.Configuration;
+                    services
+                        .Configure<AuthenticatedClientOptions>("AuthenticationSampleApi", configuration.GetSection("AuthenticationSampleApi"))
+                        .Configure<HttpClientOptions>("AuthenticationSampleApi", configuration.GetSection("AuthenticationSampleApi"))
+                        .AddHttpClient("AuthenticationSampleApi")
+                        .ConfigureHttpClient(
+                            static (sp, hc) =>
+                            {
+                                IHttpClientOptions httpClientOptions = sp.GetRequiredService<IOptionsMonitor<HttpClientOptions>>().Get("AuthenticationSampleApi");
+                                hc.BaseAddress = httpClientOptions.BaseUrl;
+                            }
+                        )
+                        .AddApplicationPermissionAuthentication()
+                        .AddBodyLoggingHandler();
 
                     ConfigureServices(context.Configuration, services);
                 })
                 .ConfigureLogging((context, loggingBuilder) =>
                 {
                     using var innerActivity = Observability.ActivitySource.StartRichActivity(logger, "ConfigureLogging.Callback", new { context, loggingBuilder });
+
+                    var configuration = context.Configuration;
 
                     loggingBuilder.AddConfiguration(context.Configuration.GetSection("Logging"));
                     loggingBuilder.ClearProviders();
@@ -169,7 +193,7 @@ namespace AuthenticationSampleClient
                     services.AddSingleton<App>();
 
                 })
-                .UseDiginsightServiceProvider()
+                .UseDiginsightServiceProvider(true)
                 .Build();
 
             logger.LogDebug("host = appBuilder.Build(); completed");
@@ -193,7 +217,7 @@ namespace AuthenticationSampleClient
 
             services.ConfigureClassAware<AppSettingsOptions>(configuration.GetSection("AppSettings"));
             services.ConfigureClassAware<FeatureFlagOptions>(configuration.GetSection("AppSettings"));
-            services.ConfigureClassAware<AzureKeyVaultOptions>(configuration.GetSection("AzureKeyVault"));
+            //services.ConfigureClassAware<AuthenticationSampleApiOptions>(configuration.GetSection("AuthenticationSampleApi"));
             services.ConfigureClassAware<AzureAdOptions>(configuration.GetSection("AzureAd"));
 
             services.AddHttpClient();
@@ -204,7 +228,6 @@ namespace AuthenticationSampleClient
             //services.AddApplicationInsightsTelemetry();
             //var aiConnectionString = configuration.GetValue<string>(Constants.APPINSIGHTSCONNECTIONSTRING);
             //services.AddObservability(configuration);
-
 
             services.AddSingleton<MainWindow>();
 

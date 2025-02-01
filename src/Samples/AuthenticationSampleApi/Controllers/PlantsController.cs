@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using OpenTelemetry.Trace;
+using Diginsight.Components.Extensions;
 
 namespace AuthenticationSampleApi
 {
@@ -22,45 +23,43 @@ namespace AuthenticationSampleApi
         private readonly Type T = typeof(PlantsController);
         private readonly ILogger<PlantsController> logger;
         private readonly IClassAwareOptionsMonitor<FeatureFlagOptions> featureFlagsOptionsMonitor;
+        private readonly IHttpClientFactory httpClientFactory;
         private readonly ISmartCache smartCache;
         private readonly ICacheKeyService cacheKeyService;
 
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private HttpClient authenticationSampleServerApiHttpClient;
 
         public PlantsController(
             TracerProvider tracerProvider,
             ILogger<PlantsController> logger,
             IClassAwareOptionsMonitor<FeatureFlagOptions> featureFlagsOptionsMonitor,
+            IHttpClientFactory httpClientFactory,
             ISmartCache smartCache,
             ICacheKeyService cacheKeyService)
         {
             this.logger = logger;
             this.featureFlagsOptionsMonitor = featureFlagsOptionsMonitor;
+            this.httpClientFactory = httpClientFactory;
             this.smartCache = smartCache;
             this.cacheKeyService = cacheKeyService;
 
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger); // , new { foo, bar }
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
+            this.authenticationSampleServerApiHttpClient = httpClientFactory.CreateClient("AuthenticationSampleServerApi");
         }
 
         [HttpGet("getplantsimpl", Name = nameof(GetPlantsImplAsync))]
         [ApiVersion(ApiVersions.V_2024_04_26.Name)]
         public async Task<IEnumerable<Plant>> GetPlantsImplAsync()
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger); // , new { foo, bar }
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
             var result = default(IEnumerable<Plant>);
 
             var latency = 1000;
             Thread.Sleep(latency); logger.LogDebug("Thread.Sleep({latency});", latency); // Structured logging
             logger.LogDebug($"Thread.Sleep({latency});"); // interpolation
-            // logger.LogDebug(() => $"Thread.Sleep({latency});"); // interpolation with delegate notation
-            // logger.LogDebug(new { result }); // variables loggin
 
-            // read string plantsString from content file /Content/plants.json
             var plantsString = await System.IO.File.ReadAllTextAsync("Content/plants.json");
             var plants = JsonConvert.DeserializeObject<IEnumerable<Plant>>(plantsString);
 
@@ -93,9 +92,12 @@ namespace AuthenticationSampleApi
         {
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
+            // get users from SampleServerApi
+            var response = await this.authenticationSampleServerApiHttpClient.HttpSendAsync(HttpMethod.Get, "api/Users/getUsers", null, "Users/getUsers", HttpContext.RequestAborted);
+
+
             var options = new SmartCacheOperationOptions() { MaxAge = TimeSpan.FromMinutes(10) };
             var cacheKey = new MethodCallCacheKey(cacheKeyService, typeof(PlantsController), nameof(GetPlantsAsync));
-
             var plants = await smartCache.GetAsync(cacheKey, _ => GetPlantsImplAsync(), options);
 
             activity?.SetOutput(plants);

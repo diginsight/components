@@ -64,7 +64,6 @@
 		<PackageReference Include="Diginsight.Core" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
 		<PackageReference Include="Diginsight.Diagnostics" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
 		<PackageReference Include="Diginsight.Diagnostics.Log4Net" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
-		<PackageReference Include="RestSharp" Version="111.2.0" />
 		<ProjectReference Include="$(DiginsightLegacySolutionDirectory)Common.Diagnostics\Common.Diagnostics.csproj" Condition="'$(DiginsightLegacyDirectImport)' == 'true'" />
 		<ProjectReference Include="$(DiginsightLegacySolutionDirectory)telemetry_legacy\Common.Diagnostics.Logstrings.Wpf\Common.Diagnostics.Logstrings.Wpf.csproj" Condition="'$(DiginsightLegacyDirectImport)' == 'true'" />
 		<ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Core\Diginsight.Core.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
@@ -92,6 +91,15 @@
 		<Folder Include="Extensions\" />
 		<Folder Include="Image\" />
 		<Folder Include="Services\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="appsettings.Testms.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="appsettings.Testms.local.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

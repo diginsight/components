@@ -19,8 +19,8 @@ internal sealed class DecoratorHttpHeadersActivityLoggingSampler : HttpHeadersAc
         this.decoratee = decoratee;
     }
 
-    public override bool? ShouldLog(Activity activity)
+    public override LogBehavior? GetLogBehavior(Activity activity)
     {
-        return base.ShouldLog(activity) ?? decoratee.ShouldLog(activity);
+        return base.GetLogBehavior(activity) ?? decoratee.GetLogBehavior(activity);
     }
 }

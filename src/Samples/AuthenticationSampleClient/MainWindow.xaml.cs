@@ -88,7 +88,7 @@ namespace AuthenticationSampleClient
         #region .ctor
         static MainWindow()
         {
-            var logger = App.DeferredLoggerFactory.CreateLogger<MainWindow>();
+            var logger = App.ObservabilityManager.LoggerFactory.CreateLogger<MainWindow>();
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
             var host = App.Host;
@@ -254,6 +254,7 @@ namespace AuthenticationSampleClient
             {
                 result = await IdentityClient
                     .AcquireTokenInteractive(Constants.Scopes)
+                    //.WithUseEmbeddedWebView()
                     .ExecuteAsync();
             }
             catch (Exception ex)

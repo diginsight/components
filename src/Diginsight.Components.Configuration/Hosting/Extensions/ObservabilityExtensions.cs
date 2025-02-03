@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -18,18 +19,20 @@ using System.Runtime.CompilerServices;
 
 namespace Diginsight.Components.Configuration;
 
+using Options = Microsoft.Extensions.Options.Options;
+
 
 public static partial class ObservabilityExtensions
 {
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IServiceCollection AddObservability(
         this IServiceCollection services,
         IConfiguration configuration,
-        IHostEnvironment hostEnvironment
+        IHostEnvironment hostEnvironment,
+        bool configureDefaults = true
     )
     {
-        return services.AddObservability(configuration, hostEnvironment, out OpenTelemetryOptions _);
+        return services.AddObservability(configuration, hostEnvironment, out OpenTelemetryOptions _, configureDefaults);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37,10 +40,11 @@ public static partial class ObservabilityExtensions
         this IServiceCollection services,
         IConfiguration configuration,
         IHostEnvironment hostEnvironment,
-        out IOpenTelemetryOptions openTelemetryOptions
+        out IOpenTelemetryOptions openTelemetryOptions,
+        bool configureDefaults = true
     )
     {
-        services.AddObservability(configuration, hostEnvironment, out OpenTelemetryOptions mutableOpenTelemetryOptions);
+        services.AddObservability(configuration, hostEnvironment, out OpenTelemetryOptions mutableOpenTelemetryOptions, configureDefaults);
 
         openTelemetryOptions = mutableOpenTelemetryOptions;
         return services;
@@ -50,7 +54,8 @@ public static partial class ObservabilityExtensions
         this IServiceCollection services,
         IConfiguration configuration,
         IHostEnvironment hostEnvironment,
-        out OpenTelemetryOptions mutableOpenTelemetryOptions
+        out OpenTelemetryOptions mutableOpenTelemetryOptions,
+        bool configureDefaults = true
     )
     {
         const string diginsightConfKey = "Diginsight";
@@ -59,20 +64,23 @@ public static partial class ObservabilityExtensions
         bool isLocal = hostEnvironment.IsDevelopment();
         string assemblyName = Assembly.GetEntryAssembly()!.GetName().Name!;
 
-        mutableOpenTelemetryOptions = new OpenTelemetryOptions() {
-            EnableTraces = true,
-            EnableMetrics = true,
-            TracingSamplingRatio = isLocal ? 1 : 0.1
-        };
-        IOpenTelemetryOptions openTelemetryOptions = mutableOpenTelemetryOptions;
-
-        services.Configure<OpenTelemetryOptions>((o) => {
-            o.EnableTraces = true;
-            o.EnableMetrics = true;
-            o.TracingSamplingRatio = isLocal ? 1 : 0.1;
-        });
-
         IConfiguration openTelemetryConfiguration = configuration.GetSection("OpenTelemetry");
+
+        mutableOpenTelemetryOptions = new OpenTelemetryOptions();
+        IOpenTelemetryOptions openTelemetryOptions = mutableOpenTelemetryOptions;
+        if (configureDefaults)
+        {
+            void ConfigureOpenTelemetryDefaults(OpenTelemetryOptions o)
+            {
+                o.EnableTraces = true;
+                o.EnableMetrics = true;
+                o.TracingSamplingRatio = isLocal ? 1 : 0.1;
+            }
+
+            ConfigureOpenTelemetryDefaults(mutableOpenTelemetryOptions);
+            services.Configure<OpenTelemetryOptions>(ConfigureOpenTelemetryDefaults);
+        }
+
         openTelemetryConfiguration.Bind(mutableOpenTelemetryOptions);
         services.Configure<OpenTelemetryOptions>(openTelemetryConfiguration);
 
@@ -92,8 +100,11 @@ public static partial class ObservabilityExtensions
                     loggingBuilder.AddDiginsightConsole(
                         fo =>
                         {
-                            fo.TotalWidth = isLocal ? -1 : 0;
-                            fo.UseColor = isLocal;
+                            if (configureDefaults)
+                            {
+                                fo.TotalWidth = isLocal ? -1 : 0;
+                                fo.UseColor = isLocal;
+                            }
                             configuration.GetSection(ConfigurationPath.Combine(diginsightConfKey, "Console")).Bind(fo);
                         }
                     );
@@ -143,34 +154,39 @@ public static partial class ObservabilityExtensions
             }
         );
 
-        services.Configure<DiginsightActivitiesOptions>(
-            dao =>
-            {
-                dao.LogActivities = true;
-                dao.MeterName = assemblyName;
-            }
-        );
+        if (configureDefaults)
+        {
+            services.Configure<DiginsightActivitiesOptions>(
+                dao =>
+                {
+                    dao.LogBehavior = LogBehavior.Show;
+                    dao.MeterName = assemblyName;
+                }
+            );
 
-        //services.AddSingleton<IConfigureClassAwareOptions<DiginsightActivitiesOptions>>(
-        //    new ConfigureClassAwareOptions<DiginsightActivitiesOptions>(
-        //        Microsoft.Extensions.Options.Options.DefaultName,
-        //        static (t, dao) =>
-        //        {
-        //            IReadOnlyList<string> markers = ClassConfigurationMarkers.For(t);
-        //            if (markers.Contains("ABC.*") || markers.Contains("NH.*") || markers.Contains("Diginsight.*"))
-        //            {
-        //                dao.RecordSpanDurations = true;
-        //            }
-        //        }
-        //    )
-        //);
+            services.AddSingleton<IConfigureClassAwareOptions<DiginsightActivitiesOptions>>(
+                new ConfigureClassAwareOptions<DiginsightActivitiesOptions>(
+                    Options.DefaultName,
+                    static (t, dao) =>
+                    {
+                        IReadOnlyList<string> markers = ClassConfigurationMarkers.For(t);
+                        if (markers.Contains("ABB.*") || markers.Contains("NH.*") || markers.Contains("Diginsight.*"))
+                        {
+                            dao.RecordSpanDurations = true;
+                        }
+                    }
+                )
+            );
+        }
 
         services.ConfigureClassAware<DiginsightActivitiesOptions>(configuration.GetSection(ConfigurationPath.Combine(diginsightConfKey, "Activities")));
+
         services
             .VolatilelyConfigureClassAware<DiginsightActivitiesOptions>()
             .DynamicallyConfigureClassAware<DiginsightActivitiesOptions>();
 
         IOpenTelemetryBuilder openTelemetryBuilder = services.AddDiginsightOpenTelemetry();
+
         if (openTelemetryOptions.EnableMetrics)
         {
             services.AddSpanDurationMetricRecorder();
@@ -217,6 +233,14 @@ public static partial class ObservabilityExtensions
                             exporterOptions => { exporterOptions.ConnectionString = azureMonitorConnectionString; }
                         );
                     }
+
+                    tracerProviderBuilder.SetSampler(
+                        static sp =>
+                        {
+                            IOpenTelemetryOptions openTelemetryOptions = sp.GetRequiredService<IOptions<OpenTelemetryOptions>>().Value;
+                            return new ParentBasedSampler(new TraceIdRatioBasedSampler(openTelemetryOptions.TracingSamplingRatio));
+                        }
+                    );
                 }
             );
         }

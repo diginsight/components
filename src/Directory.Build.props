@@ -12,8 +12,8 @@
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/diginsight/telemetry_samples</PackageProjectUrl>
 		<DiginsightDiagnosticsVersion>2.0.0.23</DiginsightDiagnosticsVersion>
-		<DiginsightCoreVersion>3.2.*</DiginsightCoreVersion>
-		<DiginsightSmartCacheVersion>3.2.*</DiginsightSmartCacheVersion>
+		<DiginsightCoreVersion>3.4.*</DiginsightCoreVersion>
+		<DiginsightSmartCacheVersion>3.3.*</DiginsightSmartCacheVersion>
 		<PackageTags>diginsight;telemetry</PackageTags>
 		<!-- TODO <PackageIcon> -->
 		<!-- TODO <Description> in each csproj -->

@@ -7,27 +7,25 @@ namespace AuthenticationSampleServerApi;
 
 public class Program
 {
-    public static IDeferredLoggerFactory DeferredLoggerFactory = default!;
+    public static ObservabilityManager ObservabilityManager;
 
     public static void Main(string[] args)
     {
-        var activitiesOptions = new DiginsightActivitiesOptions() { LogActivities = true };
-        DeferredLoggerFactory = new DeferredLoggerFactory(activitiesOptions: activitiesOptions);
-        DeferredLoggerFactory.ActivitySourceFilter = (activitySource) => true; // activitySource.Name.StartsWith($"AuthenticationSampleServerApi") || activitySource.Name.StartsWith($"Diginsight.Components")
-        var logger = DeferredLoggerFactory.CreateLogger<Program>();
+        using var observabilityManager = new ObservabilityManager();
+        ObservabilityManager = observabilityManager;
+        ILogger logger = ObservabilityManager.LoggerFactory.CreateLogger(typeof(Program));
 
         IWebHost host;
         using (var activity = Observability.ActivitySource.StartMethodActivity(logger, new { args }))
         {
             host = WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration2(DeferredLoggerFactory)
+                .ConfigureAppConfiguration2(observabilityManager.LoggerFactory)
                 .UseStartup<Startup>()
                 .ConfigureServices(services =>
                 {
-                    var logger = DeferredLoggerFactory.CreateLogger<Startup>();
+                    var logger = observabilityManager.LoggerFactory.CreateLogger<Startup>();
                     using var innerActivity = Observability.ActivitySource.StartRichActivity(logger, "ConfigureServicesCallback", new { services });
 
-                    services.TryAddSingleton(DeferredLoggerFactory);
                 })
                 .UseDiginsightServiceProvider()
                 .Build();

@@ -35,18 +35,18 @@ namespace AuthenticationSampleApi
         private static readonly string SmartCacheServiceBusSubscriptionName = Guid.NewGuid().ToString("N");
         private readonly IConfiguration configuration;
         private readonly IHostEnvironment hostEnvironment;
-        private readonly IDeferredLoggerFactory deferredLoggerFactory;
+        private readonly ILoggerFactory loggerFactory;
 
-        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment, IDeferredLoggerFactory deferredLoggerFactory = null)
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment, ILoggerFactory loggerFactory = null)
         {
             this.configuration = configuration;
-            this.deferredLoggerFactory = deferredLoggerFactory;
+            this.loggerFactory = loggerFactory;
             this.hostEnvironment = hostEnvironment;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var logger = deferredLoggerFactory.CreateLogger<Startup>();
+            var logger = loggerFactory.CreateLogger<Startup>();
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { services });
 
             services.AddHttpContextAccessor();
@@ -54,6 +54,9 @@ namespace AuthenticationSampleApi
 
             services.AddAspNetCoreObservability(configuration, hostEnvironment, out IOpenTelemetryOptions openTelemetryOptions);
             services.AddHttpObservability(openTelemetryOptions);
+
+            Program.ObservabilityManager.AttachTo(services);
+            
             if (openTelemetryOptions.EnableTraces)
             {
                 services.AddDiginsightOpenTelemetry()
@@ -83,8 +86,6 @@ namespace AuthenticationSampleApi
             //services.TryAddEnumerable(ServiceDescriptor.Singleton<IActivityListenerRegistration, ControllerActivityTaggerRegistration>());
 
             services.AddDynamicLogLevel<DefaultDynamicLogLevelInjector>();
-            services.FlushOnCreateServiceProvider(deferredLoggerFactory);
-
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddMicrosoftIdentityWebApi(configuration); //.AddJwtBearer() 
@@ -159,7 +160,7 @@ namespace AuthenticationSampleApi
             //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-            SmartCacheBuilder smartCacheBuilder = services.AddSmartCache(configuration, hostEnvironment, deferredLoggerFactory)
+            SmartCacheBuilder smartCacheBuilder = services.AddSmartCache(configuration, hostEnvironment, loggerFactory)
                             .AddHttp();
 
             IConfigurationSection smartCacheServiceBusConfiguration = configuration.GetSection("Diginsight:SmartCache:ServiceBus");
@@ -212,7 +213,7 @@ namespace AuthenticationSampleApi
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var logger = deferredLoggerFactory.CreateLogger<Startup>();
+            var logger = loggerFactory.CreateLogger<Startup>();
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { app, env });
 
             if (env.IsDevelopment())

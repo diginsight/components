@@ -7,31 +7,29 @@ namespace AuthenticationSampleApi;
 
 public class Program
 {
-    public static IDeferredLoggerFactory DeferredLoggerFactory = default!;
+    public static ObservabilityManager ObservabilityManager;
 
     public static void Main(string[] args)
     {
-        var activitiesOptions = new DiginsightActivitiesOptions() { LogActivities = true };
-        DeferredLoggerFactory = new DeferredLoggerFactory(activitiesOptions: activitiesOptions);
-        DeferredLoggerFactory.ActivitySourceFilter = (activitySource) => true; // activitySource.Name.StartsWith($"AuthenticationSampleApi") || activitySource.Name.StartsWith($"Diginsight.Components")
-        var logger = DeferredLoggerFactory.CreateLogger<Program>();
-
-        //System.Diagnostics.Debugger.Launch();
+        using var observabilityManager = new ObservabilityManager();
+        ObservabilityManager = observabilityManager;
+        ILogger logger = ObservabilityManager.LoggerFactory.CreateLogger(typeof(Program));
 
         IWebHost host;
         using (var activity = Observability.ActivitySource.StartMethodActivity(logger, new { args }))
         {
             host = WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration2(DeferredLoggerFactory)
+                .ConfigureAppConfiguration2(ObservabilityManager.LoggerFactory)
                 .UseStartup<Startup>()
                 .ConfigureServices(services =>
                 {
-                    var logger = DeferredLoggerFactory.CreateLogger<Startup>();
+                    var logger = ObservabilityManager.LoggerFactory.CreateLogger<Startup>();
                     using var innerActivity = Observability.ActivitySource.StartRichActivity(logger, "ConfigureServicesCallback", new { services });
 
-                    services.TryAddSingleton(DeferredLoggerFactory);
+                    
+
                 })
-                .UseDiginsightServiceProvider()
+                .UseDiginsightServiceProvider(true)
                 .Build();
 
             logger.LogDebug("Host built");

@@ -14,7 +14,7 @@ public static class WebHostBuilderExtensions
         using var activity = Observability.ActivitySource.StartMethodActivity(logger);
         if (Observability.LoggerFactory == null) { Observability.LoggerFactory = loggerFactory; }
 
-        return hostBuilder.ConfigureAppConfiguration((whbc, cb) => HostBuilderExtensions.ConfigureAppConfiguration2(whbc.HostingEnvironment, cb, Observability.LoggerFactory, tagsMatch));
+        return hostBuilder.ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) => HostBuilderExtensions.ConfigureAppConfiguration2(webHostBuilderContext.HostingEnvironment, configurationBuilder, Observability.LoggerFactory, tagsMatch));
     }
 }
 

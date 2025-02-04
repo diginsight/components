@@ -7,27 +7,23 @@ namespace AuthenticationSampleServerApi;
 
 public class Program
 {
-    public static ObservabilityManager ObservabilityManager;
-
     public static void Main(string[] args)
     {
-        using var observabilityManager = new ObservabilityManager();
-        ObservabilityManager = observabilityManager;
-        ILogger logger = ObservabilityManager.LoggerFactory.CreateLogger(typeof(Program));
+        using EarlyLoggingManager observabilityManager = new ObservabilityManager();
+        var loggerFactory = observabilityManager.LoggerFactory;
+        ILogger logger = loggerFactory.CreateLogger(typeof(Program));
 
         IWebHost host;
         using (var activity = Observability.ActivitySource.StartMethodActivity(logger, new { args }))
         {
             host = WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration2(observabilityManager.LoggerFactory)
-                .UseStartup<Startup>()
+                .ConfigureAppConfiguration2(loggerFactory)
                 .ConfigureServices(services =>
                 {
-                    var logger = observabilityManager.LoggerFactory.CreateLogger<Startup>();
-                    using var innerActivity = Observability.ActivitySource.StartRichActivity(logger, "ConfigureServicesCallback", new { services });
-
+                    services.TryAddSingleton(observabilityManager);
                 })
-                .UseDiginsightServiceProvider()
+                .UseStartup<Startup>()
+                .UseDiginsightServiceProvider(true)
                 .Build();
 
             logger.LogDebug("Host built");

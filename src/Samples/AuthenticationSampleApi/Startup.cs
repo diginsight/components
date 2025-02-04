@@ -1,8 +1,6 @@
 ﻿using Diginsight;
 using Diginsight.AspNetCore;
-//using Diginsight.Strings;
 using RestSharp;
-//using Asp.Versioning;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using System.Text.Json.Serialization;
@@ -10,7 +8,6 @@ using Diginsight.SmartCache.Externalization.ServiceBus;
 using Diginsight.SmartCache;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Diginsight.SmartCache.Externalization.AspNetCore;
-//using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Logging;
 using System.Reflection;
 using Microsoft.Identity.Web;
@@ -35,13 +32,16 @@ namespace AuthenticationSampleApi
         private static readonly string SmartCacheServiceBusSubscriptionName = Guid.NewGuid().ToString("N");
         private readonly IConfiguration configuration;
         private readonly IHostEnvironment hostEnvironment;
-        private readonly ILoggerFactory loggerFactory;
+        private readonly EarlyLoggingManager observabilityManager;
+        private readonly ILoggerFactory loggerFactory ;
 
-        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment, ILoggerFactory loggerFactory = null)
+        public Startup(IConfiguration configuration,
+            IHostEnvironment hostEnvironment, EarlyLoggingManager observabilityManager)
         {
             this.configuration = configuration;
-            this.loggerFactory = loggerFactory;
             this.hostEnvironment = hostEnvironment;
+            this.observabilityManager = observabilityManager;
+            loggerFactory = observabilityManager.LoggerFactory;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -49,18 +49,18 @@ namespace AuthenticationSampleApi
             var logger = loggerFactory.CreateLogger<Startup>();
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { services });
 
+            services.AddAspNetCoreObservability(configuration, hostEnvironment, out IOpenTelemetryOptions openTelemetryOptions);
+            observabilityManager.AttachTo(services);
+
+            services.AddHttpObservability(openTelemetryOptions);
+
             services.AddHttpContextAccessor();
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
-            services.AddAspNetCoreObservability(configuration, hostEnvironment, out IOpenTelemetryOptions openTelemetryOptions);
-            services.AddHttpObservability(openTelemetryOptions);
-
-            Program.ObservabilityManager.AttachTo(services);
-            
             if (openTelemetryOptions.EnableTraces)
             {
                 services.AddDiginsightOpenTelemetry()
-                    .WithTracing(
+                        .WithTracing(
                         static tracerProviderBuilder =>
                         {
                             tracerProviderBuilder.AddHttpClientInstrumentation(
@@ -83,7 +83,7 @@ namespace AuthenticationSampleApi
             }
 
             services.AddDiginsightOpenTelemetry().WithTracing(b => b.SetSampler(new AlwaysOnSampler()));
-            //services.TryAddEnumerable(ServiceDescriptor.Singleton<IActivityListenerRegistration, ControllerActivityTaggerRegistration>());
+            // services.TryAddEnumerable(ServiceDescriptor.Singleton<IActivityListenerRegistration, ControllerActivityTaggerRegistration>());
 
             services.AddDynamicLogLevel<DefaultDynamicLogLevelInjector>();
 
@@ -182,7 +182,6 @@ namespace AuthenticationSampleApi
             }
             services.TryAddSingleton<ICacheKeyProvider, MyCacheKeyProvider>();
             //services.TryAddSingleton<IActivityTagger, ActivityTagger>();
-
 
 
             services

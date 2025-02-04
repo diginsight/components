@@ -101,7 +101,7 @@ namespace AuthenticationSampleClient
             //logger.LogDebug("environment:{environment},configuration:{Configuration}", environment, configuration);
 
             Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
-                .ConfigureAppConfiguration2(ObservabilityManager.LoggerFactory, static tags => tags.ContainsKey("AppSettings"))
+                            .ConfigureAppConfiguration2(ObservabilityManager.LoggerFactory, static tags => tags.ContainsKey("AppSettings"))
                 //.ConfigureAppConfiguration(builder =>
                 //{
                 //    using var innerActivity = Observability.ActivitySource.StartRichActivity(logger, "ConfigureAppConfiguration.Callback", new { builder });

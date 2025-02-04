@@ -33,26 +33,30 @@ namespace AuthenticationSampleServerApi
         private static readonly string SmartCacheServiceBusSubscriptionName = Guid.NewGuid().ToString("N");
         private readonly IConfiguration configuration;
         private readonly IHostEnvironment hostEnvironment;
+        private readonly EarlyLoggingManager observabilityManager;
         private readonly ILoggerFactory loggerFactory;
 
-        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment, ILoggerFactory loggerFactory = null)
+        public Startup(IConfiguration configuration,
+            IHostEnvironment hostEnvironment, EarlyLoggingManager observabilityManager)
         {
             this.configuration = configuration;
-            this.loggerFactory = loggerFactory;
             this.hostEnvironment = hostEnvironment;
+            this.observabilityManager = observabilityManager;
+            loggerFactory = observabilityManager.LoggerFactory;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
             var logger = loggerFactory.CreateLogger<Startup>();
-            using var innerActivity = Observability.ActivitySource.StartMethodActivity(logger, new { services });
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { services });
+
+            services.AddAspNetCoreObservability(configuration, hostEnvironment, out IOpenTelemetryOptions openTelemetryOptions);
+            observabilityManager.AttachTo(services);
+
+            services.AddHttpObservability(openTelemetryOptions);
 
             services.AddHttpContextAccessor();
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
-
-            services.AddAspNetCoreObservability(configuration, hostEnvironment, out IOpenTelemetryOptions openTelemetryOptions);
-            services.AddHttpObservability(openTelemetryOptions);
-            Program.ObservabilityManager.AttachTo(services);
 
             if (openTelemetryOptions.EnableTraces)
             {

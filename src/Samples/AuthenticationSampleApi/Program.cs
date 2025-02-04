@@ -10,14 +10,13 @@ public class Program
     public static void Main(string[] args)
     {
         using EarlyLoggingManager observabilityManager = new ObservabilityManager();
-        var loggerFactory = observabilityManager.LoggerFactory; 
-        ILogger logger = loggerFactory.CreateLogger(typeof(Program));
+        ILogger logger = observabilityManager.LoggerFactory.CreateLogger(typeof(Program));
 
         IWebHost host;
         using (var activity = Observability.ActivitySource.StartMethodActivity(logger, new { args }))
         {
             host = WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration2(loggerFactory)
+                .ConfigureAppConfiguration2(observabilityManager.LoggerFactory)
                 .ConfigureServices(services =>
                 {
                     services.TryAddSingleton(observabilityManager);

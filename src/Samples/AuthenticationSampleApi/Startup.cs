@@ -1,42 +1,35 @@
 ﻿using Diginsight;
 using Diginsight.AspNetCore;
-using RestSharp;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using System.Text.Json.Serialization;
-using Diginsight.SmartCache.Externalization.ServiceBus;
-using Diginsight.SmartCache;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Diginsight.SmartCache.Externalization.AspNetCore;
-using Microsoft.IdentityModel.Logging;
-using System.Reflection;
-using Microsoft.Identity.Web;
+using Diginsight.Components;
+using Diginsight.Components.Configuration;
+using Diginsight.Components.Extensions;
 using Diginsight.Diagnostics;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Diginsight.SmartCache;
+using Diginsight.SmartCache.Externalization.Http;
+using Diginsight.SmartCache.Externalization.ServiceBus;
 using Diginsight.Stringify;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Diginsight.SmartCache.Externalization.Http;
-using Diginsight.Components.Configuration;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
+using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Trace;
-using Microsoft.Extensions.Options;
-using Diginsight.Components;
-using Diginsight.Components.Extensions;
+using RestSharp;
+using System.Text.Json.Serialization;
 
 namespace AuthenticationSampleApi
 {
     public class Startup
     {
         private static readonly string SmartCacheServiceBusSubscriptionName = Guid.NewGuid().ToString("N");
+        private readonly EarlyLoggingManager observabilityManager;
+        private readonly ILoggerFactory loggerFactory;
         private readonly IConfiguration configuration;
         private readonly IHostEnvironment hostEnvironment;
-        private readonly EarlyLoggingManager observabilityManager;
-        private readonly ILoggerFactory loggerFactory ;
 
-        public Startup(IConfiguration configuration,
-            IHostEnvironment hostEnvironment, EarlyLoggingManager observabilityManager)
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment, EarlyLoggingManager observabilityManager)
         {
             this.configuration = configuration;
             this.hostEnvironment = hostEnvironment;

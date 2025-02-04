@@ -99,7 +99,6 @@ namespace AuthenticationSampleClient
                           IClassAwareOptionsMonitor<AppSettingsOptions> appSettingsOptionsMonitor,
                           IClassAwareOptionsMonitor<FeatureFlagOptions> featureFlagOptionsMonitor,
                           IClassAwareOptionsMonitor<AzureAdOptions> azureAdOptionsMonitor,
-                          //IClassAwareOptionsMonitor<AuthenticationSampleApiOptions> authenticationSampleApiOptionsMonitor,
                           IHttpClientFactory httpClientFactory,
                           HttpClient httpClient,
                           IHttpContextAccessor httpContextAccessor)
@@ -111,7 +110,6 @@ namespace AuthenticationSampleClient
             this.featureFlagOptionsMonitor = featureFlagOptionsMonitor;
             this.appSettingsOptionsMonitor = appSettingsOptionsMonitor;
             this.azureAdOptionsMonitor = azureAdOptionsMonitor;
-            //this.authenticationSampleApiOptionsMonitor = authenticationSampleApiOptionsMonitor;
             this.httpClientFactory = httpClientFactory;
 
             this.authenticationSampleApiOptions = serviceProvider.GetRequiredService<IOptionsMonitor<HttpClientOptions>>().Get("AuthenticationSampleApi");

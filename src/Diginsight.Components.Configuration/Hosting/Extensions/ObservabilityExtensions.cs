@@ -170,7 +170,7 @@ public static partial class ObservabilityExtensions
                     static (t, dao) =>
                     {
                         IReadOnlyList<string> markers = ClassConfigurationMarkers.For(t);
-                        if (markers.Contains("ABB.*") || markers.Contains("NH.*") || markers.Contains("Diginsight.*"))
+                        if (markers.Contains("Diginsight.*"))
                         {
                             dao.RecordSpanDurations = true;
                         }

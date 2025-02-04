@@ -21,8 +21,9 @@ public sealed class ObservabilityManager : EarlyLoggingManager
         _ = Observability.ActivitySource;
     }
 
-    public ObservabilityManager()
-        : base(static activitySource => activitySource == Observability.ActivitySource) { }
+    public ObservabilityManager() : base(static activitySource => activitySource == Observability.ActivitySource)
+    {
+    }
 
     [SuppressMessage("ReSharper", "ParameterHidesMember")]
     protected override void AdditionalAttachTo(IServiceCollection services)

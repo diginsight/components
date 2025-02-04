@@ -1,53 +1,26 @@
 ﻿#region using
-using Microsoft.ApplicationInsights.Extensibility;
+using Diginsight;
+using Diginsight.Components;
+using Diginsight.Components.Configuration;
+using Diginsight.Components.Extensions;
+using Diginsight.Diagnostics;
+using Diginsight.Diagnostics.Log4Net;
+using Diginsight.Logging;
+using Diginsight.Stringify;
+using log4net.Appender;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.ApplicationInsights;
-using Microsoft.Extensions.Logging.Console;
-using Microsoft.Extensions.Logging.Debug;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using System.Windows;
-using static System.Formats.Asn1.AsnWriter;
-using Microsoft.AspNetCore.Http;
-using System.Diagnostics;
-using OpenTelemetry.Resources;
-using OpenTelemetry;
-using OpenTelemetry.Trace;
-using Azure.Monitor.OpenTelemetry.Exporter;
-using Azure.Monitor.OpenTelemetry.AspNetCore;
-using OpenTelemetry;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Refit;
-using Polly;
-using Diginsight;
-using Diginsight.Logging;
-using Diginsight.Diagnostics;
-using Diginsight.Diagnostics.Log4Net;
-using log4net.Appender;
 using System.IO;
-using log4net.Repository.Hierarchy;
-using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Diginsight.Stringify;
-using Diginsight.Components;
-using Diginsight.Components.Configuration;
-using Diginsight.Components.Extensions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Windows;
 #endregion
 
 namespace AuthenticationSampleClient
@@ -114,9 +87,13 @@ namespace AuthenticationSampleClient
                 .ConfigureServices((context, services) =>
                 {
                     using var innerActivity = Observability.ActivitySource.StartRichActivity(logger, "ConfigureServices.Callback", new { context, services });
-                    ObservabilityManager.AttachTo(services);
 
                     var configuration = context.Configuration;
+                    var environment = context.HostingEnvironment;
+
+                    services.ConfigureClassAware<DiginsightActivitiesOptions>(configuration.GetSection("Diginsight:Activities"));
+                    ObservabilityManager.AttachTo(services);
+
                     services
                         .Configure<AuthenticatedClientOptions>("AuthenticationSampleApi", configuration.GetSection("AuthenticationSampleApi"))
                         .Configure<HttpClientOptions>("AuthenticationSampleApi", configuration.GetSection("AuthenticationSampleApi"))
@@ -132,6 +109,8 @@ namespace AuthenticationSampleClient
                         .AddBodyLoggingHandler();
 
                     ConfigureServices(context.Configuration, services);
+
+                    services.AddSingleton<App>();
                 })
                 .ConfigureLogging((context, loggingBuilder) =>
                 {
@@ -148,12 +127,12 @@ namespace AuthenticationSampleClient
                                  {
                                      loggingBuilder.ClearProviders();
 
-                                     if (configuration.GetValue("AppSettings:ConsoleProviderEnabled", true))
+                                     if (configuration.GetValue("Observability:ConsoleEnabled", true))
                                      {
                                          loggingBuilder.AddDiginsightConsole();
                                      }
 
-                                     if (configuration.GetValue("AppSettings:Log4NetProviderEnabled", true))
+                                     if (configuration.GetValue("Observability:Log4NetEnabled", true))
                                      {
                                          //loggingBuilder.AddDiginsightLog4Net("log4net.config");
                                          loggingBuilder.AddDiginsightLog4Net(static sp =>
@@ -187,9 +166,6 @@ namespace AuthenticationSampleClient
                                  }
                              );
 
-                    services.ConfigureClassAware<DiginsightActivitiesOptions>(configuration.GetSection("Diginsight:Activities"));
-                    services.AddSingleton<App>();
-
                 })
                 .UseDiginsightServiceProvider(true)
                 .Build();
@@ -201,8 +177,6 @@ namespace AuthenticationSampleClient
 
             mainWindow.Show(); logger.LogDebug($"mainWindow.Show();");
             base.OnStartup(e); logger.LogDebug($"base.OnStartup(e);");
-
-
         }
         
         private void ConfigureServices(IConfiguration configuration, IServiceCollection services)
@@ -215,6 +189,7 @@ namespace AuthenticationSampleClient
 
             services.ConfigureClassAware<AppSettingsOptions>(configuration.GetSection("AppSettings"));
             services.ConfigureClassAware<FeatureFlagOptions>(configuration.GetSection("AppSettings"));
+
             //services.ConfigureClassAware<AuthenticationSampleApiOptions>(configuration.GetSection("AuthenticationSampleApi"));
             services.ConfigureClassAware<AzureAdOptions>(configuration.GetSection("AzureAd"));
 

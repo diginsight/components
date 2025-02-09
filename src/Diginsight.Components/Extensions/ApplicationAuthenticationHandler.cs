@@ -86,17 +86,17 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
                 .Create(clientId)
                 .WithTenantId(tenantId)
                 .WithClientSecret(clientSecret)
-                .Build();
+                .Build(); logger.LogDebug($"var confidentialClientApplication = ConfidentialClientApplicationBuilder.Create({clientId}).WithTenantId({tenantId}).WithClientSecret({clientSecret}).Build();");
 
-            var builder = confidentialClientApplication.AcquireTokenForClient([scope]);
-            result = await builder.ExecuteAsync(cancellationToken);
+            var builder = confidentialClientApplication.AcquireTokenForClient([scope]); logger.LogDebug($"var builder = confidentialClientApplication.AcquireTokenForClient([{scope}]);");
+            result = await builder.ExecuteAsync(cancellationToken); logger.LogDebug("result = await builder.ExecuteAsync(cancellationToken);");
         }
 
         tenantId = Environment.GetEnvironmentVariable("AZURE_TENANT_ID").HardTrim();
         clientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID").HardTrim();
         var authorityHost = Environment.GetEnvironmentVariable("AZURE_AUTHORITY_HOST").HardTrim();
         logger.LogDebug("tenantId = {tenantId}, clientId = {clientId}, authorityHost = {authorityHost}", tenantId, clientId, authorityHost);
-        if (tenantId is not null && clientId is not null && authorityHost is not null)
+        if (result is null && tenantId is not null && clientId is not null && authorityHost is not null)
         {
             IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
                 .Create(clientId)
@@ -113,14 +113,14 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
             result = await builder.ExecuteAsync(cancellationToken);
         }
 
-        tenantId = Environment.GetEnvironmentVariable("AZURE_TENANT_ID").HardTrim();
+        //tenantId = Environment.GetEnvironmentVariable("AZURE_TENANT_ID").HardTrim();
         clientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID").HardTrim();
         var msiEndpoint = Environment.GetEnvironmentVariable("MSI_ENDPOINT").HardTrim();
         var msiSecret = Environment.GetEnvironmentVariable("MSI_SECRET").HardTrim();
         logger.LogDebug("tenantId = {tenantId}, clientId = {clientId}, msiEndpoint = {msiEndpoint}, msiSecret = {msiSecret}", tenantId, clientId, msiEndpoint, msiSecret.Mask());
-        if (msiEndpoint is not null && msiSecret is not null)
+        if (result is null && msiEndpoint is not null && msiSecret is not null)
         {
-            var managedIdentityClientId = options.ManagedIdentityClientId.HardTrim();
+            var managedIdentityClientId = options.ManagedIdentityClientId.HardTrim(); logger.LogDebug("managedIdentityClientId: {managedIdentityClientId}", managedIdentityClientId);
             //if (managedIdentityClientId is null)
             //{
             //    managedIdentityClientId = (await GetManagedIdentityClientIdAsync(cancellationToken)).HardTrim();
@@ -134,7 +134,7 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
             result = await builder.ExecuteAsync(cancellationToken);
         }
 
-        if (result is not null && options.UseFederatedConfidentialClient)
+        if (result is null && options.UseFederatedConfidentialClient)
         {
             ManagedIdentityId managedIdentityId = options.ManagedIdentityClientId is { } managedIdentityClientId ? ManagedIdentityId.WithUserAssignedClientId(managedIdentityClientId) : ManagedIdentityId.SystemAssigned;
             IManagedIdentityApplication managedIdentityApplication = ManagedIdentityApplicationBuilder

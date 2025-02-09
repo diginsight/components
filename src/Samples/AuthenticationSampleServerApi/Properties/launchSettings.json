@@ -8,7 +8,7 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7214;http://localhost:5055",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "Production",
         "AppsettingsEnvironmentName": "Testms",
         "ExternalConfigurationFolder": "..\\..\\..\\..\\components.internal"
       }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
@@ -21,8 +22,10 @@ public sealed class ObservabilityManager : EarlyLoggingManager
         _ = Observability.ActivitySource;
     }
 
-    public ObservabilityManager()
-        : base(static activitySource => activitySource == Observability.ActivitySource) { }
+    public ObservabilityManager() 
+        : base(static activitySource => activitySource == Observability.ActivitySource
+         || activitySource.Name.StartsWith("Diginsight.", StringComparison.InvariantCultureIgnoreCase)
+        ) { }
 
     [SuppressMessage("ReSharper", "ParameterHidesMember")]
     protected override void AdditionalAttachTo(IServiceCollection services)

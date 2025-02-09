@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
@@ -33,12 +34,19 @@ public static class HostBuilderExtensions
         if (ObservabilityHelper.LoggerFactory == null) { ObservabilityHelper.LoggerFactory = loggerFactory; }
 
         bool isLocal = environment.IsDevelopment();
+        bool isDebuggerAttached = Debugger.IsAttached;
 
         if (isLocal)
         {
             int appsettingsIndex = GetJsonFileIndex("appsettings.json", builder);
             AppendLocalJsonFile("appsettings.local.json", appsettingsIndex, builder, isLocal);
         }
+
+        //if (isDebuggerAttached)
+        //{
+        //    var entryAssembly = Assembly.GetEntryAssembly();
+        //    builder.AddUserSecrets(entryAssembly);
+        //}
 
         var environmentName = environment.EnvironmentName;
         int appsettingsEnvironmentIndex = GetJsonFileIndex($"appsettings.{environmentName}.json", builder);

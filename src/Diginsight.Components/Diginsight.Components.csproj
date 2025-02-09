@@ -58,6 +58,7 @@
   <ItemGroup>
     <ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Core\Diginsight.Core.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
     <ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Diagnostics\Diginsight.Diagnostics.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
+    <ProjectReference Include="..\Diginsight.Components.Configuration\Diginsight.Components.Configuration.csproj" />
     <PackageReference Include="Diginsight.Core" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
     <PackageReference Include="Diginsight.Diagnostics" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
   </ItemGroup>

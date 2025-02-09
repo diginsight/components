@@ -12,6 +12,9 @@ namespace Diginsight.Components;
 internal static class Observability
 {
     public static readonly ActivitySource ActivitySource = new(Assembly.GetExecutingAssembly().GetName().Name!);
+
     internal static ILoggerFactory LoggerFactory = default!;
+
+
 }
 

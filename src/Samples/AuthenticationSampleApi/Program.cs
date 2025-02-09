@@ -9,7 +9,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        using EarlyLoggingManager observabilityManager = new ObservabilityManager();
+        using var observabilityManager = new ObservabilityManager();
         ILogger logger = observabilityManager.LoggerFactory.CreateLogger(typeof(Program));
 
         IWebHost host;
@@ -19,7 +19,7 @@ public class Program
                 .ConfigureAppConfiguration2(observabilityManager.LoggerFactory)
                 .ConfigureServices(services =>
                 {
-                    services.TryAddSingleton(observabilityManager);
+                    services.TryAddSingleton<EarlyLoggingManager>(observabilityManager);
                 })
                 .UseStartup<Startup>()
                 .UseDiginsightServiceProvider(true)

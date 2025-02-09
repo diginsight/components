@@ -35,19 +35,30 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
     {
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { clientName });
 
-        //using var httpClient = new HttpClient();
-        using var httpClient = httpClientFactory.CreateClient("Unauthenticated");
-        httpClient.DefaultRequestHeaders.Add("Metadata", "true");
-        var response = await httpClient.GetAsync("http://169.254.169.254/metadata/identity/oauth2/token?api-version=2019-08-01&resource=https://management.azure.com/", cancellationToken);
-        if (response.IsSuccessStatusCode)
+        try
         {
-            var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            var json = JsonDocument.Parse(content);
-            if (json.RootElement.TryGetProperty("client_id", out var clientIdElement))
+            //using var httpClient = new HttpClient();
+            using var httpClient = httpClientFactory.CreateClient("Unauthenticated");
+            httpClient.DefaultRequestHeaders.Add("Metadata", "true");
+            var response = await httpClient.GetAsync("http://169.254.169.254/metadata/identity/oauth2/token?api-version=2019-08-01&resource=https://management.azure.com/", cancellationToken); logger.LogDebug(@"response = await httpClient.GetAsync(""http://169.254.169.254/metadata/identity/oauth2/token?api-version=2019-08-01&resource=https://management.azure.com/"", cancellationToken);");
+            logger.LogDebug("response = {response}", response);
+
+            if (response.IsSuccessStatusCode)
             {
-                return clientIdElement.GetString();
+                var content = await response.Content.ReadAsStringAsync(cancellationToken);
+                var json = JsonDocument.Parse(content);
+                if (json.RootElement.TryGetProperty("client_id", out var clientIdElement))
+                {
+                    return clientIdElement.GetString();
+                }
             }
         }
+        catch (Exception ex)
+        {
+            var message = $"Unhandled exception '{ex.GetType().Name}' occurred processing {activity.OperationName}.";
+            logger.LogError(ex, message);
+        }
+
         return null;
     }
     public async Task<AuthenticationResult> AcquiresTokenForClientAsync(CancellationToken cancellationToken)
@@ -68,6 +79,7 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
         var tenantId = options.TenantId.HardTrim();
         var clientId = options.AppRegistrationClientId.HardTrim();
         var clientSecret = options.AppRegistrationClientSecret.HardTrim();
+        logger.LogDebug("tenantId = {tenantId}, clientId = {clientId}, clientSecret = {clientSecret}", tenantId, clientId, clientSecret.Mask());
         if (result is null && tenantId is not null && clientId is not null && clientSecret is not null)
         {
             var confidentialClientApplication = ConfidentialClientApplicationBuilder
@@ -83,6 +95,7 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
         tenantId = Environment.GetEnvironmentVariable("AZURE_TENANT_ID").HardTrim();
         clientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID").HardTrim();
         var authorityHost = Environment.GetEnvironmentVariable("AZURE_AUTHORITY_HOST").HardTrim();
+        logger.LogDebug("tenantId = {tenantId}, clientId = {clientId}, authorityHost = {authorityHost}", tenantId, clientId, authorityHost);
         if (tenantId is not null && clientId is not null && authorityHost is not null)
         {
             IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
@@ -104,9 +117,14 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
         clientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID").HardTrim();
         var msiEndpoint = Environment.GetEnvironmentVariable("MSI_ENDPOINT").HardTrim();
         var msiSecret = Environment.GetEnvironmentVariable("MSI_SECRET").HardTrim();
+        logger.LogDebug("tenantId = {tenantId}, clientId = {clientId}, msiEndpoint = {msiEndpoint}, msiSecret = {msiSecret}", tenantId, clientId, msiEndpoint, msiSecret.Mask());
         if (msiEndpoint is not null && msiSecret is not null)
         {
-            var managedIdentityClientId = (await GetManagedIdentityClientIdAsync(cancellationToken)).HardTrim();
+            var managedIdentityClientId = options.ManagedIdentityClientId.HardTrim();
+            //if (managedIdentityClientId is null)
+            //{
+            //    managedIdentityClientId = (await GetManagedIdentityClientIdAsync(cancellationToken)).HardTrim();
+            //}
             ManagedIdentityId managedIdentityId = managedIdentityClientId is not null ? ManagedIdentityId.WithUserAssignedClientId(managedIdentityClientId) : ManagedIdentityId.SystemAssigned;
             IManagedIdentityApplication managedIdentityApplication = ManagedIdentityApplicationBuilder
                 .Create(managedIdentityId)

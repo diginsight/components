@@ -2,7 +2,6 @@
 using Diginsight;
 using Diginsight.Components;
 using Diginsight.Components.Configuration;
-using Diginsight.Components.Extensions;
 using Diginsight.Diagnostics;
 using Diginsight.Diagnostics.Log4Net;
 using Diginsight.Logging;
@@ -12,13 +11,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Data;
 using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
 #endregion

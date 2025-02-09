@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using System;
+using System.Reflection;
 using System.Text;
 
 namespace Diginsight.Components.Configuration;
@@ -20,7 +21,7 @@ public static class HostBuilderExtensions
     {
         var logger = loggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { hostBuilder, tagsMatch });
-        if (Observability.LoggerFactory == null) { Observability.LoggerFactory = loggerFactory; }
+        if (ObservabilityHelper.LoggerFactory == null) { ObservabilityHelper.LoggerFactory = loggerFactory; }
 
         return hostBuilder.ConfigureAppConfiguration((hbc, cb) => ConfigureAppConfiguration2(hbc.HostingEnvironment, cb, loggerFactory, tagsMatch));
     }
@@ -29,7 +30,7 @@ public static class HostBuilderExtensions
     {
         var logger = loggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { environment, builder, tagsMatch });
-        if (Observability.LoggerFactory == null) { Observability.LoggerFactory = loggerFactory; }
+        if (ObservabilityHelper.LoggerFactory == null) { ObservabilityHelper.LoggerFactory = loggerFactory; }
 
         bool isLocal = environment.IsDevelopment();
 
@@ -130,6 +131,10 @@ public static class HostBuilderExtensions
 
     private static void AppendLocalJsonFile(string path, int index, IConfigurationBuilder builder, bool isLocal)
     {
+        var loggerFactory = ObservabilityHelper.LoggerFactory;
+        var logger = loggerFactory.CreateLogger(T);
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { path, index, isLocal });
+
         if (!isLocal) { return; }
 
         //JsonConfigurationSource jsonSource = new JsonConfigurationSource()

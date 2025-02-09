@@ -1,30 +1,24 @@
 ﻿using Diginsight;
 using Diginsight.AspNetCore;
+using Diginsight.Components;
+using Diginsight.Components.Configuration;
+using Diginsight.Diagnostics;
+using Diginsight.SmartCache;
+using Diginsight.SmartCache.Externalization.Http;
+using Diginsight.SmartCache.Externalization.ServiceBus;
+using Diginsight.Stringify;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Identity.Web;
+//using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Logging;
+using OpenTelemetry;
+using OpenTelemetry.Trace;
 //using Diginsight.Strings;
 using RestSharp;
 //using Asp.Versioning;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using System.Text.Json.Serialization;
-using Diginsight.SmartCache.Externalization.ServiceBus;
-using Diginsight.SmartCache;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Diginsight.SmartCache.Externalization.AspNetCore;
-//using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Logging;
-using System.Reflection;
-using Microsoft.Identity.Web;
-using Diginsight.Diagnostics;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Diginsight.Stringify;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Diginsight.SmartCache.Externalization.Http;
-using Diginsight.Components.Configuration;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using OpenTelemetry;
-using OpenTelemetry.Trace;
-using Microsoft.Extensions.Options;
 
 namespace AuthenticationSampleServerApi
 {
@@ -225,8 +219,7 @@ namespace AuthenticationSampleServerApi
 
             app.UseAuthentication(); // If you have this, it should be before UseAuthorization
             app.UseAuthorization();  // Make sure this is between UseRouting and UseEndpoints
-
-            //app.UseMiddleware<HandleExceptionsMiddleware>(); scope.LogDebug($"app.UseMiddleware<HandleExceptionsMiddleware>();");
+            app.UseMiddleware<ExceptionHandlingMiddleware>(); //app.UseMiddleware<ExceptionHandlingMiddleware>(); scope.LogDebug($"app.UseMiddleware<ExceptionHandlingMiddleware>();");
 
             app.UseEndpoints(endpoints =>
             {

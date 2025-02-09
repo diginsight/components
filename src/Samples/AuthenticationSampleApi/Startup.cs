@@ -2,7 +2,6 @@
 using Diginsight.AspNetCore;
 using Diginsight.Components;
 using Diginsight.Components.Configuration;
-using Diginsight.Components.Extensions;
 using Diginsight.Diagnostics;
 using Diginsight.SmartCache;
 using Diginsight.SmartCache.Externalization.Http;
@@ -149,9 +148,9 @@ namespace AuthenticationSampleApi
                     //opt.Conventions.Add(new DataExportConvention() as IActionModelConvention);
                 });
 
-            //services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-            //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            // services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+            // services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             SmartCacheBuilder smartCacheBuilder = services.AddSmartCache(configuration, hostEnvironment, loggerFactory)
                             .AddHttp();
@@ -176,7 +175,6 @@ namespace AuthenticationSampleApi
             services.TryAddSingleton<ICacheKeyProvider, MyCacheKeyProvider>();
             //services.TryAddSingleton<IActivityTagger, ActivityTagger>();
 
-
             services
                 .Configure<AuthenticatedClientOptions>("AuthenticationSampleServerApi", configuration.GetSection("AuthenticationSampleServerApi"))
                 .Configure<HttpClientOptions>("AuthenticationSampleServerApi", configuration.GetSection("AuthenticationSampleServerApi"))
@@ -192,7 +190,6 @@ namespace AuthenticationSampleApi
                 )
                 .AddApplicationPermissionAuthentication()
                 .AddBodyLoggingHandler();
-
 
 
             IsSwaggerEnabled = configuration.GetValue<bool>("IsSwaggerEnabled");
@@ -235,8 +232,7 @@ namespace AuthenticationSampleApi
 
             app.UseAuthentication(); // If you have this, it should be before UseAuthorization
             app.UseAuthorization();  // Make sure this is between UseRouting and UseEndpoints
-
-            //app.UseMiddleware<HandleExceptionsMiddleware>(); scope.LogDebug($"app.UseMiddleware<HandleExceptionsMiddleware>();");
+            app.UseMiddleware<ExceptionHandlingMiddleware>(); //app.UseMiddleware<ExceptionHandlingMiddleware>(); scope.LogDebug($"app.UseMiddleware<ExceptionHandlingMiddleware>();");
 
             app.UseEndpoints(endpoints =>
             {

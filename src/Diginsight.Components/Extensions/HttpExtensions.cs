@@ -1,6 +1,7 @@
 ﻿#region using
 using System.Net.Http;
 using System.Net.Mime;
+using System.Security.Policy;
 using System.Text;
 using Diginsight.Components.Configuration;
 using Diginsight.Diagnostics;
@@ -9,16 +10,20 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 #endregion
 
-namespace Diginsight.Components.Extensions;
+namespace Diginsight.Components;
 
 public static class HttpExtensions
 {
-    public static async Task<HttpResponseMessage?> HttpSendAsync(
+    private static readonly Type T = typeof(HttpExtensions);
+
+    public static async Task<HttpResponseMessage?> SendAsync(
         this HttpClient httpClient,
         HttpMethod method, string url, object? requestBody, string description, CancellationToken cancellationToken
     )
     {
-        // using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { method, url, requestBody, description } );
+        var loggerFactory = ObservabilityHelper.LoggerFactory;
+        var logger = loggerFactory.CreateLogger(T);
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { method, url, requestBody, description });
 
         using HttpRequestMessage requestMessage = new(method, url);
         if (requestBody != null)
@@ -45,7 +50,9 @@ public static class HttpExtensions
         //}
     }
 
-    public static async Task<TResult?> GetAsync<TResult>(this HttpResponseMessage responseMessage, CancellationToken cancellationToken)
+    public static async Task<TResult?> GetAsync<TResult>(
+        this HttpResponseMessage responseMessage, 
+        CancellationToken cancellationToken)
     {
         string responseBody = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
         if (responseMessage.IsSuccessStatusCode == false || string.IsNullOrEmpty(responseBody)) { return default; }
@@ -53,45 +60,4 @@ public static class HttpExtensions
         return JsonConvert.DeserializeObject<TResult>(responseBody);
     }
 
-}
-
-public static class HttpHostingExtensions
-{
-    public static IHttpClientBuilder AddApplicationPermissionAuthentication(
-        this IHttpClientBuilder builder, Action<AuthenticatedClientOptions>? configureOptions = null
-    )
-    {
-        string clientName = builder.Name;
-
-        builder.Services.AddKeyedScoped(clientName, (sp, _) => ActivatorUtilities.CreateInstance<ApplicationAuthenticationHandler>(sp, clientName));
-        builder.AddHttpMessageHandler(sp => sp.GetRequiredKeyedService<ApplicationAuthenticationHandler>(clientName));
-        
-        if (configureOptions is not null)
-        {
-            builder.Services.Configure(clientName, configureOptions);
-        }
-
-        return builder;
-    }
-
-    //public static IHttpClientBuilder AddDelegatedPermissionAuthentication(
-    //    this IHttpClientBuilder builder, Action<AuthenticatedClientOptions>? configureOptions = null
-    //)
-    //{
-    //    string clientName = builder.Name;
-    //    TokenAcquirerKey serviceKey = new(clientName);
-    //    if (HasTokenAcquirer(builder.Services, serviceKey))
-    //    {
-    //        return builder;
-    //    }
-
-    //    builder.Services.AddKeyedSingleton(serviceKey, (sp, _) => ActivatorUtilities.CreateInstance<DelegatedTokenAcquirer>(sp, clientName));
-    //    builder.AddHttpMessageHandler(sp => new DelegatedAuthenticationHandler(sp.GetRequiredKeyedService<DelegatedTokenAcquirer>(serviceKey)));
-    //    if (configureOptions is not null)
-    //    {
-    //        builder.Services.Configure(clientName, configureOptions);
-    //    }
-
-    //    return builder;
-    //}
 }

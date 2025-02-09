@@ -12,9 +12,9 @@ public static class WebHostBuilderExtensions
     {
         var logger = loggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger);
-        if (Observability.LoggerFactory == null) { Observability.LoggerFactory = loggerFactory; }
+        if (ObservabilityHelper.LoggerFactory == null) { ObservabilityHelper.LoggerFactory = loggerFactory; }
 
-        return hostBuilder.ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) => HostBuilderExtensions.ConfigureAppConfiguration2(webHostBuilderContext.HostingEnvironment, configurationBuilder, Observability.LoggerFactory, tagsMatch));
+        return hostBuilder.ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) => HostBuilderExtensions.ConfigureAppConfiguration2(webHostBuilderContext.HostingEnvironment, configurationBuilder, ObservabilityHelper.LoggerFactory, tagsMatch));
     }
 }
 

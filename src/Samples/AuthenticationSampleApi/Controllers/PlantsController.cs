@@ -1,16 +1,13 @@
 using Asp.Versioning;
-using Diginsight.Options;
+using Diginsight.Components;
 using Diginsight.Diagnostics;
 using Diginsight.Logging;
+using Diginsight.Options;
 using Diginsight.SmartCache;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using OpenTelemetry.Trace;
-using Diginsight.Components.Extensions;
 
 namespace AuthenticationSampleApi
 {
@@ -93,7 +90,7 @@ namespace AuthenticationSampleApi
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
             // get users from SampleServerApi
-            var response = await this.authenticationSampleServerApiHttpClient.HttpSendAsync(HttpMethod.Get, "api/Users/getUsers", null, "Users/getUsers", HttpContext.RequestAborted);
+            var response = await this.authenticationSampleServerApiHttpClient.SendAsync(HttpMethod.Get, "api/Users/getUsers", null, "Users/getUsers", HttpContext.RequestAborted);
 
             var options = new SmartCacheOperationOptions() { MaxAge = TimeSpan.FromMinutes(10) };
             var cacheKey = new MethodCallCacheKey(cacheKeyService, typeof(PlantsController), nameof(GetPlantsAsync));

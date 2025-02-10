@@ -73,7 +73,6 @@ public static class WebHostingExtensions
         services.AddVolatileConfiguration();
 
         DefaultDynamicConfigurationLoader.AddToServices(services);
-
         services.AddDynamicLogLevel<DefaultDynamicLogLevelInjector>();
         services.AddLogging(static lb => lb.AddVolatileConfiguration());
 

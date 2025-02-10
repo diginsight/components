@@ -1,3 +1,4 @@
+#region using
 using Asp.Versioning;
 using Diginsight.Components;
 using Diginsight.Diagnostics;
@@ -7,7 +8,8 @@ using Diginsight.SmartCache;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using OpenTelemetry.Trace;
+using OpenTelemetry.Trace; 
+#endregion
 
 namespace AuthenticationSampleApi
 {
@@ -104,7 +106,7 @@ namespace AuthenticationSampleApi
         [ApiVersion(ApiVersions.V_2024_04_26.Name)]
         public async Task<Plant> GetPlantByIdAsync([FromRoute] Guid plantId)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger);
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { plantId });
 
             var options = new SmartCacheOperationOptions() { MaxAge = TimeSpan.FromMinutes(10) };
             var cacheKey = new MethodCallCacheKey(cacheKeyService, typeof(PlantsController), nameof(GetPlantByIdAsync), plantId);

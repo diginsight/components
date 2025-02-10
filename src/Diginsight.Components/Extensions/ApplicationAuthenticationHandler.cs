@@ -37,7 +37,6 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
 
         try
         {
-            //using var httpClient = new HttpClient();
             using var httpClient = httpClientFactory.CreateClient("Unauthenticated");
             httpClient.DefaultRequestHeaders.Add("Metadata", "true");
             var response = await httpClient.GetAsync("http://169.254.169.254/metadata/identity/oauth2/token?api-version=2019-08-01&resource=https://management.azure.com/", cancellationToken); logger.LogDebug(@"response = await httpClient.GetAsync(""http://169.254.169.254/metadata/identity/oauth2/token?api-version=2019-08-01&resource=https://management.azure.com/"", cancellationToken);");
@@ -65,12 +64,6 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
     {
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { clientName });
 
-        // TODO: if tenantID, clientId, clientSecret => IConfidentialClientApplication
-        // TODO: if AZURE_TENANT_ID, AZURE_CLIENT_ID, AZURE_AUTHORITY_HOST => IConfidentialClientApplication
-        // TODO: if certificate is available => 
-        // TODO: if IsManagedIdentityAvailable() => IManagedIdentityApplication
-        //       if UseFederatedConfidentialClient => token exchange is used to obtain IConfidentialClientApplication
-
         AuthenticationResult result = default!;
 
         IAuthenticatedClientOptions options = authenticatedClientOptionsMonitor.Get(clientName);
@@ -86,7 +79,7 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
                 .Create(clientId)
                 .WithTenantId(tenantId)
                 .WithClientSecret(clientSecret)
-                .Build(); logger.LogDebug($"var confidentialClientApplication = ConfidentialClientApplicationBuilder.Create({clientId}).WithTenantId({tenantId}).WithClientSecret({clientSecret}).Build();");
+                .Build(); logger.LogDebug($"var confidentialClientApplication = ConfidentialClientApplicationBuilder.Create({clientId}).WithTenantId({tenantId}).WithClientSecret({clientSecret.Mask()}).Build();");
 
             var builder = confidentialClientApplication.AcquireTokenForClient([scope]); logger.LogDebug($"var builder = confidentialClientApplication.AcquireTokenForClient([{scope}]);");
             result = await builder.ExecuteAsync(cancellationToken); logger.LogDebug("result = await builder.ExecuteAsync(cancellationToken);");

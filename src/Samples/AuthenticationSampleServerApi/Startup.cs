@@ -55,7 +55,7 @@ public class Startup
         if (openTelemetryOptions.EnableTraces)
         {
             services.AddDiginsightOpenTelemetry()
-                .WithTracing(
+                    .WithTracing(
                     static tracerProviderBuilder =>
                     {
                         tracerProviderBuilder.AddHttpClientInstrumentation(

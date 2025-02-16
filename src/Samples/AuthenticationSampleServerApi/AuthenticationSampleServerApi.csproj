@@ -39,12 +39,16 @@
     <PackageReference Include="Diginsight.Diagnostics" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
     <PackageReference Include="Diginsight.Diagnostics.AspNetCore.OpenTelemetry" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
     <PackageReference Include="Diginsight.Diagnostics.Log4Net" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
+
+    <PackageReference Include="Diginsight.Components" Version="$(DiginsightComponentsVersion)" Condition="'$(DiginsightComponentsDirectImport)' != 'true'" />
+    <ProjectReference Include="$(DiginsightComponentsSolutionDirectory)Diginsight.Components\Diginsight.Components.csproj" Condition="'$(DiginsightComponentsDirectImport)' == 'true'" />
+    <PackageReference Include="Diginsight.Components.Configuration" Version="$(DiginsightComponentsVersion)" Condition="'$(DiginsightComponentsDirectImport)' != 'true'" />
+    <ProjectReference Include="$(DiginsightComponentsSolutionDirectory)Diginsight.Components.Configuration\Diginsight.Components.Configuration.csproj" Condition="'$(DiginsightComponentsDirectImport)' == 'true'" />
+
     <ProjectReference Include="$(DiginsightSmartCacheSolutionDirectory)Diginsight.SmartCache.Externalization.AspNetCore\Diginsight.SmartCache.Externalization.AspNetCore.csproj" Condition="'$(DiginsightSmartCacheDirectImport)' == 'true'" />
     <ProjectReference Include="$(DiginsightSmartCacheSolutionDirectory)Diginsight.SmartCache.Externalization.ServiceBus\Diginsight.SmartCache.Externalization.ServiceBus.csproj" Condition="'$(DiginsightSmartCacheDirectImport)' == 'true'" />
     <PackageReference Include="Diginsight.SmartCache.Externalization.AspNetCore" Version="$(DiginsightSmartcacheVersion)" Condition="'$(DiginsightSmartcacheDirectImport)' != 'true'" />
     <PackageReference Include="Diginsight.SmartCache.Externalization.ServiceBus" Version="$(DiginsightSmartcacheVersion)" Condition="'$(DiginsightSmartcacheDirectImport)' != 'true'" />
-    <ProjectReference Include="..\..\Diginsight.Components.Configuration\Diginsight.Components.Configuration.csproj" />
-    <ProjectReference Include="..\..\Diginsight.Components\Diginsight.Components.csproj" />
   </ItemGroup>
 
 

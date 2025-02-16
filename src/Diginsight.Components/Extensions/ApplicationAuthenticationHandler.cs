@@ -142,7 +142,7 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
                     AuthenticationResult authenticationResult = await managedIdentityApplication
                         .AcquireTokenForManagedIdentity("api://AzureADTokenExchange")
                         .ExecuteAsync(ct);
-                    return authenticationResult.AccessToken;
+                    return result.AccessToken;
                 })
                 .Build();
 

@@ -58,8 +58,6 @@ internal sealed class Executor : IDisposable
             var requestOptions = new QueryRequestOptions { MaxItemCount = top, QueryTextMode = QueryTextMode.None };
             var iterator = container.GetItemQueryStreamIterator(modifiedQuery, requestOptions: requestOptions);
 
-            //container.UpsertItemStreamAsync( )
-
             StreamWriter? streamWriter = null;
             if (file is not null)
             {

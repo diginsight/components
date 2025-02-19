@@ -127,7 +127,7 @@ public static class HostBuilderExtensions
             builder.AddAzureKeyVault(new Uri(kvUri), credential, new KeyVaultSecretManager2(DateTimeOffset.UtcNow, tagsMatch));
         }
 
-        int environmentVariablesIndex = GetSourceIndex(builder.Sources, static x => x.Source is EnvironmentVariablesConfigurationSource) ?? -1;
+        int environmentVariablesIndex = GetSourceLastIndex(builder.Sources, static x => x.Source is EnvironmentVariablesConfigurationSource) ?? -1;
         if (environmentVariablesIndex >= 0)
         {
             int sourcesCount = builder.Sources.Count;
@@ -164,11 +164,17 @@ public static class HostBuilderExtensions
     }
     private static int? GetSourceIndex(IList<IConfigurationSource> sources, Func<(IConfigurationSource Source, int Index), bool> predicate)
     {
-        return sources
-            .Select(static (source, index) => (Source: source, Index: index))
+        return sources.Select(static (source, index) => (Source: source, Index: index))
             .Where(predicate)
             .Select(static x => (int?)x.Index)
             .FirstOrDefault();
+    }
+    private static int? GetSourceLastIndex(IList<IConfigurationSource> sources, Func<(IConfigurationSource Source, int Index), bool> predicate)
+    {
+        return sources.Select(static (source, index) => (Source: source, Index: index))
+            .Where(predicate)
+            .Select(static x => (int?)x.Index)
+            .LastOrDefault();
     }
 }
 

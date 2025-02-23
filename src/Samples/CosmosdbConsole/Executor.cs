@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Reflection.Metadata;
 
 namespace CosmosdbConsole;
 
@@ -16,6 +17,27 @@ internal sealed class Executor : IDisposable
     private readonly string? file;
     private readonly bool whatIf;
     private readonly int? top;
+    private readonly string? transformString = """
+
+        """;
+
+    private string? transform(string? recordJson) { 
+        if (recordJson is null) { return null; }
+
+        var document = JObject.Parse(recordJson);
+        var latitudeProp = document.Properties().Where(p => p.Name.StartsWith("Latitude")).FirstOrDefault();
+        var longitudeProp = document.Properties().Where(p => p.Name.StartsWith("Longitude")).FirstOrDefault();
+        var latitude = latitudeProp?.Value is not null ? (int)Double.Parse(latitudeProp.Value.ToString()): 0;
+        var longitude = longitudeProp?.Value is not null ? (int)Double.Parse(longitudeProp.Value.ToString()): 0;
+        var coodKey = $"{latitude},{longitude}";
+
+        var partitionKeyProp = document.Properties().Where(p => p.Name.StartsWith("partitionKey")).FirstOrDefault();
+        if (partitionKeyProp == null)
+        {
+            document.Add("partitionKey", coodKey);
+        }
+        return document.ToString();
+    }
 
     public Executor(ILogger<Executor> logger)
     {
@@ -37,7 +59,8 @@ internal sealed class Executor : IDisposable
         [Option('d')] string database,
         [Option('t')] string collection,
         [Option('f')] string? file,
-        [Option] int top = 100,
+        [Option("x")] string? transformFile,
+        [Option] int top = -1,
         [Option] int skip = 0
     )
     {
@@ -86,8 +109,12 @@ internal sealed class Executor : IDisposable
     }
 
     public async Task StreamDocumentsJsonAsync(
-        [Option('f')] string filePath,
-        [Option('s')] string skipFields
+        [FromService] CoconaAppContext appContext,
+        [Option('f')] string? filePath,
+        [Option('x')] string? transformFile,
+        [Option('s')] string? skipFields,
+        [Option] int top = -1,
+        [Option] int skip = 0
     )
     {
         using Activity? activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { filePath });
@@ -120,6 +147,11 @@ internal sealed class Executor : IDisposable
                     {
                         var document = await JObject.LoadAsync(jsonReader);
                         NormalizeDocument(document, skipFieldsArray);
+
+                        //var documentString = document.ToString();
+                        //documentString = transform(documentString);
+
+
                         documentCount++;
                     }
                 }

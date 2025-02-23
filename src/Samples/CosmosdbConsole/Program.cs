@@ -28,8 +28,8 @@ internal class Program
         using CoconaApp app = appBuilder.Build();
 
         Executor executor = app.Services.GetRequiredService<Executor>();
-        app.AddCommand("query", executor.QueryAsync);
         app.AddCommand("loadjson", executor.StreamDocumentsJsonAsync);
+        app.AddCommand("query", executor.QueryAsync);
         app.AddCommand("uploadjson", executor.UploadDocumentsJsonAsync);
         app.AddCommand("deletefromjson", executor.DeleteDocumentsFromJsonAsync);
 

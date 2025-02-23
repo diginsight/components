@@ -41,10 +41,10 @@
     <PackageReference Include="Diginsight.Diagnostics.AspNetCore.OpenTelemetry" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
     <PackageReference Include="Diginsight.Diagnostics.Log4Net" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
 
-    <PackageReference Include="Diginsight.Components" Version="$(DiginsightComponentsVersion)" Condition="'$(DiginsightComponentsDirectImport)' != 'true'" />
-    <ProjectReference Include="$(DiginsightComponentsSolutionDirectory)Diginsight.Components\Diginsight.Components.csproj" Condition="'$(DiginsightComponentsDirectImport)' == 'true'" />
-    <PackageReference Include="Diginsight.Components.Configuration" Version="$(DiginsightComponentsVersion)" Condition="'$(DiginsightComponentsDirectImport)' != 'true'" />
-    <ProjectReference Include="$(DiginsightComponentsSolutionDirectory)Diginsight.Components.Configuration\Diginsight.Components.Configuration.csproj" Condition="'$(DiginsightComponentsDirectImport)' == 'true'" />
+    <!--<PackageReference Include="Diginsight.Components" Version="$(DiginsightComponentsVersion)" Condition="'$(DiginsightComponentsDirectImport)' != 'true'" />
+    <PackageReference Include="Diginsight.Components.Configuration" Version="$(DiginsightComponentsVersion)" Condition="'$(DiginsightComponentsDirectImport)' != 'true'" />-->
+    <ProjectReference Include="$(DiginsightComponentsSolutionDirectory)Diginsight.Components\Diginsight.Components.csproj" />
+    <ProjectReference Include="$(DiginsightComponentsSolutionDirectory)Diginsight.Components.Configuration\Diginsight.Components.Configuration.csproj"  /> <!--Condition="'$(DiginsightComponentsDirectImport)' == 'true'"-->
 
     <ProjectReference Include="$(DiginsightSmartCacheSolutionDirectory)Diginsight.SmartCache.Externalization.AspNetCore\Diginsight.SmartCache.Externalization.AspNetCore.csproj" Condition="'$(DiginsightSmartCacheDirectImport)' == 'true'" />
     <ProjectReference Include="$(DiginsightSmartCacheSolutionDirectory)Diginsight.SmartCache.Externalization.ServiceBus\Diginsight.SmartCache.Externalization.ServiceBus.csproj" Condition="'$(DiginsightSmartCacheDirectImport)' == 'true'" />

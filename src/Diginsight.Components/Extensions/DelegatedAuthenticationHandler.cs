@@ -38,13 +38,13 @@ public sealed class DelegatedAuthenticationHandler : DelegatingHandler
         {
             throw new InvalidOperationException($"{nameof(IAuthenticatedClientOptions.TenantId)} is empty");
         }
-        if (aco.AppRegistrationClientId is not { } appRegistrationClientId)
+        if (aco.ClientId is not { } appRegistrationClientId)
         {
-            throw new InvalidOperationException($"{nameof(IAuthenticatedClientOptions.AppRegistrationClientId)} is empty");
+            throw new InvalidOperationException($"{nameof(IAuthenticatedClientOptions.ClientId)} is empty");
         }
-        if (aco.AppRegistrationClientSecret is not { } appRegistrationClientSecret)
+        if (aco.ClientSecret is not { } appRegistrationClientSecret)
         {
-            throw new InvalidOperationException($"{nameof(IAuthenticatedClientOptions.AppRegistrationClientSecret)} is empty");
+            throw new InvalidOperationException($"{nameof(IAuthenticatedClientOptions.ClientSecret)} is empty");
         }
 
         IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder

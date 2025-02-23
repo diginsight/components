@@ -66,7 +66,6 @@ public static class HostBuilderExtensions
         if (isLocal && externalConfigurationFolderExists && !File.Exists(appsettingsFilePath))
         {
             var externalConfigurationFolderDirectoryInfo = new DirectoryInfo(externalConfigurationFolder!);
-
             var currentDirectory = Directory.GetCurrentDirectory();
             var currentDirectoryInfo = new DirectoryInfo(currentDirectory);
             var repositoryRoot = DirectoryHelper.GetRepositoryRoot(currentDirectory)!;
@@ -104,12 +103,61 @@ public static class HostBuilderExtensions
             }
         }
 
+        var appsettingsLocalFileFolder = appsettingsFileFolder;
+        var appsettingsLocalFileName = $"appsettings.{appsettingsEnvironmentName}.local.json";
+        var appsettingsLocalFilePath = appsettingsLocalFileName;
+        var appsettingsLocalEnvironmentIndex = GetJsonFileIndex($"appsettings.{appsettingsEnvironmentName}.json", builder);
+        //var appsettingsLocalFilePath = appsettingsLocalFileFolder == "." ? appsettingsLocalFileName : Path.Combine(appsettingsLocalFileFolder, appsettingsLocalFileName);
+        //if (isLocal)
+        //{
+        //    AppendLocalJsonFile(appsettingsLocalFilePath, appsettingsEnvironmentIndex, builder, isLocal);
+        //}
+
         if (isLocal)
         {
-            var appsettingsLocalFileFolder = appsettingsFileFolder;
-            var appsettingsLocalFileName = $"appsettings.{appsettingsEnvironmentName}.local.json";
-            var appsettingsLocalFilePath = appsettingsLocalFileFolder == "." ? appsettingsLocalFileName : Path.Combine(appsettingsLocalFileFolder, appsettingsLocalFileName);
-            AppendLocalJsonFile(appsettingsLocalFilePath, appsettingsEnvironmentIndex, builder, isLocal);
+            if (externalConfigurationFolderExists && !File.Exists(appsettingsLocalFilePath))
+            {
+                var externalConfigurationFolderDirectoryInfo = new DirectoryInfo(externalConfigurationFolder!);
+                var currentDirectory = Directory.GetCurrentDirectory();
+                var currentDirectoryInfo = new DirectoryInfo(currentDirectory);
+                var repositoryRoot = DirectoryHelper.GetRepositoryRoot(currentDirectory)!;
+                var repositoryRootInfo = new DirectoryInfo(repositoryRoot);
+
+                var currentDirectoryParts = new List<string>();
+                while (currentDirectoryInfo != null && currentDirectoryInfo.Exists)
+                {
+                    currentDirectoryParts.Insert(0, currentDirectoryInfo.Name);
+                    currentDirectoryInfo = currentDirectoryInfo.Parent;
+                    if (currentDirectoryInfo == null || currentDirectoryInfo.FullName.Equals(repositoryRootInfo.FullName)) { break; }
+                }
+
+                var found = false;
+                var potentialAppsettingsFolder = externalConfigurationFolderDirectoryInfo.FullName;
+                while (currentDirectoryParts.Count() >= 0)
+                {
+                    var potentialSubfolder = currentDirectoryParts.Any() ? Path.Combine(currentDirectoryParts.ToArray()) : string.Empty;
+                    var potentialFolder = Path.Combine(potentialAppsettingsFolder, potentialSubfolder);
+                    var potentialFilePath = Path.Combine(potentialFolder, appsettingsLocalFileName);
+                    if (File.Exists(potentialFilePath))
+                    {
+                        appsettingsFileFolder = potentialFolder;
+                        appsettingsLocalFilePath = potentialFilePath;
+                        found = true;
+                        break;
+                    }
+                    if (currentDirectoryParts.Any()) { currentDirectoryParts.RemoveAt(currentDirectoryParts.Count() - 1); }
+                }
+
+                if (found)
+                {
+                    AppendLocalJsonFile(appsettingsLocalFilePath, appsettingsEnvironmentIndex, builder, isLocal);
+                    //builder.Sources.RemoveAt(appsettingsEnvironmentIndex);
+                }
+            }
+            else
+            {
+                AppendLocalJsonFile(appsettingsLocalFilePath, appsettingsEnvironmentIndex, builder, isLocal);
+            }
         }
 
 

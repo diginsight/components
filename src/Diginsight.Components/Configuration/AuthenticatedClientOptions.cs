@@ -20,13 +20,13 @@ public sealed class AuthenticatedClientOptions : IAuthenticatedClientOptions
         set => tenantId = value.HardTrim();
     }
 
-    public string? AppRegistrationClientId
+    public string? ClientId
     {
         get => appRegistrationClientId;
         set => appRegistrationClientId = value.HardTrim();
     }
 
-    public string? AppRegistrationClientSecret
+    public string? ClientSecret
     {
         get => appRegistrationClientSecret;
         set => appRegistrationClientSecret = value.HardTrim();

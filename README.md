@@ -1,4 +1,4 @@
-![Build](https://github.com/diginsight/components/actions/workflows/v2_99.Package.CICD.yml/badge.svg)
+![Build](https://github.com/diginsight/components/actions/workflows/v2_99.Package.CICD.yml/badge.svg?branch=main)
 
 # INTRODUCTUCTION
 components project include utility components based on diginsight telemetry.

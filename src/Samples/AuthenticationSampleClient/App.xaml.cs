@@ -15,8 +15,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using OpenTelemetry;
-using OpenTelemetry.Trace;
 using System.Data;
 using System.IO;
 using System.Runtime.CompilerServices;

@@ -11,9 +11,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using OpenTelemetry;
+using OpenTelemetry.Trace;
 using System.Data;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -89,6 +92,10 @@ namespace AuthenticationSampleClient
                     var environment = context.HostingEnvironment;
 
                     services.ConfigureClassAware<DiginsightActivitiesOptions>(configuration.GetSection("Diginsight:Activities"));
+                    //services.AddObservability(configuration, environment, out IOpenTelemetryOptions openTelemetryOptions);
+                    //services.AddDiginsightOpenTelemetry().WithTracing(b => b.SetSampler(new AlwaysOnSampler()));
+                    services.TryAddSingleton<IActivityLoggingSampler, NameBasedActivityLoggingSampler>(); logger.LogDebug("services.TryAddSingleton<IActivityLoggingSampler, NameBasedActivityLoggingSampler>();");
+
                     ObservabilityManager.AttachTo(services);
 
                     services

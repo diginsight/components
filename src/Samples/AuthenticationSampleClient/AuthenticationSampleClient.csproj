@@ -61,7 +61,7 @@
     <!--<PackageReference Include="Diginsight.Components" Version="$(DiginsightComponentsVersion)" Condition="'$(DiginsightComponentsDirectImport)' != 'true'" />
     <PackageReference Include="Diginsight.Components.Configuration" Version="$(DiginsightComponentsVersion)" Condition="'$(DiginsightComponentsDirectImport)' != 'true'" />-->
     <ProjectReference Include="$(DiginsightComponentsSolutionDirectory)Diginsight.Components\Diginsight.Components.csproj" />
-    <ProjectReference Include="$(DiginsightComponentsSolutionDirectory)Diginsight.Components.Configuration\Diginsight.Components.Configuration.csproj"  />
+    <ProjectReference Include="$(DiginsightComponentsSolutionDirectory)Diginsight.Components.Configuration\Diginsight.Components.Configuration.csproj" />
     <!--Condition="'$(DiginsightComponentsDirectImport)' == 'true'"-->
 
     <ProjectReference Include="$(DiginsightSmartCacheSolutionDirectory)Diginsight.SmartCache.Externalization.AspNetCore\Diginsight.SmartCache.Externalization.AspNetCore.csproj" Condition="'$(DiginsightSmartCacheDirectImport)' == 'true'" />
@@ -91,9 +91,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="appsettings.Testms.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
 	  <None Update="appsettings.Testms.local.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>

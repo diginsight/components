@@ -14,7 +14,7 @@ jobs:
       assemblyVersion: ${{ steps.get_assembly_version.outputs.assemblyVersion }}
 
     env:
-      versionPrefix: '0.0.0'
+      versionPrefix: '0.8.0'
       solutionsFilter: '*.sln'
       projectsFilter: '*.csproj'
       projectBaseName: Diginsight

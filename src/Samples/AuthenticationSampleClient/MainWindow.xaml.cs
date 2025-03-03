@@ -1,52 +1,28 @@
-﻿#region using
-using Diginsight.Options;
-using Diginsight.Diagnostics;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Client;
-using OpenTelemetry.Resources;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security.Claims;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-//using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using Metrics = System.Collections.Generic.Dictionary<string, object>;
-using Window = System.Windows.Window; // $$$
-using AuthenticationToken = Microsoft.Datasync.Client.AuthenticationToken;
-using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
-using Azure.Identity;
+﻿using AuthenticationSampleClient.Models;
 using Azure.Core;
-using System.Net.Http;
+using Diginsight.Components;
+using Diginsight.Diagnostics;
+using Diginsight.Options;
 using Microsoft.AspNetCore.Http;
-using Refit;
-using static System.Formats.Asn1.AsnWriter;
-using System.Net;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Microsoft.Extensions.Configuration;
-using AuthenticationSampleClient.Models;
-using Microsoft.Extensions.Options;
-using Diginsight.Components;
-#endregion
+using Refit;
+using System.Diagnostics;
+using System.Net;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
+using System.Security.Claims;
+using System.Windows;
+using System.Windows.Interop;
+//using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Window = System.Windows.Window; // $$$
+using Microsoft.Identity.Client;
+using Microsoft.Identity.Client.Desktop;
+
 
 namespace AuthenticationSampleClient
 {
@@ -67,7 +43,7 @@ namespace AuthenticationSampleClient
 
         private string GetScope([CallerMemberName] string memberName = "") { return memberName; }
 
-        public static IPublicClientApplication IdentityClient { get; set; }
+        public static IPublicClientApplication PublicClientApplication { get; set; }
         #region AuthenticationResult
         public AuthenticationResult AuthenticationResult
         {
@@ -122,9 +98,10 @@ namespace AuthenticationSampleClient
                         .Create(clientId)
                         .WithAuthority(AzureCloudInstance.AzurePublic, tenantId)
                         .WithRedirectUri(redirectUri)
+                        .WithWindowsEmbeddedBrowserSupport() // Add this line
                         .Build();
 
-            IdentityClient = app;
+            PublicClientApplication = app;
 
             this.httpClient = httpClient;
 
@@ -234,25 +211,26 @@ namespace AuthenticationSampleClient
                 this.ClaimsPrincipal = result.ClaimsPrincipal;
                 var identity = this.ClaimsPrincipal.Identity; // getClaim name
             }
-            catch (Exception _) { }
+            catch (Exception ex) { logger.LogError($"Exception '{ex.GetType().Name}': '{ex.Message}'\r\noccurred within '{activity?.OperationName}'\r\n{ex.ToString()}", ex); }
         }
 
         public async Task<AuthenticationResult> GetAuthenticationToken()
         {
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
-            var accounts = await IdentityClient.GetAccountsAsync();
+            var accounts = await PublicClientApplication.GetAccountsAsync();
             AuthenticationResult? result = null;
             try
             {
-                result = await IdentityClient.AcquireTokenSilent(Constants.Scopes, accounts.FirstOrDefault())
-                    .ExecuteAsync();
+                result = await PublicClientApplication.AcquireTokenSilent(Constants.Scopes, accounts.FirstOrDefault())
+                                                      .ExecuteAsync();
             }
             catch (MsalUiRequiredException)
             {
-                result = await IdentityClient
+                result = await PublicClientApplication
                     .AcquireTokenInteractive(Constants.Scopes)
-                    //.WithUseEmbeddedWebView()
+                    .WithUseEmbeddedWebView(true)
+                    .WithParentActivityOrWindow(new WindowInteropHelper(this).Handle)
                     .ExecuteAsync();
             }
             catch (Exception ex)
@@ -262,6 +240,8 @@ namespace AuthenticationSampleClient
             }
 
             var name = result?.ClaimsPrincipal?.Claims?.FirstOrDefault(c => c.Type == "name")?.Value;
+
+            activity?.SetOutput(result);
             return result;
         }
 

@@ -97,7 +97,7 @@ jobs:
           $csprojFiles | %{ (Get-Content $_.FullName) -replace $pattern, $replacement | Set-Content $_.FullName }
 
       - name: Restore dependencies
-        run: dotnet restore src/Diginsight.Components.Build.sln
+        run: dotnet restore src/Diginsight.Components.Build.sln --force --force-evaluate
 
       - name: Build DLL Debug
         run: dotnet build src/Diginsight.Components.Build.sln --configuration Debug --no-restore

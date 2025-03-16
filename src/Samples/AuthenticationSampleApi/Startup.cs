@@ -1,4 +1,5 @@
-﻿using Diginsight;
+﻿#region using
+using Diginsight;
 using Diginsight.AspNetCore;
 using Diginsight.Components;
 using Diginsight.Components.Configuration;
@@ -16,7 +17,8 @@ using Microsoft.IdentityModel.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Trace;
 using RestSharp;
-using System.Text.Json.Serialization;
+using System.Text.Json.Serialization; 
+#endregion
 
 namespace AuthenticationSampleApi;
 
@@ -77,7 +79,7 @@ public class Startup
         services.AddDiginsightOpenTelemetry().WithTracing(b => b.SetSampler(new AlwaysOnSampler()));
         // services.TryAddEnumerable(ServiceDescriptor.Singleton<IActivityListenerRegistration, ControllerActivityTaggerRegistration>());
 
-        services.AddDynamicLogLevel<DefaultDynamicLogLevelInjector>();
+        //services.AddDynamicLogLevel<DefaultDynamicLogLevelInjector>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(configuration); //.AddJwtBearer() 

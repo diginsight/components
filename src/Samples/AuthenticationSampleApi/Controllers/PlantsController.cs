@@ -94,6 +94,8 @@ public class PlantsController : ControllerBase
         // get users from SampleServerApi
         var response = await this.authenticationSampleServerApiHttpClient.SendAsync(HttpMethod.Get, "api/Users/getUsers", null, "Users/getUsers", HttpContext.RequestAborted);
 
+
+
         var options = new SmartCacheOperationOptions() { MaxAge = TimeSpan.FromMinutes(10) };
         var cacheKey = new MethodCallCacheKey(cacheKeyService, typeof(PlantsController), nameof(GetPlantsAsync));
         var plants = await smartCache.GetAsync(cacheKey, _ => GetPlantsImplAsync(), options);

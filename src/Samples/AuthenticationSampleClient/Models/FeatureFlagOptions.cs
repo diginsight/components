@@ -9,5 +9,4 @@ namespace AuthenticationSampleClient;
 
 public class FeatureFlagOptions : IDynamicallyConfigurable
 {
-    public bool DeviceDeleteHierarchyEnabled { get; set; }
 }

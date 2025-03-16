@@ -89,10 +89,6 @@ public class Startup
 
         IdentityModelEventSource.ShowPII = true;
 
-        services.ConfigureClassAware<ConcurrencyOptions>(configuration.GetSection("FeatureManagement"))
-            .DynamicallyConfigure<ConcurrencyOptions>()
-            .VolatilelyConfigure<ConcurrencyOptions>();
-
         //services.ConfigureClassAware<GeneralOptions>(this.configuration.GetSection("AppSettings"))
         //    .VolatilelyConfigure<GeneralOptions>()
         //    .DynamicallyConfigureClassAware<GeneralOptions>();

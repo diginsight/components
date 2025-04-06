@@ -22,5 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.*" />
+    <PackageReference Include="System.Linq.Async" Version="6.*" />
+    <PackageReference Include="System.Linq.Async.Queryable" Version="6.*" />
   </ItemGroup>
 </Project>

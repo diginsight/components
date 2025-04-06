@@ -19,4 +19,22 @@ public static class CosmosDbExtensions
 
         return container.GetItemQueryIterator<T>(queryDefinition, continuationToken, requestOptions);
     }
+
+    public static async IAsyncEnumerable<T> GetAsyncItems<T>(this FeedIterator<T> feedIterator)
+    {
+        while (feedIterator.HasMoreResults)
+        {
+            foreach (var item in await feedIterator.ReadNextAsync())
+            {
+                yield return item;
+            }
+        }
+    }
+
+    public static async Task<IEnumerable<T>> GetItemsAsync<T>(this FeedIterator<T> feedIterator)
+    {
+        var items = await feedIterator.GetAsyncItems().ToListAsync(); 
+        return items;
+    }
+
 }

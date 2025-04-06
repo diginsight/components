@@ -352,3 +352,23 @@ MigrationBackup/
 /Samples/00. Security/KeyVaultSample.Blazor/Client/wwwroot/secrets.json
 /Samples/00. Security/KeyVaultSample.Blazor/Client/wwwroot/appsettings.secrets.json
 /Samples/05. OpenAI/OpenAISample.Blazor/Client/wwwroot/appsettings.secrets.json
+
+# terraform
+# Ignore local Terraform files
+.terraform/
+
+# Ignore Terraform state files
+*.tfstate
+*.tfstate.backup
+
+# Ignore crash logs
+crash.log
+
+# Ignore override files
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+
+# Do not ignore the lock file
+!.terraform.lock.hcl

@@ -1,6 +1,7 @@
 #region using
 using Asp.Versioning;
 using Diginsight.Components;
+using Diginsight.Components.Configuration;
 using Diginsight.Diagnostics;
 using Diginsight.Logging;
 using Diginsight.Options;
@@ -9,6 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using OpenTelemetry.Trace;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 #endregion
 
 namespace AuthenticationSampleApi;
@@ -22,6 +25,7 @@ public class PlantsController : ControllerBase
     private readonly Type T = typeof(PlantsController);
     private readonly ILogger<PlantsController> logger;
     private readonly IClassAwareOptionsMonitor<FeatureFlagOptions> featureFlagsOptionsMonitor;
+    private readonly IClassAwareOptionsMonitor<ConcurrencyOptions> concurrencyOptionsMonitor;
     private readonly IHttpClientFactory httpClientFactory;
     private readonly ISmartCache smartCache;
     private readonly ICacheKeyService cacheKeyService;
@@ -32,12 +36,14 @@ public class PlantsController : ControllerBase
         TracerProvider tracerProvider,
         ILogger<PlantsController> logger,
         IClassAwareOptionsMonitor<FeatureFlagOptions> featureFlagsOptionsMonitor,
+        IClassAwareOptionsMonitor<ConcurrencyOptions> concurrencyOptionsMonitor,
         IHttpClientFactory httpClientFactory,
         ISmartCache smartCache,
         ICacheKeyService cacheKeyService)
     {
         this.logger = logger;
         this.featureFlagsOptionsMonitor = featureFlagsOptionsMonitor;
+        this.concurrencyOptionsMonitor = concurrencyOptionsMonitor;
         this.httpClientFactory = httpClientFactory;
         this.smartCache = smartCache;
         this.cacheKeyService = cacheKeyService;
@@ -84,7 +90,6 @@ public class PlantsController : ControllerBase
         return plant;
     }
 
-
     [HttpGet("getplants", Name = nameof(GetPlantsAsync))]
     [ApiVersion(ApiVersions.V_2024_04_26.Name)]
     public async Task<IEnumerable<Plant>> GetPlantsAsync()
@@ -94,12 +99,22 @@ public class PlantsController : ControllerBase
         // get users from SampleServerApi
         var response = await this.authenticationSampleServerApiHttpClient.SendAsync(HttpMethod.Get, "api/Users/getUsers", null, "Users/getUsers", HttpContext.RequestAborted);
 
+        var plantsQueue = new ConcurrentQueue<Plant>();
 
+        // create an array of 100 items
+        var maxConcurrency = concurrencyOptionsMonitor.CurrentValue?.MaxConcurrency ?? -1; logger.LogDebug("maxConcurrency: {maxConcurrency}", maxConcurrency);
 
-        var options = new SmartCacheOperationOptions() { MaxAge = TimeSpan.FromMinutes(10) };
-        var cacheKey = new MethodCallCacheKey(cacheKeyService, typeof(PlantsController), nameof(GetPlantsAsync));
-        var plants = await smartCache.GetAsync(cacheKey, _ => GetPlantsImplAsync(), options);
-
+        int[] ia = new int[5];
+        var options = new ParallelOptions() { MaxDegreeOfParallelism = maxConcurrency };
+        await Parallel.ForEachAsync(ia, options, async (i, ct) =>
+        {
+            var options = new SmartCacheOperationOptions() { MaxAge = TimeSpan.FromMinutes(10) };
+            var cacheKey = new MethodCallCacheKey(cacheKeyService, typeof(PlantsController), nameof(GetPlantsAsync));
+            var plantsItems = await smartCache.GetAsync(cacheKey, _ => GetPlantsImplAsync(), options);
+            plantsItems.ToList().ForEach(p => plantsQueue.Enqueue(p));
+        });
+ 
+        var plants = plantsQueue.ToList();
         activity?.SetOutput(plants);
         return plants;
     }

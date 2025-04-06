@@ -87,6 +87,7 @@ namespace AuthenticationSampleServerApi
         {
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
+
             var options = new SmartCacheOperationOptions() { MaxAge = TimeSpan.FromMinutes(10) };
             var cacheKey = new MethodCallCacheKey(cacheKeyService, typeof(UsersController), nameof(GetUsersAsync));
 

@@ -1,4 +1,4 @@
-name: Diginsight.Components build and deploy
+name: Diginsight.Components CICD main
 
 on:
   push:

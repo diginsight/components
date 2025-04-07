@@ -371,4 +371,4 @@ override.tf
 override.tf.json
 
 # Do not ignore the lock file
-!.terraform.lock.hcl
+.terraform.lock.hcl

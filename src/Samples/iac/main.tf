@@ -26,11 +26,6 @@ terraform {
   }
 }
 
-# Include provider configurations in providers.tf
-# Include variables in variables.tf
-# Include locals in locals.tf
-# Include resources in their respective files
-
 check "env_name" {
   assert {
     condition     = contains(["testms", "stagems", "prodms"], local.env_name)

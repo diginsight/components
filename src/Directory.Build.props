@@ -41,16 +41,6 @@
 		<DiginsightCoreDirectImport>false</DiginsightCoreDirectImport>
 	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(DiginsightComponentsSolutionDirectory)' == ''">
-    <DiginsightComponentsSolutionDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)'))</DiginsightComponentsSolutionDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(DiginsightComponentsSolutionDirectory)' != ''">
-    <DiginsightComponentsSolutionDirectory>$([MSBuild]::EnsureTrailingSlash('$(DiginsightComponentsSolutionDirectory)'))</DiginsightComponentsSolutionDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(DiginsightComponentsDirectImport)' == ''">
-    <DiginsightComponentsDirectImport>false</DiginsightComponentsDirectImport>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(DiginsightSmartCacheSolutionDirectory)' == ''">
 		<DiginsightSmartCacheDirectImport>false</DiginsightSmartCacheDirectImport>
 	</PropertyGroup>
@@ -60,6 +50,16 @@
 	<PropertyGroup Condition="'$(DiginsightSmartCacheDirectImport)' == ''">
 		<DiginsightSmartCacheDirectImport>false</DiginsightSmartCacheDirectImport>
 	</PropertyGroup>
+
+  <PropertyGroup Condition="'$(DiginsightComponentsSolutionDirectory)' == ''">
+    <DiginsightComponentsSolutionDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)'))</DiginsightComponentsSolutionDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(DiginsightComponentsSolutionDirectory)' != ''">
+    <DiginsightComponentsSolutionDirectory>$([MSBuild]::EnsureTrailingSlash('$(DiginsightComponentsSolutionDirectory)'))</DiginsightComponentsSolutionDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(DiginsightComponentsDirectImport)' == ''">
+    <DiginsightComponentsDirectImport>false</DiginsightComponentsDirectImport>
+  </PropertyGroup>
 
   <ItemGroup Condition="'$(AGENT_ID)' != ''">
     <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(BUILD_BUILDNUMBER)' != ''">

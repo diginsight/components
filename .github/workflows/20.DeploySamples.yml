@@ -1,0 +1,55 @@
+name: Deploy Samples
+
+env:
+  AZURE_WEBAPP_NAME: MY_WEBAPP_NAME   # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
+  DOTNET_VERSION: '8.0.0'                 # set this to the .NET Core version to use
+
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Display dotnet version
+        run: dotnet --version
+
+      - name: Set up dependency caching for faster builds
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      # Step 3: Restore dependencies and build the Samples solution/project
+      # If you have a solution file for Samples, reference it; otherwise, iterate over sample projects
+      - name: Restore Samples
+        run: dotnet restore src/Diginsight.Components.sln
+
+      - name: Build Samples
+        run: dotnet build src/Diginsight.Components.sln --configuration Release
+
+      # Step 4: Publish Samples (producing a deployable artifact)
+      - name: Publish Samples
+        run: dotnet publish src/Diginsight.Components.sln --configuration Release --output publish
+
+      # Step 5: Upload the published output as an artifact (if you want to persist the build)
+      - name: Upload Published Samples
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-samples
+          path: publish

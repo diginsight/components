@@ -13,7 +13,6 @@ $scriptName = $MyInvocation.MyCommand.Name
 Start-Transcript -Path "\Logs\$scriptName.log" -Append
 
 
-
     Write-Host ""
     Write-Host "Environment variables"
 

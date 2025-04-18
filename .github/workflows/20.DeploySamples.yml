@@ -3,7 +3,7 @@ name: Deploy Samples
 env:
   AZURE_WEBAPP_NAME: MY_WEBAPP_NAME   # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
-  DOTNET_VERSION: 'LTS'               # set this to the .NET Core version to use
+  DOTNET_VERSION: '8.0.x'               # set this to the .NET Core version to use
 
 
 on:

@@ -51,7 +51,7 @@ jobs:
       - name: Publish AuthenticationSampleServerApi
         run: dotnet publish src/Samples/AuthenticationSampleServerApi/AuthenticationSampleServerApi.csproj --configuration Release --framework net8.0 --output ./publish
       - name: Publish AuthenticationClient
-        run: dotnet publish src/Samples/AuthenticationClient/AuthenticationClient.csproj --configuration Release --framework net8.0 --output ./publish
+        run: dotnet publish src/Samples/AuthenticationClient/AuthenticationClient.csproj --configuration Release --framework net8.0-windows --output ./publish
 
       # Step 5: Upload the published output as an artifact (if you want to persist the build)
       - name: Upload Published Samples

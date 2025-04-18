@@ -42,7 +42,7 @@
 	</PropertyGroup>
 
   <PropertyGroup Condition="'$(DiginsightComponentsSolutionDirectory)' == ''">
-    <DiginsightComponentsDirectImport>false</DiginsightComponentsDirectImport>
+    <DiginsightComponentsSolutionDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)src'))</DiginsightComponentsSolutionDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(DiginsightComponentsSolutionDirectory)' != ''">
     <DiginsightComponentsSolutionDirectory>$([MSBuild]::EnsureTrailingSlash('$(DiginsightComponentsSolutionDirectory)'))</DiginsightComponentsSolutionDirectory>

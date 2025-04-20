@@ -1,10 +1,9 @@
 name: Deploy Samples
 
 env:
-  AZURE_WEBAPP_NAME: MY_WEBAPP_NAME   # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
-  DOTNET_VERSION: '8.0.x'               # set this to the .NET Core version to use
-
+  AZURE_WEBAPP_NAME: authsample-api-testms-01   # Name of your Azure Web App
+  AZURE_WEBAPP_PACKAGE_PATH: './publish'       # Path to the published output
+  DOTNET_VERSION: '8.0.x'                      # .NET version to use
 
 on:
   push:
@@ -47,11 +46,11 @@ jobs:
       # - name: Publish Samples
       #   run: dotnet publish src/Diginsight.Components.sln --configuration Release --framework net8.0-windows --output publish
       - name: Publish AuthenticationSampleApi
-        run: dotnet publish src/Samples/AuthenticationSampleApi/AuthenticationSampleApi.csproj --configuration Release --framework net8.0 --output ./publish
+        run:  dotnet publish src/Samples/AuthenticationSampleApi/AuthenticationSampleApi.csproj --configuration Release --framework net8.0 --output ./publish
       - name: Publish AuthenticationSampleServerApi
-        run: dotnet publish src/Samples/AuthenticationSampleServerApi/AuthenticationSampleServerApi.csproj --configuration Release --framework net8.0 --output ./publish
+        run:  dotnet publish src/Samples/AuthenticationSampleServerApi/AuthenticationSampleServerApi.csproj --configuration Release --framework net8.0 --output ./publish
       - name: Publish AuthenticationSampleClient
-        run: dotnet publish src/Samples/AuthenticationSampleClient/AuthenticationSampleClient.csproj --configuration Release --framework net8.0-windows --output ./publish
+        run:  dotnet publish src/Samples/AuthenticationSampleClient/AuthenticationSampleClient.csproj --configuration Release --framework net8.0-windows --output ./publish
 
       # Step 5: Upload the published output as an artifact (if you want to persist the build)
       - name: Upload Published Samples
@@ -59,3 +58,25 @@ jobs:
         with:
           name: published-samples
           path: publish
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Testms'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: published-samples
+          path: ./publish
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@85270a1854658d167ab239bce43949edb336fa7c
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}

@@ -42,7 +42,7 @@ jobs:
       - name: Build Samples
         run: dotnet build src/Diginsight.Components.sln --configuration Release
 
-      # Step 4: Publish Samples (producing a deployable artifact)
+      # Step 4: Publish Samples (producing a deployable artifact) 
       # - name: Publish Samples
       #   run: dotnet publish src/Diginsight.Components.sln --configuration Release --framework net8.0-windows --output publish
       - name: Publish AuthenticationSampleApi

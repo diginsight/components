@@ -94,18 +94,17 @@ jobs:
           echo "$SECRETS_CONTEXT"
           echo "$env:SECRETS_CONTEXT" >> 10.SECRETS_CONTEXT.log
 
-      - name: Zip publish folder
-        run: |
-          if (Test-Path publish.zip) { Remove-Item publish.zip }
-          Compress-Archive -Path ./publish/* -DestinationPath publish.zip
-
-      - name: Check publish.zip exists
-        run: dir publish.zip
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: publish.zip
+          slot-name: 'Production'
+          package: .

@@ -73,6 +73,13 @@ jobs:
           name: published-samples
           path: ./publish
 
+      - name: Dump SECRETS_CONTEXT
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+        run: |
+          echo "$SECRETS_CONTEXT"
+          echo "$env:SECRETS_CONTEXT" >> 10.SECRETS_CONTEXT.log
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3

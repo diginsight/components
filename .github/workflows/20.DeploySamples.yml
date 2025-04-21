@@ -73,6 +73,20 @@ jobs:
           name: published-samples
           path: ./publish
 
+      - name: Dump ENV_CONTEXT
+        env:
+          ENV_CONTEXT: ${{ toJson(env) }}
+        run: |
+          echo "$ENV_CONTEXT"
+          echo "$env:ENV_CONTEXT" >> 07.ENV_CONTEXT.log
+
+      - name: Dump VARS_CONTEXT
+        env:
+          VARS_CONTEXT: ${{ toJson(vars) }}
+        run: |
+          echo "$VARS_CONTEXT"
+          echo "$env:VARS_CONTEXT" >> 08.VARS_CONTEXT.log
+
       - name: Dump SECRETS_CONTEXT
         env:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}

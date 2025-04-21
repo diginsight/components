@@ -96,12 +96,11 @@ jobs:
 
       - name: Zip publish folder
         run: |
-          cd publish
-          zip -r ../publish.zip .
-          cd ..
+          if (Test-Path publish.zip) { Remove-Item publish.zip }
+          Compress-Archive -Path ./publish/* -DestinationPath publish.zip
 
       - name: Check publish.zip exists
-        run: ls -lh publish.zip
+        run: dir publish.zip
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp

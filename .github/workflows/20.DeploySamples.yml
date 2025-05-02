@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to deploy to'
+        description: 'Environment to run the workflow'
         required: true
         default: 'Testms'
 
@@ -72,10 +72,8 @@ jobs:
   deploy:
     runs-on: self-hosted
     needs: build
-    env:
-      ENVIRONMENT: ${{ github.event.inputs.environment != '' && github.event.inputs.environment || env.DEPLOY_ENVIRONMENT }}
     environment:
-      name: ${{ env.ENVIRONMENT }}
+      name: 'Testms'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT

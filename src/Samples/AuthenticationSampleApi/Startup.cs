@@ -40,6 +40,8 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        Console.WriteLine("Starting ConfigureServices...");
+
         var logger = loggerFactory.CreateLogger<Startup>();
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { services });
 

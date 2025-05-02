@@ -3,6 +3,7 @@ using Diginsight.Components.Configuration;
 using Diginsight.Diagnostics;
 using Microsoft.AspNetCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Diagnostics;
 namespace AuthenticationSampleApi;
 
 public class Program
@@ -15,6 +16,7 @@ public class Program
         IWebHost host;
         using (var activity = Observability.ActivitySource.StartMethodActivity(logger, new { args }))
         {
+            Console.WriteLine("Starting WebHost.CreateDefaultBuilder...");
             host = WebHost.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration2(observabilityManager.LoggerFactory)
                 .ConfigureServices(services =>

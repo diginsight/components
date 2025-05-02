@@ -18,7 +18,7 @@ on:
       environment:
         description: 'Environment to run the workflow'
         required: true
-        default: ${{ env.DEPLOY_ENVIRONMENT }}
+        default: 'Testms'
 
 jobs:
   build:

@@ -10,6 +10,8 @@ public static class WebHostBuilderExtensions
     public static Type T = typeof(WebHostBuilderExtensions);
     public static IWebHostBuilder ConfigureAppConfiguration2(this IWebHostBuilder hostBuilder, ILoggerFactory loggerFactory, Func<IDictionary<string, string>, bool>? tagsMatch = null)
     {
+        Console.WriteLine("Starting ConfigureAppConfiguration2...");
+
         var logger = loggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger);
         if (ObservabilityHelper.LoggerFactory == null) { ObservabilityHelper.LoggerFactory = loggerFactory; }

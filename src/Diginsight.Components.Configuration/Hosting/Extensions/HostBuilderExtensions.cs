@@ -35,6 +35,7 @@ public static class HostBuilderExtensions
 
         bool isLocal = environment.IsDevelopment();
         bool isDebuggerAttached = Debugger.IsAttached;
+        Console.WriteLine($"Starting ConfigureAppConfiguration2... isLocal:{isLocal}, isDebuggerAttached:{isDebuggerAttached}");
 
         if (isLocal)
         {
@@ -55,6 +56,7 @@ public static class HostBuilderExtensions
         var appsettingsFileFolder = ".";
         var appsettingsFileName = $"appsettings.{appsettingsEnvironmentName}.json";
         var appsettingsFilePath = appsettingsFileName;
+        Console.WriteLine($"appsettingsFileName:{appsettingsFileName}");
 
         if (!appsettingsEnvironmentName.Equals(environmentName, StringComparison.InvariantCultureIgnoreCase))
         {
@@ -63,6 +65,7 @@ public static class HostBuilderExtensions
 
         var externalConfigurationFolder = Environment.GetEnvironmentVariable("ExternalConfigurationFolder");
         var externalConfigurationFolderExists = externalConfigurationFolder is not null && Directory.Exists(externalConfigurationFolder);
+        Console.WriteLine($"externalConfigurationFolderExists:{externalConfigurationFolderExists}");
         if (isLocal && externalConfigurationFolderExists && !File.Exists(appsettingsFilePath))
         {
             var externalConfigurationFolderDirectoryInfo = new DirectoryInfo(externalConfigurationFolder!);
@@ -164,15 +167,18 @@ public static class HostBuilderExtensions
         IConfiguration configuration = builder.Build();
 
         var kvUri = configuration["AzureKeyVault:Uri"];
+        Console.WriteLine($"kvUri:{kvUri}");
         if (!string.IsNullOrEmpty(kvUri))
         {
             var clientId = configuration["AzureKeyVault:ClientId"].HardTrim();
             var tenantId = configuration["AzureKeyVault:TenantId"].HardTrim();
             var clientSecret = configuration["AzureKeyVault:ClientSecret"].HardTrim();
+            Console.WriteLine($"tenantId:{tenantId},clientId:{clientId},clientSecret:{clientSecret}");
             var applicationCredentialProvider = new ApplicationCredentialProvider(environment);
 
             var credential = applicationCredentialProvider.Get(tenantId, clientId, clientSecret);
             builder.AddAzureKeyVault(new Uri(kvUri), credential, new KeyVaultSecretManager2(DateTimeOffset.UtcNow, tagsMatch));
+            Console.WriteLine($"builder.AddAzureKeyVault({kvUri})");
         }
 
         int environmentVariablesIndex = GetSourceLastIndex(builder.Sources, static x => x.Source is EnvironmentVariablesConfigurationSource) ?? -1;

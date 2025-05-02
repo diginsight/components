@@ -69,20 +69,11 @@ jobs:
           name: published-samples
           path: publish
 
-  getVariables:
-    runs-on: ubuntu-latest
-    outputs:
-      environment_name: ${{ steps.getenv.outputs.environment_name }}
-    steps:
-      - id: setenv
-        run: |
-          echo "environment_name=Testms" >> $GITHUB_OUTPUT
-
   deploy:
     runs-on: self-hosted
-    needs: [build, getVariables]
+    needs: build
     environment:
-      name:  ${{ needs.getVariables.outputs.environment_name }}
+      name: 'Testms'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT

@@ -18,7 +18,7 @@ on:
       environment:
         description: 'Environment to run the workflow'
         required: true
-        default: 'Testms'
+        default: ${{ env.DEPLOY_ENVIRONMENT }}
 
 jobs:
   build:
@@ -73,7 +73,7 @@ jobs:
     runs-on: self-hosted
     needs: build
     environment:
-      name:  ${{ env.DEPLOY_ENVIRONMENT }}
+      name: 'Testms'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT

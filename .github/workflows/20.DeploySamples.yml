@@ -1,6 +1,11 @@
 name: Deploy Samples
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
+  DEPLOY_ENVIRONMENT: Testms
   AZURE_WEBAPP_NAME: authsample-api-testms-01   # Name of your Azure Web App
   AZURE_WEBAPP_PACKAGE_PATH: './publish'       # Path to the published output
   DOTNET_VERSION: '8.0.x'                      # .NET version to use
@@ -9,6 +14,11 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'Testms'
 
 jobs:
   build:
@@ -63,7 +73,7 @@ jobs:
     runs-on: self-hosted
     needs: build
     environment:
-      name: 'Testms'
+      name: ${{ github.event.inputs.environment || env.DEPLOY_ENVIRONMENT }}
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT

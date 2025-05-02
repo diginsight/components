@@ -72,8 +72,10 @@ jobs:
   deploy:
     runs-on: self-hosted
     needs: build
+    env:
+      ENVIRONMENT: ${{ github.event.inputs.environment != '' && github.event.inputs.environment || env.DEPLOY_ENVIRONMENT }}
     environment:
-      name: ${{ github.event.inputs.environment || env.DEPLOY_ENVIRONMENT }}
+      name: ${{ env.ENVIRONMENT }}
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT

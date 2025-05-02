@@ -73,7 +73,7 @@ jobs:
     runs-on: self-hosted
     needs: build
     environment:
-      name: 'Testms'
+      name: ${{ env.DEPLOY_ENVIRONMENT }}
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT

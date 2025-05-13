@@ -30,7 +30,7 @@ public class PlantsController : ControllerBase
     private readonly ISmartCache smartCache;
     private readonly ICacheKeyService cacheKeyService;
 
-    private HttpClient authenticationSampleServerApiHttpClient;
+    private HttpClient authenticationSampleServerApiHttpClient; 
 
     public PlantsController(
         TracerProvider tracerProvider,

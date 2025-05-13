@@ -40,7 +40,7 @@ public class PlantsController : ControllerBase
         IHttpClientFactory httpClientFactory,
         ISmartCache smartCache,
         ICacheKeyService cacheKeyService)
-    {
+    { 
         this.logger = logger;
         this.featureFlagsOptionsMonitor = featureFlagsOptionsMonitor;
         this.concurrencyOptionsMonitor = concurrencyOptionsMonitor;

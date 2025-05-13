@@ -47,7 +47,7 @@ jobs:
       # Step 3: Restore dependencies and build the Samples solution/project
       # If you have a solution file for Samples, reference it; otherwise, iterate over sample projects
       - name: Restore Samples
-        run: dotnet restore --interactive src/Diginsight.Components.sln
+        run: dotnet restore src/Diginsight.Components.sln
 
       - name: Build Samples
         run: dotnet build src/Diginsight.Components.sln --configuration Release

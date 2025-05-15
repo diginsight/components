@@ -3,7 +3,10 @@ name: Deploy
 on:
   workflow_call:
     inputs:
-      environment_name:
+      environment:
+        required: true
+        type: string
+      webAppName:
         required: true
         type: string
 
@@ -11,15 +14,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment:
-      name: ${{ inputs.environment_name }}
+      name: ${{ inputs.environment }}
     steps:
-      - run: echo "Deploying to ${{ inputs.environment_name }}"
+      - run: echo "Deploying to ${{ inputs.environment }}"
 
   deploy1:
     runs-on: self-hosted
-    # needs: build
+    needs: build
     environment:
-      name: ${{ inputs.environment_name }}
+      name: ${{ inputs.environment }}
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT
@@ -64,6 +67,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          app-name: ${{ inputs.webAppName }}
           slot-name: 'Production'
           package: ./publish

@@ -29,8 +29,8 @@ jobs:
       # ...existing steps...
       - name: Set webapp name output
         id: setvars
-        run: echo "webappname=${{ env.AZURE_WEBAPP_NAME }}" >> $GITHUB_OUTPUT
-      # Step 1: Checkout the code
+        run: echo "webappname=${env:AZURE_WEBAPP_NAME}" >> $env:GITHUB_OUTPUT      
+
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -85,7 +85,7 @@ jobs:
       - name: Print all build outputs
         run: |
           echo "All build outputs: ${{ toJson(needs.build.outputs) }}"
-          
+
   deploy:
     uses: ./.github/workflows/21.DeployAppService.yml
     needs: predeploy

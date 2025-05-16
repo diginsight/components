@@ -82,7 +82,10 @@ jobs:
         run: |
           echo "inputs.environment=${{ github.event.inputs.environment }}"
           echo "needs.build.outputs.webappname=${{ needs.build.outputs.webappname }}"
-
+      - name: Print all build outputs
+        run: |
+          echo "All build outputs: ${{ toJson(needs.build.outputs) }}"
+          
   deploy:
     uses: ./.github/workflows/21.DeployAppService.yml
     needs: predeploy

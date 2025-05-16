@@ -24,7 +24,7 @@ jobs:
 
   deploy1:
     runs-on: self-hosted
-    needs: build
+    # needs: build
     environment:
       name: ${{ inputs.environment }}
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}

@@ -71,5 +71,5 @@ jobs:
     needs: build
     with:
       environment: ${{ github.event.inputs.environment }}
-      # webAppName: ${{ env.AZURE_WEBAPP_NAME }}
+      webappname: ${{ env.AZURE_WEBAPP_NAME }}
 

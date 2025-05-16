@@ -6,9 +6,13 @@ on:
       environment:
         required: true
         type: string
-      webAppName:
-        required: true
-        type: string
+      # webAppName:
+      #   required: true
+      #   type: string
+
+env:
+  DEPLOY_ENVIRONMENT: Testms
+  AZURE_WEBAPP_NAME: authsample-api-testms-01   # Name of your Azure Web App
 
 jobs:
   deploy:
@@ -67,6 +71,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ inputs.webAppName }}
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          # app-name: ${{ inputs.webAppName }}
           slot-name: 'Production'
           package: ./publish

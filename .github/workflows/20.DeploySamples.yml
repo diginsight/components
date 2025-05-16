@@ -70,5 +70,5 @@ jobs:
     uses: ./.github/workflows/21.DeployAppService.yml
     with:
       environment: ${{ github.event.inputs.environment }}
-      webAppName: ${{ env.AZURE_WEBAPP_NAME }}
+      # webAppName: ${{ env.AZURE_WEBAPP_NAME }}
 

@@ -88,7 +88,7 @@ jobs:
 
   deploy:
     uses: ./.github/workflows/21.DeployAppService.yml
-    needs: predeploy
+    needs: [predeploy, build]
     with:
       environment: ${{ github.event.inputs.environment }}
       webappname: ${{ needs.build.outputs.webappname }}

@@ -71,10 +71,19 @@ jobs:
         with:
           name: published-samples
           path: publish
+  
+  predeploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Print workflow_call inputs
+        run: |
+          echo "inputs.environment=${{ github.event.inputs.environment }}"
+          echo "inputs.webappname=${{ needs.build.outputs.webappname }}"
 
   deploy:
     uses: ./.github/workflows/21.DeployAppService.yml
-    needs: build
+    needs: predeploy
     with:
       environment: ${{ github.event.inputs.environment }}
       webappname: ${{ needs.build.outputs.webappname }}

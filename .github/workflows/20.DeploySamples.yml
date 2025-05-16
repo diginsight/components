@@ -23,7 +23,13 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+    outputs:
+      webappname: ${{ steps.setvars.outputs.webappname }}
     steps:
+      # ...existing steps...
+      - name: Set webapp name output
+        id: setvars
+        run: echo "webappname=${{ env.AZURE_WEBAPP_NAME }}" >> $GITHUB_OUTPUT
       # Step 1: Checkout the code
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -71,5 +77,4 @@ jobs:
     needs: build
     with:
       environment: ${{ github.event.inputs.environment }}
-      webappname: ${{ env.AZURE_WEBAPP_NAME }}
-
+      webappname: ${{ needs.build.outputs.webappname }}

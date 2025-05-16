@@ -15,7 +15,7 @@ env:
   AZURE_WEBAPP_NAME: authsample-api-testms-01   # Name of your Azure Web App
 
 jobs:
-  deploy:
+  deploy-started:
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.environment }}
@@ -24,7 +24,7 @@ jobs:
             echo "Deploying to ${{ inputs.environment }}"
             echo "Deploying to ${{ inputs.webappname }}"
 
-  deploy1:
+  deploy:
     runs-on: self-hosted
     # needs: build
     environment:

@@ -20,7 +20,9 @@ jobs:
     environment:
       name: ${{ inputs.environment }}
     steps:
-      - run: echo "Deploying to ${{ inputs.environment }}"
+      - run: |
+            echo "Deploying to ${{ inputs.environment }}"
+            echo "Deploying to ${{ inputs.webappname }}"
 
   deploy1:
     runs-on: self-hosted
@@ -71,6 +73,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'authsample-api-testms-01'
+          app-name: '${{ inputs.webappname }}'
           slot-name: 'Production'
           package: ./publish

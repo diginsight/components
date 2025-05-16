@@ -6,9 +6,9 @@ on:
       environment:
         required: true
         type: string
-      # webAppName:
-      #   required: true
-      #   type: string
+      webappname:
+        required: true
+        type: string
 
 env:
   DEPLOY_ENVIRONMENT: Testms

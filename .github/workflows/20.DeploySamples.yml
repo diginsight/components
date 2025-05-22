@@ -1,4 +1,4 @@
-name: Deploy Samples
+name: Build and Deploy Samples
 
 permissions:
   id-token: write
@@ -87,8 +87,11 @@ jobs:
           echo "All build outputs: ${{ toJson(needs.build.outputs) }}"
 
   deploy:
-    uses: ./.github/workflows/21.DeployAppService.yml
     needs: [afterBuild, build]
+    strategy:
+      matrix:
+        environment: [Testms] # , Test01, Test02
+    uses: ./.github/workflows/21.DeployAppService.yml
     with:
-      environment: ${{ github.event.inputs.environment }}
+      environment: ${{ matrix.environment }}
       webappname: ${{ needs.build.outputs.webappname }}

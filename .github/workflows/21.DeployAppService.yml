@@ -15,7 +15,7 @@ env:
   AZURE_WEBAPP_NAME: authsample-api-testms-01   # Name of your Azure Web App
 
 jobs:
-  deploy-started:
+  deploy-pre:
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.environment }}
@@ -26,58 +26,59 @@ jobs:
 
   deploy:
     runs-on: self-hosted
-    # needs: build
+    strategy:
+      matrix:
+        environment: [Testms] # , Test01, Test02
+        webappname: [authsample-api-testms-01] #, authsample-api-test01-01, authsample-api-test02-01
+        exclude:
+          - environment: Testms
+            webappname: authsample-api-test01-01
+          - environment: Testms
+            webappname: authsample-api-test02-01
     environment:
-      name: ${{ inputs.environment }}
+      name: ${{ matrix.environment }}
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
-
     steps:
-      - name: Print workflow_call inputs
+      - name: Print current environment
         run: |
-          echo "inputs.environment=${{ inputs.environment }}"
-          echo "inputs.webappname=${{ inputs.webappname }}"
-
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: published-samples
-          path: ./publish
-
+          echo "matrix.environment=${{ matrix.environment }}"
+          echo "matrix.webappname=${{ matrix.webappname }}"
       - name: Dump ENV_CONTEXT
         env:
           ENV_CONTEXT: ${{ toJson(env) }}
         run: |
           echo "$ENV_CONTEXT"
           echo "$env:ENV_CONTEXT" >> 07.ENV_CONTEXT.log
-
       - name: Dump VARS_CONTEXT
         env:
           VARS_CONTEXT: ${{ toJson(vars) }}
         run: |
           echo "$VARS_CONTEXT"
           echo "$env:VARS_CONTEXT" >> 08.VARS_CONTEXT.log
-
       - name: Dump SECRETS_CONTEXT
         env:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}
         run: |
           echo "$SECRETS_CONTEXT"
           echo "$env:SECRETS_CONTEXT" >> 10.SECRETS_CONTEXT.log
-
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: published-samples
+          path: ./publish
       - name: Login to Azure
         uses: azure/login@v2
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: '${{ inputs.webappname }}'
+          app-name: '${{ matrix.webappname }}'
           slot-name: 'Production'
           package: ./publish

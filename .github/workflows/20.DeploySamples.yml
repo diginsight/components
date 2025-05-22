@@ -7,8 +7,8 @@ permissions:
 env:
   DEPLOY_ENVIRONMENT: Testms
   AZURE_WEBAPP_NAME: authsample-api-testms-01   # Name of your Azure Web App
-  AZURE_WEBAPP_PACKAGE_PATH: './publish'       # Path to the published output
-  DOTNET_VERSION: '8.0.x'                      # .NET version to use
+  AZURE_WEBAPP_PACKAGE_PATH: './publish'        # Path to the published output
+  DOTNET_VERSION: '8.0.x'                       # .NET version to use
 
 on:
   push:
@@ -74,7 +74,7 @@ jobs:
       - name: Print webappname output
         run: echo "webappname=${{ steps.setvars.outputs.webappname }}"
 
-  predeploy:
+  afterBuild:
     needs: build
     runs-on: self-hosted
     steps:
@@ -88,7 +88,7 @@ jobs:
 
   deploy:
     uses: ./.github/workflows/21.DeployAppService.yml
-    needs: [predeploy, build]
+    needs: [afterBuild, build]
     with:
       environment: ${{ github.event.inputs.environment }}
       webappname: ${{ needs.build.outputs.webappname }}

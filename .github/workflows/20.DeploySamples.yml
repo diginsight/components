@@ -26,11 +26,6 @@ jobs:
     outputs:
       webappname: ${{ steps.setvars.outputs.webappname }}
     steps:
-      # ...existing steps...
-      - name: Set webapp name output
-        id: setvars
-        run: echo "webappname=${env:AZURE_WEBAPP_NAME}" >> $env:GITHUB_OUTPUT      
-
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -50,9 +45,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      # Step 3: Restore dependencies and build the Samples solution/project
-      # If you have a solution file for Samples, reference it; otherwise, iterate over sample projects
-      - name: Restore Samples
+      - name: Restore Samples # Step 3: Restore dependencies and build the Samples solution/project
         run: dotnet restore --interactive src/Diginsight.Components.sln
 
       - name: Build Samples
@@ -65,12 +58,15 @@ jobs:
       - name: Publish AuthenticationSampleClient
         run:  dotnet publish src/Samples/AuthenticationSampleClient/AuthenticationSampleClient.csproj --configuration Release --framework net8.0-windows --output ./publish
 
-      # Step 5: Upload the published output as an artifact (if you want to persist the build)
-      - name: Upload Published Samples
+      - name: Upload Published Samples # Step 5: Upload the published output as an artifact (if you want to persist the build)
         uses: actions/upload-artifact@v4
         with:
           name: published-samples
           path: publish
+      - name: Set webapp name output
+        id: setvars
+        run: echo "webappname=${env:AZURE_WEBAPP_NAME}" >> $env:GITHUB_OUTPUT      
+
       - name: Print webappname output
         run: echo "webappname=${{ steps.setvars.outputs.webappname }}"
 
@@ -78,10 +74,10 @@ jobs:
     needs: build
     runs-on: self-hosted
     steps:
-      - name: Print workflow_call inputs
-        run: |
-          echo "inputs.environment=${{ github.event.inputs.environment }}"
-          echo "needs.build.outputs.webappname=${{ needs.build.outputs.webappname }}"
+      # - name: Print workflow_call inputs
+      #   run: |
+      #     echo "inputs.environment=${{ github.event.inputs.environment }}"
+      #     echo "needs.build.outputs.webappname=${{ needs.build.outputs.webappname }}"
       - name: Print all build outputs
         run: |
           echo "All build outputs: ${{ toJson(needs.build.outputs) }}"
@@ -94,4 +90,4 @@ jobs:
     uses: ./.github/workflows/21.DeployAppService.yml
     with:
       environment: ${{ matrix.environment }}
-      webappname: ${{ needs.build.outputs.webappname }}
+      # webappname: ${{ needs.build.outputs.webappname }}

@@ -6,13 +6,10 @@ on:
       environment:
         required: true
         type: string
-      webappname:
-        required: true
-        type: string
 
 env:
-  DEPLOY_ENVIRONMENT: Testms
-  AZURE_WEBAPP_NAME: authsample-api-testms-01   # Name of your Azure Web App
+  DEPLOY_ENVIRONMENT: ${{ inputs.environment }}
+  AZURE_WEBAPP_NAME: authsample-api-${{ inputs.environment }}-01   # Name of your Azure Web App
 
 jobs:
   before-deploy:
@@ -21,12 +18,12 @@ jobs:
       name: ${{ inputs.environment }}
     steps:
       - run: |
-            echo "Deploying to ${{ inputs.environment }}"
-            echo "Deploying to ${{ inputs.webappname }}"
+            echo "Deploying to env: ${{ env.DEPLOY_ENVIRONMENT }}"
+            echo "Deploying to app: ${{ env.AZURE_WEBAPP_NAME }}"
 
   deploy:
     runs-on: self-hosted
-    # needs: build
+    needs: [before-deploy]
     environment:
       name: ${{ inputs.environment }}
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
@@ -38,7 +35,7 @@ jobs:
       - name: Print workflow_call inputs
         run: |
           echo "inputs.environment=${{ inputs.environment }}"
-          echo "inputs.webappname=${{ inputs.webappname }}"
+          echo "env.AZURE_WEBAPP_NAME=${{ env.AZURE_WEBAPP_NAME }}"
 
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
@@ -78,6 +75,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: '${{ inputs.webappname }}'
+          app-name: '${{ env.AZURE_WEBAPP_NAME }}'
           slot-name: 'Production'
           package: ./publish

@@ -34,7 +34,7 @@ jobs:
     steps:
       - name: Print workflow_call inputs
         run: |
-          echo "inputs.environment=${{ inputs.environment }}"
+          echo "env.DEPLOY_ENVIRONMENT=${{ env.DEPLOY_ENVIRONMENT }}"
           echo "env.AZURE_WEBAPP_NAME=${{ env.AZURE_WEBAPP_NAME }}"
 
       - name: Download artifact from build job

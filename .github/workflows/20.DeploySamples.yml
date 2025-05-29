@@ -90,7 +90,7 @@ jobs:
     uses: ./.github/workflows/21.DeployAppService.yml
     with:
       environment: ${{ matrix.environment }}
-      webAppName: authsample-api-${{ inputs.environment }}-01
+      webAppName: authsample-api-${{ matrix.environment }}-01
 
   deployAuthenticationSampleServerApi:
     needs: [afterBuild, build]
@@ -100,5 +100,5 @@ jobs:
     uses: ./.github/workflows/21.DeployAppService.yml
     with:
       environment: ${{ matrix.environment }}
-      webAppName: authsample-api-${{ inputs.environment }}-02
+      webAppName: authsample-api-${{ matrix.environment }}-02
       

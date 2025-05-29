@@ -82,7 +82,7 @@ jobs:
         run: |
           echo "All build outputs: ${{ toJson(needs.build.outputs) }}"
 
-  deploy:
+  deployAuthenticationSampleApi:
     needs: [afterBuild, build]
     strategy:
       matrix:
@@ -90,4 +90,15 @@ jobs:
     uses: ./.github/workflows/21.DeployAppService.yml
     with:
       environment: ${{ matrix.environment }}
-      # webappname: ${{ needs.build.outputs.webappname }}
+      webAppName: authsample-api-${{ inputs.environment }}-01
+
+  deployAuthenticationSampleServerApi:
+    needs: [afterBuild, build]
+    strategy:
+      matrix:
+        environment: [Testms] # , Test01, Test02
+    uses: ./.github/workflows/21.DeployAppService.yml
+    with:
+      environment: ${{ matrix.environment }}
+      webAppName: authsample-api-${{ inputs.environment }}-02
+      

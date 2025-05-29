@@ -6,10 +6,13 @@ on:
       environment:
         required: true
         type: string
+      webAppName:
+        required: true
+        type: string
 
 env:
   DEPLOY_ENVIRONMENT: ${{ inputs.environment }}
-  AZURE_WEBAPP_NAME: authsample-api-${{ inputs.environment }}-01   # Name of your Azure Web App
+  AZURE_WEBAPP_NAME: ${{ inputs.webAppName }}
 
 jobs:
   before-deploy:

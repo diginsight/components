@@ -29,7 +29,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Checkout Configuration Repository
+      - name: Checkout 'components.internal' Repository
         uses: actions/checkout@v4
         with:
           repository: diginsight/components.internal
@@ -55,6 +55,14 @@ jobs:
 
       - name: Restore Samples # Step 3: Restore dependencies and build the Samples solution/project
         run: dotnet restore --interactive src/Diginsight.Components.sln
+
+      - name: Copy AuthenticationSampleApi appsettings.*.json from components.internal
+        run: |
+          cp components.internal/src/Samples/AuthenticationSampleApi/appsettings.*.json src/Samples/AuthenticationSampleApi/
+
+      - name: Copy AuthenticationSampleServerApi appsettings.*.json from components.internal
+        run: |
+          cp components.internal/src/Samples/AuthenticationSampleServerApi/appsettings.*.json src/Samples/AuthenticationSampleServerApi/
 
       - name: Build Samples
         run: dotnet build src/Diginsight.Components.sln --configuration Release

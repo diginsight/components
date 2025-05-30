@@ -34,8 +34,8 @@ jobs:
         with:
           repository: diginsight/components.internal
           path: components.internal
+          token: ${{ secrets.INTERNAL_REPOSITORY_TOKEN }}
           # If the repo is private, you need a token with access:
-          # token: ${{ secrets.CONFIG_REPO_TOKEN }}
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4

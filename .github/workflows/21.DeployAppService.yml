@@ -6,12 +6,16 @@ on:
       environment:
         required: true
         type: string
+      appName:
+        required: true
+        type: string
       webAppName:
         required: true
         type: string
 
 env:
   DEPLOY_ENVIRONMENT: ${{ inputs.environment }}
+  AZURE_APP_NAME: ${{ inputs.appName }}
   AZURE_WEBAPP_NAME: ${{ inputs.webAppName }}
 
 jobs:
@@ -22,7 +26,8 @@ jobs:
     steps:
       - run: |
             echo "Deploying to env: ${{ env.DEPLOY_ENVIRONMENT }}"
-            echo "Deploying to app: ${{ env.AZURE_WEBAPP_NAME }}"
+            echo "App name: ${{ env.AZURE_APP_NAME }}"  
+            echo "Web app name: ${{ env.AZURE_WEBAPP_NAME }}"
 
   deploy:
     runs-on: self-hosted
@@ -80,4 +85,4 @@ jobs:
         with:
           app-name: '${{ env.AZURE_WEBAPP_NAME }}'
           slot-name: 'Production'
-          package: ./publish
+          package: ./publish/${{ env.AZURE_APP_NAME }}

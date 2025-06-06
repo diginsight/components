@@ -13,11 +13,19 @@
 
 	<ItemGroup>
 		<None Remove="appsettings.json" />
+		<None Remove="appsettings.Testms.json" />
+		<None Remove="appsettings.Testms.local.json" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Content Include="appsettings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="appsettings.Testms.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="appsettings.Testms.local.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 
@@ -89,12 +97,6 @@
 		<Folder Include="Extensions\" />
 		<Folder Include="Image\" />
 		<Folder Include="Services\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="appsettings.Testms.local.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
 	</ItemGroup>
 
 </Project>

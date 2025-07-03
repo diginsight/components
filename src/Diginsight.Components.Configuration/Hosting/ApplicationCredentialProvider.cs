@@ -31,11 +31,16 @@ public sealed class ApplicationCredentialProvider //: ICredentialProvider
         {
             AzureCliCredentialOptions credentialOptions4 = new();
             SetAuthorityHost(credentialOptions4);
-            credentials.Add(new AzureCliCredential(credentialOptions4));
+            var azureCliCredential = new AzureCliCredential(credentialOptions4);
+            credentials.Add(azureCliCredential);
 
-            VisualStudioCodeCredentialOptions credentialOptions5 = new();
-            SetAuthorityHost(credentialOptions5);
-            credentials.Add(new VisualStudioCodeCredential(credentialOptions5));
+            InteractiveBrowserCredentialOptions browserOptions = new();
+            SetAuthorityHost(browserOptions);
+            credentials.Add(new InteractiveBrowserCredential(browserOptions));
+
+            DeviceCodeCredentialOptions deviceOptions = new();
+            SetAuthorityHost(deviceOptions);
+            credentials.Add(new DeviceCodeCredential(deviceOptions));
 
             VisualStudioCredentialOptions credentialOptions6 = new();
             SetAuthorityHost(credentialOptions6);

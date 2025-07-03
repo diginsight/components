@@ -2,7 +2,8 @@
 
 ## Overview
 
-The `HostBuilderExtensions` class extends the standard .NET Core configuration building logic with an **enhanced appsettings.json hierarchy** and sophisticated configuration management capabilities. This system provides advanced configuration loading with external folder support, Azure Key Vault integration, and intelligent file resolution for .NET applications.
+The `HostBuilderExtensions` class extends the standard .NET Core configuration building logic with an **enhanced appsettings.json hierarchy** and **configuration capabilities**. <br>
+This includes advanced **configuration loading with external folder support** with intelligent file resolution and **automatic Azure Key Vault integration** for .NET applications.
 
 ## Key Features
 

@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy Diginsight Components
 
 on:
   workflow_call:

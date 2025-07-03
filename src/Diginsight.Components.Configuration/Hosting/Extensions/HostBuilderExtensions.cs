@@ -182,18 +182,18 @@ public static class HostBuilderExtensions
         IConfiguration configuration = builder.Build();
 
         var kvUri = configuration["AzureKeyVault:Uri"];
-        Console.WriteLine($"kvUri:{kvUri}");
+        logger.LogDebug($"kvUri:{kvUri}");
         if (!string.IsNullOrEmpty(kvUri))
         {
             var clientId = configuration["AzureKeyVault:ClientId"].HardTrim();
             var tenantId = configuration["AzureKeyVault:TenantId"].HardTrim();
             var clientSecret = configuration["AzureKeyVault:ClientSecret"].HardTrim();
-            Console.WriteLine($"tenantId:{tenantId},clientId:{clientId},clientSecret:{clientSecret}");
+            logger.LogDebug($"tenantId:{tenantId},clientId:{clientId},clientSecret:{clientSecret}");
             var applicationCredentialProvider = new ApplicationCredentialProvider(environment);
 
             var credential = applicationCredentialProvider.Get(tenantId, clientId, clientSecret);
             builder.AddAzureKeyVault(new Uri(kvUri), credential, new KeyVaultSecretManager2(DateTimeOffset.UtcNow, tagsMatch));
-            Console.WriteLine($"builder.AddAzureKeyVault({kvUri})");
+            logger.LogDebug($"builder.AddAzureKeyVault({kvUri})");
         }
 
         int environmentVariablesIndex = GetSourceLastIndex(builder.Sources, static x => x.Source is EnvironmentVariablesConfigurationSource) ?? -1;

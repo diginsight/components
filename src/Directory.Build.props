@@ -11,7 +11,8 @@
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/diginsight/telemetry_samples</PackageProjectUrl>
-    
+
+    <MicrosoftIdentityWebVersion>3.9.4</MicrosoftIdentityWebVersion>
 		<DiginsightDiagnosticsVersion>2.0.0.23</DiginsightDiagnosticsVersion>
 		<DiginsightCoreVersion>3.4.*</DiginsightCoreVersion>
 		<DiginsightSmartCacheVersion>3.3.*</DiginsightSmartCacheVersion>
@@ -28,7 +29,7 @@
 		<OpenTelemetryVersion>1.*</OpenTelemetryVersion>
 		<OpenTelemetryBetaVersion>1.5.*-*</OpenTelemetryBetaVersion>
 	</PropertyGroup>
-
+  
 	<Import Project="$(MSBuildThisFileDirectory)Directory.build.props.user" Condition="Exists('$(MSBuildThisFileDirectory)Directory.build.props.user')" />
 
 	<PropertyGroup Condition="'$(DiginsightCoreSolutionDirectory)' == ''">

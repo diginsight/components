@@ -24,7 +24,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Identity.Client" Version="4.*" />
 
-    <PackageReference Include="Microsoft.Identity.Web" Version="3.*" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="$(MicrosoftIdentityWebVersion)" />
 
     <PackageReference Include="Asp.Versioning.Abstractions" Version="8.*" />
     <PackageReference Include="Asp.Versioning.Http" Version="8.*" />

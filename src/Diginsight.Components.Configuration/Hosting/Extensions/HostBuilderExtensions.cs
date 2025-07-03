@@ -18,6 +18,14 @@ namespace Diginsight.Components.Configuration;
 public static class HostBuilderExtensions
 {
     public static Type T = typeof(HostBuilderExtensions);
+
+    /// <summary>
+    /// Configures the application configuration for the host builder using the specified logger factory and optional tags match function.
+    /// </summary>
+    /// <param name="hostBuilder">The host builder to configure.</param>
+    /// <param name="loggerFactory">The logger factory to use for logging.</param>
+    /// <param name="tagsMatch">An optional function to filter configuration tags.</param>
+    /// <returns>The configured <see cref="IHostBuilder"/>.</returns>
     public static IHostBuilder ConfigureAppConfiguration2(this IHostBuilder hostBuilder, ILoggerFactory loggerFactory, Func<IDictionary<string, string>, bool>? tagsMatch = null)
     {
         var logger = loggerFactory.CreateLogger(T);
@@ -27,6 +35,13 @@ public static class HostBuilderExtensions
         return hostBuilder.ConfigureAppConfiguration((hbc, cb) => ConfigureAppConfiguration2(hbc.HostingEnvironment, cb, loggerFactory, tagsMatch));
     }
 
+    /// <summary>
+    /// Configures the application configuration sources for the specified environment and configuration builder.
+    /// </summary>
+    /// <param name="environment">The hosting environment.</param>
+    /// <param name="builder">The configuration builder to configure.</param>
+    /// <param name="loggerFactory">The logger factory to use for logging.</param>
+    /// <param name="tagsMatch">An optional function to filter configuration tags.</param>
     public static void ConfigureAppConfiguration2(IHostEnvironment environment, IConfigurationBuilder builder, ILoggerFactory loggerFactory, Func<IDictionary<string, string>, bool>? tagsMatch = null)
     {
         var logger = loggerFactory.CreateLogger(T);
@@ -35,7 +50,7 @@ public static class HostBuilderExtensions
 
         bool isLocal = environment.IsDevelopment();
         bool isDebuggerAttached = Debugger.IsAttached;
-        Console.WriteLine($"Starting ConfigureAppConfiguration2... isLocal:{isLocal}, isDebuggerAttached:{isDebuggerAttached}");
+        logger.LogDebug($"isLocal:{isLocal}, isDebuggerAttached:{isDebuggerAttached}");
 
         if (isLocal)
         {
@@ -50,13 +65,13 @@ public static class HostBuilderExtensions
         //}
 
         var environmentName = environment.EnvironmentName;
-        int appsettingsEnvironmentIndex = GetJsonFileIndex($"appsettings.{environmentName}.json", builder);
+        int appsettingsEnvironmentIndex = GetJsonFileIndex($"appsettings.{environmentName}.json", builder); logger.LogDebug($"GetJsonFileIndex($\"appsettings.{environmentName}.json\", builder); returned {appsettingsEnvironmentIndex}");
 
         string? appsettingsEnvironmentName = Environment.GetEnvironmentVariable("AppsettingsEnvironmentName") ?? environmentName;
         var appsettingsFileFolder = ".";
         var appsettingsFileName = $"appsettings.{appsettingsEnvironmentName}.json";
         var appsettingsFilePath = appsettingsFileName;
-        Console.WriteLine($"appsettingsFileName:{appsettingsFileName}");
+        logger.LogDebug($"appsettingsEnvironmentName:{appsettingsEnvironmentName},appsettingsFileName:{appsettingsFileName}");
 
         if (!appsettingsEnvironmentName.Equals(environmentName, StringComparison.InvariantCultureIgnoreCase))
         {
@@ -65,7 +80,7 @@ public static class HostBuilderExtensions
 
         var externalConfigurationFolder = Environment.GetEnvironmentVariable("ExternalConfigurationFolder");
         var externalConfigurationFolderExists = externalConfigurationFolder is not null && Directory.Exists(externalConfigurationFolder);
-        Console.WriteLine($"externalConfigurationFolderExists:{externalConfigurationFolderExists}");
+        logger.LogDebug($"isLocal:{isLocal},externalConfigurationFolder:{externalConfigurationFolder},externalConfigurationFolderExists:{externalConfigurationFolderExists}");
         if (isLocal && externalConfigurationFolderExists && !File.Exists(appsettingsFilePath))
         {
             var externalConfigurationFolderDirectoryInfo = new DirectoryInfo(externalConfigurationFolder!);
@@ -191,6 +206,13 @@ public static class HostBuilderExtensions
         }
     }
 
+    /// <summary>
+    /// Appends a local JSON configuration file to the configuration builder at the specified index if running locally.
+    /// </summary>
+    /// <param name="path">The path to the JSON file.</param>
+    /// <param name="index">The index at which to insert the configuration source.</param>
+    /// <param name="builder">The configuration builder to modify.</param>
+    /// <param name="isLocal">Indicates if the environment is local.</param>
     private static void AppendLocalJsonFile(string path, int index, IConfigurationBuilder builder, bool isLocal)
     {
         var loggerFactory = ObservabilityHelper.LoggerFactory;
@@ -211,11 +233,32 @@ public static class HostBuilderExtensions
         builder.Sources.Insert(index + 1, lastSource);
         builder.Sources.RemoveAt(builder.Sources.Count - 1);
     }
+    /// <summary>
+    /// Retrieves the index of a JSON configuration source in the specified configuration builder.
+    /// </summary>
+    /// <param name="path">The file path of the JSON configuration source to locate. This comparison is case-insensitive.</param>
+    /// <param name="builder">The <see cref="IConfigurationBuilder"/> containing the configuration sources to search.</param>
+    /// <returns>The zero-based index of the JSON configuration source in the <paramref name="builder"/> sources collection.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if no JSON configuration source with the specified <paramref name="path"/> exists in the <paramref
+    /// name="builder"/>.</exception>
     private static int GetJsonFileIndex(string path, IConfigurationBuilder builder)
     {
-        return GetSourceIndex(builder.Sources, x => x.Source is JsonConfigurationSource jsonSource && string.Equals(jsonSource.Path, path, StringComparison.OrdinalIgnoreCase))
+        var loggerFactory = ObservabilityHelper.LoggerFactory;
+        var logger = loggerFactory.CreateLogger(T);
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { path, builder });
+
+        var ret = GetSourceIndex(builder.Sources, x => x.Source is JsonConfigurationSource jsonSource && string.Equals(jsonSource.Path, path, StringComparison.OrdinalIgnoreCase))
             ?? throw new InvalidOperationException("No such json configuration source");
+
+        activity?.SetOutput(ret);
+        return ret;
     }
+    /// <summary>
+    /// Retrieves the index of the first configuration source matching the predicate.
+    /// </summary>
+    /// <param name="sources">The list of configuration sources.</param>
+    /// <param name="predicate">The predicate to match sources.</param>
+    /// <returns>The index of the first matching source, or null if not found.</returns>
     private static int? GetSourceIndex(IList<IConfigurationSource> sources, Func<(IConfigurationSource Source, int Index), bool> predicate)
     {
         return sources.Select(static (source, index) => (Source: source, Index: index))
@@ -223,6 +266,12 @@ public static class HostBuilderExtensions
             .Select(static x => (int?)x.Index)
             .FirstOrDefault();
     }
+    /// <summary>
+    /// Retrieves the index of the last configuration source matching the predicate.
+    /// </summary>
+    /// <param name="sources">The list of configuration sources.</param>
+    /// <param name="predicate">The predicate to match sources.</param>
+    /// <returns>The index of the last matching source, or null if not found.</returns>
     private static int? GetSourceLastIndex(IList<IConfigurationSource> sources, Func<(IConfigurationSource Source, int Index), bool> predicate)
     {
         return sources.Select(static (source, index) => (Source: source, Index: index))

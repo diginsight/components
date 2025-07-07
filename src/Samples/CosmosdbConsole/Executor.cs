@@ -103,7 +103,6 @@ internal sealed class Executor : IDisposable
                     }
                 }
             }
-
         }
         catch (Exception ex) { logger.LogError(ex, $"'{ex.GetType().Name}': {ex.Message}", ex); }
     }

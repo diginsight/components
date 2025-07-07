@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diginsight.Components.Prese
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diginsight.Components.Presentation", "Diginsight.Components.Presentation\Diginsight.Components.Presentation.csproj", "{29129F7E-FCEE-4EFF-B632-21C815F962B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diginsight.Components.Azure.Abstractions", "Diginsight.Components.Azure.Abstractions\Diginsight.Components.Azure.Abstractions.csproj", "{1248228A-1A4C-5443-8526-47B02C077B59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{29129F7E-FCEE-4EFF-B632-21C815F962B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29129F7E-FCEE-4EFF-B632-21C815F962B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29129F7E-FCEE-4EFF-B632-21C815F962B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1248228A-1A4C-5443-8526-47B02C077B59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1248228A-1A4C-5443-8526-47B02C077B59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1248228A-1A4C-5443-8526-47B02C077B59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1248228A-1A4C-5443-8526-47B02C077B59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

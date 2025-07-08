@@ -18,6 +18,7 @@ using System.IO;
 using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Diginsight.Components.Configuration;
 
@@ -153,6 +154,7 @@ public static partial class ObservabilityExtensions
                                     DatePattern = @".yyyyMMdd.\l\o\g",
                                     MaxSizeRollBackups = 1000,
                                     MaximumFileSize = "100MB",
+                                    Encoding = System.Text.Encoding.UTF8,
                                     LockingModel = new FileAppender.MinimalLock(),
                                     Layout = new DiginsightLayout()
                                     {

@@ -76,7 +76,6 @@ public static partial class ObservabilityExtensions
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { services, configuration, hostEnvironment, configureDefaults });
 
         const string diginsightConfKey = "Diginsight";
-        const string observabilityConfKey = "Observability";
 
         bool isLocal = hostEnvironment.IsDevelopment(); logger.LogDebug("isLocal: {isLocal}", isLocal);
         string assemblyName = Assembly.GetEntryAssembly()!.GetName().Name!; logger.LogDebug("assemblyName: {assemblyName}", assemblyName);
@@ -114,7 +113,23 @@ public static partial class ObservabilityExtensions
                 
                 loggingBuilder.ClearProviders(); logger.LogDebug("loggingBuilder.ClearProviders();");
 
-                var consoleEnabled = configuration.GetValue(ConfigurationPath.Combine(observabilityConfKey, "ConsoleEnabled"), true); logger.LogDebug("consoleEnabled: {consoleEnabled}", consoleEnabled);
+                var debugEnabled = configuration.GetValue(ConfigurationPath.Combine("Observability", "DebugEnabled"), false); logger.LogDebug("debugEnabled: {debugEnabled}", debugEnabled);
+                if (debugEnabled)
+                {
+                    loggingBuilder.AddDiginsightDebug();
+                    //co => 
+                    //{
+                    //    if (configureDefaults)
+                    //    {
+                    //        //co.Pattern = "{Timestamp} {Category} {LogLevel} {Message}";
+                    //        //co.TimeZone = TimeZoneInfo.Local;
+                    //    }
+
+                    //});
+                    logger.LogDebug("loggingBuilder.AddDiginsightDebug();");
+                }
+
+                var consoleEnabled = configuration.GetValue(ConfigurationPath.Combine("Observability", "ConsoleEnabled"), true); logger.LogDebug("consoleEnabled: {consoleEnabled}", consoleEnabled);
                 if (consoleEnabled)
                 {
                     loggingBuilder.AddDiginsightConsole(
@@ -131,7 +146,7 @@ public static partial class ObservabilityExtensions
                     logger.LogDebug("loggingBuilder.AddDiginsightConsole();");
                 }
 
-                var log4NetEnabled = configuration.GetValue(ConfigurationPath.Combine(observabilityConfKey, "Log4NetEnabled"), true); logger.LogDebug("log4NetEnabled: {log4NetEnabled}", log4NetEnabled);
+                var log4NetEnabled = configuration.GetValue(ConfigurationPath.Combine("Observability", "Log4NetEnabled"), true); logger.LogDebug("log4NetEnabled: {log4NetEnabled}", log4NetEnabled);
                 if (log4NetEnabled)
                 {
                     loggingBuilder.AddDiginsightLog4Net(

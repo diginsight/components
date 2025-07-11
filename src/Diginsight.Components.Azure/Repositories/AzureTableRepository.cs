@@ -71,7 +71,6 @@ namespace Diginsight.Components.Azure.Repositories
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "❌ Error querying records from Azure Table Storage for type {EntityType}", typeof(T).Name);
                 throw;
             }
         }
@@ -86,8 +85,6 @@ namespace Diginsight.Components.Azure.Repositories
                 var tableClient = tableServiceClient.GetTableClient(tableName);
                 await tableClient.CreateIfNotExistsAsync();
 
-                logger.LogDebug("🔍 AzureTable query for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
-                logger.LogDebug("🔍 filter:{Filter}, top:{Top}, select:{Select}", filter ?? "null", top?.ToString() ?? "null", select != null ? string.Join(",", select) : "null");
 
                 var records = new List<object>();
                 var asyncPageableRecords = tableClient.QueryAsync<TableEntity>(
@@ -121,7 +118,6 @@ namespace Diginsight.Components.Azure.Repositories
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "❌ Error querying JSON records from Azure Table Storage for type {EntityType}", typeof(T).Name);
                 throw;
             }
         }
@@ -135,8 +131,6 @@ namespace Diginsight.Components.Azure.Repositories
                 var tableClient = tableServiceClient.GetTableClient(tableName);
                 await tableClient.CreateIfNotExistsAsync();
 
-                logger.LogDebug("🔍 AzureTable get for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
-                logger.LogDebug("🔍 partitionKey:{PartitionKey}, rowKey:{RowKey}", partitionKey, rowKey);
 
                 var response = await tableClient.GetEntityAsync<T>(partitionKey, rowKey);
 
@@ -150,7 +144,6 @@ namespace Diginsight.Components.Azure.Repositories
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "❌ Error getting record from Azure Table Storage for type {EntityType}", typeof(T).Name);
                 throw;
             }
         }
@@ -180,8 +173,6 @@ namespace Diginsight.Components.Azure.Repositories
                     entity.PartitionKey = "default";
                 }
 
-                logger.LogDebug("➕ AzureTable create for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
-                logger.LogDebug("➕ entity:{entity}", entity.Stringify());
 
                 await tableClient.AddEntityAsync(entity);
 
@@ -190,7 +181,6 @@ namespace Diginsight.Components.Azure.Repositories
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "❌ Error creating record in Azure Table Storage for type {EntityType}", typeof(T).Name);
                 throw;
             }
         }
@@ -242,8 +232,6 @@ namespace Diginsight.Components.Azure.Repositories
                     entity["UpdatedAt"] = null;
                 }
 
-                logger.LogDebug("➕ AzureTable create for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
-                logger.LogDebug("➕ entity:{entity}", entity.Stringify());
 
                 await tableClient.AddEntityAsync(entity);
 
@@ -259,7 +247,6 @@ namespace Diginsight.Components.Azure.Repositories
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "❌ Error creating dynamic record in Azure Table Storage for type {EntityType}", typeof(T).Name);
                 throw;
             }
         }
@@ -325,8 +312,6 @@ namespace Diginsight.Components.Azure.Repositories
                     entity["UpdatedAt"] = null;
                 }
 
-                logger.LogDebug("➕ AzureTable create for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
-                logger.LogDebug("➕ entity:{entity}", entity.Stringify());
                 await tableClient.AddEntityAsync(entity);
 
                 var responseEntity = new Dictionary<string, object?>();
@@ -349,12 +334,10 @@ namespace Diginsight.Components.Azure.Repositories
             }
             catch (JsonException ex)
             {
-                logger.LogWarning(ex, "⚠️ Invalid JSON format provided for type {EntityType}", typeof(T).Name);
                 throw new ArgumentException($"Invalid JSON format: {ex.Message}", nameof(jsonString), ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "❌ Error creating JSON record in Azure Table Storage for type {EntityType}", typeof(T).Name);
                 throw;
             }
         }
@@ -403,8 +386,6 @@ namespace Diginsight.Components.Azure.Repositories
 
                 var transactionActions = entityList.Select(entity => new TableTransactionAction(TableTransactionActionType.Add, entity)).ToList();
 
-                logger.LogDebug("➕ AzureTable create for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
-                logger.LogDebug("➕ entities:{entities}", string.Join(", ", entityList.Stringify()));
                 await tableClient.SubmitTransactionAsync(transactionActions);
 
                 activity?.SetOutput(entityList);
@@ -412,7 +393,6 @@ namespace Diginsight.Components.Azure.Repositories
             }
             catch (Exception ex) when (!(ex is ArgumentException))
             {
-                logger.LogError(ex, "❌ Error creating batch records in Azure Table Storage for type {EntityType}", typeof(T).Name);
                 throw;
             }
         }
@@ -509,8 +489,6 @@ namespace Diginsight.Components.Azure.Repositories
 
                 var transactionActions = entities.Select(entity => new TableTransactionAction(TableTransactionActionType.Add, entity)).ToList();
 
-                logger.LogDebug("➕ AzureTable create for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
-                logger.LogDebug("➕ entities:{entities}", entities.Stringify());
                 await tableClient.SubmitTransactionAsync(transactionActions);
 
                 var responseEntities = new List<Dictionary<string, object?>>();
@@ -538,12 +516,10 @@ namespace Diginsight.Components.Azure.Repositories
             }
             catch (JsonException ex)
             {
-                logger.LogWarning(ex, "⚠️ Invalid JSON format provided for type {EntityType}", typeof(T).Name);
                 throw new ArgumentException($"Invalid JSON format: {ex.Message}", nameof(jsonString), ex);
             }
             catch (Exception ex) when (!(ex is ArgumentException))
             {
-                logger.LogError(ex, "❌ Error creating JSON batch records in Azure Table Storage for type {EntityType}", typeof(T).Name);
                 throw;
             }
         }
@@ -562,13 +538,10 @@ namespace Diginsight.Components.Azure.Repositories
                 entity.RowKey = rowKey;
                 SetEntityTimestamps(entity, isCreate: false);
 
-                logger.LogDebug("🔄 AzureTable update for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
-                logger.LogDebug("🔄 entity:{entity}", entity.Stringify());
                 await tableClient.UpdateEntityAsync(entity, ETag.All);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "❌ Error updating record in Azure Table Storage for type {EntityType}", typeof(T).Name);
                 throw;
             }
         }
@@ -627,13 +600,10 @@ namespace Diginsight.Components.Azure.Repositories
 
                 updatedEntity["UpdatedAt"] = DateTime.UtcNow;
 
-                logger.LogDebug("🔄 AzureTable update for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
-                logger.LogDebug("🔄 entity:{entity},eTag:{eTag}", updatedEntity.Stringify(), existingEntity.ETag);
                 await tableClient.UpdateEntityAsync(updatedEntity, existingEntity.ETag);
             }
             catch (Exception ex) when (!(ex is InvalidOperationException))
             {
-                logger.LogError(ex, "❌ Error updating dynamic record in Azure Table Storage for type {EntityType}", typeof(T).Name);
                 throw;
             }
         }
@@ -705,18 +675,14 @@ namespace Diginsight.Components.Azure.Repositories
 
                 updatedEntity["UpdatedAt"] = DateTime.UtcNow;
 
-                logger.LogDebug("🔄 AzureTable update for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
-                logger.LogDebug("🔄 entity:{entity},eTag:{eTag}", updatedEntity.Stringify(), existingEntity.ETag);
                 await tableClient.UpdateEntityAsync(updatedEntity, existingEntity.ETag);
             }
             catch (JsonException ex)
             {
-                logger.LogWarning(ex, "⚠️ Invalid JSON format provided for type {EntityType}", typeof(T).Name);
                 throw new ArgumentException($"Invalid JSON format: {ex.Message}", nameof(jsonString), ex);
             }
             catch (Exception ex) when (!(ex is ArgumentException || ex is InvalidOperationException))
             {
-                logger.LogError(ex, "❌ Error updating JSON record in Azure Table Storage for type {EntityType}", typeof(T).Name);
                 throw;
             }
         }
@@ -731,8 +697,6 @@ namespace Diginsight.Components.Azure.Repositories
                 var tableClient = tableServiceClient.GetTableClient(tableName);
                 await tableClient.CreateIfNotExistsAsync();
 
-                logger.LogDebug("🗑️ AzureTable delete for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
-                logger.LogDebug("🗑️ partitionKey:{partitionKey},rowKey:{rowKey}", partitionKey, rowKey);
 
                 await tableClient.DeleteEntityAsync(partitionKey, rowKey);
             }
@@ -742,7 +706,6 @@ namespace Diginsight.Components.Azure.Repositories
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "❌ Error deleting record from Azure Table Storage for type {EntityType}", typeof(T).Name);
                 throw;
             }
         }

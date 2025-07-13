@@ -1,4 +1,4 @@
-﻿using Azure.Monitor.OpenTelemetry.Exporter;
+using Azure.Monitor.OpenTelemetry.Exporter;
 using Diginsight.Components.Configuration;
 using Diginsight.Diagnostics;
 using Diginsight.Diagnostics.Log4Net;

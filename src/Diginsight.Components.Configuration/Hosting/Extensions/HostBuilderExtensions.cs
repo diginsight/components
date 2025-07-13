@@ -1,4 +1,4 @@
-﻿using Azure.Core;
+using Azure.Core;
 using Azure.Identity;
 using Diginsight.Diagnostics;
 using Microsoft.AspNetCore.Hosting;

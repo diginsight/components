@@ -101,6 +101,30 @@ public static class CosmosDbExtensions
         }
     }
 
+    public static async Task<ResponseMessage> DeleteItemStreamObservableAsync(this Container container, string id, PartitionKey partitionKey, ItemRequestOptions? requestOptions = null, CancellationToken cancellationToken = default)
+    {
+        var loggerFactory = Observability.LoggerFactory;
+        var logger = loggerFactory.CreateLogger(typeof(CosmosDbExtensions));
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id, partitionKey, requestOptions });
+
+        try
+        {
+            // Log connection and delete item information
+            logger.LogDebug("🗑️ CosmosDB delete item for id '{Id}' in database {Endpoint}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🗑️ partitionKey:{partitionKey}", partitionKey.ToString());
+
+            var response = await container.DeleteItemStreamAsync(id, partitionKey, requestOptions, cancellationToken);
+            
+            activity?.SetOutput(response);
+            return response;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "❌ Error deleting item from CosmosDB for id {Id}", id);
+            throw;
+        }
+    }
+
     public static async IAsyncEnumerable<T> GetAsyncItems<T>(this FeedIterator<T> feedIterator)
     {
         while (feedIterator.HasMoreResults)

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
@@ -8,6 +8,18 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Version>1.0.0.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Http\**" />
+    <Compile Remove="Models\**" />
+    <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="Http\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Http\**" />
+    <None Remove="Models\**" />
+    <None Remove="Services\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.*" />
@@ -47,16 +59,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\images\01. Project image\common.components.png" Link="common.components.png" >
+    <None Include="..\..\images\01. Project image\common.components.png" Link="common.components.png">
       <PackagePath></PackagePath>
       <Pack>True</Pack>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Http\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 </Project>

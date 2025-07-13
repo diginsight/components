@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Diginsight.Components.Azure.Abstractions\Diginsight.Components.Azure.Abstractions.csproj" />
+    <ProjectReference Include="..\Diginsight.Components\Diginsight.Components.csproj" />
   </ItemGroup>
 
 

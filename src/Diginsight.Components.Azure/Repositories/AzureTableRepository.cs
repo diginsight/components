@@ -6,6 +6,7 @@ using Diginsight.Stringify;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.Text.Json;
+using System.Transactions;
 
 namespace Diginsight.Components.Azure.Repositories
 {
@@ -52,7 +53,8 @@ namespace Diginsight.Components.Azure.Repositories
                 var tableClient = tableServiceClient.GetTableClient(tableName);
                 await tableClient.CreateIfNotExistsAsync();
 
-                logger.LogDebug("🔍 AzureTable query for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
+                var operationName = activity?.OperationName;
+                logger.LogDebug("🔍 AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
                 logger.LogDebug("🔍 filter:{Filter}, top:{Top}, select:{Select}", filter ?? "null", top?.ToString() ?? "null", select != null ? string.Join(",", select) : "null");
 
                 var records = new List<T>();
@@ -85,6 +87,9 @@ namespace Diginsight.Components.Azure.Repositories
                 var tableClient = tableServiceClient.GetTableClient(tableName);
                 await tableClient.CreateIfNotExistsAsync();
 
+                var operationName = activity?.OperationName;
+                logger.LogDebug("🔍 AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
+                logger.LogDebug("🔍 filter:{Filter}, top:{Top}, select:{Select}", filter.Stringify(), top.Stringify(), select != null ? string.Join(",", select) : select.Stringify());
 
                 var records = new List<object>();
                 var asyncPageableRecords = tableClient.QueryAsync<TableEntity>(
@@ -131,6 +136,9 @@ namespace Diginsight.Components.Azure.Repositories
                 var tableClient = tableServiceClient.GetTableClient(tableName);
                 await tableClient.CreateIfNotExistsAsync();
 
+                var operationName = activity?.OperationName;
+                logger.LogDebug("🔍 AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
+                logger.LogDebug("🔍 partitionKey:{PartitionKey}, rowKey:{RowKey}", partitionKey, rowKey);
 
                 var response = await tableClient.GetEntityAsync<T>(partitionKey, rowKey);
 
@@ -173,6 +181,9 @@ namespace Diginsight.Components.Azure.Repositories
                     entity.PartitionKey = "default";
                 }
 
+                var operationName = activity?.OperationName;
+                logger.LogDebug("➕ AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
+                logger.LogDebug("➕ partitionKey:{PartitionKey}, rowKey:{RowKey}, entity:{Entity}", entity.PartitionKey, entity.RowKey, entity.Stringify());
 
                 await tableClient.AddEntityAsync(entity);
 
@@ -232,6 +243,9 @@ namespace Diginsight.Components.Azure.Repositories
                     entity["UpdatedAt"] = null;
                 }
 
+                var operationName = activity?.OperationName;
+                logger.LogDebug("➕ AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
+                logger.LogDebug("➕ partitionKey:{PartitionKey}, rowKey:{RowKey}, entity:{Entity}", entity.PartitionKey, entity.RowKey, entity.Stringify());
 
                 await tableClient.AddEntityAsync(entity);
 
@@ -312,6 +326,10 @@ namespace Diginsight.Components.Azure.Repositories
                     entity["UpdatedAt"] = null;
                 }
 
+                var operationName = activity?.OperationName;
+                logger.LogDebug("➕ AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
+                logger.LogDebug("➕ partitionKey:{PartitionKey}, rowKey:{RowKey}, entity:{Entity}", entity.PartitionKey, entity.RowKey, entity.Stringify());
+
                 await tableClient.AddEntityAsync(entity);
 
                 var responseEntity = new Dictionary<string, object?>();
@@ -385,6 +403,10 @@ namespace Diginsight.Components.Azure.Repositories
                 }
 
                 var transactionActions = entityList.Select(entity => new TableTransactionAction(TableTransactionActionType.Add, entity)).ToList();
+
+                var operationName = activity?.OperationName;
+                logger.LogDebug("➕ AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
+                logger.LogDebug("➕ transactionActions:{transactionActions}", transactionActions.Stringify());
 
                 await tableClient.SubmitTransactionAsync(transactionActions);
 
@@ -489,6 +511,10 @@ namespace Diginsight.Components.Azure.Repositories
 
                 var transactionActions = entities.Select(entity => new TableTransactionAction(TableTransactionActionType.Add, entity)).ToList();
 
+                var operationName = activity?.OperationName;
+                logger.LogDebug("➕ AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
+                logger.LogDebug("➕ transactionActions:{transactionActions}", transactionActions.Stringify());
+
                 await tableClient.SubmitTransactionAsync(transactionActions);
 
                 var responseEntities = new List<Dictionary<string, object?>>();
@@ -537,6 +563,10 @@ namespace Diginsight.Components.Azure.Repositories
                 entity.PartitionKey = partitionKey;
                 entity.RowKey = rowKey;
                 SetEntityTimestamps(entity, isCreate: false);
+
+                var operationName = activity?.OperationName;
+                logger.LogDebug("🔄 AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
+                logger.LogDebug("🔄 existingEntity.ETag:{existingEntityETag}, entity:{entity}", ETag.All, entity.Stringify());
 
                 await tableClient.UpdateEntityAsync(entity, ETag.All);
             }
@@ -599,6 +629,10 @@ namespace Diginsight.Components.Azure.Repositories
                 }
 
                 updatedEntity["UpdatedAt"] = DateTime.UtcNow;
+
+                var operationName = activity?.OperationName;
+                logger.LogDebug("🔄 AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
+                logger.LogDebug("🔄 existingEntity.ETag:{existingEntityETag}, updatedEntity:{updatedEntity}", existingEntity.ETag, updatedEntity.Stringify());
 
                 await tableClient.UpdateEntityAsync(updatedEntity, existingEntity.ETag);
             }
@@ -675,6 +709,10 @@ namespace Diginsight.Components.Azure.Repositories
 
                 updatedEntity["UpdatedAt"] = DateTime.UtcNow;
 
+                var operationName = activity?.OperationName;
+                logger.LogDebug("🔄 AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
+                logger.LogDebug("🔄 existingEntity.ETag:{existingEntityETag}, updatedEntity:{updatedEntity}", existingEntity.ETag, updatedEntity.Stringify());
+
                 await tableClient.UpdateEntityAsync(updatedEntity, existingEntity.ETag);
             }
             catch (JsonException ex)
@@ -697,6 +735,9 @@ namespace Diginsight.Components.Azure.Repositories
                 var tableClient = tableServiceClient.GetTableClient(tableName);
                 await tableClient.CreateIfNotExistsAsync();
 
+                var operationName = activity?.OperationName;
+                logger.LogDebug("🗑️ AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableServiceClient.Uri, "Standard");
+                logger.LogDebug("🗑️ partitionKey:{partitionKey}, rowKey:{rowKey}", partitionKey, rowKey);
 
                 await tableClient.DeleteEntityAsync(partitionKey, rowKey);
             }

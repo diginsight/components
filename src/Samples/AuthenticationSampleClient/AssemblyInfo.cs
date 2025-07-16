@@ -1,10 +1,1 @@
-using System.Windows;
-
-[assembly: ThemeInfo(
-    ResourceDictionaryLocation.None, //where theme specific resource dictionaries are located
-                                     //(used if a resource is not found in the page,
-                                     // or application resource dictionaries)
-    ResourceDictionaryLocation.SourceAssembly //where the generic resource dictionary is located
-                                              //(used if a resource is not found in the page,
-                                              // app, or any theme specific resource dictionaries)
-)]
+獵湩⁧祓瑳浥圮湩潤獷഻ഊ嬊獡敳扭祬›桔浥䥥普⡯਍††敒潳牵散楄瑣潩慮祲潌慣楴湯丮湯ⱥ⼠眯敨敲琠敨敭猠数楣楦⁣敲潳牵散搠捩楴湯牡敩⁳牡⁥潬慣整൤ ††††††††††††††††††⼯用敳⁤晩愠爠獥畯捲⁥獩渠瑯映畯摮椠⁮桴⁥慰敧ബ ††††††††††††††††††⼯漠⁲灡汰捩瑡潩⁮敲潳牵散搠捩楴湯牡敩⥳਍††敒潳牵散楄瑣潩慮祲潌慣楴湯匮畯捲䅥獳浥汢⁹⼯桷牥⁥桴⁥敧敮楲⁣敲潳牵散搠捩楴湯牡⁹獩氠捯瑡摥਍†††††††††††††††††††††††⼯用敳⁤晩愠爠獥畯捲⁥獩渠瑯映畯摮椠⁮桴⁥慰敧ബ ††††††††††††††††††††††⼠ 灡Ɒ漠⁲湡⁹桴浥⁥灳捥晩捩爠獥畯捲⁥楤瑣潩慮楲獥ഩ⤊൝

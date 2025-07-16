@@ -3,7 +3,7 @@ root = true
 # All files
 [*]
 indent_style = space
-charset = utf-8
+charset = utf-8-bom
 trim_trailing_whitespace = true
 insert_final_newline = true
 
@@ -11,45 +11,55 @@ insert_final_newline = true
 [*.{cs,csx,vb,vbx}]
 indent_size = 4
 end_of_line = crlf
+charset = utf-8
 
 # XML project files
 [*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj}]
 indent_size = 2
 end_of_line = crlf
+charset = utf-8
 
 # XML build files
 [*.{xml,config,props,targets,nuspec,resx,ruleset,vsixmanifest,vsct}]
 indent_size = 2
 end_of_line = crlf
+charset = utf-8
 
 # JSON files
 [*.{json,json5,webmanifest}]
 indent_size = 2
 end_of_line = crlf
+charset = utf-8
 
 # YAML files
 [*.{yml,yaml}]
 indent_size = 2
 end_of_line = crlf
+charset = utf-8
 
 # Markdown
 [*.md]
 end_of_line = crlf
 trim_trailing_whitespace = false
+charset = utf-8
 
 # Web Files
 [*.{htm,html,js,jsm,ts,tsx,css,sass,scss,less,svg,vue}]
 indent_size = 2
 end_of_line = crlf
+charset = utf-8
 
 # Batch files
 [*.{cmd,bat}]
 end_of_line = crlf
+charset = utf-8
 
 # Bash files
 [*.sh]
 end_of_line = lf
+charset = utf-8
 
 # PowerShell files
 [*.{ps1,psm1,psd1}]
 end_of_line = crlf
+charset = utf-8

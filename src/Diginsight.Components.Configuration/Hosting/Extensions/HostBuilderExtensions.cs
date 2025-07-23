@@ -11,6 +11,7 @@ using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Diginsight.Components.Configuration;
@@ -26,7 +27,9 @@ public static class HostBuilderExtensions
     /// <param name="loggerFactory">The logger factory to use for logging.</param>
     /// <param name="tagsMatch">An optional function to filter configuration tags.</param>
     /// <returns>The configured <see cref="IHostBuilder"/>.</returns>
-    public static IHostBuilder ConfigureAppConfiguration2(this IHostBuilder hostBuilder, ILoggerFactory loggerFactory, Func<IDictionary<string, string>, bool>? tagsMatch = null)
+    public static IHostBuilder ConfigureAppConfiguration2(this IHostBuilder hostBuilder,
+        ILoggerFactory loggerFactory,
+        Func<IDictionary<string, string>, bool>? tagsMatch = null)
     {
         var logger = loggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { hostBuilder, tagsMatch });
@@ -42,7 +45,10 @@ public static class HostBuilderExtensions
     /// <param name="builder">The configuration builder to configure.</param>
     /// <param name="loggerFactory">The logger factory to use for logging.</param>
     /// <param name="tagsMatch">An optional function to filter configuration tags.</param>
-    public static void ConfigureAppConfiguration2(IHostEnvironment environment, IConfigurationBuilder builder, ILoggerFactory loggerFactory, Func<IDictionary<string, string>, bool>? tagsMatch = null)
+    public static void ConfigureAppConfiguration2(IHostEnvironment environment,
+        IConfigurationBuilder builder,
+        ILoggerFactory loggerFactory,
+        Func<IDictionary<string, string>, bool>? tagsMatch = null)
     {
         var logger = loggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { environment, builder, tagsMatch });
@@ -206,6 +212,19 @@ public static class HostBuilderExtensions
         }
     }
 
+
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TBuilder ConfigureAppConfiguration2<TBuilder>(
+        this TBuilder hostAppBuilder,
+        ILoggerFactory loggerFactory = null,
+        Func<IDictionary<string, string>, bool>? kvTagsMatch = null
+    )
+        where TBuilder : IHostApplicationBuilder
+    {
+        ConfigureAppConfiguration2(hostAppBuilder.Environment, hostAppBuilder.Configuration, loggerFactory, kvTagsMatch);
+        return hostAppBuilder;
+    }
     /// <summary>
     /// Appends a local JSON configuration file to the configuration builder at the specified index if running locally.
     /// </summary>

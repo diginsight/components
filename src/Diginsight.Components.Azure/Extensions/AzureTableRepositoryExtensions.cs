@@ -30,12 +30,10 @@ namespace Diginsight.Components.Azure.Extensions
             ServiceLifetime lifetime = ServiceLifetime.Scoped) 
             where T : class, ITableEntity, new()
         {
-            var serviceDescriptor = new ServiceDescriptor(
-                typeof(IAzureTableRepository<T>),
-                serviceProvider => new AzureTableRepository<T>(
-                    serviceProvider.GetRequiredService<TableServiceClient>(),
-                    serviceProvider.GetRequiredService<ILogger<AzureTableRepository<T>>>(),
-                    tableName),
+            var serviceDescriptor = new ServiceDescriptor(typeof(IAzureTableRepository<T>), serviceProvider => new AzureTableRepository<T>(
+                                                                                                                   serviceProvider.GetRequiredService<TableServiceClient>(),
+                                                                                                                   serviceProvider.GetRequiredService<ILogger<AzureTableRepository<T>>>(),
+                                                                                                                   tableName),
                 lifetime);
 
             services.Add(serviceDescriptor);

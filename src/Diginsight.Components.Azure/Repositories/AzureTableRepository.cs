@@ -30,18 +30,34 @@ namespace Diginsight.Components.Azure.Repositories
         private readonly ILogger<AzureTableRepository<T>> logger;
         private readonly string tableName;
 
+        private readonly Lazy<Task<TableClient>> lazyTableClient;
+
         /// <summary>
         /// Initializes a new instance of the AzureTableRepository class.
         /// </summary>
         /// <param name="tableServiceClient">The Azure Table Storage service client.</param>
         /// <param name="logger">The logger instance for logging operations and errors.</param>
         /// <param name="tableName">The name of the table to operate on.</param>
-        public AzureTableRepository(TableServiceClient tableServiceClient, ILogger<AzureTableRepository<T>> logger, string tableName = "DefaultTable")
+        public AzureTableRepository(TableServiceClient tableServiceClient,
+            ILogger<AzureTableRepository<T>> logger,
+            string tableName = "DefaultTable")
         {
             this.tableServiceClient = tableServiceClient;
             this.logger = logger;
             this.tableName = tableName;
+            
+            // Initialize the lazy client
+            this.lazyTableClient = new Lazy<Task<TableClient>>(() => InitializeTableClientAsync());
         }
+
+        private async Task<TableClient> InitializeTableClientAsync()
+        {
+            var client = tableServiceClient.GetTableClient(tableName);
+            await client.CreateIfNotExistsAsync();
+            return client;
+        }
+
+        private async Task<TableClient> GetTableClientAsync() => await lazyTableClient.Value;
 
         /// <inheritdoc />
         public async Task<IEnumerable<T>> QueryAsync(string? filter = null, int? top = null, IEnumerable<string>? select = null)
@@ -50,7 +66,7 @@ namespace Diginsight.Components.Azure.Repositories
 
             try
             {
-                var tableClient = tableServiceClient.GetTableClient(tableName);
+                var tableClient = await GetTableClientAsync();
                 await tableClient.CreateIfNotExistsAsync();
 
                 var operationName = activity?.OperationName;
@@ -84,7 +100,7 @@ namespace Diginsight.Components.Azure.Repositories
 
             try
             {
-                var tableClient = tableServiceClient.GetTableClient(tableName);
+                var tableClient = await GetTableClientAsync();
                 await tableClient.CreateIfNotExistsAsync();
 
                 var operationName = activity?.OperationName;
@@ -133,7 +149,7 @@ namespace Diginsight.Components.Azure.Repositories
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { partitionKey, rowKey });
             try
             {
-                var tableClient = tableServiceClient.GetTableClient(tableName);
+                var tableClient = await GetTableClientAsync();
                 await tableClient.CreateIfNotExistsAsync();
 
                 var operationName = activity?.OperationName;
@@ -163,7 +179,7 @@ namespace Diginsight.Components.Azure.Repositories
 
             try
             {
-                var tableClient = tableServiceClient.GetTableClient(tableName);
+                var tableClient = await GetTableClientAsync();
                 await tableClient.CreateIfNotExistsAsync();
 
                 // Set default timestamps if entity supports them
@@ -202,7 +218,7 @@ namespace Diginsight.Components.Azure.Repositories
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { entityData });
             try
             {
-                var tableClient = tableServiceClient.GetTableClient(tableName);
+                var tableClient = await GetTableClientAsync();
                 await tableClient.CreateIfNotExistsAsync();
 
                 var entity = new TableEntity();
@@ -283,7 +299,7 @@ namespace Diginsight.Components.Azure.Repositories
                     throw new ArgumentException("JSON must be an object", nameof(jsonString));
                 }
 
-                var tableClient = tableServiceClient.GetTableClient(tableName);
+                var tableClient = await GetTableClientAsync();
                 await tableClient.CreateIfNotExistsAsync();
 
                 var entity = new TableEntity();
@@ -378,7 +394,7 @@ namespace Diginsight.Components.Azure.Repositories
 
             try
             {
-                var tableClient = tableServiceClient.GetTableClient(tableName);
+                var tableClient = await GetTableClientAsync();
                 await tableClient.CreateIfNotExistsAsync();
 
                 foreach (var entity in entityList)
@@ -448,7 +464,7 @@ namespace Diginsight.Components.Azure.Repositories
                     throw new ArgumentException("Batch size cannot exceed 100 records", nameof(jsonString));
                 }
 
-                var tableClient = tableServiceClient.GetTableClient(tableName);
+                var tableClient = await GetTableClientAsync();
                 await tableClient.CreateIfNotExistsAsync();
 
                 var entities = new List<TableEntity>();
@@ -557,7 +573,7 @@ namespace Diginsight.Components.Azure.Repositories
 
             try
             {
-                var tableClient = tableServiceClient.GetTableClient(tableName);
+                var tableClient = await GetTableClientAsync();
                 await tableClient.CreateIfNotExistsAsync();
 
                 entity.PartitionKey = partitionKey;
@@ -583,7 +599,7 @@ namespace Diginsight.Components.Azure.Repositories
 
             try
             {
-                var tableClient = tableServiceClient.GetTableClient(tableName);
+                var tableClient = await GetTableClientAsync();
                 await tableClient.CreateIfNotExistsAsync();
 
                 TableEntity existingEntity;
@@ -660,7 +676,7 @@ namespace Diginsight.Components.Azure.Repositories
                     throw new ArgumentException("JSON must be an object", nameof(jsonString));
                 }
 
-                var tableClient = tableServiceClient.GetTableClient(tableName);
+                var tableClient = await GetTableClientAsync();
                 await tableClient.CreateIfNotExistsAsync();
 
                 TableEntity existingEntity;
@@ -732,7 +748,7 @@ namespace Diginsight.Components.Azure.Repositories
 
             try
             {
-                var tableClient = tableServiceClient.GetTableClient(tableName);
+                var tableClient = await GetTableClientAsync();
                 await tableClient.CreateIfNotExistsAsync();
 
                 var operationName = activity?.OperationName;

@@ -167,7 +167,7 @@ jobs:
         run: |
             $env:ASSEMBLY_VERSION="${{ needs.getCompositeVariables.outputs.assemblyVersion }}"
             Write-Host "Setting assembly version to: $env:ASSEMBLY_VERSION"
-            Get-ChildItem -Path artifactFolder/Release/ -Filter *.nupkg | ForEach-Object {
+            Get-ChildItem -Path artifactFolder/Release/ -Filter *.$env:ASSEMBLY_VERSION.nupkg | ForEach-Object {
                 dotnet nuget push $_.FullName --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
             }
 

@@ -166,7 +166,7 @@ public static class CosmosDbExtensions
 
             var queryable = trasform(collectionQueryable);
             logger.LogDebug("🔍 CosmosDB LINQ query for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
-            logger.LogDebug("Query: {Query}", queryable.ToString());
+            logger.LogDebug("🔍 Query: {Query}", queryable.ToString());
 
             return queryable;
         }

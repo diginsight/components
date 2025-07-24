@@ -163,8 +163,8 @@ public static class CosmosDbExtensions
         try
         {
             var collectionQueryable = container.GetItemLinqQueryable<T>(allowSynchronousQueryExecution, continuationToken, requestOptions, linqSerializerOptions);
-
             var queryable = trasform(collectionQueryable);
+
             logger.LogDebug("🔍 CosmosDB LINQ query for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 Query: {Query}", queryable.ToString());
 
@@ -524,66 +524,24 @@ public static class CosmosDbExtensions
         return items;
     }
 
-    /// <summary>
-    /// Extension method to log FeedIterator details and attempt SQL query extraction
-    /// </summary>
-    public static FeedIterator<T> LogQueryDetails<T>(this FeedIterator<T> feedIterator, ILogger logger, IQueryable<T> originalQueryable)
+    public static async Task<FeedResponse<T>> ReadNextObservableAsync<T>(this FeedIterator<T> feedIterator, CancellationToken cancellationToken = default(CancellationToken))
     {
+        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var logger = loggerFactory.CreateLogger(typeof(CosmosDbExtensions));
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { feedIterator }, logLevel: LogLevel.Trace);
         try
         {
-            var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
-            var log = loggerFactory.CreateLogger(typeof(CosmosDbExtensions));
-            
-            // Try to extract query information
-            string sqlQuery = TryExtractSqlFromIterator(feedIterator, originalQueryable, log);
-            log.LogInformation("🔍 CosmosDB Query Analysis: {SqlQuery}", sqlQuery);
-            
-            return feedIterator;
+            var feedResponse = await feedIterator.ReadNextAsync(cancellationToken).ConfigureAwait(false);
+            logger.LogDebug("Query executed successfully. Retrieved {Count} documents of type '{Type}', RU consumed: {RequestCharge}", feedResponse.Count, typeof(T).Name, feedResponse.RequestCharge);
+
+            return feedResponse;
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Failed to log FeedIterator query details");
-            return feedIterator;
+            logger.LogError(ex, "❌ Error creating CosmosDB stream query iterator");
+            throw;
         }
     }
 
-    private static string TryExtractSqlFromIterator<T>(FeedIterator<T> feedIterator, IQueryable<T> queryable, ILogger logger)
-    {
-        try
-        {
-            // Method 1: Check queryable after ToFeedIterator conversion
-            var queryableStr = queryable.ToString();
-            if (queryableStr.Contains("SELECT") || queryableStr.Contains("WHERE"))
-            {
-                return $"From Queryable: {queryableStr}";
-            }
 
-            // Method 2: Reflection on FeedIterator internals
-            var type = feedIterator.GetType();
-            var fields = type.GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            
-            foreach (var field in fields)
-            {
-                if (field.Name.ToLower().Contains("query") || field.Name.ToLower().Contains("sql"))
-                {
-                    var value = field.GetValue(feedIterator);
-                    if (value != null)
-                    {
-                        var valueStr = value.ToString();
-                        if (valueStr.Contains("SELECT"))
-                        {
-                            return $"From FeedIterator field '{field.Name}': {valueStr}";
-                        }
-                    }
-                }
-            }
-
-            return $"Unable to extract SQL - Queryable: {queryableStr}";
-        }
-        catch (Exception ex)
-        {
-            logger.LogDebug(ex, "Error during SQL extraction");
-            return "Error extracting SQL query";
-        }
-    }
 }

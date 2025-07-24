@@ -3,6 +3,7 @@ using Diginsight.Stringify;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,7 +25,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and query information
-            logger.LogDebug("🔍 CosmosDB query for class 'Object' in database {Endpoint}, collection '{Collection}'", container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🔍 CosmosDB query for class 'Object' in database {Endpoint}, container {Container}, collection '{Collection}'", container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 Query: \"{Query}\"", queryDefinition.QueryText);
 
             return container.GetItemQueryStreamIterator(queryDefinition, continuationToken, requestOptions);
@@ -45,7 +46,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and query information
-            logger.LogDebug("🔍 CosmosDB query for class '{Type}' in database {Endpoint}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🔍 CosmosDB query for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 Query: \"{Query}\"", queryDefinition.QueryText);
 
             return container.GetItemQueryIterator<T>(queryDefinition, continuationToken, requestOptions);
@@ -66,7 +67,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and query information
-            logger.LogDebug("🔍 CosmosDB query for class 'Object' in database {Endpoint}, collection '{Collection}'", container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🔍 CosmosDB query for class 'Object' in database {Endpoint}, container {Container}, collection '{Collection}'", container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 Query: \"{Query}\"", query);
 
             return container.GetItemQueryStreamIterator(query, continuationToken, requestOptions);
@@ -85,7 +86,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and query information
-            logger.LogDebug("🔍 CosmosDB query for class '{Type}' in database {Endpoint}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🔍 CosmosDB query for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 Query: \"{Query}\"", query);
             return container.GetItemQueryIterator<T>(query, continuationToken, requestOptions);
         }
@@ -104,7 +105,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and query information
-            logger.LogDebug("🔍 CosmosDB query for class 'Object' in database {Endpoint}, collection '{Collection}'", container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🔍 CosmosDB query for class 'Object' in database {Endpoint}, container {Container}, collection '{Collection}'", container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 Query: \"{Query}\"", queryDefinition.QueryText);
             return container.GetItemQueryStreamIterator(feedRange, queryDefinition, continuationToken, requestOptions);
         }
@@ -123,7 +124,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and query information
-            logger.LogDebug("🔍 CosmosDB query for class 'Object' in database {Endpoint}, collection '{Collection}'", container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🔍 CosmosDB query for class 'Object' in database {Endpoint}, container {Container}, collection '{Collection}'", container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 Query: \"{Query}\"", queryDefinition.QueryText);
             return container.GetItemQueryIterator<T>(feedRange, queryDefinition, continuationToken, requestOptions);
         }
@@ -141,9 +142,33 @@ public static class CosmosDbExtensions
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { allowSynchronousQueryExecution, continuationToken, requestOptions, linqSerializerOptions });
         try
         {
-            // Log connection and LINQ query information
-            logger.LogDebug("🔍 CosmosDB LINQ query for class '{Type}' in database {Endpoint}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Id);
-            return container.GetItemLinqQueryable<T>(allowSynchronousQueryExecution, continuationToken, requestOptions, linqSerializerOptions);
+            var queryable = container.GetItemLinqQueryable<T>(allowSynchronousQueryExecution, continuationToken, requestOptions, linqSerializerOptions);
+            logger.LogDebug("🔍 CosmosDB LINQ query for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
+            logger.LogDebug("🔍 Query container: \"{Container}\"", queryable.ToString());
+
+            return queryable;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "❌ Error creating CosmosDB LINQ query for type {Type}", typeof(T).Name);
+            throw;
+        }
+    }
+
+    public static IQueryable<T> GetItemLinqQueryableObservable<T>(this Container container, Func<IQueryable<T>, IQueryable<T>> trasform, bool allowSynchronousQueryExecution = false, string continuationToken = null, QueryRequestOptions requestOptions = null, CosmosLinqSerializerOptions linqSerializerOptions = null)
+    {
+        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var logger = loggerFactory.CreateLogger(typeof(CosmosDbExtensions));
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { allowSynchronousQueryExecution, continuationToken, requestOptions, linqSerializerOptions });
+        try
+        {
+            var collectionQueryable = container.GetItemLinqQueryable<T>(allowSynchronousQueryExecution, continuationToken, requestOptions, linqSerializerOptions);
+
+            var queryable = trasform(collectionQueryable);
+            logger.LogDebug("🔍 CosmosDB LINQ query for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
+            logger.LogDebug("Query: {Query}", queryable.ToString());
+
+            return queryable;
         }
         catch (Exception ex)
         {
@@ -161,7 +186,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and upsert item information
-            logger.LogDebug("🔄 CosmosDB upsert for class '{Type}' in database {Endpoint}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🔄 CosmosDB upsert for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔄 entity:{entity}", item.Stringify());
 
             var response = await container.UpsertItemAsync(item, partitionKey, requestOptions, cancellationToken);
@@ -184,7 +209,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and upsert item information
-            logger.LogDebug("🔄 CosmosDB upsert item in database {Endpoint}, collection '{Collection}'", container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🔄 CosmosDB upsert item in database {Endpoint}, container {Container}, collection '{Collection}'", container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔄 partitionKey:{partitionKey}", partitionKey.ToString());
             var response = await container.UpsertItemStreamAsync(streamPayload, partitionKey, requestOptions, cancellationToken);
 
@@ -206,7 +231,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and create item information
-            logger.LogDebug("📦 CosmosDB create item in database {Endpoint}, collection '{Collection}'", container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("📦 CosmosDB create item in database {Endpoint}, container {Container}, collection '{Collection}'", container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("📦 partitionKey:{partitionKey}", partitionKey.ToString());
             var response = await container.CreateItemStreamAsync(streamPayload, partitionKey, requestOptions, cancellationToken);
 
@@ -227,7 +252,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and create item information
-            logger.LogDebug("📦 CosmosDB create item for class '{Type}' in database {Endpoint}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("📦 CosmosDB create item for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("📦 entity:{entity}", item.Stringify());
             var response = await container.CreateItemAsync(item, partitionKey, requestOptions, cancellationToken);
 
@@ -249,7 +274,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and read item information
-            logger.LogDebug("🔍 CosmosDB read item for id '{Id}' in database {Endpoint}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🔍 CosmosDB read item for id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 partitionKey:{partitionKey}", partitionKey.ToString());
             var response = await container.ReadItemStreamAsync(id, partitionKey, requestOptions, cancellationToken);
 
@@ -271,7 +296,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and read item information
-            logger.LogDebug("🔍 CosmosDB read item for id '{Id}' in database {Endpoint}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🔍 CosmosDB read item for id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 partitionKey:{partitionKey}", partitionKey.ToString());
             var response = await container.ReadItemAsync<T>(id, partitionKey, requestOptions, cancellationToken);
 
@@ -293,7 +318,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and read many items information
-            logger.LogDebug("🔍 CosmosDB read many items in database {Endpoint}, collection '{Collection}'", container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🔍 CosmosDB read many items in database {Endpoint}, container {Container}, collection '{Collection}'", container.Database.Client.Endpoint, container.Database.Id, container.Id);
             var response = await container.ReadManyItemsStreamAsync(items, readManyRequestOptions, cancellationToken);
 
             activity?.SetOutput(response);
@@ -314,7 +339,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and read many items information
-            logger.LogDebug("🔍 CosmosDB read many items for class '{Type}' in database {Endpoint}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🔍 CosmosDB read many items for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             var response = await container.ReadManyItemsAsync<T>(items, readManyRequestOptions, cancellationToken);
 
             activity?.SetOutput(response);
@@ -335,7 +360,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and patch item information
-            logger.LogDebug("✂️ CosmosDB patch item for class '{Type}' with id '{Id}' in database {Endpoint}, collection '{Collection}'", typeof(T).Name, id, container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("✂️ CosmosDB patch item for class '{Type}' with id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("✂️ partitionKey:{partitionKey}", partitionKey.ToString());
             logger.LogDebug("✂️ patchOperations:{patchOperations}", string.Join(", ", patchOperations.Select(po => po.ToString())));
             var response = await container.PatchItemAsync<T>(id, partitionKey, patchOperations, requestOptions, cancellationToken);
@@ -358,7 +383,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and patch item information
-            logger.LogDebug("✂️ CosmosDB patch item for id '{Id}' in database {Endpoint}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("✂️ CosmosDB patch item for id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("✂️ partitionKey:{partitionKey}", partitionKey.ToString());
             logger.LogDebug("✂️ patchOperations:{patchOperations}", string.Join(", ", patchOperations.Select(po => po.ToString())));
             var response = await container.PatchItemStreamAsync(id, partitionKey, patchOperations, requestOptions, cancellationToken);
@@ -382,7 +407,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and delete item information
-            logger.LogDebug("🗑️ CosmosDB delete item for id '{Id}' in database {Endpoint}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🗑️ CosmosDB delete item for id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🗑️ partitionKey:{partitionKey}", partitionKey.ToString());
 
             var response = await container.DeleteItemStreamAsync(id, partitionKey, requestOptions, cancellationToken);
@@ -405,7 +430,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and delete item information
-            logger.LogDebug("🗑️ CosmosDB delete item for class '{Type}' with id '{Id}' in database {Endpoint}, collection '{Collection}'", typeof(T).Name, id, container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🗑️ CosmosDB delete item for class '{Type}' with id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🗑️ partitionKey:{partitionKey}", partitionKey.ToString());
             var response = await container.DeleteItemAsync<T>(id, partitionKey, requestOptions, cancellationToken);
 
@@ -427,7 +452,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and delete all items by partition key information
-            logger.LogDebug("🗑️ CosmosDB delete all items by partition key in database {Endpoint}, collection '{Collection}'", partitionKey.ToString(), requestOptions?.ToString());
+            logger.LogDebug("🗑️ CosmosDB delete all items by partition key in database {Endpoint}, container {Container}, collection '{Collection}'", partitionKey.ToString(), requestOptions?.ToString());
             var response = await container.DeleteAllItemsByPartitionKeyStreamAsync(partitionKey, requestOptions, cancellationToken);
             activity?.SetOutput(response);
             return response;
@@ -447,7 +472,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and replace item information
-            logger.LogDebug("🔄 CosmosDB replace item for id '{Id}' in database {Endpoint}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🔄 CosmosDB replace item for id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔄 partitionKey:{partitionKey}", partitionKey.ToString());
             var response = await container.ReplaceItemStreamAsync(streamPayload, id, partitionKey, requestOptions, cancellationToken);
 
@@ -468,7 +493,7 @@ public static class CosmosDbExtensions
         try
         {
             // Log connection and replace item information
-            logger.LogDebug("🔄 CosmosDB replace item for class '{Type}' with id '{Id}' in database {Endpoint}, collection '{Collection}'", typeof(T).Name, id, container.Database.Client.Endpoint, container.Id);
+            logger.LogDebug("🔄 CosmosDB replace item for class '{Type}' with id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔄 entity:{entity}", item.Stringify());
             var response = await container.ReplaceItemAsync(item, id, partitionKey, requestOptions, cancellationToken);
 
@@ -497,5 +522,68 @@ public static class CosmosDbExtensions
     {
         var items = await feedIterator.GetAsyncItems().ToListAsync();
         return items;
+    }
+
+    /// <summary>
+    /// Extension method to log FeedIterator details and attempt SQL query extraction
+    /// </summary>
+    public static FeedIterator<T> LogQueryDetails<T>(this FeedIterator<T> feedIterator, ILogger logger, IQueryable<T> originalQueryable)
+    {
+        try
+        {
+            var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+            var log = loggerFactory.CreateLogger(typeof(CosmosDbExtensions));
+            
+            // Try to extract query information
+            string sqlQuery = TryExtractSqlFromIterator(feedIterator, originalQueryable, log);
+            log.LogInformation("🔍 CosmosDB Query Analysis: {SqlQuery}", sqlQuery);
+            
+            return feedIterator;
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to log FeedIterator query details");
+            return feedIterator;
+        }
+    }
+
+    private static string TryExtractSqlFromIterator<T>(FeedIterator<T> feedIterator, IQueryable<T> queryable, ILogger logger)
+    {
+        try
+        {
+            // Method 1: Check queryable after ToFeedIterator conversion
+            var queryableStr = queryable.ToString();
+            if (queryableStr.Contains("SELECT") || queryableStr.Contains("WHERE"))
+            {
+                return $"From Queryable: {queryableStr}";
+            }
+
+            // Method 2: Reflection on FeedIterator internals
+            var type = feedIterator.GetType();
+            var fields = type.GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            
+            foreach (var field in fields)
+            {
+                if (field.Name.ToLower().Contains("query") || field.Name.ToLower().Contains("sql"))
+                {
+                    var value = field.GetValue(feedIterator);
+                    if (value != null)
+                    {
+                        var valueStr = value.ToString();
+                        if (valueStr.Contains("SELECT"))
+                        {
+                            return $"From FeedIterator field '{field.Name}': {valueStr}";
+                        }
+                    }
+                }
+            }
+
+            return $"Unable to extract SQL - Queryable: {queryableStr}";
+        }
+        catch (Exception ex)
+        {
+            logger.LogDebug(ex, "Error during SQL extraction");
+            return "Error extracting SQL query";
+        }
     }
 }

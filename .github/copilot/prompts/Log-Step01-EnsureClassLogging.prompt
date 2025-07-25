@@ -30,7 +30,9 @@ In particular, it adds logging to **public methods that call external services**
 
 ## 📤 **Expected Output**
 
-### **Code Pattern:**public async Task<ServiceResult<Data>> GetData(string plantId, string plantType, AnalyticsReport report, ContextBase context, CancellationToken cancellationToken = default)
+### **Code Pattern:**
+```csharp
+public async Task<ServiceResult<Data>> GetData(string plantId, string plantType, AnalyticsReport report, ContextBase context, CancellationToken cancellationToken = default)
 {
     using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { plantId, plantType, report });
 
@@ -40,9 +42,15 @@ In particular, it adds logging to **public methods that call external services**
     activity?.SetOutput(result);
     return result;
 }
-### **Required Using Directive:**using Diginsight.Diagnostics;
+```
+### **Required Using Directive:**
+```csharp
+using Diginsight.Diagnostics;
+```
 ### **Infrastructure Requirements:**
-If `Observability` class is missing from the assembly, add it at the assembly root level:using System.Diagnostics;
+If `Observability` class is missing from the assembly, add it at the assembly root level:
+```csharp
+using System.Diagnostics;
 using System.Reflection;
 
 namespace YourProject.Namespace;
@@ -51,12 +59,17 @@ internal static class Observability
 {
     public static readonly ActivitySource ActivitySource = new (Assembly.GetExecutingAssembly().GetName().Name!);
 }
+```
 ## 📚 **Implementation Guidelines**
 
-### **StartMethodActivity Pattern:**using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { ... });
+### **StartMethodActivity Pattern:**
+```csharp
+using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { ... });
+```
 **Required Components:**
 1. **Logger Parameter:** Always include `logger` as the first parameter
-2. **Lambda Expression:** Use `() => new { ... }` pattern for deferred parameter evaluation
+2. **Lambda Expression:** 
+   Use `() => new { ... }` pattern for deferred parameter evaluation
 3. **Parameter Selection:** Include only relevant, simple parameters
 
 ### **Parameter Logging Rules:**
@@ -86,7 +99,9 @@ internal static class Observability
 - The method has multiple early returns for simple validation
 - The return type is void
 
-### **Single Exit Point Pattern:**public async Task<ServiceResult<string>> ProcessData(string input)
+### **Single Exit Point Pattern:**
+```csharp
+public async Task<ServiceResult<string>> ProcessData(string input)
 {
     using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { input });
 
@@ -104,6 +119,7 @@ internal static class Observability
     activity?.SetOutput(result);
     return result;
 }
+```
 ## 🔧 **Implementation Steps**
 
 ### **Step 1: Check Infrastructure**
@@ -129,7 +145,9 @@ internal static class Observability
 
 ## 🛠️ **Common Patterns**
 
-### **Service/Adapter Pattern:**public async Task<ServiceResult<T>> GetData(string id, Parameters params, ContextBase context)
+### **Service/Adapter Pattern:**
+```csharp
+public async Task<ServiceResult<T>> GetData(string id, Parameters params, ContextBase context)
 {
     using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id, params });
     
@@ -137,7 +155,10 @@ internal static class Observability
     activity?.SetOutput(result);
     return result;
 }
-### **Repository Pattern:**public async Task<Entity> GetById(Guid id, CancellationToken cancellationToken = default)
+```
+### **Repository Pattern:**
+```csharp
+public async Task<Entity> GetById(Guid id, CancellationToken cancellationToken = default)
 {
     using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id });
     
@@ -145,7 +166,10 @@ internal static class Observability
     activity?.SetOutput(entity);
     return entity;
 }
-### **Business Logic Pattern:**public async Task<ProcessResult> ProcessRequest(RequestData request, ContextBase context)
+```
+### **Business Logic Pattern:**
+```csharp
+public async Task<ProcessResult> ProcessRequest(RequestData request, ContextBase context)
 {
     using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { request });
     
@@ -163,7 +187,10 @@ internal static class Observability
     activity?.SetOutput(result);
     return result;
 }
-### **Complex Method with Multiple Exit Points Pattern:**public async Task<ServiceResult<T>> ComplexMethod(string plantId, string plantType, Data input, ContextBase context, CancellationToken cancellationToken = default)
+```
+### **Complex Method with Multiple Exit Points Pattern:**
+```csharp
+public async Task<ServiceResult<T>> ComplexMethod(string plantId, string plantType, Data input, ContextBase context, CancellationToken cancellationToken = default)
 {
     using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { plantId, plantType, input });
     
@@ -200,9 +227,12 @@ internal static class Observability
     activity?.SetOutput(result);
     return result;
 }
+```
 ## 🚫 **Anti-Patterns to Avoid**
 
-### **Don't Add to Simple Methods:**// ❌ DON'T - Simple property mapping
+### **Don't Add to Simple Methods:**
+```csharp
+// ❌ DON'T - Simple property mapping
 public UserDto ToDto(User user)
 {
     return new UserDto { Name = user.Name, Email = user.Email };
@@ -219,7 +249,10 @@ public List<T> SortItems(List<T> items, SortOrder order)
 {
     return order == SortOrder.Ascending ? items.OrderBy(x => x.Name).ToList() : items.OrderByDescending(x => x.Name).ToList();
 }
-### **Don't Include Problematic Parameters:**// ❌ DON'T - Including context and cancellation tokens
+```
+### **Don't Include Problematic Parameters:**
+```csharp
+// ❌ DON'T - Including context and cancellation tokens
 using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { 
     plantId, 
     context,           // ❌ Don't include
@@ -232,7 +265,10 @@ using var activity = Observability.ActivitySource.StartMethodActivity(logger, ()
     plantType, 
     reportData 
 });
-### **Don't Ignore Single Exit Point for Complex Methods:**// ❌ DON'T - Multiple returns without activity tracking
+```
+### **Don't Ignore Single Exit Point for Complex Methods:**
+```csharp
+// ❌ DON'T - Multiple returns without activity tracking
 public async Task<ServiceResult<T>> BadMethod(string id)
 {
     using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id });
@@ -267,6 +303,7 @@ public async Task<ServiceResult<T>> GoodMethod(string id)
     activity?.SetOutput(result);
     return result;
 }
+```
 ## ✅ **Checklist**
 
 - [ ] **Infrastructure:** `using Diginsight.Diagnostics;` added

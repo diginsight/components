@@ -81,7 +81,9 @@ public static class HostBuilderExtensions
 
         if (!appsettingsEnvironmentName.Equals(environmentName, StringComparison.InvariantCultureIgnoreCase))
         {
-            ((JsonConfigurationSource)builder.Sources[appsettingsEnvironmentIndex]).Path = appsettingsFilePath;
+            AppendJsonFile(appsettingsFilePath, appsettingsEnvironmentIndex, builder);
+            builder.Sources.RemoveAt(appsettingsEnvironmentIndex);
+            //((JsonConfigurationSource)builder.Sources[appsettingsEnvironmentIndex]).Path = appsettingsFilePath;
         }
 
         var externalConfigurationFolder = Environment.GetEnvironmentVariable("ExternalConfigurationFolder");
@@ -239,6 +241,26 @@ public static class HostBuilderExtensions
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { path, index, isLocal });
 
         if (!isLocal) { return; }
+
+        //JsonConfigurationSource jsonSource = new JsonConfigurationSource()
+        //{
+        //    Path = path,
+        //    Optional = true,
+        //    ReloadOnChange = true,
+        //};
+        //builder.Sources.Insert(index + 1, jsonSource);
+        builder.AddJsonFile(path, true, true);
+        var lastSource = builder.Sources.Last();
+        builder.Sources.Insert(index + 1, lastSource);
+        builder.Sources.RemoveAt(builder.Sources.Count - 1);
+    }
+    private static void AppendJsonFile(string path, int index, IConfigurationBuilder builder)
+    {
+        var loggerFactory = ObservabilityHelper.LoggerFactory;
+        var logger = loggerFactory.CreateLogger(T);
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { path, index });
+
+        //if (!isLocal) { return; }
 
         //JsonConfigurationSource jsonSource = new JsonConfigurationSource()
         //{

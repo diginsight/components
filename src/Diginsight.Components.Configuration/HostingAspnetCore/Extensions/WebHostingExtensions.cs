@@ -1,4 +1,4 @@
-﻿using Diginsight.AspNetCore;
+using Diginsight.AspNetCore;
 using Diginsight.Diagnostics;
 using Diginsight.Diagnostics.AspNetCore;
 using Microsoft.AspNetCore.Http;
@@ -89,7 +89,7 @@ public static class WebHostingExtensions
             static x =>
             {
                 x.NonBaggageKeys.Add(HttpHeadersActivityLoggingSampler.HeaderName);
-                x.NonBaggageKeys.Add(HttpHeadersSpanDurationMetricRecorderSettings.HeaderName);
+                x.NonBaggageKeys.Add(HttpHeadersMetricRecordingFilter.HeaderName);
             }
         );
 
@@ -97,10 +97,10 @@ public static class WebHostingExtensions
 
         if (openTelemetryOptions.EnableMetrics)
         {
-            if (!services.Any(static x => x.ServiceType == typeof(DecoratedSpanDurationMetricRecorderSettingsMarker)))
+            if (!services.Any(static x => x.ServiceType == typeof(MetricRecordingDurationMetricTagsEnricherMarker)))
             {
-                services.AddSingleton<DecoratedSpanDurationMetricRecorderSettingsMarker>();
-                services.Decorate<ISpanDurationMetricRecorderSettings, DecoratorHttpHeadersSpanDurationMetricRecorderSettings>();
+                services.AddSingleton<MetricRecordingDurationMetricTagsEnricherMarker>();
+                services.Decorate<IMetricRecordingFilter, DecoratorHttpHeadersMetricRecorderSettings>();
             }
 
             openTelemetryBuilder.WithMetrics(

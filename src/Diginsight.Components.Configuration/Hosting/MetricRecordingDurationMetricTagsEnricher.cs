@@ -1,27 +1,22 @@
-﻿using Diginsight.Diagnostics;
+using Diginsight.Diagnostics;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
 namespace Diginsight.Components.Configuration;
 
-internal sealed class DecoratedSpanDurationMetricRecorderSettingsMarker;
-internal sealed class DecoratorTagsSpanDurationMetricRecorderSettings : ISpanDurationMetricRecorderSettings
+internal sealed class MetricRecordingDurationMetricTagsEnricherMarker;
+internal sealed class MetricRecordingDurationMetricTagsEnricher : IMetricRecordingEnricher
 {
-    private readonly ISpanDurationMetricRecorderSettings decoratee;
     private readonly IOpenTelemetryOptions openTelemetryOptions;
+    private readonly IMetricRecordingEnricher metricRecordingEnricher;
 
-    public DecoratorTagsSpanDurationMetricRecorderSettings(
-        ISpanDurationMetricRecorderSettings decoratee,
+    public MetricRecordingDurationMetricTagsEnricher(
+        IMetricRecordingEnricher decoratee,
         IOptions<OpenTelemetryOptions> openTelemetryOptions
     )
     {
-        this.decoratee = decoratee;
+        this.metricRecordingEnricher = decoratee;
         this.openTelemetryOptions = openTelemetryOptions.Value;
-    }
-
-    public bool? ShouldRecord(Activity activity)
-    {
-        return decoratee.ShouldRecord(activity);
     }
 
     public IEnumerable<KeyValuePair<string, object?>> ExtractTags(Activity activity)
@@ -30,6 +25,6 @@ internal sealed class DecoratorTagsSpanDurationMetricRecorderSettings : ISpanDur
             .Select(k => (Key: k, Value: activity.GetAncestors(true).Select(a => a.GetTagItem(k)).FirstOrDefault(static v => v is not null)))
             .Where(static x => x.Value is not null)
             .Select(static x => KeyValuePair.Create(x.Key, x.Value))
-            .Concat(decoratee.ExtractTags(activity));
+            .Concat(metricRecordingEnricher.ExtractTags(activity));
     }
 }

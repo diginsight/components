@@ -1,3 +1,4 @@
+using Diginsight.Components.Azure.Metrics;
 using Diginsight.Diagnostics;
 using Diginsight.Stringify;
 using Microsoft.Azure.Cosmos;
@@ -20,7 +21,7 @@ public static class CosmosDbExtensions
     {
         var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbExtensions));
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { queryDefinition, continuationToken, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { queryDefinition, requestOptions });
 
         try
         {
@@ -28,7 +29,13 @@ public static class CosmosDbExtensions
             logger.LogDebug("🔍 CosmosDB query for class 'Object' in database {Endpoint}, container {Container}, collection '{Collection}'", container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 Query: \"{Query}\"", queryDefinition.QueryText);
 
-            return container.GetItemQueryStreamIterator(queryDefinition, continuationToken, requestOptions);
+            // Set query tag for metric collection
+            activity?.SetTag("query", queryDefinition.QueryText);
+            activity?.SetTag("container", container.Id);
+            activity?.SetTag("database", container.Database.Id);
+
+            var feedIterator = container.GetItemQueryStreamIterator(queryDefinition, continuationToken, requestOptions);
+            return new ObservableFeedIterator(feedIterator, container, queryDefinition);
         }
         catch (Exception ex)
         {
@@ -41,7 +48,7 @@ public static class CosmosDbExtensions
     {
         var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbExtensions));
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { queryDefinition, continuationToken, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { queryDefinition, requestOptions });
 
         try
         {
@@ -49,7 +56,13 @@ public static class CosmosDbExtensions
             logger.LogDebug("🔍 CosmosDB query for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 Query: \"{Query}\"", queryDefinition.QueryText);
 
-            return container.GetItemQueryIterator<T>(queryDefinition, continuationToken, requestOptions);
+            // Set query tag for metric collection
+            activity?.SetTag("query", queryDefinition.QueryText);
+            activity?.SetTag("container", container.Id);
+            activity?.SetTag("database", container.Database.Id);
+
+            var feedIterator = container.GetItemQueryIterator<T>(queryDefinition, continuationToken, requestOptions);
+            return new ObservableFeedIterator<T>(feedIterator, container, queryDefinition);
         }
         catch (Exception ex)
         {
@@ -62,7 +75,7 @@ public static class CosmosDbExtensions
     {
         var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbExtensions));
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query, continuationToken, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query, requestOptions });
 
         try
         {
@@ -70,7 +83,13 @@ public static class CosmosDbExtensions
             logger.LogDebug("🔍 CosmosDB query for class 'Object' in database {Endpoint}, container {Container}, collection '{Collection}'", container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 Query: \"{Query}\"", query);
 
-            return container.GetItemQueryStreamIterator(query, continuationToken, requestOptions);
+            // Set query tag for metric collection
+            activity?.SetTag("query", query);
+            activity?.SetTag("container", container.Id);
+            activity?.SetTag("database", container.Database.Id);
+
+            var feedIterator = container.GetItemQueryStreamIterator(query, continuationToken, requestOptions);
+            return new ObservableFeedIterator(feedIterator, container, query);
         }
         catch (Exception ex)
         {
@@ -78,17 +97,25 @@ public static class CosmosDbExtensions
             throw;
         }
     }
+
     public static FeedIterator<T> GetItemQueryIteratorObservable<T>(this Container container, string query = null, string continuationToken = null, QueryRequestOptions requestOptions = null)
     {
         var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbExtensions));
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query, continuationToken, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query, requestOptions });
         try
         {
             // Log connection and query information
             logger.LogDebug("🔍 CosmosDB query for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 Query: \"{Query}\"", query);
-            return container.GetItemQueryIterator<T>(query, continuationToken, requestOptions);
+
+            // Set query tag for metric collection
+            activity?.SetTag("query", query);
+            activity?.SetTag("container", container.Id);
+            activity?.SetTag("database", container.Database.Id);
+
+            var feedIterator = container.GetItemQueryIterator<T>(query, continuationToken, requestOptions);
+            return new ObservableFeedIterator<T>(feedIterator, container, query);
         }
         catch (Exception ex)
         {
@@ -101,13 +128,20 @@ public static class CosmosDbExtensions
     {
         var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbExtensions));
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { feedRange, queryDefinition, continuationToken, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { feedRange, queryDefinition, requestOptions });
         try
         {
             // Log connection and query information
             logger.LogDebug("🔍 CosmosDB query for class 'Object' in database {Endpoint}, container {Container}, collection '{Collection}'", container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 Query: \"{Query}\"", queryDefinition.QueryText);
-            return container.GetItemQueryStreamIterator(feedRange, queryDefinition, continuationToken, requestOptions);
+
+            // Set query tag for metric collection
+            activity?.SetTag("query", queryDefinition.QueryText);
+            activity?.SetTag("container", container.Id);
+            activity?.SetTag("database", container.Database.Id);
+
+            var feedIterator = container.GetItemQueryStreamIterator(feedRange, queryDefinition, continuationToken, requestOptions);
+            return new ObservableFeedIterator(feedIterator, container, queryDefinition);
         }
         catch (Exception ex)
         {
@@ -120,17 +154,25 @@ public static class CosmosDbExtensions
     {
         var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbExtensions));
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { feedRange, queryDefinition, continuationToken, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { container, feedRange, queryDefinition, requestOptions });
+
         try
         {
             // Log connection and query information
-            logger.LogDebug("🔍 CosmosDB query for class 'Object' in database {Endpoint}, container {Container}, collection '{Collection}'", container.Database.Client.Endpoint, container.Database.Id, container.Id);
+            logger.LogDebug("🔍 CosmosDB query for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 Query: \"{Query}\"", queryDefinition.QueryText);
-            return container.GetItemQueryIterator<T>(feedRange, queryDefinition, continuationToken, requestOptions);
+
+            // Set query tag for metric collection
+            activity?.SetTag("query", queryDefinition.QueryText);
+            activity?.SetTag("container", container.Id);
+            activity?.SetTag("database", container.Database.Id);
+
+            var feedIterator = container.GetItemQueryIterator<T>(feedRange, queryDefinition, continuationToken, requestOptions);
+            return new ObservableFeedIterator<T>(feedIterator, container, queryDefinition);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "❌ Error creating CosmosDB stream query iterator");
+            logger.LogError(ex, "❌ Error creating CosmosDB query iterator for type {Type}", typeof(T).Name);
             throw;
         }
     }
@@ -529,19 +571,25 @@ public static class CosmosDbExtensions
         var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { feedIterator }, logLevel: LogLevel.Trace);
+
+        if (feedIterator is ObservableFeedIterator<T> observableFeedIterator) { return await observableFeedIterator.ReadNextAsync(cancellationToken).ConfigureAwait(false); }
+
         try
         {
             var feedResponse = await feedIterator.ReadNextAsync(cancellationToken).ConfigureAwait(false);
             logger.LogDebug("Query executed successfully. Retrieved {Count} documents of type '{Type}', RU consumed: {RequestCharge}", feedResponse.Count, typeof(T).Name, feedResponse.RequestCharge);
 
+            if (activity != null && feedResponse.RequestCharge > 0)
+            {
+                activity.SetTag("query_cost", feedResponse.RequestCharge);
+            }
+
             return feedResponse;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "❌ Error creating CosmosDB stream query iterator");
+            logger.LogError(ex, "❌ Error executing CosmosDB query");
             throw;
         }
     }
-
-
 }

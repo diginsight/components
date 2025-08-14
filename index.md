@@ -27,7 +27,7 @@ Each component is designed to address specific functionality areas (e.g., authen
 
 **[Diginsight Smartcache](https://diginsight.github.io/smartcache/)** implements optimized hybrid caching for .NET applications, combining in-memory and distributed caching strategies.
 
-![alt text](<images/001.01b%20diginsight%20repositories.png>)
+![Diginsight repositories overview](./images/001.01b%20diginsight%20repositories.png)
 
 **Diginsight Components** are built to take advantage of these capabilities, enhancing existing libraries with observability capabilities and performance optimization, where possible.
 

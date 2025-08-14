@@ -52,7 +52,14 @@
     "href": "index.html#why-diginsight-components",
     "title": "INTRODUCTUCTION",
     "section": "Why Diginsight Components",
-    "text": "Why Diginsight Components\nDiginsight Telemetry implements observability and diagnostics capabilities for .NET applications using OpenTelemetry and Azure Monitor.\nDiginsight Smartcache implements optimized hybrid caching for .NET applications, combining in-memory and distributed caching strategies.\nAvailable Diginsight Components include:"
+    "text": "Why Diginsight Components\nDiginsight Telemetry implements observability and diagnostics capabilities for .NET applications using OpenTelemetry and Azure Monitor.\nDiginsight Smartcache implements optimized hybrid caching for .NET applications, combining in-memory and distributed caching strategies."
+  },
+  {
+    "objectID": "index.html#what-components-are-available",
+    "href": "index.html#what-components-are-available",
+    "title": "INTRODUCTUCTION",
+    "section": "What components are available",
+    "text": "What components are available\n\n1. Diginsight.Components.Configuration\n\nPurpose: Observable extensions for diginsight configuration with Azure Key Vault, Console, Log4Net, and OpenTelemetry etc,\nKey features:\n\nAzure Key Vault integration\nActivity source detection and registration\nOpenTelemetry runtime instrumentation\nAzure Monitor integration\nDependencies: Azure.Core, Azure.Identity, Azure.Extensions.AspNetCore.Configuration.Secrets\n\n\n\n\n2. Diginsight.Components.Azure\n\nPurpose: Azure-specific functionality and integrations\nCurrent file context: Contains metrics for Azure services like CosmosDB\nKey features:\n\nCosmosDB Observable extensions: CosmosDB Container query extensions integrated with diginsight observability and exposing advanced metrics (e.g. query_cost))\nAzure Table Observable extensions: Azure Table query extensions integrated with diginsight observability\nOther Azure service observable extensions\n\n\n\n\n3. Diginsight.Components.Abstractions\n\nPurpose: Core abstractions and interfaces for the Diginsight.Components\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n4. Diginsight.Components (Core)\n\nPurpose: Main component library with common functionality\nKey features:\n\nHTTP client configuration (HttpClientOptions)\nAuthentication and security features\nJWT token handling\nMicrosoft Identity Client integration\nCryptography support\n\n\n\n\n5. Diginsight.Components.Azure.Abstractions\n\nPurpose: Abstractions and interfaces for the Diginsight.Components.Azure\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n6. Diginsight.Components.Presentation.Abstractions\n\nPurpose: Abstractions and interfaces for the Diginsight.Components.Presentation\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n7. Diginsight.Components.Azure\n\nPurpose: Azure technology observable extensions components\nStatus: Currently appears to be a placeholder (contains only Class1)\n\n\n\n8. Diginsight.Components.Presentation\n\nPurpose: UI/Presentation layer components\nStatus: Currently appears to be a placeholder (contains only Class1)"
   },
   {
     "objectID": "index.html#architecture-characteristics",
@@ -116,10 +123,73 @@
     ]
   },
   {
-    "objectID": "index.html#what-components-are-available",
-    "href": "index.html#what-components-are-available",
-    "title": "INTRODUCTUCTION",
-    "section": "What components are available",
-    "text": "What components are available\n\n1. Diginsight.Components.Configuration\n\nPurpose: Observable extensions for diginsight configuration with Azure Key Vault, Console, Log4Net, and OpenTelemetry etc,\nKey features:\n\nAzure Key Vault integration\nActivity source detection and registration\nOpenTelemetry runtime instrumentation\nAzure Monitor integration\nDependencies: Azure.Core, Azure.Identity, Azure.Extensions.AspNetCore.Configuration.Secrets\n\n\n\n\n2. Diginsight.Components.Azure\n\nPurpose: Azure-specific functionality and integrations\nCurrent file context: Contains metrics for Azure services like CosmosDB\nKey features:\n\nCosmosDB Observable extensions: CosmosDB Container query extensions integrated with diginsight observability and exposing advanced metrics (e.g. query_cost))\nAzure Table Observable extensions: Azure Table query extensions integrated with diginsight observability\nOther Azure service observable extensions\n\n\n\n\n3. Diginsight.Components.Abstractions\n\nPurpose: Core abstractions and interfaces for the Diginsight.Components\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n4. Diginsight.Components (Core)\n\nPurpose: Main component library with common functionality\nKey features:\n\nHTTP client configuration (HttpClientOptions)\nAuthentication and security features\nJWT token handling\nMicrosoft Identity Client integration\nCryptography support\n\n\n\n\n5. Diginsight.Components.Azure.Abstractions\n\nPurpose: Abstractions and interfaces for the Diginsight.Components.Azure\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n6. Diginsight.Components.Presentation.Abstractions\n\nPurpose: Abstractions and interfaces for the Diginsight.Components.Presentation\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n7. Diginsight.Components.Azure\n\nPurpose: Azure technology observable extensions components\nStatus: Currently appears to be a placeholder (contains only Class1)\n\n\n\n8. Diginsight.Components.Presentation\n\nPurpose: UI/Presentation layer components\nStatus: Currently appears to be a placeholder (contains only Class1)"
+    "objectID": "index.html#diginsight.components.configuration",
+    "href": "index.html#diginsight.components.configuration",
+    "title": "Introduction",
+    "section": "1. Diginsight.Components.Configuration",
+    "text": "1. Diginsight.Components.Configuration\n\nPurpose: Observable extensions for Diginsight configuration with Azure Key Vault, Console, Log4Net, and OpenTelemetry.\nKey features:\n\nAzure Key Vault integration.\nActivity source detection and registration.\nOpenTelemetry runtime instrumentation.\nAzure Monitor integration.\nDependencies: Azure.Core, Azure.Identity, Azure.Extensions.AspNetCore.Configuration.Secrets."
+  },
+  {
+    "objectID": "index.html#diginsight.components.azure",
+    "href": "index.html#diginsight.components.azure",
+    "title": "Introduction",
+    "section": "2. Diginsight.Components.Azure",
+    "text": "2. Diginsight.Components.Azure\n\nPurpose: Azure-specific functionality and integrations.\nKey features:\n\nCosmosDB Observable extensions: CosmosDB Container query extensions integrated with Diginsight observability and exposing advanced metrics (e.g., query_cost).\nAzure Table Observable extensions: Azure Table query extensions integrated with Diginsight observability.\nOther Azure service observable extensions."
+  },
+  {
+    "objectID": "index.html#diginsight.components.abstractions",
+    "href": "index.html#diginsight.components.abstractions",
+    "title": "Introduction",
+    "section": "3. Diginsight.Components.Abstractions",
+    "text": "3. Diginsight.Components.Abstractions\n\nPurpose: Core abstractions and interfaces for Diginsight Components.\nKey features:\n\nIDebugService interface for conditional debug operations.\nBase contracts for other components."
+  },
+  {
+    "objectID": "index.html#diginsight.components-core",
+    "href": "index.html#diginsight.components-core",
+    "title": "Introduction",
+    "section": "4. Diginsight.Components (Core)",
+    "text": "4. Diginsight.Components (Core)\n\nPurpose: Main component library with common functionality.\nKey features:\n\nHTTP client configuration (HttpClientOptions).\nAuthentication and security features.\nJWT token handling.\nMicrosoft Identity Client integration.\nCryptography support."
+  },
+  {
+    "objectID": "index.html#diginsight.components.azure.abstractions",
+    "href": "index.html#diginsight.components.azure.abstractions",
+    "title": "Introduction",
+    "section": "5. Diginsight.Components.Azure.Abstractions",
+    "text": "5. Diginsight.Components.Azure.Abstractions\n\nPurpose: Abstractions and interfaces for Diginsight.Components.Azure.\nKey features:\n\nIDebugService interface for conditional debug operations.\nBase contracts for other components."
+  },
+  {
+    "objectID": "index.html#diginsight.components.presentation.abstractions",
+    "href": "index.html#diginsight.components.presentation.abstractions",
+    "title": "Introduction",
+    "section": "6. Diginsight.Components.Presentation.Abstractions",
+    "text": "6. Diginsight.Components.Presentation.Abstractions\n\nPurpose: Abstractions and interfaces for Diginsight.Components.Presentation.\nKey features:\n\nIDebugService interface for conditional debug operations.\nBase contracts for other components."
+  },
+  {
+    "objectID": "index.html#diginsight.components.azure-1",
+    "href": "index.html#diginsight.components.azure-1",
+    "title": "INTRODUCTION",
+    "section": "7. Diginsight.Components.Azure",
+    "text": "7. Diginsight.Components.Azure\n\nPurpose: Azure technology observable extensions components\nStatus: Currently appears to be a placeholder (contains only Class1)"
+  },
+  {
+    "objectID": "index.html#diginsight.components.presentation",
+    "href": "index.html#diginsight.components.presentation",
+    "title": "Introduction",
+    "section": "7. Diginsight.Components.Presentation",
+    "text": "7. Diginsight.Components.Presentation\n\nPurpose: UI/Presentation layer components.\nStatus: Currently appears to be a placeholder (contains only Class1)."
+  },
+  {
+    "objectID": "index.html#references",
+    "href": "index.html#references",
+    "title": "Introduction",
+    "section": "References",
+    "text": "References\n\nDiginsight Documentation\n\nDiginsight Telemetry - Official documentation for Diginsight observability platform\nDiginsight Smartcache - Documentation for hybrid caching strategies\nDiginsight GitHub Organization - Source code and additional resources\n\n\n\nOpenTelemetry\n\nOpenTelemetry Official Documentation - Comprehensive guide to OpenTelemetry standards\nOpenTelemetry .NET - .NET-specific OpenTelemetry implementation\nOpenTelemetry Instrumentation - Instrumentation concepts and best practices\n\n\n\nAzure Services\n\nAzure Monitor - Azure’s observability and monitoring platform\nAzure Key Vault - Secure secrets management service\nAzure Cosmos DB - Globally distributed database service\nAzure Table Storage - NoSQL structured data storage\n\n\n\n.NET Technologies\n\n.NET Configuration - Configuration providers and patterns\nMicrosoft Identity Platform - Authentication and authorization platform\nASP.NET Core - Cross-platform web framework\n\n\n\nObservability & Monitoring\n\nDistributed Tracing - Understanding distributed tracing concepts\nMetrics Collection - Metrics and measurement best practices\nLogging Best Practices - Structured logging approaches"
+  },
+  {
+    "objectID": "index.html#table-of-contents",
+    "href": "index.html#table-of-contents",
+    "title": "Introduction",
+    "section": "Table of Contents",
+    "text": "Table of Contents\n\nWhy Diginsight Components\nWhat components are available\n\n1. Diginsight.Components.Configuration\n2. Diginsight.Components.Azure\n3. Diginsight.Components.Abstractions\n4. Diginsight.Components (Core)\n5. Diginsight.Components.Azure.Abstractions\n6. Diginsight.Components.Presentation.Abstractions\n7. Diginsight.Components.Presentation\n\nArchitecture Characteristics\nReferences"
   }
 ]

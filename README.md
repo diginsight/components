@@ -1,15 +1,23 @@
-![main build](https://github.com/diginsight/components/actions/workflows/v2_99.Package.CICD.yml/badge.svg?branch=main)
-![main build](https://github.com/diginsight/components/actions/workflows/v2_99.Package.CICD.yml/badge.svg?branch=main)
+![main build](https://github.com/diginsight/components/actions/workflows/v2_99.Package.CICD.yml/badge.svg?branch=main)<br>
+![main build](https://github.com/diginsight/components/actions/workflows/quarto-publish.yml/badge.svg?branch=main)
 
 # INTRODUCTUCTION
 
-`Diginsight Components` include reusable libraries with **Observable extensions** for other technologies obtained with integration of **Diginsight Core** observability platform and **Diginsight Smartcache**. 
+`Diginsight Components` include **Observable** or **Optimized extensions** for other technologies obtained with integration of **Diginsight** observability platform and **Diginsight Smartcache**. 
 
 Each component is designed to address specific functionality areas (e.g. Authentication, database access...) while maintaining consistent observability and diagnostics capabilities.
 
-## Available Components
+## Why Diginsight Components
+
+**Diginsight Telemetry** implements observability and diagnostics capabilities for .NET applications using **OpenTelemetry** and **Azure Monitor**. 
+
+**Diginsight Smartcache** implements optimized hybrid caching for .NET applications, combining in-memory and distributed caching strategies.
 
 Available Diginsight Components include:
+
+<img src="images/001.01a diginsight repositories.png" alt="Diginsight repositories overview" style="max-width: 400px; width: 100%;" />
+
+## What components are available
 
 ### 1. **Diginsight.Components.Configuration**
 - **Purpose**: Observable extensions for diginsight configuration with Azure Key Vault, Console, Log4Net, and OpenTelemetry etc, 

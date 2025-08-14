@@ -38,7 +38,7 @@
   {
     "objectID": "src/docs/01. Concepts/00.01 - Observability Concepts.html",
     "href": "src/docs/01. Concepts/00.01 - Observability Concepts.html",
-    "title": "Diginsight Telemetry",
+    "title": "Diginsight Components",
     "section": "",
     "text": "Back to top",
     "crumbs": [
@@ -46,6 +46,34 @@
       "Concepts",
       "00.01 - Observability Concepts"
     ]
+  },
+  {
+    "objectID": "index.html#why-diginsight-components",
+    "href": "index.html#why-diginsight-components",
+    "title": "INTRODUCTUCTION",
+    "section": "Why Diginsight Components",
+    "text": "Why Diginsight Components\nDiginsight Telemetry implements observability and diagnostics capabilities for .NET applications using OpenTelemetry and Azure Monitor.\nDiginsight Smartcache implements optimized hybrid caching for .NET applications, combining in-memory and distributed caching strategies.\nAvailable Diginsight Components include:\n\n\n\nalt text\n\n\n\n1. Diginsight.Components.Configuration\n\nPurpose: Observable extensions for diginsight configuration with Azure Key Vault, Console, Log4Net, and OpenTelemetry etc,\nKey features:\n\nAzure Key Vault integration\nActivity source detection and registration\nOpenTelemetry runtime instrumentation\nAzure Monitor integration\nDependencies: Azure.Core, Azure.Identity, Azure.Extensions.AspNetCore.Configuration.Secrets\n\n\n\n\n2. Diginsight.Components.Azure\n\nPurpose: Azure-specific functionality and integrations\nCurrent file context: Contains metrics for Azure services like CosmosDB\nKey features:\n\nCosmosDB Observable extensions: CosmosDB Container query extensions integrated with diginsight observability and exposing advanced metrics (e.g. query_cost))\nAzure Table Observable extensions: Azure Table query extensions integrated with diginsight observability\nOther Azure service observable extensions\n\n\n\n\n3. Diginsight.Components.Abstractions\n\nPurpose: Core abstractions and interfaces for the Diginsight.Components\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n4. Diginsight.Components (Core)\n\nPurpose: Main component library with common functionality\nKey features:\n\nHTTP client configuration (HttpClientOptions)\nAuthentication and security features\nJWT token handling\nMicrosoft Identity Client integration\nCryptography support\n\n\n\n\n5. Diginsight.Components.Azure.Abstractions\n\nPurpose: Abstractions and interfaces for the Diginsight.Components.Azure\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n6. Diginsight.Components.Presentation.Abstractions\n\nPurpose: Abstractions and interfaces for the Diginsight.Components.Presentation\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n7. Diginsight.Components.Azure\n\nPurpose: Azure technology observable extensions components\nStatus: Currently appears to be a placeholder (contains only Class1)\n\n\n\n8. Diginsight.Components.Presentation\n\nPurpose: UI/Presentation layer components\nStatus: Currently appears to be a placeholder (contains only Class1)"
+  },
+  {
+    "objectID": "index.html#architecture-characteristics",
+    "href": "index.html#architecture-characteristics",
+    "title": "INTRODUCTUCTION",
+    "section": "Architecture Characteristics",
+    "text": "Architecture Characteristics\nEach component follows these patterns:\n\nObservability Integration: Every component includes an Observability class that:\n\nCreates an ActivitySource for distributed tracing\nRegisters with the ObservabilityRegistry\nProvides consistent logging infrastructure\n\nModular Design: Components can be used independently or together, with clear separation of concerns\nAzure Integration: Strong focus on Azure cloud services with built-in monitoring and configuration support\nOpenTelemetry Standards: Uses industry-standard observability patterns for metrics, traces, and logs\n\nThe component you’re currently viewing (Diginsight.Components.Azure.Metrics.QueryMetrics) is part of the Azure component and specifically provides CosmosDB query cost tracking using OpenTelemetry histograms."
+  },
+  {
+    "objectID": "README.nuget.html",
+    "href": "README.nuget.html",
+    "title": "INTRODUCTION",
+    "section": "",
+    "text": "INTRODUCTION\nCommon.Diagnostics component provides telemetry with the full application flow to System.Diagnostic listeners. Application execution flow can be sent to the most popular logging systems, available with .Net framework. Execution flow is integrated with diagnostic information coming by any components writing to .Net System.Diagnostic interfaces. Flexible options are provided to efficiently choose and filter the information to be rendered.\nBasic execution flow is gathered by means of compiler generated information (eg. methodnames are obtained with [CallerMemberName] attribute). Start and completion of methods and code sections are gathered by means of using statements with a CodeSection class.\nadd telemetry to your methods with the following instruction\nusing (var sec = this.GetCodeSection())\nwrite information to the listeners with the following instructions\nsec.Debug(\"this is a debug trace\", \"User\");\nsec.Information(\"this is a Information trace\", \"Raw\");\nsec.Warning(\"this is a Warning trace\", \"User.Report\");\nsec.Error(\"this is a error trace\", \"Resource\");\nCommon.Diagnostics component is supported on .Net Framework 4.6.2+ and .Net Core 3.0+. Visit [telemetry][] for more information. [telemetry]: https://github.com/diginsight/telemetry/\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "LICENSE.html",
+    "href": "LICENSE.html",
+    "title": "Diginsight Components",
+    "section": "",
+    "text": "MIT License\nCopyright (c) 2023 diginsight\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n\n\n Back to top"
   },
   {
     "objectID": "SECURITY.html",
@@ -69,37 +97,16 @@
     "text": "Use this section to tell people how to report a vulnerability.\nTell them where to go, how often they can expect to get an update on a reported vulnerability, what to expect if the vulnerability is accepted or declined, etc."
   },
   {
-    "objectID": "LICENSE.html",
-    "href": "LICENSE.html",
-    "title": "Diginsight Telemetry",
+    "objectID": "src/docs/00. Getting Started/Getting Started.html",
+    "href": "src/docs/00. Getting Started/Getting Started.html",
+    "title": "Diginsight Components",
     "section": "",
-    "text": "MIT License\nCopyright (c) 2023 diginsight\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "README.nuget.html",
-    "href": "README.nuget.html",
-    "title": "INTRODUCTION",
-    "section": "",
-    "text": "INTRODUCTION\nCommon.Diagnostics component provides telemetry with the full application flow to System.Diagnostic listeners. Application execution flow can be sent to the most popular logging systems, available with .Net framework. Execution flow is integrated with diagnostic information coming by any components writing to .Net System.Diagnostic interfaces. Flexible options are provided to efficiently choose and filter the information to be rendered.\nBasic execution flow is gathered by means of compiler generated information (eg. methodnames are obtained with [CallerMemberName] attribute). Start and completion of methods and code sections are gathered by means of using statements with a CodeSection class.\nadd telemetry to your methods with the following instruction\nusing (var sec = this.GetCodeSection())\nwrite information to the listeners with the following instructions\nsec.Debug(\"this is a debug trace\", \"User\");\nsec.Information(\"this is a Information trace\", \"Raw\");\nsec.Warning(\"this is a Warning trace\", \"User.Report\");\nsec.Error(\"this is a error trace\", \"Resource\");\nCommon.Diagnostics component is supported on .Net Framework 4.6.2+ and .Net Core 3.0+. Visit [telemetry][] for more information. [telemetry]: https://github.com/diginsight/telemetry/\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "index.html#available-components",
-    "href": "index.html#available-components",
-    "title": "INTRODUCTUCTION",
-    "section": "Available Components",
-    "text": "Available Components\nAvailable Diginsight Components include:\n\n1. Diginsight.Components.Configuration\n\nPurpose: Observable extensions for diginsight configuration with Azure Key Vault, Console, Log4Net, and OpenTelemetry etc,\nKey features:\n\nAzure Key Vault integration\nActivity source detection and registration\nOpenTelemetry runtime instrumentation\nAzure Monitor integration\nDependencies: Azure.Core, Azure.Identity, Azure.Extensions.AspNetCore.Configuration.Secrets\n\n\n\n\n2. Diginsight.Components.Azure\n\nPurpose: Azure-specific functionality and integrations\nCurrent file context: Contains metrics for Azure services like CosmosDB\nKey features:\n\nCosmosDB Observable extensions: CosmosDB Container query extensions integrated with diginsight observability and exposing advanced metrics (e.g. query_cost))\nAzure Table Observable extensions: Azure Table query extensions integrated with diginsight observability\nOther Azure service observable extensions\n\n\n\n\n3. Diginsight.Components.Abstractions\n\nPurpose: Core abstractions and interfaces for the Diginsight.Components\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n4. Diginsight.Components (Core)\n\nPurpose: Main component library with common functionality\nKey features:\n\nHTTP client configuration (HttpClientOptions)\nAuthentication and security features\nJWT token handling\nMicrosoft Identity Client integration\nCryptography support\n\n\n\n\n5. Diginsight.Components.Azure.Abstractions\n\nPurpose: Abstractions and interfaces for the Diginsight.Components.Azure\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n6. Diginsight.Components.Presentation.Abstractions\n\nPurpose: Abstractions and interfaces for the Diginsight.Components.Presentation\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n7. Diginsight.Components.Azure\n\nPurpose: Azure technology observable extensions components\nStatus: Currently appears to be a placeholder (contains only Class1)\n\n\n\n8. Diginsight.Components.Presentation\n\nPurpose: UI/Presentation layer components\nStatus: Currently appears to be a placeholder (contains only Class1)"
-  },
-  {
-    "objectID": "index.html#architecture-characteristics",
-    "href": "index.html#architecture-characteristics",
-    "title": "INTRODUCTUCTION",
-    "section": "Architecture Characteristics",
-    "text": "Architecture Characteristics\nEach component follows these patterns:\n\nObservability Integration: Every component includes an Observability class that:\n\nCreates an ActivitySource for distributed tracing\nRegisters with the ObservabilityRegistry\nProvides consistent logging infrastructure\n\nModular Design: Components can be used independently or together, with clear separation of concerns\nAzure Integration: Strong focus on Azure cloud services with built-in monitoring and configuration support\nOpenTelemetry Standards: Uses industry-standard observability patterns for metrics, traces, and logs\n\nThe component you’re currently viewing (Diginsight.Components.Azure.Metrics.QueryMetrics) is part of the Azure component and specifically provides CosmosDB query cost tracking using OpenTelemetry histograms."
+    "text": "Back to top"
   },
   {
     "objectID": "src/docs/02. Advanced/13.00 - Customize entities rendering on diginsight log streams.html",
     "href": "src/docs/02. Advanced/13.00 - Customize entities rendering on diginsight log streams.html",
-    "title": "Diginsight Telemetry",
+    "title": "Diginsight Components",
     "section": "",
     "text": "Back to top",
     "crumbs": [
@@ -107,12 +114,5 @@
       "Advanced Articles",
       "13.00 - Customize entities rendering on diginsight log streams"
     ]
-  },
-  {
-    "objectID": "index.html#why-diginsight-components",
-    "href": "index.html#why-diginsight-components",
-    "title": "INTRODUCTUCTION",
-    "section": "Why Diginsight Components",
-    "text": "Why Diginsight Components\nDiginsight Telemetry implements observability and diagnostics capabilities for .NET applications using OpenTelemetry and Azure Monitor.\nDiginsight Smartcache implements optimized hybrid caching for .NET applications, combining in-memory and distributed caching strategies.\nAvailable Diginsight Components include:\n\n\n\nalt text\n\n\n\n1. Diginsight.Components.Configuration\n\nPurpose: Observable extensions for diginsight configuration with Azure Key Vault, Console, Log4Net, and OpenTelemetry etc,\nKey features:\n\nAzure Key Vault integration\nActivity source detection and registration\nOpenTelemetry runtime instrumentation\nAzure Monitor integration\nDependencies: Azure.Core, Azure.Identity, Azure.Extensions.AspNetCore.Configuration.Secrets\n\n\n\n\n2. Diginsight.Components.Azure\n\nPurpose: Azure-specific functionality and integrations\nCurrent file context: Contains metrics for Azure services like CosmosDB\nKey features:\n\nCosmosDB Observable extensions: CosmosDB Container query extensions integrated with diginsight observability and exposing advanced metrics (e.g. query_cost))\nAzure Table Observable extensions: Azure Table query extensions integrated with diginsight observability\nOther Azure service observable extensions\n\n\n\n\n3. Diginsight.Components.Abstractions\n\nPurpose: Core abstractions and interfaces for the Diginsight.Components\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n4. Diginsight.Components (Core)\n\nPurpose: Main component library with common functionality\nKey features:\n\nHTTP client configuration (HttpClientOptions)\nAuthentication and security features\nJWT token handling\nMicrosoft Identity Client integration\nCryptography support\n\n\n\n\n5. Diginsight.Components.Azure.Abstractions\n\nPurpose: Abstractions and interfaces for the Diginsight.Components.Azure\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n6. Diginsight.Components.Presentation.Abstractions\n\nPurpose: Abstractions and interfaces for the Diginsight.Components.Presentation\nKey features:\n\nIDebugService interface for conditional debug operations\nBase contracts for other components\n\n\n\n\n7. Diginsight.Components.Azure\n\nPurpose: Azure technology observable extensions components\nStatus: Currently appears to be a placeholder (contains only Class1)\n\n\n\n8. Diginsight.Components.Presentation\n\nPurpose: UI/Presentation layer components\nStatus: Currently appears to be a placeholder (contains only Class1)"
   }
 ]

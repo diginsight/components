@@ -36,7 +36,7 @@ website:
            - text: About
              href:  src/docs/05. About/about.md
            - text: License
-             href:  src/LICENSE.md
+             href:  LICENSE.md
     tools:
        - icon: github
          menu:
@@ -52,12 +52,6 @@ website:
     contents:
     - text: Home
       href:  /
-    - text: "---"
-    - text: Getting Started
-      href:  "src/docs/00. Getting Started/Getting Started.md"
-    - text: "---"
-    - text: Example Analysis
-      href:  "src/docs/00.1 Example Analysis/00.01 - How to troubleshoot issues.md"
     - text: "---"
     - section: Concepts
       contents: "src/docs/01. Concepts/**"

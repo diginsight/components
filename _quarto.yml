@@ -18,7 +18,7 @@ website:
   announcement: 
     icon: info-circle
     dismissable: true
-    content: "**Information** - Diginsight v3 is now available"
+    content: "**Information** - Diginsight v3 is now available "
     position: below-navbar 
     type: primary
   navbar:

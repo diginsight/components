@@ -11,15 +11,20 @@ Each component is designed to address specific functionality areas (e.g., authen
 
 - [Why Diginsight Components](#why-diginsight-components)
 - [What components are available](#what-components-are-available)
-  - [1. Diginsight.Components.Configuration](#1-diginsightcomponentsconfiguration)
-  - [2. Diginsight.Components.Azure](#2-diginsightcomponentsazure)
-  - [3. Diginsight.Components.Abstractions](#3-diginsightcomponentsabstractions)
-  - [4. Diginsight.Components (Core)](#4-diginsightcomponents-core)
-  - [5. Diginsight.Components.Azure.Abstractions](#5-diginsightcomponentsazureabstractions)
-  - [6. Diginsight.Components.Presentation.Abstractions](#6-diginsightcomponentspresentationabstractions)
-  - [7. Diginsight.Components.Presentation](#7-diginsightcomponentspresentation)
+  - [Diginsight.Components.Configuration](#diginsightcomponentsconfiguration)
+  - [Diginsight.Components.Abstractions](#diginsightcomponentsabstractions)
+  - [Diginsight.Components](#diginsightcomponents-core)
+  - [Diginsight.Components.Azure.Abstractions](#diginsightcomponentsazureabstractions)
+  - [Diginsight.Components.Azure](#diginsightcomponentsazure)
+  - [Diginsight.Components.Presentation.Abstractions](#diginsightcomponentspresentationabstractions)
+  - [Diginsight.Components.Presentation](#diginsightcomponentspresentation)
 - [Architecture Characteristics](#architecture-characteristics)
 - [References](#references)
+  - [Diginsight Documentation](#diginsight-documentation)
+  - [OpenTelemetry](#opentelemetry)
+  - [Azure Services](#azure-services)
+  - [.NET Technologies](#net-technologies)
+  - [Observability & Monitoring](#observability--monitoring)
 
 # Why Diginsight Components
 
@@ -43,7 +48,7 @@ This modular approach allows you to compose exactly the functionality your appli
 
 # What components are available
 
-## 1. **Diginsight.Components.Configuration**
+## **Diginsight.Components.Configuration**
 - **Purpose**: Observable extensions for Diginsight configuration with Azure Key Vault, Console, Log4Net, and OpenTelemetry.
 - **Key features**:
   - Azure Key Vault integration.
@@ -52,21 +57,14 @@ This modular approach allows you to compose exactly the functionality your appli
   - Azure Monitor integration.
   - Dependencies: Azure.Core, Azure.Identity, Azure.Extensions.AspNetCore.Configuration.Secrets.
 
-## 2. **Diginsight.Components.Azure**
-- **Purpose**: Azure-specific functionality and integrations.
-- **Key features**:
-  - CosmosDB Observable extensions: CosmosDB Container query extensions integrated with Diginsight observability and exposing advanced metrics (e.g., query_cost).
-  - Azure Table Observable extensions: Azure Table query extensions integrated with Diginsight observability.
-  - Other Azure service observable extensions.
+## **Diginsight.Components.Abstractions**
 
-## 3. **Diginsight.Components.Abstractions**
-
-- **Purpose**: Core abstractions and interfaces for Diginsight Components.
+- **Purpose**: Core abstractions and interfaces for Diginsight.Components assembly.
 - **Key features**:
   - `IDebugService` interface for conditional debug operations.
   - Base contracts for other components.
 
-## 4. **Diginsight.Components** (Core)
+## **Diginsight.Components** (Core)
 
 - **Purpose**: Main component library with common functionality.
 - **Key features**:
@@ -76,21 +74,28 @@ This modular approach allows you to compose exactly the functionality your appli
   - Microsoft Identity Client integration.
   - Cryptography support.
 
-## 5. **Diginsight.Components.Azure.Abstractions**
+## **Diginsight.Components.Azure.Abstractions**
 
-- **Purpose**: Abstractions and interfaces for Diginsight.Components.Azure.
+- **Purpose**: Abstractions and interfaces for Diginsight.Components.Azure assembly.
 - **Key features**:
   - `IDebugService` interface for conditional debug operations.
   - Base contracts for other components.
 
-## 6. **Diginsight.Components.Presentation.Abstractions**
+## **Diginsight.Components.Azure**
+- **Purpose**: Azure-specific functionality and integrations.
+- **Key features**:
+  - CosmosDB Observable extensions: CosmosDB Container query extensions integrated with Diginsight observability and exposing advanced metrics (e.g., query_cost).
+  - Azure Table Observable extensions: Azure Table query extensions integrated with Diginsight observability.
+  - Other Azure service observable extensions.
 
-- **Purpose**: Abstractions and interfaces for Diginsight.Components.Presentation.
+## **Diginsight.Components.Presentation.Abstractions**
+
+- **Purpose**: Abstractions and interfaces for Diginsight.Components.Presentation assembly.
 - **Key features**:
   - `IDebugService` interface for conditional debug operations.
   - Base contracts for other components.
 
-## 7. **Diginsight.Components.Presentation**
+## **Diginsight.Components.Presentation**
 
 - **Purpose**: UI/Presentation layer components.
 - **Status**: Currently appears to be a placeholder (contains only `Class1`).

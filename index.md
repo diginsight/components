@@ -29,6 +29,18 @@ Each component is designed to address specific functionality areas (e.g., authen
 
 <img src="images/001.01a diginsight repositories.png" alt="Diginsight repositories overview" style="max-width: 500px; width: 100%;" />
 
+**Diginsight Components** are built to take advantage of these capabilities, enhancing existing libraries with observability capabilities and performance optimization, where possible.
+
+**Diginsight Components** are built with a layered architecture that promotes modularity and flexibility. 
+
+At the foundation, **abstractions packages** define core interfaces and contracts. 
+
+The **core components** provide essential functionality like authentication and HTTP client configuration. 
+
+**Technology-specific components** (like Azure integrations) extend the core capabilities for particular platforms. Finally, **presentation components** handle UI-related concerns.
+
+This modular approach allows you to compose exactly the functionality your application needs—from a minimal observability setup using just the core components, to a full-featured enterprise solution with Azure integrations, advanced caching, and presentation layers.
+
 # What components are available
 
 ## 1. **Diginsight.Components.Configuration**

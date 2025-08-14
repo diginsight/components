@@ -7,7 +7,7 @@
 
 Each component is designed to address specific functionality areas (e.g., authentication, database access) while maintaining consistent observability and diagnostics capabilities.
 
-## Table of Contents
+# Table of Contents
 
 - [Why Diginsight Components](#why-diginsight-components)
 - [What components are available](#what-components-are-available)

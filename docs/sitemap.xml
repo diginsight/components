@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://diginsight.github.io/components/src/docs/05. About/about.html</loc>
+    <lastmod>2025-07-16T13:57:10.928Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diginsight.github.io/components/src/docs/01. Concepts/00.01 - Observability Concepts.html</loc>
+    <lastmod>2025-08-14T13:10:19.009Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diginsight.github.io/components/index.html</loc>
+    <lastmod>2025-08-14T17:18:32.163Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diginsight.github.io/components/README.nuget.html</loc>
+    <lastmod>2025-07-16T14:03:12.497Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diginsight.github.io/components/LICENSE.html</loc>
+    <lastmod>2025-07-16T14:03:12.496Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diginsight.github.io/components/SECURITY.html</loc>
+    <lastmod>2025-07-16T14:03:12.497Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diginsight.github.io/components/src/docs/00. Getting Started/Getting Started.html</loc>
+    <lastmod>2025-08-14T13:31:07.149Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diginsight.github.io/components/src/docs/02. Advanced/13.00 - Customize entities rendering on diginsight log streams.html</loc>
+    <lastmod>2025-08-14T13:10:36.884Z</lastmod>
+  </url>
+</urlset>

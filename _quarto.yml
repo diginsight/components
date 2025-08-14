@@ -6,9 +6,22 @@ project:
   - "*.qmd"
   - "!ignore.qmd"
   - "!ignore-dir/"
+  resources:
+  - "*.png"
+  - "*.jpg" 
+  - "*.jpeg"
+  - "*.gif"
+  - "*.svg"
+  - "images/**"
+  - "src/docs/**/*.png"
+  - "src/docs/**/*.jpg"
+  - "src/docs/**/*.jpeg" 
+  - "src/docs/**/*.gif"
+  - "src/docs/**/*.svg"
 
 website:
   title: "Diginsight Components"
+  site-url: "https://diginsight.github.io/components/"
   back-to-top-navigation: true
   reader-mode: true
   favicon: diginsight.bulb.svg

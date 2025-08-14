@@ -1,4 +1,4 @@
-/* Custom styles for Diginsight Telemetry */
+/* Custom styles for Diginsight Components */
 
 /* Add lightbulb icon to navbar title - Use :first-child to prevent duplication */
 .navbar-brand:first-child::before {

@@ -6,6 +6,9 @@ project:
   - "*.qmd"
   - "!ignore.qmd"
   - "!ignore-dir/"
+  resources:
+  - "*.png"
+  - "images/"
 
 website:
   title: "Diginsight Components"

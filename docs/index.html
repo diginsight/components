@@ -267,8 +267,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introductuction" id="toc-introductuction" class="nav-link active" data-scroll-target="#introductuction">INTRODUCTUCTION</a>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
   <ul class="collapse">
+  <li><a href="#table-of-contents" id="toc-table-of-contents" class="nav-link" data-scroll-target="#table-of-contents">Table of Contents</a></li>
+  </ul></li>
   <li><a href="#why-diginsight-components" id="toc-why-diginsight-components" class="nav-link" data-scroll-target="#why-diginsight-components">Why Diginsight Components</a></li>
   <li><a href="#what-components-are-available" id="toc-what-components-are-available" class="nav-link" data-scroll-target="#what-components-are-available">What components are available</a>
   <ul class="collapse">
@@ -278,10 +280,18 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#diginsight.components-core" id="toc-diginsight.components-core" class="nav-link" data-scroll-target="#diginsight.components-core">4. <strong>Diginsight.Components</strong> (Core)</a></li>
   <li><a href="#diginsight.components.azure.abstractions" id="toc-diginsight.components.azure.abstractions" class="nav-link" data-scroll-target="#diginsight.components.azure.abstractions">5. <strong>Diginsight.Components.Azure.Abstractions</strong></a></li>
   <li><a href="#diginsight.components.presentation.abstractions" id="toc-diginsight.components.presentation.abstractions" class="nav-link" data-scroll-target="#diginsight.components.presentation.abstractions">6. <strong>Diginsight.Components.Presentation.Abstractions</strong></a></li>
-  <li><a href="#diginsight.components.azure-1" id="toc-diginsight.components.azure-1" class="nav-link" data-scroll-target="#diginsight.components.azure-1">7. <strong>Diginsight.Components.Azure</strong></a></li>
-  <li><a href="#diginsight.components.presentation" id="toc-diginsight.components.presentation" class="nav-link" data-scroll-target="#diginsight.components.presentation">8. <strong>Diginsight.Components.Presentation</strong></a></li>
+  <li><a href="#diginsight.components.presentation" id="toc-diginsight.components.presentation" class="nav-link" data-scroll-target="#diginsight.components.presentation">7. <strong>Diginsight.Components.Presentation</strong></a></li>
   </ul></li>
-  <li><a href="#architecture-characteristics" id="toc-architecture-characteristics" class="nav-link" data-scroll-target="#architecture-characteristics">Architecture Characteristics</a></li>
+  <li><a href="#architecture-characteristics" id="toc-architecture-characteristics" class="nav-link" data-scroll-target="#architecture-characteristics">Architecture Characteristics</a>
+  <ul class="collapse">
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a>
+  <ul class="collapse">
+  <li><a href="#diginsight-documentation" id="toc-diginsight-documentation" class="nav-link" data-scroll-target="#diginsight-documentation">Diginsight Documentation</a></li>
+  <li><a href="#opentelemetry" id="toc-opentelemetry" class="nav-link" data-scroll-target="#opentelemetry">OpenTelemetry</a></li>
+  <li><a href="#azure-services" id="toc-azure-services" class="nav-link" data-scroll-target="#azure-services">Azure Services</a></li>
+  <li><a href="#net-technologies" id="toc-net-technologies" class="nav-link" data-scroll-target="#net-technologies">.NET Technologies</a></li>
+  <li><a href="#observability-monitoring" id="toc-observability-monitoring" class="nav-link" data-scroll-target="#observability-monitoring">Observability &amp; Monitoring</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -293,125 +303,177 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p><img src="https://github.com/diginsight/components/actions/workflows/v2_99.Package.CICD.yml/badge.svg?branch=main" class="img-fluid" alt="main build"><br> <img src="https://github.com/diginsight/components/actions/workflows/quarto-publish.yml/badge.svg?branch=main" class="img-fluid" alt="main build"></p>
-<section id="introductuction" class="level1">
-<h1>INTRODUCTUCTION</h1>
-<p><code>Diginsight Components</code> include <strong>Observable</strong> or <strong>Optimized extensions</strong> for other technologies obtained with integration of <strong>Diginsight</strong> observability platform and <strong>Diginsight Smartcache</strong>.</p>
-<p>Each component is designed to address specific functionality areas (e.g.&nbsp;Authentication, database access…) while maintaining consistent observability and diagnostics capabilities.</p>
-<section id="why-diginsight-components" class="level2">
-<h2 class="anchored" data-anchor-id="why-diginsight-components">Why Diginsight Components</h2>
-<p><strong>Diginsight Telemetry</strong> implements observability and diagnostics capabilities for .NET applications using <strong>OpenTelemetry</strong> and <strong>Azure Monitor</strong>.</p>
-<p><strong>Diginsight Smartcache</strong> implements optimized hybrid caching for .NET applications, combining in-memory and distributed caching strategies.</p>
-<p>Available Diginsight Components include:</p>
-<p><img src="images/001.01a diginsight repositories.png" alt="Diginsight repositories overview" style="max-width: 400px; width: 100%;"></p>
-</section>
-<section id="what-components-are-available" class="level2">
-<h2 class="anchored" data-anchor-id="what-components-are-available">What components are available</h2>
-<section id="diginsight.components.configuration" class="level3">
-<h3 class="anchored" data-anchor-id="diginsight.components.configuration">1. <strong>Diginsight.Components.Configuration</strong></h3>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p><code>Diginsight Components</code> include <strong>observable</strong> or <strong>optimized extensions</strong> for other technologies, achieved through integration with the <strong>Diginsight</strong> observability platform and <strong>Diginsight Smartcache</strong>.</p>
+<p>Each component is designed to address specific functionality areas (e.g., authentication, database access) while maintaining consistent observability and diagnostics capabilities.</p>
+<section id="table-of-contents" class="level2">
+<h2 class="anchored" data-anchor-id="table-of-contents">Table of Contents</h2>
 <ul>
-<li><strong>Purpose</strong>: Observable extensions for diginsight configuration with Azure Key Vault, Console, Log4Net, and OpenTelemetry etc,</li>
+<li><a href="#why-diginsight-components">Why Diginsight Components</a></li>
+<li><a href="#what-components-are-available">What components are available</a>
+<ul>
+<li><a href="#1-diginsightcomponentsconfiguration">1. Diginsight.Components.Configuration</a></li>
+<li><a href="#2-diginsightcomponentsazure">2. Diginsight.Components.Azure</a></li>
+<li><a href="#3-diginsightcomponentsabstractions">3. Diginsight.Components.Abstractions</a></li>
+<li><a href="#4-diginsightcomponents-core">4. Diginsight.Components (Core)</a></li>
+<li><a href="#5-diginsightcomponentsazureabstractions">5. Diginsight.Components.Azure.Abstractions</a></li>
+<li><a href="#6-diginsightcomponentspresentationabstractions">6. Diginsight.Components.Presentation.Abstractions</a></li>
+<li><a href="#7-diginsightcomponentspresentation">7. Diginsight.Components.Presentation</a></li>
+</ul></li>
+<li><a href="#architecture-characteristics">Architecture Characteristics</a></li>
+<li><a href="#references">References</a></li>
+</ul>
+</section>
+</section>
+<section id="why-diginsight-components" class="level1">
+<h1>Why Diginsight Components</h1>
+<p><strong><a href="https://diginsight.github.io/telemetry/">Diginsight Telemetry</a></strong> implements observability and diagnostics capabilities for .NET applications using <strong>OpenTelemetry</strong> and <strong>Azure Monitor</strong>.</p>
+<p><strong><a href="https://diginsight.github.io/smartcache/">Diginsight Smartcache</a></strong> implements optimized hybrid caching for .NET applications, combining in-memory and distributed caching strategies.</p>
+<p><img src="images/001.01a diginsight repositories.png" alt="Diginsight repositories overview" style="max-width: 500px; width: 100%;"></p>
+</section>
+<section id="what-components-are-available" class="level1">
+<h1>What components are available</h1>
+<section id="diginsight.components.configuration" class="level2">
+<h2 class="anchored" data-anchor-id="diginsight.components.configuration">1. <strong>Diginsight.Components.Configuration</strong></h2>
+<ul>
+<li><strong>Purpose</strong>: Observable extensions for Diginsight configuration with Azure Key Vault, Console, Log4Net, and OpenTelemetry.</li>
 <li><strong>Key features</strong>:
 <ul>
-<li>Azure Key Vault integration</li>
-<li>Activity source detection and registration</li>
-<li>OpenTelemetry runtime instrumentation</li>
-<li>Azure Monitor integration</li>
-<li>Dependencies: Azure.Core, Azure.Identity, Azure.Extensions.AspNetCore.Configuration.Secrets</li>
+<li>Azure Key Vault integration.</li>
+<li>Activity source detection and registration.</li>
+<li>OpenTelemetry runtime instrumentation.</li>
+<li>Azure Monitor integration.</li>
+<li>Dependencies: Azure.Core, Azure.Identity, Azure.Extensions.AspNetCore.Configuration.Secrets.</li>
 </ul></li>
 </ul>
 </section>
-<section id="diginsight.components.azure" class="level3">
-<h3 class="anchored" data-anchor-id="diginsight.components.azure">2. <strong>Diginsight.Components.Azure</strong></h3>
+<section id="diginsight.components.azure" class="level2">
+<h2 class="anchored" data-anchor-id="diginsight.components.azure">2. <strong>Diginsight.Components.Azure</strong></h2>
 <ul>
-<li><strong>Purpose</strong>: Azure-specific functionality and integrations</li>
-<li><strong>Current file context</strong>: Contains metrics for Azure services like CosmosDB</li>
+<li><strong>Purpose</strong>: Azure-specific functionality and integrations.</li>
 <li><strong>Key features</strong>:
 <ul>
-<li>CosmosDB Observable extensions: CosmosDB Container query extensions integrated with diginsight observability and exposing advanced metrics (e.g.&nbsp;query_cost))</li>
-<li>Azure Table Observable extensions: Azure Table query extensions integrated with diginsight observability</li>
-<li>Other Azure service observable extensions</li>
+<li>CosmosDB Observable extensions: CosmosDB Container query extensions integrated with Diginsight observability and exposing advanced metrics (e.g., query_cost).</li>
+<li>Azure Table Observable extensions: Azure Table query extensions integrated with Diginsight observability.</li>
+<li>Other Azure service observable extensions.</li>
 </ul></li>
 </ul>
 </section>
-<section id="diginsight.components.abstractions" class="level3">
-<h3 class="anchored" data-anchor-id="diginsight.components.abstractions">3. <strong>Diginsight.Components.Abstractions</strong></h3>
+<section id="diginsight.components.abstractions" class="level2">
+<h2 class="anchored" data-anchor-id="diginsight.components.abstractions">3. <strong>Diginsight.Components.Abstractions</strong></h2>
 <ul>
-<li><strong>Purpose</strong>: Core abstractions and interfaces for the Diginsight.Components</li>
+<li><strong>Purpose</strong>: Core abstractions and interfaces for Diginsight Components.</li>
 <li><strong>Key features</strong>:
 <ul>
-<li><code>IDebugService</code> interface for conditional debug operations</li>
-<li>Base contracts for other components</li>
+<li><code>IDebugService</code> interface for conditional debug operations.</li>
+<li>Base contracts for other components.</li>
 </ul></li>
 </ul>
 </section>
-<section id="diginsight.components-core" class="level3">
-<h3 class="anchored" data-anchor-id="diginsight.components-core">4. <strong>Diginsight.Components</strong> (Core)</h3>
+<section id="diginsight.components-core" class="level2">
+<h2 class="anchored" data-anchor-id="diginsight.components-core">4. <strong>Diginsight.Components</strong> (Core)</h2>
 <ul>
-<li><strong>Purpose</strong>: Main component library with common functionality</li>
+<li><strong>Purpose</strong>: Main component library with common functionality.</li>
 <li><strong>Key features</strong>:
 <ul>
-<li>HTTP client configuration (<code>HttpClientOptions</code>)</li>
-<li>Authentication and security features</li>
-<li>JWT token handling</li>
-<li>Microsoft Identity Client integration</li>
-<li>Cryptography support</li>
+<li>HTTP client configuration (<code>HttpClientOptions</code>).</li>
+<li>Authentication and security features.</li>
+<li>JWT token handling.</li>
+<li>Microsoft Identity Client integration.</li>
+<li>Cryptography support.</li>
 </ul></li>
 </ul>
 </section>
-<section id="diginsight.components.azure.abstractions" class="level3">
-<h3 class="anchored" data-anchor-id="diginsight.components.azure.abstractions">5. <strong>Diginsight.Components.Azure.Abstractions</strong></h3>
+<section id="diginsight.components.azure.abstractions" class="level2">
+<h2 class="anchored" data-anchor-id="diginsight.components.azure.abstractions">5. <strong>Diginsight.Components.Azure.Abstractions</strong></h2>
 <ul>
-<li><strong>Purpose</strong>: Abstractions and interfaces for the Diginsight.Components.Azure</li>
+<li><strong>Purpose</strong>: Abstractions and interfaces for Diginsight.Components.Azure.</li>
 <li><strong>Key features</strong>:
 <ul>
-<li><code>IDebugService</code> interface for conditional debug operations</li>
-<li>Base contracts for other components</li>
+<li><code>IDebugService</code> interface for conditional debug operations.</li>
+<li>Base contracts for other components.</li>
 </ul></li>
 </ul>
 </section>
-<section id="diginsight.components.presentation.abstractions" class="level3">
-<h3 class="anchored" data-anchor-id="diginsight.components.presentation.abstractions">6. <strong>Diginsight.Components.Presentation.Abstractions</strong></h3>
+<section id="diginsight.components.presentation.abstractions" class="level2">
+<h2 class="anchored" data-anchor-id="diginsight.components.presentation.abstractions">6. <strong>Diginsight.Components.Presentation.Abstractions</strong></h2>
 <ul>
-<li><strong>Purpose</strong>: Abstractions and interfaces for the Diginsight.Components.Presentation</li>
+<li><strong>Purpose</strong>: Abstractions and interfaces for Diginsight.Components.Presentation.</li>
 <li><strong>Key features</strong>:
 <ul>
-<li><code>IDebugService</code> interface for conditional debug operations</li>
-<li>Base contracts for other components</li>
+<li><code>IDebugService</code> interface for conditional debug operations.</li>
+<li>Base contracts for other components.</li>
 </ul></li>
 </ul>
 </section>
-<section id="diginsight.components.azure-1" class="level3">
-<h3 class="anchored" data-anchor-id="diginsight.components.azure-1">7. <strong>Diginsight.Components.Azure</strong></h3>
+<section id="diginsight.components.presentation" class="level2">
+<h2 class="anchored" data-anchor-id="diginsight.components.presentation">7. <strong>Diginsight.Components.Presentation</strong></h2>
 <ul>
-<li><strong>Purpose</strong>: Azure technology observable extensions components</li>
-<li><strong>Status</strong>: Currently appears to be a placeholder (contains only <code>Class1</code>)</li>
-</ul>
-</section>
-<section id="diginsight.components.presentation" class="level3">
-<h3 class="anchored" data-anchor-id="diginsight.components.presentation">8. <strong>Diginsight.Components.Presentation</strong></h3>
-<ul>
-<li><strong>Purpose</strong>: UI/Presentation layer components</li>
-<li><strong>Status</strong>: Currently appears to be a placeholder (contains only <code>Class1</code>)</li>
+<li><strong>Purpose</strong>: UI/Presentation layer components.</li>
+<li><strong>Status</strong>: Currently appears to be a placeholder (contains only <code>Class1</code>).</li>
 </ul>
 </section>
 </section>
-<section id="architecture-characteristics" class="level2">
-<h2 class="anchored" data-anchor-id="architecture-characteristics">Architecture Characteristics</h2>
+<section id="architecture-characteristics" class="level1">
+<h1>Architecture Characteristics</h1>
 <p>Each component follows these patterns:</p>
 <ol type="1">
 <li><p><strong>Observability Integration</strong>: Every component includes an <code>Observability</code> class that:</p>
 <ul>
-<li>Creates an <code>ActivitySource</code> for distributed tracing</li>
-<li>Registers with the <code>ObservabilityRegistry</code></li>
-<li>Provides consistent logging infrastructure</li>
+<li>Creates an <code>ActivitySource</code> for distributed tracing.</li>
+<li>Registers with the <code>ObservabilityRegistry</code>.</li>
+<li>Provides consistent logging infrastructure.</li>
 </ul></li>
-<li><p><strong>Modular Design</strong>: Components can be used independently or together, with clear separation of concerns</p></li>
-<li><p><strong>Azure Integration</strong>: Strong focus on Azure cloud services with built-in monitoring and configuration support</p></li>
-<li><p><strong>OpenTelemetry Standards</strong>: Uses industry-standard observability patterns for metrics, traces, and logs</p></li>
+<li><p><strong>Modular Design</strong>: Components can be used independently or together, with clear separation of concerns.</p></li>
+<li><p><strong>Azure Integration</strong>: Strong focus on Azure cloud services with built-in monitoring and configuration support.</p></li>
+<li><p><strong>OpenTelemetry Standards</strong>: Uses industry-standard observability patterns for metrics, traces, and logs.</p></li>
 </ol>
-<p>The component you’re currently viewing (<code>Diginsight.Components.Azure.Metrics.QueryMetrics</code>) is part of the Azure component and specifically provides CosmosDB query cost tracking using OpenTelemetry histograms.</p>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<section id="diginsight-documentation" class="level3">
+<h3 class="anchored" data-anchor-id="diginsight-documentation">Diginsight Documentation</h3>
+<ul>
+<li><a href="https://diginsight.github.io/telemetry/">Diginsight Telemetry</a> - Official documentation for Diginsight observability platform</li>
+<li><a href="https://diginsight.github.io/smartcache/">Diginsight Smartcache</a> - Documentation for hybrid caching strategies</li>
+<li><a href="https://github.com/diginsight">Diginsight GitHub Organization</a> - Source code and additional resources</li>
+</ul>
+</section>
+<section id="opentelemetry" class="level3">
+<h3 class="anchored" data-anchor-id="opentelemetry">OpenTelemetry</h3>
+<ul>
+<li><a href="https://opentelemetry.io/docs/">OpenTelemetry Official Documentation</a> - Comprehensive guide to OpenTelemetry standards</li>
+<li><a href="https://opentelemetry.io/docs/languages/net/">OpenTelemetry .NET</a> - .NET-specific OpenTelemetry implementation</li>
+<li><a href="https://opentelemetry.io/docs/concepts/instrumentation/">OpenTelemetry Instrumentation</a> - Instrumentation concepts and best practices</li>
+</ul>
+</section>
+<section id="azure-services" class="level3">
+<h3 class="anchored" data-anchor-id="azure-services">Azure Services</h3>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/azure/azure-monitor/">Azure Monitor</a> - Azure’s observability and monitoring platform</li>
+<li><a href="https://docs.microsoft.com/en-us/azure/key-vault/">Azure Key Vault</a> - Secure secrets management service</li>
+<li><a href="https://docs.microsoft.com/en-us/azure/cosmos-db/">Azure Cosmos DB</a> - Globally distributed database service</li>
+<li><a href="https://docs.microsoft.com/en-us/azure/storage/tables/">Azure Table Storage</a> - NoSQL structured data storage</li>
+</ul>
+</section>
+<section id="net-technologies" class="level3">
+<h3 class="anchored" data-anchor-id="net-technologies">.NET Technologies</h3>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/core/extensions/configuration">.NET Configuration</a> - Configuration providers and patterns</li>
+<li><a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/">Microsoft Identity Platform</a> - Authentication and authorization platform</li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/">ASP.NET Core</a> - Cross-platform web framework</li>
+</ul>
+</section>
+<section id="observability-monitoring" class="level3">
+<h3 class="anchored" data-anchor-id="observability-monitoring">Observability &amp; Monitoring</h3>
+<ul>
+<li><a href="https://opentelemetry.io/docs/concepts/observability-primer/#distributed-traces">Distributed Tracing</a> - Understanding distributed tracing concepts</li>
+<li><a href="https://opentelemetry.io/docs/concepts/observability-primer/#metrics">Metrics Collection</a> - Metrics and measurement best practices</li>
+<li><a href="https://opentelemetry.io/docs/concepts/observability-primer/#logs">Logging Best Practices</a> - Structured logging approaches</li>
+</ul>
 
 
+</section>
 </section>
 </section>
 

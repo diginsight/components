@@ -143,7 +143,11 @@
     "href": "src/docs/00. Getting Started/Getting Started.html",
     "title": "Diginsight Components",
     "section": "",
-    "text": "sample page\n\n\n\n Back to top"
+    "text": "sample page\n\n\n\n Back to top",
+    "crumbs": [
+      "Home",
+      "Getting Started"
+    ]
   },
   {
     "objectID": "src/docs/02. Advanced/13.00 - Customize entities rendering on diginsight log streams.html",

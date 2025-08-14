@@ -48,13 +48,6 @@
     ]
   },
   {
-    "objectID": "index.html#table-of-contents",
-    "href": "index.html#table-of-contents",
-    "title": "Introduction",
-    "section": "Table of Contents",
-    "text": "Table of Contents\n\nWhy Diginsight Components\nWhat components are available\n\nDiginsight.Components.Configuration\nDiginsight.Components.Abstractions\nDiginsight.Components\nDiginsight.Components.Azure.Abstractions\nDiginsight.Components.Azure\nDiginsight.Components.Presentation.Abstractions\nDiginsight.Components.Presentation\n\nArchitecture Characteristics\nReferences\n\nDiginsight Documentation\nOpenTelemetry\nAzure Services\n.NET Technologies\nObservability & Monitoring"
-  },
-  {
     "objectID": "index.html#diginsight.components.configuration",
     "href": "index.html#diginsight.components.configuration",
     "title": "Introduction",

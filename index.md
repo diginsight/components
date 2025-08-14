@@ -15,7 +15,7 @@ Each component is designed to address specific functionality areas (e.g. Authent
 
 Available Diginsight Components include:
 
-![alt text](image.png)
+![alt text](<images/001.01 diginsight repositories.png>)
 
 ### 1. **Diginsight.Components.Configuration**
 - **Purpose**: Observable extensions for diginsight configuration with Azure Key Vault, Console, Log4Net, and OpenTelemetry etc, 

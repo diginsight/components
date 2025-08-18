@@ -269,19 +269,22 @@ public static partial class ObservabilityExtensions
                     if (metricConfig != null) { tagsToUse.AddRange(metricConfig.MetricTags); }
                     options.MetricTags = tagsToUse;
                 });
-
                 services.AddNamedSingleton<IMetricRecordingFilter, MetricRecordingNameBasedFilter>(
                     metricName, (sp, key) =>
                     {
-                        var optsions = sp.GetRequiredService<IOptionsMonitor<MetricRecordingNameBasedFilterOptions>>().Get((string)key!);
-                        var filter = new MetricRecordingNameBasedFilter(optsions);
+                        var optsionsMonitor = sp.GetRequiredService<IOptionsMonitor<MetricRecordingNameBasedFilterOptions>>();
+                        var namedOptsionsMonitor = new NamedOptionsMonitor<MetricRecordingNameBasedFilterOptions>(optsionsMonitor, (string)key!);
+
+                        var filter = new MetricRecordingNameBasedFilter(namedOptsionsMonitor);
                         return filter;
                     }
                 );
                 services.AddNamedSingleton<IMetricRecordingEnricher, MetricRecordingTagsEnricher>(metricName, (sp, key) =>
                 {
-                    var optsions = sp.GetRequiredService<IOptionsMonitor<MetricRecordingEnricherOptions>>().Get((string)key!);
-                    var filter = new MetricRecordingTagsEnricher(optsions);
+                    var optsionsMonitor = sp.GetRequiredService<IOptionsMonitor<MetricRecordingEnricherOptions>>();
+                    var namedOptsionsMonitor = new NamedOptionsMonitor<MetricRecordingEnricherOptions>(optsionsMonitor, (string)key!);
+
+                    var filter = new MetricRecordingTagsEnricher(namedOptsionsMonitor);
                     return filter;
                 });
             }

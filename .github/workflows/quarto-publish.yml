@@ -26,6 +26,12 @@ jobs:
       with:
         lfs: true
       
+    - name: Verify LFS files
+      run: |
+        echo "Checking if LFS files are available:"
+        ls -la diginsight-repos-overview.png
+        file diginsight-repos-overview.png || echo "file command not available"
+        
     - name: Setup Quarto
       uses: quarto-dev/quarto-actions/setup@v2
       with:

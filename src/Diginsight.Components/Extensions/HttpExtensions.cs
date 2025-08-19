@@ -1,9 +1,9 @@
-﻿#region using
+#region using
 using System.Net.Http;
 using System.Net.Mime;
 using System.Security.Policy;
 using System.Text;
-using Diginsight.Components.Configuration;
+//using Diginsight.Components.Configuration;
 using Diginsight.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -21,7 +21,7 @@ public static class HttpExtensions
         HttpMethod method, string url, object? requestBody, string description, CancellationToken cancellationToken
     )
     {
-        var loggerFactory = ObservabilityHelper.LoggerFactory;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { method, url, requestBody, description });
 

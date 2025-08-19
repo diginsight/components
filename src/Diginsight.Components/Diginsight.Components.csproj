@@ -28,6 +28,7 @@
   <ItemGroup>
     <!--<PackageReference Include="Azure.Identity" Version="1.*" />-->
     <!--<PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.*" />-->
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.*" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.*" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.*" />
@@ -53,7 +54,6 @@
     <PackageReference Include="System.Security.Principal" Version="4.3.*" />
 
     <ProjectReference Include="..\Diginsight.Components.Abstractions\Diginsight.Components.Abstractions.csproj" />
-    <ProjectReference Include="..\Diginsight.Components.Configuration\Diginsight.Components.Configuration.csproj" />
   </ItemGroup>
 
   <ItemGroup>

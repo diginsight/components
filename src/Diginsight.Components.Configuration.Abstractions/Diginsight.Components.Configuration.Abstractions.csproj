@@ -4,42 +4,23 @@
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <PackageIcon>common.components.png</PackageIcon>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Version>1.0.0.0</Version>
-    <AzureCosmosDisableNewtonsoftJsonCheck>true</AzureCosmosDisableNewtonsoftJsonCheck>
   </PropertyGroup>
-
 
   <ItemGroup>
     <None Include="..\..\images\01. Project image\common.components.png" Link="common.components.png">
       <PackagePath></PackagePath>
       <Pack>True</Pack>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Data.Tables" Version="12.*" />
-    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.*" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.*" />
-    <PackageReference Include="System.Linq.Async" Version="6.*" />
-    <PackageReference Include="System.Linq.Async.Queryable" Version="6.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Diginsight.Components.Azure.Abstractions\Diginsight.Components.Azure.Abstractions.csproj" />
-    <ProjectReference Include="..\Diginsight.Components.Configuration.Abstractions\Diginsight.Components.Configuration.Abstractions.csproj" />
-    <ProjectReference Include="..\Diginsight.Components\Diginsight.Components.csproj" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Core\Diginsight.Core.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
     <ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Diagnostics\Diginsight.Diagnostics.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
+
     <PackageReference Include="Diginsight.Core" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
     <PackageReference Include="Diginsight.Diagnostics" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
   </ItemGroup>
-
 </Project>

@@ -23,4 +23,8 @@
     <PackageReference Include="Diginsight.Core" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
     <PackageReference Include="Diginsight.Diagnostics" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Configuration\" />
+  </ItemGroup>
 </Project>

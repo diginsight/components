@@ -2,6 +2,7 @@ using Diginsight.Components.Azure.Metrics;
 using Diginsight.Diagnostics;
 using Diginsight.Stringify;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json.Linq;
@@ -17,6 +18,20 @@ namespace Diginsight.Components.Azure;
 
 public static class CosmosDbExtensions
 {
+    public static FeedIterator<T> ToFeedIteratorObservable<T>(this IQueryable<T> query, Container? container = null)
+    {
+        var queryText = query?.ToString();
+        var feedIterator = query.ToFeedIterator<T>();
+        return new ObservableFeedIterator<T>(feedIterator, container, queryText);
+    }
+
+    public static FeedIterator<T> ToFeedIteratorObservable<T>(this Container container, IQueryable<T> query)
+    {
+        var queryText = query?.ToString();
+        var feedIterator = query.ToFeedIterator<T>();
+        return new ObservableFeedIterator<T>(feedIterator, container, queryText);
+    }
+
     public static FeedIterator GetItemQueryStreamIteratorObservable(this Container container, QueryDefinition queryDefinition, string? continuationToken = null, QueryRequestOptions? requestOptions = null)
     {
         var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;

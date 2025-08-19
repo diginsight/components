@@ -1,3 +1,4 @@
+using Azure;
 using Diginsight.Components.Configuration;
 using Diginsight.Diagnostics;
 using Diginsight.Options;
@@ -22,7 +23,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
     public QueryCostMetricRecorder(
         IServiceProvider serviceProvider,
         ILogger<QueryCostMetricRecorder> logger,
-        IClassAwareOptionsMonitor<IOpenTelemetryOptions> openTelemetryOptionsMonitor,
+        IClassAwareOptionsMonitor<OpenTelemetryOptions> openTelemetryOptionsMonitor,
         IMeterFactory meterFactory
     )
     {
@@ -33,7 +34,8 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
         var applicationName = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name ?? "unknown";
         var metricName = this.queryCostMetric.Name;
 
-        this.lazyMetric = new Lazy<Histogram<double>>(() => {
+        this.lazyMetric = new Lazy<Histogram<double>>(() =>
+        {
             return meterFactory.Create(applicationName)
                                .CreateHistogram<double>(QueryMetrics.QueryCost.Name, "RU", $"{applicationName} metric");
         });
@@ -54,26 +56,24 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                 double.TryParse(costObj.ToString(), out double cost) &&
                 cost > 0)
             {
-                var tags = new TagList
-                {
-                    //{ "trace_id", activity.TraceId.ToString() ?? "unknown" },
-                    { "query", activity.GetTagItem("query")?.ToString() ?? "unknown" },
-                    { "method", activity.OperationName },
-                    { "entrymethod", GetEntryMethod(activity) },
-                    { "application", activity.GetTagItem("application")?.ToString() ?? System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name ?? "unknown" },
-                    { "container", activity.GetTagItem("container")?.ToString() ?? "unknown" },
-                    { "database", activity.GetTagItem("database")?.ToString() ?? "unknown" }
-                };
+                var tags = new List<KeyValuePair<string, object?>>();
+                tags.Add(new KeyValuePair<string, object?>("query", activity.GetTagItem("query")?.ToString()));
+                tags.Add(new KeyValuePair<string, object?>("method", activity.OperationName));
+                tags.Add(new KeyValuePair<string, object?>("entrymethod", GetEntryMethod(activity)));
+                tags.Add(new KeyValuePair<string, object?>("application", activity.GetTagItem("application")?.ToString() ?? System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name));
+                tags.Add(new KeyValuePair<string, object?>("container", activity.GetTagItem("container")?.ToString()));
+                tags.Add(new KeyValuePair<string, object?>("database", activity.GetTagItem("database")?.ToString()));
                 if (metricEnricher is not null)
                 {
                     var additionalTags = metricEnricher.ExtractTags(activity);
                     foreach (var tag in additionalTags ?? [])
                     {
-                        tags.Add(tag.Key, tag.Value);
+                        tags.Add(new KeyValuePair<string, object?>(tag.Key, tag.Value));
                     }
                 }
 
-                queryCostMetric.Record(cost, tags);
+                var tagsArray = tags.ToArray();
+                queryCostMetric.Record(cost, tagsArray);
             }
         }
         catch (Exception exception)

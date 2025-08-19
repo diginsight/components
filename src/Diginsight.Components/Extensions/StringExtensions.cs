@@ -1,7 +1,7 @@
-﻿#region using
+#region using
 #endregion
 
-using Microsoft.AspNetCore.Http;
+//using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Diginsight.Components;

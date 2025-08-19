@@ -35,6 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_ext", "_ext", "{95267EC9-0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diginsight.Components.Azure.Abstractions", "Diginsight.Components.Azure.Abstractions\Diginsight.Components.Azure.Abstractions.csproj", "{E402D426-C4E0-44D3-88F1-9751C227640A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diginsight.Components.Configuration.Abstractions", "Diginsight.Components.Configuration.Abstractions\Diginsight.Components.Configuration.Abstractions.csproj", "{D64EA92B-974B-48EA-A2D3-307898BB707D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{E402D426-C4E0-44D3-88F1-9751C227640A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E402D426-C4E0-44D3-88F1-9751C227640A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E402D426-C4E0-44D3-88F1-9751C227640A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D64EA92B-974B-48EA-A2D3-307898BB707D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D64EA92B-974B-48EA-A2D3-307898BB707D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D64EA92B-974B-48EA-A2D3-307898BB707D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D64EA92B-974B-48EA-A2D3-307898BB707D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

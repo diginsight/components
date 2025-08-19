@@ -1,4 +1,5 @@
-﻿using Diginsight.Diagnostics;
+using Diginsight.Components;
+using Diginsight.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
@@ -8,7 +9,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 
-namespace Diginsight.Components.Configuration;
+//namespace Diginsight.Components.Configuration;
 
 
 public sealed class DelegatedAuthenticationHandler : DelegatingHandler

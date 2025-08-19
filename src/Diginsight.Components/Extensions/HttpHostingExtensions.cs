@@ -1,5 +1,5 @@
-﻿#region using
-using Diginsight.Components.Configuration;
+#region using
+//using Diginsight.Components.Configuration;
 using Diginsight.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -15,7 +15,7 @@ public static class HttpHostingExtensions
         this IHttpClientBuilder builder, Action<AuthenticatedClientOptions>? configureOptions = null
     )
     {
-        var loggerFactory = ObservabilityHelper.LoggerFactory;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { builder, configureOptions });
 

@@ -1,8 +1,4 @@
 using Azure.Monitor.OpenTelemetry.Exporter;
-using Diginsight.Components.Configuration;
-using Diginsight.Diagnostics;
-using Diginsight.Diagnostics.Log4Net;
-using Diginsight.Options;
 using log4net.Appender;
 using log4net.Core;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +16,10 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Diginsight.Diagnostics;
+using Diginsight.Diagnostics.Log4Net;
+using Diginsight.Options;
+using Diginsight.Components.Azure;
 
 namespace Diginsight.Components.Configuration;
 
@@ -293,6 +293,7 @@ public static partial class ObservabilityExtensions
             //services.DecorateNamed<IMetricRecordingEnricher, MetricRecordingDurationMetricTagsEnricher>("diginsight.query_cost");
 
             services.AddSpanDurationMetricRecorder(); logger.LogDebug("services.AddSpanDurationMetricRecorder();");
+            services.AddCosmosDbQueryCostMetricRecorder(); logger.LogDebug("services.AddCosmosDbQueryCostMetricRecorder();");
 
             logger.LogDebug("services.AddNamedSingleton and DecorateNamed for IMetricRecordingEnricher");
 

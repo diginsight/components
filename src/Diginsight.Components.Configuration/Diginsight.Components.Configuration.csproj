@@ -32,7 +32,6 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.*" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.*" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.*" />
-    <!--<PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />-->
 
     <PackageReference Include="Scrutor" Version="6.*">
       <PrivateAssets>contentfiles; analyzers; build; compile</PrivateAssets>
@@ -50,6 +49,8 @@
     <ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Diagnostics.Log4Net\Diginsight.Diagnostics.Log4Net.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
     <ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Diagnostics.OpenTelemetry\Diginsight.Diagnostics.OpenTelemetry.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
     <ProjectReference Include="$(DiginsightCoreSolutionDirectory)Diginsight.Diagnostics.AspNetCore.OpenTelemetry\Diginsight.Diagnostics.AspNetCore.OpenTelemetry.csproj" Condition="'$(DiginsightCoreDirectImport)' == 'true'" />
+    <ProjectReference Include="..\Diginsight.Components.Azure\Diginsight.Components.Azure.csproj" />
+    <ProjectReference Include="..\Diginsight.Components.Configuration.Abstractions\Diginsight.Components.Configuration.Abstractions.csproj" />
     <PackageReference Include="Diginsight.Core" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
     <PackageReference Include="Diginsight.Diagnostics" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />
     <PackageReference Include="Diginsight.Diagnostics.AspNetCore" Version="$(DiginsightCoreVersion)" Condition="'$(DiginsightCoreDirectImport)' != 'true'" />

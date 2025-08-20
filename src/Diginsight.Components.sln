@@ -13,12 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.targets = Directory.Build.targets
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "60. Tools", "60. Tools", "{95B68FFB-F70F-45A3-8145-BB327588D1B9}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. Samples", "03. Samples", "{BE7E4AE3-AD84-422B-81C9-18331534317D}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "99. Other", "99. Other", "{D0B46420-0CCF-455C-A5B7-F7D1AC0A12B3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diginsight.Components.Abstractions", "Diginsight.Components.Abstractions\Diginsight.Components.Abstractions.csproj", "{76FC7BAF-5BA2-46DE-800F-537F2F934D48}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diginsight.Components", "Diginsight.Components\Diginsight.Components.csproj", "{6977B15A-2533-4369-BDAD-BB4800D0BA88}"

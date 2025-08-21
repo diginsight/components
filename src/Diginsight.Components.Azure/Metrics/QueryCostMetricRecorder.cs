@@ -68,9 +68,9 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                 var tags = new List<KeyValuePair<string, object?>>();
                 //tags.Add(new KeyValuePair<string, object?>("query", activity.GetTagItem("query")?.ToString()));
                 tags.Add(new KeyValuePair<string, object?>("method", activity.OperationName));
-                tags.Add(new KeyValuePair<string, object?>("caller1", caller1));
-                tags.Add(new KeyValuePair<string, object?>("caller2", caller2));
-                tags.Add(new KeyValuePair<string, object?>("entrymethod", entryMethod));
+                tags.Add(new KeyValuePair<string, object?>("caller1", caller1?.OperationName));
+                tags.Add(new KeyValuePair<string, object?>("caller2", caller2?.OperationName));
+                tags.Add(new KeyValuePair<string, object?>("entrymethod", entryMethod?.OperationName));
                 tags.Add(new KeyValuePair<string, object?>("application", activity.GetTagItem("application")?.ToString() ?? System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name));
                 tags.Add(new KeyValuePair<string, object?>("container", activity.GetTagItem("container")?.ToString()));
                 tags.Add(new KeyValuePair<string, object?>("database", activity.GetTagItem("database")?.ToString()));

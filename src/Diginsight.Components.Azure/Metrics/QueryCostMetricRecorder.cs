@@ -59,10 +59,18 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                 double.TryParse(costObj.ToString(), out double cost) &&
                 cost > 0)
             {
+                var callers = GetDiginsightCallers(activity);
+                var entryMethod = callers.Last();
+                var diginsightCallers = callers.Where(a=> !a.OperationName.Contains("diginsight", StringComparison.InvariantCultureIgnoreCase));
+                var caller1 = diginsightCallers.FirstOrDefault();
+                var caller2 = diginsightCallers.Skip(1).FirstOrDefault();
+
                 var tags = new List<KeyValuePair<string, object?>>();
-                tags.Add(new KeyValuePair<string, object?>("query", activity.GetTagItem("query")?.ToString()));
+                //tags.Add(new KeyValuePair<string, object?>("query", activity.GetTagItem("query")?.ToString()));
                 tags.Add(new KeyValuePair<string, object?>("method", activity.OperationName));
-                tags.Add(new KeyValuePair<string, object?>("entrymethod", GetEntryMethod(activity)));
+                tags.Add(new KeyValuePair<string, object?>("caller1", caller1));
+                tags.Add(new KeyValuePair<string, object?>("caller2", caller2));
+                tags.Add(new KeyValuePair<string, object?>("entrymethod", entryMethod));
                 tags.Add(new KeyValuePair<string, object?>("application", activity.GetTagItem("application")?.ToString() ?? System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name));
                 tags.Add(new KeyValuePair<string, object?>("container", activity.GetTagItem("container")?.ToString()));
                 tags.Add(new KeyValuePair<string, object?>("database", activity.GetTagItem("database")?.ToString()));
@@ -89,12 +97,23 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
     {
         // Walk up the activity chain to find the entry method
         var current = activity;
+        while (current.Parent != null) { current = current.Parent; }
+        return current.OperationName;
+    }
+
+    private static Activity[] GetDiginsightCallers(Activity activity)
+    {
+        var callers = new List<Activity>();
+        var current = activity;
         while (current.Parent != null)
         {
             current = current.Parent;
+            callers.Add(current);
         }
-        return current.OperationName;
+
+        return callers.ToArray();
     }
+
 
     ActivitySamplingResult IActivityListenerLogic.Sample(ref ActivityCreationOptions<ActivityContext> creationOptions) => ActivitySamplingResult.AllData;
 }

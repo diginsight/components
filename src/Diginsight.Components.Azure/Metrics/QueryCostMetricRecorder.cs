@@ -4,6 +4,7 @@ using Diginsight.Diagnostics;
 using Diginsight.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
@@ -12,7 +13,7 @@ namespace Diginsight.Components.Azure.Metrics;
 public sealed class QueryCostMetricRecorder : IActivityListenerLogic
 {
     private readonly ILogger logger;
-    private readonly Histogram<double> queryCostMetric;
+    //private readonly Histogram<double> queryCostMetric;
     private readonly IMetricRecordingFilter? metricFilter;
     private readonly IMetricRecordingEnricher? metricEnricher;
 
@@ -23,20 +24,22 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
     public QueryCostMetricRecorder(
         IServiceProvider serviceProvider,
         ILogger<QueryCostMetricRecorder> logger,
+        IClassAwareOptionsMonitor<DiginsightActivitiesOptions> activitiesOptionsMonitor,
         IClassAwareOptionsMonitor<OpenTelemetryOptions> openTelemetryOptionsMonitor,
         IMeterFactory meterFactory
     )
     {
         this.logger = logger;
-        this.queryCostMetric = QueryMetrics.QueryCost;
+        //this.queryCostMetric = QueryMetrics.QueryCost;
 
         IOpenTelemetryOptions openTelemetryOptions = openTelemetryOptionsMonitor.CurrentValue;
         var applicationName = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name ?? "unknown";
-        var metricName = this.queryCostMetric.Name;
+        var metricName = QueryMetrics.QueryCost.Name;
 
         this.lazyMetric = new Lazy<Histogram<double>>(() =>
         {
-            return meterFactory.Create(applicationName)
+            IDiginsightActivitiesMetricOptions options = activitiesOptionsMonitor.CurrentValue;
+            return meterFactory.Create(options.MeterName)
                                .CreateHistogram<double>(QueryMetrics.QueryCost.Name, "RU", $"{applicationName} metric");
         });
 
@@ -73,7 +76,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                 }
 
                 var tagsArray = tags.ToArray();
-                queryCostMetric.Record(cost, tagsArray);
+                Metric.Record(cost, tagsArray);
             }
         }
         catch (Exception exception)

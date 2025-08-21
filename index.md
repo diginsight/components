@@ -12,12 +12,13 @@ Each component is designed to address specific functionality areas (e.g., authen
 - [Why Diginsight Components](#why-diginsight-components)
 - [What components are available](#what-components-are-available)
   - [Diginsight.Components.Configuration](#diginsightcomponentsconfiguration)
-  - [Diginsight.Components.Abstractions](#diginsightcomponentsabstractions)
+  - [Diginsight.Components.Configuration.Abstractions](#diginsightcomponentsconfigurationabstractions)
   - [Diginsight.Components](#diginsightcomponents-core)
-  - [Diginsight.Components.Azure.Abstractions](#diginsightcomponentsazureabstractions)
+  - [Diginsight.Components.Abstractions](#diginsightcomponentsabstractions)
   - [Diginsight.Components.Azure](#diginsightcomponentsazure)
-  - [Diginsight.Components.Presentation.Abstractions](#diginsightcomponentspresentationabstractions)
+  - [Diginsight.Components.Azure.Abstractions](#diginsightcomponentsazureabstractions)
   - [Diginsight.Components.Presentation](#diginsightcomponentspresentation)
+  - [Diginsight.Components.Presentation.Abstractions](#diginsightcomponentspresentationabstractions)
 - [Architecture Characteristics](#architecture-characteristics)
 - [References](#references)
   - [Diginsight Documentation](#diginsight-documentation)
@@ -49,7 +50,7 @@ This modular approach allows you to compose exactly the functionality your appli
 # What components are available
 
 ## **Diginsight.Components.Configuration**
-- **Purpose**: Observable extensions for Diginsight configuration with Azure Key Vault, Console, Log4Net, and OpenTelemetry.
+- **Purpose**: Provides configuration helpers for **Diginsight**, **OpenTelemetry**, **Log4Net** and all **Diginsight.Components** assemblies.
 - **Key features**:
   - Azure Key Vault integration.
   - Activity source detection and registration.
@@ -57,12 +58,14 @@ This modular approach allows you to compose exactly the functionality your appli
   - Azure Monitor integration.
   - Dependencies: Azure.Core, Azure.Identity, Azure.Extensions.AspNetCore.Configuration.Secrets.
 
-## **Diginsight.Components.Abstractions**
+## **Diginsight.Components.Configuration.Abstractions**
 
-- **Purpose**: Core abstractions and interfaces for Diginsight.Components assembly.
+- **Purpose**: Abstractions and interfaces for Diginsight.Components.Configuration assembly.
 - **Key features**:
-  - `IDebugService` interface for conditional debug operations.
-  - Base contracts for other components.
+  - `IOpenTelemetryOptions` interface for OpenTelemetry configuration options.
+  - `OpenTelemetryOptions` implementation for Azure Monitor, tracing, and metrics configuration.
+  - `ConcurrencyOptions` for managing concurrency settings.
+  - Configuration contracts for dynamic and volatile configuration scenarios.
 
 ## **Diginsight.Components** (Core)
 
@@ -74,9 +77,9 @@ This modular approach allows you to compose exactly the functionality your appli
   - Microsoft Identity Client integration.
   - Cryptography support.
 
-## **Diginsight.Components.Azure.Abstractions**
+## **Diginsight.Components.Abstractions**
 
-- **Purpose**: Abstractions and interfaces for Diginsight.Components.Azure assembly.
+- **Purpose**: Core abstractions and interfaces for Diginsight.Components assembly.
 - **Key features**:
   - `IDebugService` interface for conditional debug operations.
   - Base contracts for other components.
@@ -88,9 +91,9 @@ This modular approach allows you to compose exactly the functionality your appli
   - Azure Table Observable extensions: Azure Table query extensions integrated with Diginsight observability.
   - Other Azure service observable extensions.
 
-## **Diginsight.Components.Presentation.Abstractions**
+## **Diginsight.Components.Azure.Abstractions**
 
-- **Purpose**: Abstractions and interfaces for Diginsight.Components.Presentation assembly.
+- **Purpose**: Abstractions and interfaces for Diginsight.Components.Azure assembly.
 - **Key features**:
   - `IDebugService` interface for conditional debug operations.
   - Base contracts for other components.
@@ -99,6 +102,13 @@ This modular approach allows you to compose exactly the functionality your appli
 
 - **Purpose**: UI/Presentation layer components.
 - **Status**: Currently appears to be a placeholder (contains only `Class1`).
+
+## **Diginsight.Components.Presentation.Abstractions**
+
+- **Purpose**: Abstractions and interfaces for Diginsight.Components.Presentation assembly.
+- **Key features**:
+  - `IDebugService` interface for conditional debug operations.
+  - Base contracts for other components.
 
 
 # Architecture Characteristics

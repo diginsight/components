@@ -229,6 +229,13 @@ public static partial class ObservabilityExtensions
             .DynamicallyConfigureClassAware<DiginsightActivitiesOptions>();
         logger.LogDebug("services.ConfigureClassAware<DiginsightActivitiesOptions>();");
 
+        // Configure QueryCostMetricRecorderOptions from "Diginsight:QueryCostMetricRecorder" section
+        services.ConfigureClassAware<Diginsight.Components.Azure.Metrics.QueryCostMetricRecorderOptions>(configuration.GetSection(ConfigurationPath.Combine(diginsightConfKey, "QueryCostMetricRecorder")));
+        services
+            .VolatilelyConfigureClassAware<Diginsight.Components.Azure.Metrics.QueryCostMetricRecorderOptions>()
+            .DynamicallyConfigureClassAware<Diginsight.Components.Azure.Metrics.QueryCostMetricRecorderOptions>();
+        logger.LogDebug("services.ConfigureClassAware<QueryCostMetricRecorderOptions>();");
+
         IOpenTelemetryBuilder openTelemetryBuilder = services.AddDiginsightOpenTelemetry(); logger.LogDebug("services.AddDiginsightOpenTelemetry();");
 
         logger.LogDebug("openTelemetryOptions.EnableMetrics: {openTelemetryOptions.EnableMetrics}", openTelemetryOptions.EnableMetrics);

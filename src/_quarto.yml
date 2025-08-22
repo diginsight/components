@@ -1,0 +1,106 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+  - "*.md"
+  - "*.qmd"
+  - "!ignore.qmd"
+  - "!ignore-dir/"
+  resources:
+  - "*.png"
+  - "*.jpg" 
+  - "*.jpeg"
+  - "*.gif"
+  - "*.svg"
+  - "images/**"
+  - "src/docs/**/*.png"
+  - "src/docs/**/*.jpg"
+  - "src/docs/**/*.jpeg" 
+  - "src/docs/**/*.gif"
+  - "src/docs/**/*.svg"
+
+website:
+  title: "Diginsight Components"
+  site-url: "https://diginsight.github.io/components/"
+  back-to-top-navigation: true
+  reader-mode: true
+  favicon: diginsight.bulb.svg
+  search: true
+  open-graph: true
+  image: diginsight.bulb.svg
+  announcement: 
+    icon: info-circle
+    dismissable: true
+    content: "**Information** - Diginsight v3 is now available"
+    position: below-navbar 
+    type: primary
+  navbar:
+    background: primary
+    search: true
+    left:
+      - text: "Home"
+        href: /
+      - text: "Concepts"
+        href: src/docs/01. Concepts/00.01 - Observability Concepts.md
+      - text: "Advanced articles"
+        href: src/docs/02. Advanced/13.00 - Customize entities rendering on diginsight log streams.md
+      - text: "About"
+        menu:
+           - text: About
+             href:  src/docs/05. About/about.md
+           - text: License
+             href:  LICENSE.md
+    tools:
+       - icon: github
+         menu:
+           - text: Profile
+             href:  https://github.com/diginsight
+           - text: Source Code
+             href:  https://github.com/diginsight/telemetry
+           - text: Report a Bug
+             href:  https://github.com/diginsight/telemetry
+  sidebar:
+    style: "docked"
+    search: false
+    contents:
+    - text: Home
+      href:  /
+    - text: "---"
+    - text: Getting Started
+      href:  "src/docs/00. Getting Started/Getting Started.md"
+    - text: "---"
+    - section: Concepts
+      contents: "src/docs/01. Concepts/**"
+    - text: "---"
+    - section: Advanced Articles
+      contents: "src/docs/02. Advanced/*"
+    - text: "---"
+    - section: References
+      contents: 
+      - "src/docs/03. Reference/*"
+      - "docs/03. Reference/*"
+    - text: "---"
+    - section: About
+      contents: "src/docs/05. About/*"
+    tools:
+    - icon: github
+      menu:
+        - text: Source Code
+          href:  https://github.com/diginsight
+        - text: Report a Bug
+          href:  https://github.com/diginsight
+  page-footer: 
+    left: "Copyright 2021, Diginsight" 
+    border: false
+    right: 
+      - icon: github
+        href: https://github.com/diginsight
+
+format:
+  html:
+    theme:
+      light: [cosmo, theme-light.scss]
+      dark: [cosmo, theme-dark.scss]
+    css: [styles.css, callouts.css]
+    include-in-header: header-includes.html
+    toc: true

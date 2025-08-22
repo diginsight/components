@@ -5,6 +5,7 @@ using Diginsight.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Text.Json;
@@ -17,15 +18,22 @@ public class QueryCostMetricRecorderOptions : IDynamicallyConfigurable, IVolatil
     public bool AddNormalizedQueryTag { get; set; } = false;
     public int NormalizedQueryMaxLen { get; set; } = 500;
     public int AddQueryCallers { get; set; } = 0;
+    public string[] IgnoreQueryCallers { get; set; } = [];
 }
 
 public sealed class QueryCostMetricRecorder : IActivityListenerLogic
 {
-    private static readonly Regex GuidPattern = new Regex(@"\b[0-9a-fA-F]{8}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{12}\b", RegexOptions.Compiled);
-    private static readonly Regex NumberPattern = new Regex(@"\b\d{4,}\b", RegexOptions.Compiled); // Numbers with 4 or more digits (likely IDs, timestamps, etc.)
-    private static readonly Regex StringLiteralPattern = new Regex(@"'[^']{8,}'", RegexOptions.Compiled); // String literals longer than 8 characters
+    // Enhanced regex patterns for better CosmosDB SQL normalization
+    private static readonly Regex GuidPattern = new Regex(@"\b[0-9a-fA-F]{8}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{12}\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex NumberPattern = new Regex(@"\b\d{4,}\b", RegexOptions.Compiled);
+    private static readonly Regex StringLiteralPattern = new Regex(@"'[^']{6,}'", RegexOptions.Compiled);
     private static readonly Regex DateTimePattern = new Regex(@"\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(?:Z|[+-]\d{2}:\d{2})?\b", RegexOptions.Compiled);
-    // private readonly Histogram<double> queryCostMetric;
+    // CosmosDB specific patterns for more sophisticated normalization
+    private static readonly Regex PropertyAccessPattern = new Regex(@"(root\[""[^""]+\""\])\s*=\s*([""'][^""']*[""']|\{GUID\}|\{NUMBER\}|\{STRING\}|\{DATETIME\})", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex InClausePattern = new Regex(@"IN\s*\([^)]+\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex BetweenClausePattern = new Regex(@"BETWEEN\s+([""'][^""']*[""']|\{[A-Z]+\}|\d+)\s+AND\s+([""'][^""']*[""']|\{[A-Z]+\}|\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex ArrayContainsPattern = new Regex(@"ARRAY_CONTAINS\s*\([^,]+,\s*([""'][^""']*[""']|\{[A-Z]+\})\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex OrderByPattern = new Regex(@"ORDER\s+BY\s+[^()]+?(ASC|DESC)?(?:\s*,\s*[^()]+?(ASC|DESC)?)*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private readonly ILogger logger;
     private readonly IClassAwareOptionsMonitor<QueryCostMetricRecorderOptions> queryCostMetricRecorderOptions;
@@ -35,6 +43,8 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
     private readonly Lazy<Histogram<double>> lazyMetric;
     private Histogram<double> Metric => lazyMetric.Value;
 
+    // Cache for compiled regex patterns to avoid recompilation on every evaluation
+    private readonly ConcurrentDictionary<string, Regex> ignoreQueryCallersRegexCache = new();
 
     public QueryCostMetricRecorder(
         IServiceProvider serviceProvider,
@@ -78,13 +88,10 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                 var callers = GetDiginsightCallers(activity);
                 var entryMethod = callers.Last();
 
-                //var caller1 = diginsightCallers.FirstOrDefault();
-                //var caller2 = diginsightCallers.Skip(1).FirstOrDefault();
-                //var caller3 = diginsightCallers.Skip(2).FirstOrDefault();
-
                 var queryCostMetricRecorderOptionsValue = queryCostMetricRecorderOptions.CurrentValue;
                 var addNormalizedQueryTag = queryCostMetricRecorderOptionsValue.AddNormalizedQueryTag;
                 var addQueryCallers = queryCostMetricRecorderOptionsValue.AddQueryCallers;
+                var ignoreQueryCallers = queryCostMetricRecorderOptionsValue.IgnoreQueryCallers;
 
                 var tags = new List<KeyValuePair<string, object?>>();
                 if (addNormalizedQueryTag)
@@ -96,6 +103,10 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                 if (addQueryCallers != 0)
                 {
                     var diginsightCallers = callers.Where(a => !a.OperationName.Contains("diginsight", StringComparison.InvariantCultureIgnoreCase));
+                    if (ignoreQueryCallers?.Length > 0)
+                    {
+                        diginsightCallers = diginsightCallers.Where(caller => !ShouldIgnoreCaller(caller.OperationName, ignoreQueryCallers));
+                    }
 
                     var callerIndex = 0;
                     while (callerIndex < addQueryCallers && callerIndex < diginsightCallers.Count())
@@ -127,6 +138,57 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
         {
             logger.LogWarning(exception, "Unhandled exception while recording query cost metric for activity {ActivityName}", activity.OperationName);
         }
+    }
+
+    /// <summary>
+    /// Determines whether a caller should be ignored based on the configured ignore patterns.
+    /// Uses a cached regex dictionary for performance optimization.
+    /// </summary>
+    /// <param name="operationName">The operation name to check</param>
+    /// <param name="ignorePatterns">Array of patterns to match against</param>
+    /// <returns>True if the caller should be ignored, false otherwise</returns>
+    private bool ShouldIgnoreCaller(string operationName, string[] ignorePatterns)
+    {
+        if (string.IsNullOrEmpty(operationName) || ignorePatterns?.Length == 0)
+            return false;
+
+        foreach (var pattern in ignorePatterns!)
+        {
+            if (string.IsNullOrEmpty(pattern))
+                continue;
+
+            // Support both exact matches and wildcard patterns
+            if (pattern.Contains('*'))
+            {
+                // Get or create compiled regex from cache
+                var regex = ignoreQueryCallersRegexCache.GetOrAdd(pattern, patternKey =>
+                {
+                    try
+                    {
+                        // Convert wildcard pattern to regex
+                        var regexPattern = "^" + Regex.Escape(patternKey).Replace(@"\*", ".*") + "$";
+                        return new Regex(regexPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogWarning(ex, "Failed to compile regex pattern for IgnoreQueryCallers: {Pattern}", patternKey);
+                        // Return a regex that never matches if compilation fails
+                        return new Regex("(?!.*)", RegexOptions.Compiled);
+                    }
+                });
+
+                if (regex.IsMatch(operationName))
+                    return true;
+            }
+            else
+            {
+                // Exact match (case insensitive)
+                if (string.Equals(operationName, pattern, StringComparison.InvariantCultureIgnoreCase))
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -178,11 +240,11 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
     }
 
     /// <summary>
-    /// Normalizes a query string to reduce cardinality by replacing high-cardinality values with placeholders.
-    /// This helps prevent metric cardinality explosion when queries contain GUIDs, timestamps, or other unique values.
+    /// Normalizes a CosmosDB SQL query string to reduce cardinality by replacing high-cardinality values 
+    /// with semantic placeholders while preserving query structure and intent.
     /// </summary>
     /// <param name="rawQueryData">The raw query data (may be JSON-encoded or plain text)</param>
-    /// <returns>A normalized query string suitable for metrics</returns>
+    /// <returns>A normalized query string suitable for metrics with semantic meaning preserved</returns>
     private string? NormalizeQueryForMetrics(string? rawQueryData)
     {
         if (string.IsNullOrEmpty(rawQueryData))
@@ -196,30 +258,200 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
             if (isJsonEncoded) { query = ExtractQueryFromJson(rawQueryData); }
             if (string.IsNullOrEmpty(query)) { return "{QUERY_EXTRACTION_FAILED}"; }
 
-            // Step 2: Limit query length to prevent very long queries from creating unique metrics
+            // Step 2: Apply sophisticated normalization patterns for CosmosDB queries
+            query = NormalizeCosmosDbQuery(query);
+
+            // Step 3: Apply length limit after normalization (to preserve more semantic meaning)
             var queryCostMetricRecorderOptionsValue = queryCostMetricRecorderOptions.CurrentValue;
             var normalizedQueryMaxLen = queryCostMetricRecorderOptionsValue.NormalizedQueryMaxLen;
-            if (normalizedQueryMaxLen>=0 && query.Length > normalizedQueryMaxLen) { query = query.Substring(0, normalizedQueryMaxLen) + "..."; }
-
-            // Step 3: Apply normalization patterns to reduce cardinality
-            // Replace GUIDs with placeholder
-            query = GuidPattern.Replace(query, "{GUID}");
-            // Replace large numbers (likely IDs, timestamps, etc.) with placeholder
-            query = NumberPattern.Replace(query, "{NUMBER}");
-            // Replace long string literals with placeholder
-            query = StringLiteralPattern.Replace(query, "'{STRING}'");
-            // Replace datetime values with placeholder
-            query = DateTimePattern.Replace(query, "{DATETIME}");
-
-            // Normalize whitespace and common SQL formatting
-            query = System.Text.RegularExpressions.Regex.Replace(query, @"\s+", " ").Trim();
+            if (normalizedQueryMaxLen >= 0 && query.Length > normalizedQueryMaxLen) 
+            { 
+                query = query.Substring(0, normalizedQueryMaxLen) + "..."; 
+            }
 
             return query;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // If normalization fails for any reason, return a generic placeholder
-            // to avoid metric recording failure
+            // If normalization fails, extract query prefix up to FROM clause for better context
+            logger.LogDebug(ex, "Query normalization failed for: {RawQuery}", rawQueryData);
+            return ExtractQueryPrefixOnFailure(rawQueryData);
+        }
+    }
+
+    /// <summary>
+    /// Applies CosmosDB-specific normalization patterns to preserve query structure 
+    /// while reducing cardinality through intelligent value replacement.
+    /// </summary>
+    /// <param name="query">The SQL query to normalize</param>
+    /// <returns>Normalized query with preserved semantic structure</returns>
+    private static string NormalizeCosmosDbQuery(string query)
+    {
+        if (string.IsNullOrEmpty(query))
+            return query;
+
+        // Step 1: Normalize whitespace first for consistent processing
+        query = Regex.Replace(query, @"\s+", " ").Trim();
+
+        // Step 2: Apply value replacements (order matters - specific to general)
+        
+        // Replace GUIDs first (most specific)
+        query = GuidPattern.Replace(query, "{GUID}");
+        
+        // Replace datetime values
+        query = DateTimePattern.Replace(query, "{DATETIME}");
+        
+        // Replace long string literals (but preserve short ones like "Type" values)
+        query = StringLiteralPattern.Replace(query, "'{STRING}'");
+        
+        // Replace large numbers (likely IDs, but preserve small numbers that might be meaningful)
+        query = NumberPattern.Replace(query, "{NUMBER}");
+
+        // Step 3: Apply CosmosDB-specific structural normalizations
+        
+        // Normalize IN clauses with multiple values
+        query = InClausePattern.Replace(query, "IN ({ITEMS})");
+        
+        // Normalize BETWEEN clauses
+        query = BetweenClausePattern.Replace(query, "BETWEEN {VALUE} AND {VALUE}");
+        
+        // Normalize ARRAY_CONTAINS functions
+        query = ArrayContainsPattern.Replace(query, match => 
+        {
+            var prefix = match.Value.Substring(0, match.Value.LastIndexOf(',') + 1);
+            return $"{prefix} {{VALUE}})";
+        });
+
+        // Step 4: Normalize complex expressions while preserving query intent
+        query = NormalizeWhereClause(query);
+        
+        // Step 5: Normalize ORDER BY clauses (preserve structure but remove specifics)
+        query = OrderByPattern.Replace(query, "ORDER BY {FIELDS}");
+
+        // Step 6: Final cleanup - normalize any remaining whitespace irregularities
+        query = Regex.Replace(query, @"\s+", " ").Trim();
+
+        return query;
+    }
+
+    /// <summary>
+    /// Normalizes WHERE clause expressions to group similar query patterns 
+    /// while preserving logical structure.
+    /// </summary>
+    /// <param name="query">Query containing WHERE clause</param>
+    /// <returns>Query with normalized WHERE conditions</returns>
+    private static string NormalizeWhereClause(string query)
+    {
+        // Handle complex WHERE clauses with multiple ANDs/ORs
+        // This approach preserves the logical structure while normalizing values
+        
+        // Pattern: (condition1 AND condition2 AND ...)
+        var complexAndPattern = new Regex(
+            @"\(\s*([^()]+)\s+AND\s+([^()]+)(?:\s+AND\s+[^()]+)*\s*\)",
+            RegexOptions.IgnoreCase);
+
+        query = complexAndPattern.Replace(query, match =>
+        {
+            var conditions = match.Value
+                .Trim('(', ')')
+                .Split(new[] { " AND " }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(c => c.Trim())
+                .ToArray();
+
+            // Sort conditions to normalize order (e.g., Type conditions first, then others)
+            var normalizedConditions = conditions
+                .OrderBy(c => c.Contains("\"Type\"") ? 0 : 1) // Type conditions first
+                .ThenBy(c => c) // Then alphabetically
+                .ToArray();
+
+            return $"({string.Join(" AND ", normalizedConditions)})";
+        });
+
+        // Similar handling for OR clauses if needed
+        var complexOrPattern = new Regex(
+            @"\(\s*([^()]+)\s+OR\s+([^()]+)(?:\s+OR\s+[^()]+)*\s*\)",
+            RegexOptions.IgnoreCase);
+
+        query = complexOrPattern.Replace(query, match =>
+        {
+            var conditions = match.Value
+                .Trim('(', ')')
+                .Split(new[] { " OR " }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(c => c.Trim())
+                .ToArray();
+
+            var normalizedConditions = conditions
+                .OrderBy(c => c.Contains("\"Type\"") ? 0 : 1)
+                .ThenBy(c => c)
+                .ToArray();
+
+            return $"({string.Join(" OR ", normalizedConditions)})";
+        });
+
+        return query;
+    }
+
+    /// <summary>
+    /// Extracts a meaningful query prefix when normalization fails, providing up to the FROM clause
+    /// with a clear indication that normalization failed.
+    /// </summary>
+    /// <param name="rawQueryData">The original raw query data</param>
+    /// <returns>A query prefix with failure indication</returns>
+    private static string ExtractQueryPrefixOnFailure(string? rawQueryData)
+    {
+        if (string.IsNullOrEmpty(rawQueryData))
+            return "{QUERY_NORMALIZATION_FAILED}";
+
+        try
+        {
+            // First try to extract from JSON if it looks like JSON
+            string? query = rawQueryData;
+            if (IsJsonEncoded(rawQueryData))
+            {
+                try
+                {
+                    using var document = JsonDocument.Parse(rawQueryData);
+                    if (document.RootElement.TryGetProperty("query", out var queryElement))
+                    {
+                        query = queryElement.GetString();
+                    }
+                }
+                catch
+                {
+                    // If JSON extraction fails, use original
+                    query = rawQueryData;
+                }
+            }
+
+            if (string.IsNullOrEmpty(query))
+                return "{QUERY_NORMALIZATION_FAILED}";
+
+            // Normalize whitespace first for easier processing
+            query = System.Text.RegularExpressions.Regex.Replace(query, @"\s+", " ").Trim();
+
+            // Look for FROM clause (case insensitive)
+            var fromMatch = System.Text.RegularExpressions.Regex.Match(
+                query, 
+                @"^(.+?\bFROM\s+\w+)", 
+                RegexOptions.IgnoreCase);
+
+            if (fromMatch.Success)
+            {
+                var prefix = fromMatch.Groups[1].Value.Trim();
+                return $"{prefix} ... (query normalization failed)";
+            }
+
+            // If no FROM clause found, take first 50 characters as fallback
+            if (query.Length > 50)
+            {
+                return $"{query.Substring(0, 50)}... (query normalization failed)";
+            }
+
+            return $"{query} (query normalization failed)";
+        }
+        catch
+        {
+            // Ultimate fallback if even prefix extraction fails
             return "{QUERY_NORMALIZATION_FAILED}";
         }
     }
@@ -236,7 +468,6 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
 
         return callers.ToArray();
     }
-
 
     ActivitySamplingResult IActivityListenerLogic.Sample(ref ActivityCreationOptions<ActivityContext> creationOptions) => ActivitySamplingResult.AllData;
 }

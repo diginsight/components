@@ -5,26 +5,31 @@
 - [Overview section for References pages](#overview-section-for-references-pages)
 
 ## Structure of the documentation
-documentation source is into folder src/doc 
+**documentation source** is into folder **src/doc**. 
 
-It is divided into 
-- 00. Getting Started
-- 01. Concepts
-- 02. Advanced
-- 03. Reference
-- 05. About
+It is divided into:
+
+- '00. Getting Started'
+- '01. Concepts'
+- '02. Advanced'
+- '03. Reference'
+- '05. About'
 
 ## Structure of a reference page
-class reference pages should include the following mandatory sections
-- Overview
-- Additional Details
-- Configuration
-- Troubleshooting
-- Reference
-- (optional) Appendices
+class reference pages should include the following mandatory sections:
+
+- 📋 **Overview**
+- 🔍 **Additional Details**
+- ⚙️ **Configuration**
+- 🔧 **Troubleshooting**
+- 📚 **Reference**
+- 📖 (optional) **Appendices**
+
+(first level sections should have icons representing their content).
 
 ### Overview section 
 Overview section for reference pages should:
+
 - be readable and easy to understand
 - be concise and to the point
 - explain what the component does

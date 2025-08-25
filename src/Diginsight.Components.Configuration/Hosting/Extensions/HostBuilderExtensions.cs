@@ -201,18 +201,20 @@ public static class HostBuilderExtensions
                 var clientSecret = configuration["AzureKeyVault:ClientSecret"].HardTrim();
                 logger.LogDebug($"tenantId:{tenantId},clientId:{clientId},clientSecret:{clientSecret}");
 
-                ClientSecretCredentialOptions credentialOptions = new();
-                if (environmentName?.EndsWith("cn", StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    credentialOptions.AuthorityHost = AzureAuthorityHosts.AzureChina;
-                }
+                var credentialOptions = new ClientSecretCredentialOptions();
+                if (environmentName?.EndsWith("cn", StringComparison.OrdinalIgnoreCase) == true) { credentialOptions.AuthorityHost = AzureAuthorityHosts.AzureChina; }
 
                 credential = new ClientSecretCredential(tenantId, clientId, clientSecret, credentialOptions);
                 logger.LogDebug($"credential = new ClientSecretCredential({tenantId}, {clientId}, {clientSecret.Mask()}, credentialOptions);");
             }
             else
             {
-                credential = new ManagedIdentityCredential();
+                var credentialOptions = new ManagedIdentityCredentialOptions();
+                if (environmentName?.EndsWith("cn", StringComparison.OrdinalIgnoreCase) == true) { credentialOptions.AuthorityHost = AzureAuthorityHosts.AzureChina; }
+
+                var managedIdentityId = configuration["AzureKeyVault:ManagedIdentityId"].HardTrim();
+                
+                credential = new ManagedIdentityCredential(managedIdentityId, credentialOptions);
                 logger.LogDebug($"credential = new ManagedIdentityCredential();");
             }
 

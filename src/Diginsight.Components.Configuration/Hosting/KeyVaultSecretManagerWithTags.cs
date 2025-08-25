@@ -1,15 +1,15 @@
-﻿using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using Azure.Security.KeyVault.Secrets;
 using System.Text;
 
 namespace Diginsight.Components.Configuration;
 
-internal sealed class KeyVaultSecretManager2 : KeyVaultSecretManager
+internal sealed class KeyVaultSecretManagerWithTags : KeyVaultSecretManager
 {
     private readonly DateTimeOffset now;
     private readonly Func<IDictionary<string, string>, bool>? tagsMatch;
 
-    public KeyVaultSecretManager2(DateTimeOffset now, Func<IDictionary<string, string>, bool>? tagsMatch)
+    public KeyVaultSecretManagerWithTags(DateTimeOffset now, Func<IDictionary<string, string>, bool>? tagsMatch)
     {
         this.now = now;
         this.tagsMatch = tagsMatch;

@@ -193,14 +193,30 @@ public static class HostBuilderExtensions
         logger.LogDebug($"kvUri:{kvUri}");
         if (!string.IsNullOrEmpty(kvUri))
         {
-            var clientId = configuration["AzureKeyVault:ClientId"].HardTrim();
-            var tenantId = configuration["AzureKeyVault:TenantId"].HardTrim();
-            var clientSecret = configuration["AzureKeyVault:ClientSecret"].HardTrim();
-            logger.LogDebug($"tenantId:{tenantId},clientId:{clientId},clientSecret:{clientSecret}");
-            var applicationCredentialProvider = new ApplicationCredentialProvider(environment);
+            TokenCredential credential;
+            if (isLocal)
+            {
+                var clientId = configuration["AzureKeyVault:ClientId"].HardTrim();
+                var tenantId = configuration["AzureKeyVault:TenantId"].HardTrim();
+                var clientSecret = configuration["AzureKeyVault:ClientSecret"].HardTrim();
+                logger.LogDebug($"tenantId:{tenantId},clientId:{clientId},clientSecret:{clientSecret}");
 
-            var credential = applicationCredentialProvider.Get(tenantId, clientId, clientSecret);
-            builder.AddAzureKeyVault(new Uri(kvUri), credential, new KeyVaultSecretManager2(DateTimeOffset.UtcNow, tagsMatch));
+                ClientSecretCredentialOptions credentialOptions = new();
+                if (environmentName?.EndsWith("cn", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    credentialOptions.AuthorityHost = AzureAuthorityHosts.AzureChina;
+                }
+
+                credential = new ClientSecretCredential(tenantId, clientId, clientSecret, credentialOptions);
+                logger.LogDebug($"credential = new ClientSecretCredential({tenantId}, {clientId}, {clientSecret.Mask()}, credentialOptions);");
+            }
+            else
+            {
+                credential = new ManagedIdentityCredential();
+                logger.LogDebug($"credential = new ManagedIdentityCredential();");
+            }
+
+            builder.AddAzureKeyVault(new Uri(kvUri), credential, new KeyVaultSecretManagerWithTags(DateTimeOffset.UtcNow, tagsMatch));
             logger.LogDebug($"builder.AddAzureKeyVault({kvUri})");
         }
 

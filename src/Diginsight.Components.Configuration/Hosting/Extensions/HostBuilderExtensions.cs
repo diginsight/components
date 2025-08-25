@@ -213,8 +213,8 @@ public static class HostBuilderExtensions
                 if (environmentName?.EndsWith("cn", StringComparison.OrdinalIgnoreCase) == true) { credentialOptions.AuthorityHost = AzureAuthorityHosts.AzureChina; }
 
                 var managedIdentityId = configuration["AzureKeyVault:ManagedIdentityId"].HardTrim();
-                
-                credential = new ManagedIdentityCredential(managedIdentityId, credentialOptions);
+
+                credential = string.IsNullOrEmpty(managedIdentityId) ? new ManagedIdentityCredential(credentialOptions) : credential = new ManagedIdentityCredential(managedIdentityId, credentialOptions);
                 logger.LogDebug($"credential = new ManagedIdentityCredential();");
             }
 

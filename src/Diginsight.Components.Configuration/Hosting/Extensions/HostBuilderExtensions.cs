@@ -12,9 +12,11 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace Diginsight.Components.Configuration;
+
 
 public static class HostBuilderExtensions
 {
@@ -83,7 +85,6 @@ public static class HostBuilderExtensions
         {
             AppendJsonFile(appsettingsFilePath, appsettingsEnvironmentIndex, builder);
             builder.Sources.RemoveAt(appsettingsEnvironmentIndex);
-            //((JsonConfigurationSource)builder.Sources[appsettingsEnvironmentIndex]).Path = appsettingsFilePath;
         }
 
         var externalConfigurationFolder = Environment.GetEnvironmentVariable("ExternalConfigurationFolder");
@@ -194,29 +195,8 @@ public static class HostBuilderExtensions
         if (!string.IsNullOrEmpty(kvUri))
         {
             TokenCredential credential;
-            if (isLocal)
-            {
-                var clientId = configuration["AzureKeyVault:ClientId"].HardTrim();
-                var tenantId = configuration["AzureKeyVault:TenantId"].HardTrim();
-                var clientSecret = configuration["AzureKeyVault:ClientSecret"].HardTrim();
-                logger.LogDebug($"tenantId:{tenantId},clientId:{clientId},clientSecret:{clientSecret}");
-
-                var credentialOptions = new ClientSecretCredentialOptions();
-                if (environmentName?.EndsWith("cn", StringComparison.OrdinalIgnoreCase) == true) { credentialOptions.AuthorityHost = AzureAuthorityHosts.AzureChina; }
-
-                credential = new ClientSecretCredential(tenantId, clientId, clientSecret, credentialOptions);
-                logger.LogDebug($"credential = new ClientSecretCredential({tenantId}, {clientId}, {clientSecret.Mask()}, credentialOptions);");
-            }
-            else
-            {
-                var credentialOptions = new ManagedIdentityCredentialOptions();
-                if (environmentName?.EndsWith("cn", StringComparison.OrdinalIgnoreCase) == true) { credentialOptions.AuthorityHost = AzureAuthorityHosts.AzureChina; }
-
-                var managedIdentityId = configuration["AzureKeyVault:ManagedIdentityId"].HardTrim();
-
-                credential = string.IsNullOrEmpty(managedIdentityId) ? new ManagedIdentityCredential(credentialOptions) : credential = new ManagedIdentityCredential(managedIdentityId, credentialOptions);
-                logger.LogDebug($"credential = new ManagedIdentityCredential();");
-            }
+            var credentialProvider = new DefaultCredentialProvider(environment);
+            credential = credentialProvider.Get(configuration.GetSection("AzureKeyVault"));
 
             builder.AddAzureKeyVault(new Uri(kvUri), credential, new KeyVaultSecretManagerWithTags(DateTimeOffset.UtcNow, tagsMatch));
             logger.LogDebug($"builder.AddAzureKeyVault({kvUri})");

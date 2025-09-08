@@ -8,24 +8,24 @@ Each component is designed to address specific functionality areas (e.g., authen
 
 ## Table of Contents
 
-- [Quick Start](#quick-start)
-- [Why Diginsight Components](#why-diginsight-components)
-- [What components are available](#what-components-are-available)
+- [🚀 Quick Start](#-quick-start)
+- [❓ Why Diginsight Components](#-why-diginsight-components)
+- [📦 What components are available](#-what-components-are-available)
   - [Core Components](#core-components)
   - [Configuration Components](#configuration-components)
   - [Azure Integration Components](#azure-integration-components)
   - [Presentation Components](#presentation-components)
-- [Getting Started](#getting-started)
+- [🏁 Getting Started](#-getting-started)
   - [Installation](#installation)
   - [Basic Usage](#basic-usage)
   - [Configuration](#configuration)
-- [Use Cases & Examples](#use-cases--examples)
-- [Architecture Characteristics](#architecture-characteristics)
-- [Migration Guide](#migration-guide)
-- [Contributing](#contributing)
-- [References](#references)
+- [💼 Use Cases & Examples](#-use-cases--examples)
+- [🏗️ Architecture Characteristics](#️-architecture-characteristics)
+- [🔄 Migration Guide](#-migration-guide)
+- [🤝 Contributing](#-contributing)
+- [📖 References](#-references)
 
-## Quick Start
+## 🚀 Quick Start
 
 Get started with Diginsight Components in 3 simple steps:
 
@@ -66,9 +66,9 @@ public class MyService
 }
 ```
 
-➡️ **Continue to [Getting Started](#getting-started) for detailed setup instructions**
+➡️ **Continue to [Getting Started](#-getting-started) for detailed setup instructions**
 
-# Why Diginsight Components
+# ❓ Why Diginsight Components
 
 **[Diginsight Telemetry](https://diginsight.github.io/telemetry/)** implements observability and diagnostics capabilities for .NET applications using **OpenTelemetry** and **Azure Monitor**.
 
@@ -83,15 +83,13 @@ All components are available with **abstractions packages** to allow easy integr
 
 This modular approach allows you to compose exactly the functionality your application needs—from a minimal observability setup using just the core components, to a full-featured enterprise solution with Azure integrations, advanced caching, and presentation layers.
 
-## What components are available
+## 📦 What components are available
 
 Diginsight Components are organized into logical groups, each serving specific architectural concerns:
 
-## Configuration Components
-
 ### **Diginsight.Components.Configuration**
 
-**Provides configuration extensions for Application Startup and observability.**
+**Provides configuration extensions for application startup and observability.**
 
 Configuration extensions include:
 
@@ -122,8 +120,10 @@ dotnet add package Diginsight.Components.Configuration
 
 ### **Diginsight.Components** (Main Library)
 
-**Implements .NET applications observability for http and database access.**<br>
-Implements query cost and payload size metrics for database access, http and REST api access.
+Implements:
+- .NET applications **observability** for http and database access.
+- concurrency control for debugging (eg. ParallelService, IParallelService).
+- Helpers for authentication and serialization.
 
 - 🚀 **HTTP client configuration** with built-in observability
 - 🔐 **Authentication and security features** (JWT, Microsoft Identity)
@@ -146,11 +146,9 @@ dotnet add package Diginsight.Components
 dotnet add package Diginsight.Components.Abstractions
 ```
 
-## Azure Integration Components
-
 ### **Diginsight.Components.Azure**
 
-**Production-ready Azure service extensions with built-in observability.**
+Production-ready observability for access to Azure services.
 
 - 🌟 **CosmosDB Observable Extensions**
   - Query extensions with observability integration
@@ -179,8 +177,6 @@ dotnet add package Diginsight.Components.Azure
 - 📋 **Base contracts** for Azure service extensions
 - 🔧 **IDebugService** specialized for Azure scenarios
 
-## Presentation Components
-
 ### **Diginsight.Components.Presentation** 
 
 **UI and presentation layer components.** (🚧 Under Development)
@@ -204,7 +200,7 @@ dotnet add package Diginsight.Components.Azure
 | **Enterprise applications** | All configuration and Azure components |
 | **Custom extensions** | Add corresponding `.Abstractions` packages |
 
-## Getting Started
+## 🏁 Getting Started
 
 ### Installation
 
@@ -331,7 +327,7 @@ The system automatically loads configuration files in this order:
 5. Azure Key Vault secrets
 6. Environment variables
 
-## Use Cases & Examples
+## 💼 Use Cases & Examples
 
 ### 🏢 **Enterprise Application**
 Build a full-stack enterprise application with complete observability:
@@ -394,7 +390,7 @@ public class OrderProcessingService
 }
 ```
 
-## Migration Guide
+## 🔄 Migration Guide
 
 ### **From Basic .NET Configuration**
 
@@ -425,7 +421,7 @@ builder.Services.AddOpenTelemetry()
 builder.Host.ConfigureAppConfiguration2(loggerFactory);
 ```
 
-## Contributing
+## 🤝 Contributing
 
 We welcome contributions! Here's how you can help:
 
@@ -443,7 +439,7 @@ dotnet test
 ```
 
 
-# Architecture Characteristics
+# 🏗️ Architecture Characteristics
 
 Diginsight Components follow consistent architectural patterns:
 

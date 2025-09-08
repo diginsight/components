@@ -1,11 +1,58 @@
 # Diginsight Configuration Extensions
 
-## Overview
+## 📑 Table of Contents
+
+- [📋 Overview](#-overview)
+- [✨ Key Features](#-key-features)
+- [📁 Enhanced Configuration File Hierarchy](#-enhanced-configuration-file-hierarchy)
+  - [Standard .NET Core Configuration Files](#standard-net-core-configuration-files)
+  - [Extended Diginsight Configuration Files](#extended-diginsight-configuration-files)
+  - [Configuration Loading Order (Precedence)](#configuration-loading-order-precedence)
+- [🔧 Local Development Support](#-local-development-support)
+- [🔐 Azure Key Vault Integration](#-azure-key-vault-integration)
+  - [AzureKeyVault Configuration Section](#azurekeyvault-configuration-section)
+  - [Authentication Methods](#authentication-methods)
+- [🏗️ Core Components](#️-core-components)
+  - [1. HostBuilderExtensions](#1-hostbuilderextensions)
+  - [2. ConfigureAppConfiguration2 Method](#2-configureappconfiguration2-method)
+- [⚙️ Configuration Loading Process](#️-configuration-loading-process)
+  - [Phase 1: Environment Detection](#phase-1-environment-detection)
+  - [Phase 2: Base Configuration Files](#phase-2-base-configuration-files)
+  - [Phase 3: External Configuration Resolution](#phase-3-external-configuration-resolution)
+  - [Phase 4: Environment Variable Overrides](#phase-4-environment-variable-overrides)
+  - [Phase 5: Azure Key Vault Integration](#phase-5-azure-key-vault-integration)
+  - [Phase 6: Configuration Source Ordering](#phase-6-configuration-source-ordering)
+- [🛠️ Helper Components](#️-helper-components)
+  - [DirectoryHelper](#directoryhelper)
+  - [ApplicationCredentialProvider](#applicationcredentialprovider)
+  - [KeyVaultSecretManager2](#keyvaultsecretmanager2)
+- [🌍 Environment Variables](#-environment-variables)
+  - [Core Variables](#core-variables)
+  - [Azure Key Vault Variables](#azure-key-vault-variables)
+- [💻 Usage Examples](#-usage-examples)
+  - [Basic Usage](#basic-usage)
+  - [With Tag Filtering](#with-tag-filtering)
+  - [For Web Applications](#for-web-applications)
+- [📄 Configuration File Examples](#-configuration-file-examples)
+  - [appsettings.json](#appsettingsjson)
+  - [appsettings.Development.json](#appsettingsdevelopmentjson)
+  - [appsettings.local.json (Development Only)](#appsettingslocaljson-development-only)
+  - [appsettings.Development.local.json (Development Only)](#appsettingsdevelopmentlocaljson-development-only)
+- [✅ Best Practices](#-best-practices)
+- [🔒 Security Considerations](#-security-considerations)
+- [🐛 Troubleshooting](#-troubleshooting)
+  - [Common Issues](#common-issues)
+  - [Debug Logging](#debug-logging)
+- [🚀 Migration from Standard .NET Core Configuration](#-migration-from-standard-net-core-configuration)
+
+---
+
+## 📋 Overview
 
 The `HostBuilderExtensions` class extends the standard .NET Core configuration building logic with an **enhanced appsettings.json hierarchy** and **configuration capabilities**. <br>
 This includes advanced **configuration loading with external folder support** with intelligent file resolution and **automatic Azure Key Vault integration** for .NET applications.
 
-## Key Features
+## ✨ Key Features
 
 - **Extended Configuration Hierarchy**: Extends standard .NET Core configuration with additional file layers
 - **Multi-Environment Configuration**: Supports different environments (Development, Production, etc.)
@@ -15,48 +62,58 @@ This includes advanced **configuration loading with external folder support** wi
 - **Intelligent File Resolution**: Hierarchical search for configuration files
 - **Tag-Based Filtering**: Supports filtering Key Vault secrets by tags
 
-## Enhanced Configuration File Hierarchy
+## 📁 Enhanced Configuration File Hierarchy
 
 The `HostBuilderExtensions` class extends the standard .NET Core configuration hierarchy with additional layers:
 
-### Standard .NET Core Configuration Files:
-1. **appsettings.json** - Base configuration file
-2. **appsettings.{Environment}.json** - Environment-specific configuration
+**Standard .NET Core Configuration Files**:
 
-### Extended Diginsight Configuration Files:
-3. **appsettings.local.json** - Local overrides (Development environment only)
-4. **appsettings.{Environment}.local.json** - Environment-specific local overrides (Development environment only)
+standard .NET Core configuration files are normally organized according to the following structure:
 
-### Configuration Loading Order (Precedence):
-1. `appsettings.json` (lowest priority)
-2. `appsettings.{Environment}.json`
-3. `appsettings.local.json` (Development only)
-4. `appsettings.{Environment}.local.json` (Development only)
-5. Azure Key Vault secrets (if configured)
-6. Environment variables (highest priority)
+└─── **appsettings.json** - Base configuration file<br>
+└─── **appsettings.\{Environment\}.json** - Environment-specific configuration<br>
+└─── **user secrets** (highest priority)<br>
+└─── **Environment variables** (highest priority)<br>
 
-## Local Development Support
+diginsight configuration extensions builds application configuration from the following structure:
 
-The `.local.json` files are specifically designed for local debugging scenarios:
+**Extended.NET Core Configuration Files**:
+
+└─── `appsettings.json` (lowest priority)<br>
+└─── `appsettings.{Environment}.json`<br>
+└─── <mark>**`appsettings.local.json`**</mark> (Development only)<br>
+└─── <mark>**`appsettings.{Environment}.local.json`**</mark> (Development only)<br>
+└─── <mark>**Azure Key Vault secrets**</mark> (if configured)<br>
+└─── **user secrets** (highest priority)<br>
+└─── **Environment variables** (highest priority)<br>
+
+**Local Development Support**
+
+The <mark>`.local.json`</mark> files are specifically designed for local debugging scenarios:
 
 - **Purpose**: Store local development overrides without affecting source control
 - **Environment**: Only loaded in Development environment
 - **Security**: Should be added to `.gitignore` to prevent accidental commits
 - **Usage**: Override connection strings, API endpoints, and other environment-specific values
 
-## Azure Key Vault Integration
+**Azure Key Vault Integration**
 
 The system provides seamless Azure Key Vault integration through a standard configuration section:
 
-### AzureKeyVault Configuration Section:{
+```json
+{
   "AzureKeyVault": {
     "TenantId": "c8f97966-df69-480f-a690-072314b06f83", // Environment specific
     "ClientId": "9c90b0e2-405f-44c1-9610-e7803621e68a",
+    // "ManagedIdentityClientId": "9c90b0e2-405f-44c1-9610-e7803621e68a",
     "Uri": "https://dev-dgw-003-kv.vault.azure.net/", // Environment specific
     "ClientSecret": "" // Key Vault secret or empty for managed identity
   }
 }
-### Authentication Methods:
+```
+
+Authentication is handled by the `ApplicationCredentialProvider` class, which supports multiple authentication methods based on the environment (Development or Production).
+
 The `ApplicationCredentialProvider` supports multiple authentication methods:
 
 **Development Environment:**
@@ -69,7 +126,7 @@ The `ApplicationCredentialProvider` supports multiple authentication methods:
 - `ManagedIdentityCredential`: Uses managed identity (recommended)
 - `ClientSecretCredential`: Uses client secret if provided
 
-## Core Components
+## 🏗️ Core Components
 
 ### 1. HostBuilderExtensions
 
@@ -82,7 +139,7 @@ public static IHostBuilder ConfigureAppConfiguration2(
 
 The core configuration method that orchestrates the entire configuration loading process.
 
-## Configuration Loading Process
+## ⚙️ Configuration Loading Process
 
 ### Phase 1: Environment Detection
 1. Determines if running in Development environment (`isLocal`)
@@ -140,7 +197,7 @@ The system ensures proper precedence by reordering configuration sources:
 2. Azure Key Vault secrets
 3. Environment variables (highest priority)
 
-## Helper Components
+## 🛠️ Helper Components
 
 ### DirectoryHelper
 Provides utility methods for finding repository roots:public static string? GetRepositoryRoot(string currentDirectory)
@@ -161,7 +218,7 @@ Custom Key Vault secret manager that:
 
 Example: `MyApp--Database--ConnectionString` becomes `MyApp:Database:ConnectionString`
 
-## Environment Variables
+## 🌍 Environment Variables
 
 ### Core Variables:
 - `DOTNET_ENVIRONMENT`: Sets the application environment
@@ -174,7 +231,7 @@ Example: `MyApp--Database--ConnectionString` becomes `MyApp:Database:ConnectionS
 - `AzureKeyVault:TenantId`: Azure AD Tenant ID
 - `AzureKeyVault:ClientSecret`: Azure AD Client Secret
 
-## Usage Examples
+## 💻 Usage Examples
 
 ### Basic Usage:Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
     .ConfigureAppConfiguration2(loggerFactory)
@@ -184,7 +241,7 @@ Example: `MyApp--Database--ConnectionString` becomes `MyApp:Database:ConnectionS
     .Build();
 ### For Web Applications:var builder = WebApplication.CreateBuilder(args);
 builder.Host.ConfigureAppConfiguration2(loggerFactory);
-## Configuration File Examples
+## 📄 Configuration File Examples
 
 ### appsettings.json{
   "Logging": {
@@ -228,7 +285,7 @@ builder.Host.ConfigureAppConfiguration2(loggerFactory);
     "MockExternalServices": true
   }
 }
-## Best Practices
+## ✅ Best Practices
 
 1. **Environment Variables**: Use environment variables for sensitive configuration in production
 2. **External Folders**: Keep sensitive configurations in external folders for security
@@ -238,7 +295,7 @@ builder.Host.ConfigureAppConfiguration2(loggerFactory);
 6. **Source Control**: Add `*.local.json` to `.gitignore` to prevent accidental commits
 7. **Key Vault**: Use managed identities in production environments
 
-## Security Considerations
+## 🔒 Security Considerations
 
 1. **Secret Management**: Never commit secrets to source control
 2. **External Folders**: Ensure external configuration folders have proper access controls
@@ -246,7 +303,7 @@ builder.Host.ConfigureAppConfiguration2(loggerFactory);
 4. **Local Files**: Add `*.local.json` to `.gitignore`
 5. **Environment Variables**: Secure environment variable access in production
 
-## Troubleshooting
+## 🐛 Troubleshooting
 
 ### Common Issues:
 1. **Configuration Not Found**: Check external folder path and permissions
@@ -263,7 +320,7 @@ The system provides extensive debug logging. Enable it in your configuration:{
     }
   }
 }
-## Migration from Standard .NET Core Configuration
+## 🚀 Migration from Standard .NET Core Configuration
 
 To migrate from standard .NET Core configuration to Diginsight configuration:
 

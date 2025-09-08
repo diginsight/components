@@ -1,11 +1,29 @@
 ![main build](https://github.com/diginsight/components/actions/workflows/v2_99.Package.CICD.yml/badge.svg?branch=main)<br>
 ![main build](https://github.com/diginsight/components/actions/workflows/quarto-publish.yml/badge.svg?branch=main)
 
-# Introduction
 
 `Diginsight Components` include **observable** or **optimized extensions** for other technologies, achieved through integration with the **Diginsight** observability platform and **Diginsight Smartcache**.
 
 Each component is designed to address specific functionality areas (e.g., authentication, database access) while maintaining consistent observability and diagnostics capabilities.
+
+## Table of Contents
+
+- [Quick Start](#quick-start)
+- [Why Diginsight Components](#why-diginsight-components)
+- [What components are available](#what-components-are-available)
+  - [Core Components](#core-components)
+  - [Configuration Components](#configuration-components)
+  - [Azure Integration Components](#azure-integration-components)
+  - [Presentation Components](#presentation-components)
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+  - [Basic Usage](#basic-usage)
+  - [Configuration](#configuration)
+- [Use Cases & Examples](#use-cases--examples)
+- [Architecture Characteristics](#architecture-characteristics)
+- [Migration Guide](#migration-guide)
+- [Contributing](#contributing)
+- [References](#references)
 
 ## Quick Start
 
@@ -50,25 +68,6 @@ public class MyService
 
 ➡️ **Continue to [Getting Started](#getting-started) for detailed setup instructions**
 
-# Table of Contents
-
-- [Quick Start](#quick-start)
-- [Why Diginsight Components](#why-diginsight-components)
-- [What components are available](#what-components-are-available)
-  - [Core Components](#core-components)
-  - [Configuration Components](#configuration-components)
-  - [Azure Integration Components](#azure-integration-components)
-  - [Presentation Components](#presentation-components)
-- [Getting Started](#getting-started)
-  - [Installation](#installation)
-  - [Basic Usage](#basic-usage)
-  - [Configuration](#configuration)
-- [Use Cases & Examples](#use-cases--examples)
-- [Architecture Characteristics](#architecture-characteristics)
-- [Migration Guide](#migration-guide)
-- [Contributing](#contributing)
-- [References](#references)
-
 # Why Diginsight Components
 
 **[Diginsight Telemetry](https://diginsight.github.io/telemetry/)** implements observability and diagnostics capabilities for .NET applications using **OpenTelemetry** and **Azure Monitor**.
@@ -84,11 +83,9 @@ All components are available with **abstractions packages** to allow easy integr
 
 This modular approach allows you to compose exactly the functionality your application needs—from a minimal observability setup using just the core components, to a full-featured enterprise solution with Azure integrations, advanced caching, and presentation layers.
 
-# What components are available
+## What components are available
 
 Diginsight Components are organized into logical groups, each serving specific architectural concerns:
-
-## Core Components
 
 ### **Diginsight.Components** (Main Library)
 

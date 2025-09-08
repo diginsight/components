@@ -87,36 +87,13 @@ This modular approach allows you to compose exactly the functionality your appli
 
 Diginsight Components are organized into logical groups, each serving specific architectural concerns:
 
-### **Diginsight.Components** (Main Library)
-
-**The essential toolkit for building observable .NET applications.**
-
-- 🚀 **HTTP client configuration** with built-in observability
-- 🔐 **Authentication and security features** (JWT, Microsoft Identity)
-- 🔒 **Cryptography support** for secure operations
-- 📊 **Performance monitoring** and metrics collection
-
-```bash
-dotnet add package Diginsight.Components
-```
-
-### **Diginsight.Components.Abstractions**
-
-**Core contracts and interfaces for the components ecosystem.**
-
-- 📋 **Base interfaces** for all Diginsight components
-- 🔧 **IDebugService** for conditional debug operations
-- 🏗️ **Foundation contracts** for building custom extensions
-
-```bash
-dotnet add package Diginsight.Components.Abstractions
-```
-
 ## Configuration Components
 
 ### **Diginsight.Components.Configuration**
 
-**Advanced configuration management with Azure integration.**
+**Provides configuration extensions for Application Startup and observability.**
+
+Configuration extensions include:
 
 - ⚡ **Enhanced appsettings.json hierarchy** with local overrides
 - 🔑 **Azure Key Vault integration** for secure secrets management
@@ -142,6 +119,32 @@ dotnet add package Diginsight.Components.Configuration
 - ⚙️ **OpenTelemetryOptions** implementation with Azure Monitor support
 - 🔄 **ConcurrencyOptions** for managing concurrent operations
 - 📝 **Dynamic configuration** contracts for runtime updates
+
+### **Diginsight.Components** (Main Library)
+
+**Implements .NET applications observability for http and database access.**<br>
+Implements query cost and payload size metrics for database access, http and REST api access.
+
+- 🚀 **HTTP client configuration** with built-in observability
+- 🔐 **Authentication and security features** (JWT, Microsoft Identity)
+- 🔒 **Cryptography support** for secure operations
+- 📊 **Performance monitoring** and metrics collection
+
+```bash
+dotnet add package Diginsight.Components
+```
+
+### **Diginsight.Components.Abstractions**
+
+**Core contracts and interfaces for the components ecosystem.**
+
+- 📋 **Base interfaces** for all Diginsight components
+- 🔧 **IDebugService** for conditional debug operations
+- 🏗️ **Foundation contracts** for building custom extensions
+
+```bash
+dotnet add package Diginsight.Components.Abstractions
+```
 
 ## Azure Integration Components
 

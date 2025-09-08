@@ -67,6 +67,9 @@ jobs:
       if: false  # Set to true if you use R
       with:
         r-version: '4.3.0'
+
+    - name: Install TinyTeX
+      run: quarto install tinytex
         
     - name: Render Quarto Project
       run: quarto render

@@ -59,7 +59,7 @@ public class MyService
     
     public async Task<string> ProcessDataAsync()
     {
-        using var activity = ActivitySource.StartActivity();
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger);
         // Your business logic here
         return "processed";
     }
@@ -260,7 +260,7 @@ public class OrderService
     
     public async Task<Order> ProcessOrderAsync(int orderId)
     {
-        using var activity = ActivitySource.StartActivity();
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { orderId });
         activity?.SetTag("order.id", orderId);
         
         // Your business logic with automatic observability
@@ -347,7 +347,8 @@ public class CustomerService
     
     public async Task<Customer> GetCustomerAsync(int customerId)
     {
-        using var activity = ActivitySource.StartActivity();
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { customerId });
+
         activity?.SetTag("customer.id", customerId);
         
         var customer = await _cosmosContainer.ReadItemAsync<Customer>(
@@ -383,8 +384,8 @@ public class OrderProcessingService
 {
     public async Task ProcessAsync(Order order)
     {
-        using var activity = ActivitySource.StartActivity();
-        
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { order });
+
         // Calls to other services automatically traced
         await _inventoryService.ReserveItemsAsync(order.Items);
         await _paymentService.ProcessPaymentAsync(order.Payment);

@@ -60,133 +60,86 @@ public static class HostBuilderExtensions
         bool isDebuggerAttached = Debugger.IsAttached;
         logger.LogDebug($"isLocal:{isLocal}, isDebuggerAttached:{isDebuggerAttached}");
 
-        if (isLocal)
-        {
-            int appsettingsIndex = GetJsonFileIndex("appsettings.json", builder);
-            AppendLocalJsonFile("appsettings.local.json", appsettingsIndex, builder, isLocal);
-        }
+        var runtimeEnvironmentName = environment.EnvironmentName;
+        int appsettingsFileIndex = GetJsonFileIndex($"appsettings.json", builder); logger.LogDebug($"GetJsonFileIndex($\"appsettings.json\", builder); returned {appsettingsFileIndex}");
+        int environmentAppsettingsFileIndex = GetJsonFileIndex($"appsettings.{runtimeEnvironmentName}.json", builder); logger.LogDebug($"GetJsonFileIndex($\"appsettings.{runtimeEnvironmentName}.json\", builder); returned {environmentAppsettingsFileIndex}");
 
-        //if (isDebuggerAttached)
-        //{
-        //    var entryAssembly = Assembly.GetEntryAssembly();
-        //    builder.AddUserSecrets(entryAssembly);
-        //}
+        var appsettingsEnvironmentName = Environment.GetEnvironmentVariable("AppsettingsEnvironmentName");
+        var environmentName = appsettingsEnvironmentName ?? runtimeEnvironmentName;
+        logger.LogDebug($"runtimeEnvironmentName:{runtimeEnvironmentName},appsettingsEnvironmentName:{appsettingsEnvironmentName},environmentName:{environmentName}");
 
-        var environmentName = environment.EnvironmentName;
-        int appsettingsEnvironmentIndex = GetJsonFileIndex($"appsettings.{environmentName}.json", builder); logger.LogDebug($"GetJsonFileIndex($\"appsettings.{environmentName}.json\", builder); returned {appsettingsEnvironmentIndex}");
-
-        string? appsettingsEnvironmentName = Environment.GetEnvironmentVariable("AppsettingsEnvironmentName") ?? environmentName;
         var appsettingsFileFolder = ".";
-        var appsettingsFileName = $"appsettings.{appsettingsEnvironmentName}.json";
+        var appsettingsFileName = $"appsettings.{environmentName}.json";
         var appsettingsFilePath = appsettingsFileName;
-        logger.LogDebug($"appsettingsEnvironmentName:{appsettingsEnvironmentName},appsettingsFileName:{appsettingsFileName}");
 
-        if (!appsettingsEnvironmentName.Equals(environmentName, StringComparison.InvariantCultureIgnoreCase))
+        var lastAppsettingsFileIndex = environmentAppsettingsFileIndex >= 0 ? environmentAppsettingsFileIndex : appsettingsFileIndex;
+        if (!environmentName.Equals(runtimeEnvironmentName, StringComparison.InvariantCultureIgnoreCase))
         {
-            AppendJsonFile(appsettingsFilePath, appsettingsEnvironmentIndex, builder);
-            builder.Sources.RemoveAt(appsettingsEnvironmentIndex);
-        }
-
-        var externalConfigurationFolder = Environment.GetEnvironmentVariable("ExternalConfigurationFolder");
-        var externalConfigurationFolderExists = externalConfigurationFolder is not null && Directory.Exists(externalConfigurationFolder);
-        logger.LogDebug($"isLocal:{isLocal},externalConfigurationFolder:{externalConfigurationFolder},externalConfigurationFolderExists:{externalConfigurationFolderExists}");
-        if (isLocal && externalConfigurationFolderExists && !File.Exists(appsettingsFilePath))
-        {
-            var externalConfigurationFolderDirectoryInfo = new DirectoryInfo(externalConfigurationFolder!);
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var currentDirectoryInfo = new DirectoryInfo(currentDirectory);
-            var repositoryRoot = DirectoryHelper.GetRepositoryRoot(currentDirectory)!;
-            var repositoryRootInfo = new DirectoryInfo(repositoryRoot);
-
-            var currentDirectoryParts = new List<string>();
-            while (currentDirectoryInfo != null && currentDirectoryInfo.Exists)
+            if (File.Exists(appsettingsFileName))
             {
-                currentDirectoryParts.Insert(0, currentDirectoryInfo.Name);
-                currentDirectoryInfo = currentDirectoryInfo.Parent;
-                if (currentDirectoryInfo == null || currentDirectoryInfo.FullName.Equals(repositoryRootInfo.FullName)) { break; }
+                AppendJsonFile(appsettingsFileName, lastAppsettingsFileIndex, builder);
             }
-
-            var found = false;
-            var potentialAppsettingsFolder = externalConfigurationFolderDirectoryInfo.FullName;
-            while (currentDirectoryParts.Count() >= 0)
+            if (environmentAppsettingsFileIndex >= 0)
             {
-                var potentialSubfolder = currentDirectoryParts.Any() ? Path.Combine(currentDirectoryParts.ToArray()) : string.Empty;
-                var potentialFolder = Path.Combine(potentialAppsettingsFolder, potentialSubfolder);
-                var potentialFilePath = Path.Combine(potentialFolder, appsettingsFileName);
-                if (File.Exists(potentialFilePath))
-                {
-                    appsettingsFileFolder = potentialFolder;
-                    appsettingsFilePath = potentialFilePath;
-                    found = true;
-                    break;
-                }
-                if (currentDirectoryParts.Any()) { currentDirectoryParts.RemoveAt(currentDirectoryParts.Count() - 1); }
-            }
-
-            if (found)
-            {
-                AppendLocalJsonFile(appsettingsFilePath, appsettingsEnvironmentIndex, builder, isLocal);
-                builder.Sources.RemoveAt(appsettingsEnvironmentIndex);
+                builder.Sources.RemoveAt(environmentAppsettingsFileIndex);
             }
         }
-
-        var appsettingsLocalFileFolder = appsettingsFileFolder;
-        var appsettingsLocalFileName = $"appsettings.{appsettingsEnvironmentName}.local.json";
-        var appsettingsLocalFilePath = appsettingsLocalFileName;
-        var appsettingsLocalEnvironmentIndex = GetJsonFileIndex($"appsettings.{appsettingsEnvironmentName}.json", builder);
-        //var appsettingsLocalFilePath = appsettingsLocalFileFolder == "." ? appsettingsLocalFileName : Path.Combine(appsettingsLocalFileFolder, appsettingsLocalFileName);
-        //if (isLocal)
-        //{
-        //    AppendLocalJsonFile(appsettingsLocalFilePath, appsettingsEnvironmentIndex, builder, isLocal);
-        //}
 
         if (isLocal)
         {
-            if (externalConfigurationFolderExists && !File.Exists(appsettingsLocalFilePath))
+            var allConfigurationFiles = new[] { $"appsettings.json", $"appsettings.{environmentName}.json", $"appsettings.local.json", $"appsettings.{environmentName}.local.json" };
+            var localConfigurationFiles = new[] { $"appsettings.{environmentName}.json", $"appsettings.local.json", $"appsettings.{environmentName}.local.json" };
+            foreach (var configurationFile in localConfigurationFiles)
             {
-                var externalConfigurationFolderDirectoryInfo = new DirectoryInfo(externalConfigurationFolder!);
+                logger.LogDebug($"Checking for local file: {configurationFile}");
                 var currentDirectory = Directory.GetCurrentDirectory();
                 var currentDirectoryInfo = new DirectoryInfo(currentDirectory);
                 var repositoryRoot = DirectoryHelper.GetRepositoryRoot(currentDirectory)!;
                 var repositoryRootInfo = new DirectoryInfo(repositoryRoot);
+                var currentDirectoryParts = GetCurrentDirectoryParts(currentDirectoryInfo, repositoryRootInfo);
 
-                var currentDirectoryParts = new List<string>();
-                while (currentDirectoryInfo != null && currentDirectoryInfo.Exists)
+                if (File.Exists(configurationFile))
                 {
-                    currentDirectoryParts.Insert(0, currentDirectoryInfo.Name);
-                    currentDirectoryInfo = currentDirectoryInfo.Parent;
-                    if (currentDirectoryInfo == null || currentDirectoryInfo.FullName.Equals(repositoryRootInfo.FullName)) { break; }
+                    var lastAppsettingsFile = builder.Sources.LastOrDefault(cs => cs is FileConfigurationSource && (((FileConfigurationSource)cs)?.Path?.StartsWith("appsettings", StringComparison.InvariantCultureIgnoreCase) ?? false));
+                    lastAppsettingsFileIndex = lastAppsettingsFile != null ? builder.Sources.IndexOf(lastAppsettingsFile) : -1;
+
+                    if (lastAppsettingsFileIndex >= 0)
+                    {
+                        AppendLocalJsonFile(configurationFile, lastAppsettingsFileIndex, builder, isLocal);
+                    }
                 }
 
-                var found = false;
+                var found = false; // look for the file in external folder, if found add into the builder.Source at end of ...
+                var externalConfigurationFolder = Environment.GetEnvironmentVariable("ExternalConfigurationFolder");
+                if (string.IsNullOrEmpty(externalConfigurationFolder)) { continue; }
+
+                var externalConfigurationFolderDirectoryInfo = new DirectoryInfo(externalConfigurationFolder!);
                 var potentialAppsettingsFolder = externalConfigurationFolderDirectoryInfo.FullName;
                 while (currentDirectoryParts.Count() >= 0)
                 {
                     var potentialSubfolder = currentDirectoryParts.Any() ? Path.Combine(currentDirectoryParts.ToArray()) : string.Empty;
                     var potentialFolder = Path.Combine(potentialAppsettingsFolder, potentialSubfolder);
-                    var potentialFilePath = Path.Combine(potentialFolder, appsettingsLocalFileName);
+                    var potentialFilePath = Path.Combine(potentialFolder, configurationFile);
                     if (File.Exists(potentialFilePath))
                     {
                         appsettingsFileFolder = potentialFolder;
-                        appsettingsLocalFilePath = potentialFilePath;
+                        appsettingsFilePath = potentialFilePath;
                         found = true;
                         break;
                     }
-                    if (currentDirectoryParts.Any()) { currentDirectoryParts.RemoveAt(currentDirectoryParts.Count() - 1); }
+                    if (currentDirectoryParts.Any()) { currentDirectoryParts.RemoveAt(currentDirectoryParts.Count() - 1); } else { break; }
                 }
 
                 if (found)
                 {
-                    AppendLocalJsonFile(appsettingsLocalFilePath, appsettingsEnvironmentIndex, builder, isLocal);
-                    //builder.Sources.RemoveAt(appsettingsEnvironmentIndex);
+                    var lastAppsettingsFile = builder.Sources.LastOrDefault(cs => cs is FileConfigurationSource && (((FileConfigurationSource)cs)?.Path?.StartsWith("appsettings", StringComparison.InvariantCultureIgnoreCase) ?? false));
+                    lastAppsettingsFileIndex = lastAppsettingsFile != null ? builder.Sources.IndexOf(lastAppsettingsFile) : -1;
+
+                    AppendLocalJsonFile(appsettingsFilePath, lastAppsettingsFileIndex, builder, isLocal);
+                    //builder.Sources.RemoveAt(lastAppsettingsFileIndex);
                 }
             }
-            else
-            {
-                AppendLocalJsonFile(appsettingsLocalFilePath, appsettingsEnvironmentIndex, builder, isLocal);
-            }
         }
-
 
         IConfiguration configuration = builder.Build();
 
@@ -212,7 +165,18 @@ public static class HostBuilderExtensions
         }
     }
 
+    private static List<string> GetCurrentDirectoryParts(DirectoryInfo? currentDirectoryInfo, DirectoryInfo repositoryRootInfo)
+    {
+        var currentDirectoryParts = new List<string>();
+        while (currentDirectoryInfo != null && currentDirectoryInfo.Exists)
+        {
+            currentDirectoryParts.Insert(0, currentDirectoryInfo.Name);
+            currentDirectoryInfo = currentDirectoryInfo.Parent;
+            if (currentDirectoryInfo == null || currentDirectoryInfo.FullName.Equals(repositoryRootInfo.FullName)) { break; }
+        }
 
+        return currentDirectoryParts;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TBuilder ConfigureAppConfiguration2<TBuilder>(
@@ -286,8 +250,9 @@ public static class HostBuilderExtensions
         var logger = loggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { path, builder });
 
-        var ret = GetSourceIndex(builder.Sources, x => x.Source is JsonConfigurationSource jsonSource && string.Equals(jsonSource.Path, path, StringComparison.OrdinalIgnoreCase))
-            ?? throw new InvalidOperationException("No such json configuration source");
+        var ret = GetSourceIndex(builder.Sources, x => x.Source is JsonConfigurationSource jsonSource &&
+                                                       string.Equals(jsonSource.Path, path, StringComparison.OrdinalIgnoreCase))
+            ?? -1;
 
         activity?.SetOutput(ret);
         return ret;

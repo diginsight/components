@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -188,6 +189,33 @@ public static class CosmosDbExtensions
         catch (Exception ex)
         {
             logger.LogError(ex, "❌ Error creating CosmosDB query iterator for type {Type}", typeof(T).Name);
+            throw;
+        }
+    }
+
+    //CreateTransactionalBatch
+    /// <summary>
+    /// Creates an observable transactional batch for the specified partition key with logging and observability
+    /// </summary>
+    /// <param name="container">The CosmosDB container</param>
+    /// <param name="partitionKey">The partition key for the batch operations</param>
+    /// <returns>An observable transactional batch wrapper</returns>
+    public static ObservableTransactionalBatch CreateTransactionalBatchObservable(this Container container, PartitionKey partitionKey)
+    {
+        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var logger = loggerFactory.CreateLogger(typeof(CosmosDbExtensions));
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { partitionKey });
+
+        try
+        {
+            logger.LogDebug("📦 CosmosDB CreateTransactionalBatch for partition key '{PartitionKey}' in database {Endpoint}, container {Container}", partitionKey.ToString(), container.Database.Client.Endpoint, container.Id);
+
+            var transactionalBatch = container.CreateTransactionalBatch(partitionKey);
+            return new ObservableTransactionalBatch(transactionalBatch, partitionKey, container);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "❌ Error creating CosmosDB transactional batch for partition key {PartitionKey}", partitionKey.ToString());
             throw;
         }
     }
@@ -564,23 +592,6 @@ public static class CosmosDbExtensions
         }
     }
 
-    public static async IAsyncEnumerable<T> GetAsyncItems<T>(this FeedIterator<T> feedIterator)
-    {
-        while (feedIterator.HasMoreResults)
-        {
-            foreach (var item in await feedIterator.ReadNextAsync())
-            {
-                yield return item;
-            }
-        }
-    }
-
-    public static async Task<IEnumerable<T>> GetItemsAsync<T>(this FeedIterator<T> feedIterator)
-    {
-        var items = await feedIterator.GetAsyncItems().ToListAsync();
-        return items;
-    }
-
     public static async Task<FeedResponse<T>> ReadNextObservableAsync<T>(this FeedIterator<T> feedIterator, CancellationToken cancellationToken = default(CancellationToken))
     {
         var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
@@ -607,4 +618,42 @@ public static class CosmosDbExtensions
             throw;
         }
     }
+
+    public static async Task<TransactionalBatchResponse> ExecuteObservableAsync(this TransactionalBatch transactionalBatch, CancellationToken cancellationToken = default(CancellationToken)) {
+        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var logger = loggerFactory.CreateLogger(typeof(CosmosDbExtensions));
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new {  });
+        try
+        {
+            // Log connection and delete item information
+            logger.LogDebug("⚡ CosmosDB ExecuteObservableAsync item for transactionalBatch '{transactionalBatch}", transactionalBatch.ToString()); // ' with id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'
+            //logger.LogDebug("⚡ partitionKey:{partitionKey}", partitionKey.ToString());
+            var response = await transactionalBatch.ExecuteAsync(cancellationToken);
+
+            activity?.SetOutput(response);
+            return response;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "❌ Error deleting item from CosmosDB for type {Type} with id {Id}", "", "");
+            throw;
+        }
+    }
+
+    //public static async IAsyncEnumerable<T> GetAsyncItems<T>(this FeedIterator<T> feedIterator)
+    //{
+    //    while (feedIterator.HasMoreResults)
+    //    {
+    //        foreach (var item in await feedIterator.ReadNextAsync())
+    //        {
+    //            yield return item;
+    //        }
+    //    }
+    //}
+
+    //public static async Task<IEnumerable<T>> GetItemsAsync<T>(this FeedIterator<T> feedIterator)
+    //{
+    //    var items = await feedIterator.GetAsyncItems().ToListAsync();
+    //    return items;
+    //}
 }

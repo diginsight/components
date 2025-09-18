@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Diagnostics;
 
-namespace Diginsight.Components.Azure.Metrics
+namespace Diginsight.Components.Azure
 {
     public class ObservableFeedIterator<T> : FeedIterator<T>, IDisposable
     {
@@ -12,7 +12,6 @@ namespace Diginsight.Components.Azure.Metrics
         private readonly Container? container;
         private readonly QueryDefinition? queryDefinition;
         private readonly string? queryText; // For string-based queries
-        //private readonly string? application;
 
         internal ObservableFeedIterator(FeedIterator<T> iterator, Container? container, QueryDefinition? queryDefinition = null) // string? queryText = null
         {
@@ -34,8 +33,7 @@ namespace Diginsight.Components.Azure.Metrics
         {
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(ObservableFeedIterator<T>));
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger,
-                () => new {
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new {
                     query = queryDefinition?.QueryText ?? queryText, 
                     container = container?.Id,
                     database = container?.Database?.Id

@@ -89,16 +89,16 @@ public static class HostBuilderExtensions
         {
             var allConfigurationFiles = new[] { $"appsettings.json", $"appsettings.{environmentName}.json", $"appsettings.local.json", $"appsettings.{environmentName}.local.json" };
             var localConfigurationFiles = new[] { $"appsettings.{environmentName}.json", $"appsettings.local.json", $"appsettings.{environmentName}.local.json" };
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var currentDirectoryInfo = new DirectoryInfo(currentDirectory);
+            var repositoryRoot = DirectoryHelper.GetRepositoryRoot(currentDirectory)!;
+            var repositoryRootInfo = new DirectoryInfo(repositoryRoot);
+            var currentDirectoryParts = GetCurrentDirectoryParts(currentDirectoryInfo, repositoryRootInfo);
+
             foreach (var configurationFile in localConfigurationFiles)
             {
                 logger.LogDebug($"Checking for local file: {configurationFile}");
-                var currentDirectory = Directory.GetCurrentDirectory();
-                var currentDirectoryInfo = new DirectoryInfo(currentDirectory);
-                var repositoryRoot = DirectoryHelper.GetRepositoryRoot(currentDirectory)!;
-                var repositoryRootInfo = new DirectoryInfo(repositoryRoot);
-                var currentDirectoryParts = GetCurrentDirectoryParts(currentDirectoryInfo, repositoryRootInfo);
-
-                if (File.Exists(configurationFile))
+                if (File.Exists(configurationFile) && !builder.Sources.Any(cs => cs is FileConfigurationSource && (((FileConfigurationSource)cs)?.Path?.Equals(configurationFile, StringComparison.InvariantCultureIgnoreCase) ?? false)))
                 {
                     var lastAppsettingsFile = builder.Sources.LastOrDefault(cs => cs is FileConfigurationSource && (((FileConfigurationSource)cs)?.Path?.StartsWith("appsettings", StringComparison.InvariantCultureIgnoreCase) ?? false));
                     lastAppsettingsFileIndex = lastAppsettingsFile != null ? builder.Sources.IndexOf(lastAppsettingsFile) : -1;

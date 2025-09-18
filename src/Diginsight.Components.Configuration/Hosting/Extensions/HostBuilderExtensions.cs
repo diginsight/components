@@ -1,12 +1,17 @@
 using Azure.Core;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using Azure.Identity;
 using Diginsight.Diagnostics;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using System;
 using System.Diagnostics;
@@ -16,7 +21,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace Diginsight.Components.Configuration;
-
 
 public static class HostBuilderExtensions
 {
@@ -136,12 +140,15 @@ public static class HostBuilderExtensions
                     lastAppsettingsFileIndex = lastAppsettingsFile != null ? builder.Sources.IndexOf(lastAppsettingsFile) : -1;
 
                     AppendLocalJsonFile(appsettingsFilePath, lastAppsettingsFileIndex, builder, isLocal);
-                    //builder.Sources.RemoveAt(lastAppsettingsFileIndex);
                 }
             }
         }
 
         IConfiguration configuration = builder.Build();
+
+        var dumpAllValuesString = configuration["AzureKeyVault:DumpValues"] ?? "true";
+        var ok = bool.TryParse(dumpAllValuesString, out var dumpAllValues);
+        if (dumpAllValues == false) { DumpConfigurationSources(configuration); }
 
         var kvUri = configuration["AzureKeyVault:Uri"];
         logger.LogDebug($"kvUri:{kvUri}");
@@ -163,6 +170,8 @@ public static class HostBuilderExtensions
             builder.Sources.RemoveAt(sourcesCount - 1);
             builder.Sources.Insert(environmentVariablesIndex, kvConfigurationSource);
         }
+        if (dumpAllValues) { DumpConfigurationSources(configuration); }
+
     }
 
     private static List<string> GetCurrentDirectoryParts(DirectoryInfo? currentDirectoryInfo, DirectoryInfo repositoryRootInfo)
@@ -283,7 +292,358 @@ public static class HostBuilderExtensions
             .Select(static x => (int?)x.Index)
             .LastOrDefault();
     }
+    /// <summary>
+    /// Dumps all configuration sources loaded into the configuration builder for debugging purposes.
+    /// </summary>
+    /// <param name="configuration">The configuration to inspect</param>
+    /// <param name="logger">Logger for output</param>
+    public static void DumpConfigurationSources(IConfiguration configuration)
+    {
+        var loggerFactory = ObservabilityHelper.LoggerFactory;
+        var logger = loggerFactory?.CreateLogger(T) ?? NullLogger.Instance;
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { configuration });
+
+        var configRoot = configuration as IConfigurationRoot;
+        if (configRoot == null) { logger.LogWarning("⚠️ Configuration is not IConfigurationRoot, cannot dump configuration sources"); return; }
+
+        logger.LogDebug("📋 Configuration Sources Dump:");
+        logger.LogDebug("═══════════════════════════════════════════════════════════════");
+
+        var sources = configRoot.Providers.ToList();
+        for (int i = 0; i < sources.Count; i++)
+        {
+            var provider = sources[i];
+
+            var isSecretsConfig = false;
+            var forceMask = false; var maxLen = -1;
+            if (provider.GetType().Name.Equals(typeof(AzureKeyVaultConfigurationProvider).Name)) { isSecretsConfig = true; }
+            if (provider is FileConfigurationSource && (((FileConfigurationSource)provider)?.Path?.Equals("secrets", StringComparison.InvariantCultureIgnoreCase) ?? false)) { isSecretsConfig = true; }
+            if (isSecretsConfig) { forceMask = true; maxLen = 50; }
+
+            DumpConfigurationProvider(logger, i, provider, forceMask, maxLen);
+        }
+
+        logger.LogDebug("✅ Total Configuration Sources: {TotalCount}", sources.Count);
+        logger.LogDebug("═══════════════════════════════════════════════════════════════");
+
+        activity?.SetOutput(new { TotalSources = sources.Count, Sources = sources.Select(GetConfigurationProviderInfo).ToArray() });
+    }
+
+    private static void DumpConfigurationProvider(ILogger logger, int i, IConfigurationProvider provider, bool forceMaskValues = false, int maxLen = -1)
+    {
+        var configInfo = GetConfigurationProviderInfo(provider);
+
+        logger.LogDebug("🔧 [{Index:D2}] {ProviderType}: {Source}", i + 1, provider.GetType().Name, configInfo.Source);
+        try
+        {
+            var root = new ConfigurationRoot(new List<IConfigurationProvider> { provider });
+            var keys = root.AsEnumerable();
+            foreach (var kvp in keys ?? [])
+            {
+                var isSensitiveValue = IsSensitiveValue(kvp.Key, kvp.Value);
+                logger.LogDebug("🔑 {Key}: {Value}", kvp.Key, (isSensitiveValue || forceMaskValues) ? kvp.Value?.Mask(maxLen) : kvp.Value);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogDebug("❌ Error reading keys from provider: {Error}", ex.Message);
+        }
+
+        logger.LogDebug("───────────────────────────────────────────────────────────────");
+    }
+
+    /// <summary>
+    /// Masks sensitive configuration values for secure logging.
+    /// </summary>
+    /// <param name="key">The configuration key</param>
+    /// <param name="value">The configuration value</param>
+    /// <returns>The value or a masked version if sensitive</returns>
+    private static bool IsSensitiveValue(string key, string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return false;
+
+        var lowerKey = key.ToLowerInvariant();
+
+        // List of patterns that indicate sensitive values
+        var sensitivePatterns = new[]
+        {
+            "password", "secret", "key", "token", "connectionstring",
+            "clientsecret", "apikey", "accesskey", "credential"
+        };
+
+        if (sensitivePatterns.Any(pattern => lowerKey.Contains(pattern)))
+        {
+            return true;
+        }
+
+        return false;
+    }
+    /// <summary>
+    /// Extracts detailed information from a configuration provider.
+    /// </summary>
+    /// <param name="provider">The configuration provider to inspect</param>
+    /// <returns>Configuration provider information</returns>
+    private static ConfigurationProviderInfo GetConfigurationProviderInfo(IConfigurationProvider provider)
+    {
+        var providerType = provider.GetType();
+        var configName = providerType.Name;
+        var source = "Unknown";
+        var additionalInfo = "";
+
+        try
+        {
+            switch (provider)
+            {
+                case JsonConfigurationProvider jsonProvider:
+                    configName = "JSON Configuration";
+                    source = GetJsonProviderSource(jsonProvider);
+                    additionalInfo = GetJsonProviderInfo(jsonProvider);
+                    break;
+
+                case EnvironmentVariablesConfigurationProvider envProvider:
+                    configName = "Environment Variables";
+                    source = "System Environment";
+                    additionalInfo = GetEnvironmentProviderInfo(envProvider);
+                    break;
+
+                case CommandLineConfigurationProvider cmdProvider:
+                    configName = "Command Line Arguments";
+                    source = "Command Line";
+                    additionalInfo = GetCommandLineProviderInfo(cmdProvider);
+                    break;
+
+                case MemoryConfigurationProvider memProvider:
+                    configName = "In-Memory Configuration";
+                    source = "Memory";
+                    additionalInfo = GetMemoryProviderInfo(memProvider);
+                    break;
+
+                case ChainedConfigurationProvider chainedProvider:
+                    configName = "Chained Configuration";
+                    source = "Chained Sources";
+                    additionalInfo = GetChainedProviderInfo(chainedProvider);
+                    break;
+
+                default:
+                    // Handle Azure Key Vault and other providers
+                    if (providerType.Name.Contains("KeyVault"))
+                    {
+                        configName = "Azure Key Vault";
+                        source = GetKeyVaultProviderSource(provider);
+                        additionalInfo = GetKeyVaultProviderInfo(provider);
+                    }
+                    else if (providerType.Name.Contains("UserSecrets"))
+                    {
+                        configName = "User Secrets";
+                        source = GetUserSecretsProviderSource(provider);
+                        additionalInfo = GetUserSecretsProviderInfo(provider);
+                    }
+                    else
+                    {
+                        configName = providerType.Name.Replace("ConfigurationProvider", "").Replace("Provider", "");
+                        source = GetGenericProviderSource(provider);
+                        additionalInfo = GetGenericProviderInfo(provider);
+                    }
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            additionalInfo = $"Error reading provider info: {ex.Message}";
+        }
+
+        return new ConfigurationProviderInfo
+        {
+            ConfigName = configName,
+            ProviderType = providerType.FullName ?? providerType.Name,
+            Source = source,
+            AdditionalInfo = additionalInfo
+        };
+    }
+
+    private static string GetJsonProviderSource(JsonConfigurationProvider provider)
+    {
+        try
+        {
+            var source = ((FileConfigurationProvider)provider).Source;
+            if (source != null)
+            {
+                return source.Path ?? "Unknown JSON file";
+            }
+        }
+        catch { }
+
+        return "JSON Configuration File";
+    }
+
+    private static string GetJsonProviderInfo(JsonConfigurationProvider provider)
+    {
+        try
+        {
+            var sourceField = provider.GetType().GetField("_source", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (sourceField?.GetValue(provider) is JsonConfigurationSource source)
+            {
+                var info = new List<string>();
+                info.Add($"Optional: {source.Optional}");
+                info.Add($"ReloadOnChange: {source.ReloadOnChange}");
+                return string.Join(", ", info);
+            }
+        }
+        catch { }
+
+        return "";
+    }
+
+    private static string GetEnvironmentProviderInfo(EnvironmentVariablesConfigurationProvider provider)
+    {
+        try
+        {
+            var sourceField = provider.GetType().GetField("_source", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (sourceField?.GetValue(provider) is EnvironmentVariablesConfigurationSource source)
+            {
+                return !string.IsNullOrEmpty(source.Prefix) ? $"Prefix: '{source.Prefix}'" : "No prefix";
+            }
+        }
+        catch { }
+
+        return "";
+    }
+
+    private static string GetCommandLineProviderInfo(CommandLineConfigurationProvider provider)
+    {
+        try
+        {
+            var argsField = provider.GetType().GetField("_args", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (argsField?.GetValue(provider) is string[] args)
+            {
+                return $"Arguments count: {args.Length}";
+            }
+        }
+        catch { }
+
+        return "";
+    }
+
+    private static string GetMemoryProviderInfo(MemoryConfigurationProvider provider)
+    {
+        try
+        {
+            var dataField = provider.GetType().GetField("_data", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (dataField?.GetValue(provider) is IDictionary<string, string> data)
+            {
+                return $"Keys count: {data.Count}";
+            }
+        }
+        catch { }
+
+        return "";
+    }
+
+    private static string GetChainedProviderInfo(ChainedConfigurationProvider provider)
+    {
+        try
+        {
+            var configField = provider.GetType().GetField("_config", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (configField?.GetValue(provider) is IConfiguration config)
+            {
+                return $"Chained configuration type: {config.GetType().Name}";
+            }
+        }
+        catch { }
+
+        return "";
+    }
+
+    private static string GetKeyVaultProviderSource(IConfigurationProvider provider)
+    {
+        try
+        {
+            // Try to get Key Vault URI through reflection
+            var clientField = provider.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                .FirstOrDefault(f => f.Name.Contains("client", StringComparison.OrdinalIgnoreCase));
+
+            if (clientField?.GetValue(provider) is object client)
+            {
+                var vaultUriProperty = client.GetType().GetProperty("VaultUri");
+                if (vaultUriProperty?.GetValue(client) is Uri vaultUri)
+                {
+                    return vaultUri.ToString();
+                }
+            }
+        }
+        catch { }
+
+        return "Azure Key Vault";
+    }
+
+    private static string GetKeyVaultProviderInfo(IConfigurationProvider provider)
+    {
+        return "Azure Key Vault configuration provider";
+    }
+
+    private static string GetUserSecretsProviderSource(IConfigurationProvider provider)
+    {
+        try
+        {
+            var pathField = provider.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                .FirstOrDefault(f => f.Name.Contains("path", StringComparison.OrdinalIgnoreCase));
+
+            if (pathField?.GetValue(provider) is string path)
+            {
+                return path;
+            }
+        }
+        catch { }
+
+        return "User Secrets";
+    }
+
+    private static string GetUserSecretsProviderInfo(IConfigurationProvider provider)
+    {
+        return "Development user secrets";
+    }
+
+    private static string GetGenericProviderSource(IConfigurationProvider provider)
+    {
+        try
+        {
+            // Try common field names for source information
+            var sourceFields = new[] { "_source", "_path", "_uri", "_endpoint", "_connectionString" };
+
+            foreach (var fieldName in sourceFields)
+            {
+                var field = provider.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+                if (field?.GetValue(provider) is object value)
+                {
+                    return value.ToString() ?? "Unknown";
+                }
+            }
+        }
+        catch { }
+
+        return provider.GetType().Name;
+    }
+
+    private static string GetGenericProviderInfo(IConfigurationProvider provider)
+    {
+        return $"Provider type: {provider.GetType().FullName}";
+    }
+
+    /// <summary>
+    /// Configuration provider information container.
+    /// </summary>
+    private record ConfigurationProviderInfo
+    {
+        public string ConfigName { get; init; } = "";
+        public string ProviderType { get; init; } = "";
+        public string Source { get; init; } = "";
+        public string AdditionalInfo { get; init; } = "";
+    }
+
+
 }
+
 
 
 

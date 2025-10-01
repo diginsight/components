@@ -76,31 +76,42 @@ public static class WebHostingExtensions
         services.AddDynamicLogLevel<DefaultDynamicLogLevelInjector>();
         services.AddLogging(static lb => lb.AddVolatileConfiguration());
 
-        if (!services.Any(static x => x.ServiceType == typeof(DecoratedActivityLoggingSamplerMarker)))
-        {
-            services.AddSingleton<DecoratedActivityLoggingSamplerMarker>();
-            services.Decorate<IActivityLoggingSampler, DecoratorHttpHeadersActivityLoggingSampler>();
-        }
+        //if (!services.Any(static x => x.ServiceType == typeof(DecoratedActivityLoggingSamplerMarker)))
+        //{
+        //    services.AddSingleton<DecoratedActivityLoggingSamplerMarker>();
+        //    services.Decorate<IActivityLoggingFilter, HttpHeadersActivityLoggingFilter>();
+        //}
 
+        // NEW: Register IActivityLoggingFilter for HTTP header-based control
+        if (!services.Any(static x => x.ServiceType == typeof(IActivityLoggingFilter)))
+        {
+            services.AddSingleton<IActivityLoggingFilter, HttpHeadersActivityLoggingFilter>();
+        }
         ConfigurationVolatileConfigurationLoader.AddToServices(services);
         LogLevelVolatileConfigurationLoader.AddToServices(services);
 
         services.Configure<DiginsightDistributedContextOptions>(
-            static x =>
-            {
-                x.NonBaggageKeys.Add(HttpHeadersActivityLoggingSampler.HeaderName);
-                x.NonBaggageKeys.Add(HttpHeadersMetricRecordingFilter.HeaderName);
-            }
-        );
+             static x =>
+             {
+                 x.NonBaggageKeys.Add(HttpHeadersActivityLoggingFilter.HeaderName);
+                 x.NonBaggageKeys.Add(HttpHeadersSpanDurationMetricRecordingFilter.HeaderName);
+             }
+         );
 
         IOpenTelemetryBuilder openTelemetryBuilder = services.AddDiginsightOpenTelemetry();
 
         if (openTelemetryOptions.EnableMetrics)
         {
-            if (!services.Any(static x => x.ServiceType == typeof(MetricRecordingDurationMetricTagsEnricherMarker)))
+            //if (!services.Any(static x => x.ServiceType == typeof(MetricRecordingDurationMetricTagsEnricherMarker)))
+            //{
+            //    services.AddSingleton<MetricRecordingDurationMetricTagsEnricherMarker>();
+            //    services.Decorate<IMetricRecordingFilter, DecoratorHttpHeadersMetricRecorderSettings>();
+            //}
+
+            // NEW: Register IMetricRecordingFilter for HTTP header-based metric control
+            if (!services.Any(static x => x.ServiceType == typeof(IMetricRecordingFilter)))
             {
-                services.AddSingleton<MetricRecordingDurationMetricTagsEnricherMarker>();
-                services.Decorate<IMetricRecordingFilter, DecoratorHttpHeadersMetricRecorderSettings>();
+                services.AddSingleton<IMetricRecordingFilter, HttpHeadersSpanDurationMetricRecordingFilter>();
             }
 
             openTelemetryBuilder.WithMetrics(

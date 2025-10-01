@@ -101,7 +101,18 @@ public static partial class ObservabilityExtensions
         openTelemetryConfiguration.Bind(mutableOpenTelemetryOptions); logger.LogDebug("openTelemetryConfiguration.Bind(mutableOpenTelemetryOptions);");
         services.Configure<OpenTelemetryOptions>(openTelemetryConfiguration); logger.LogDebug("services.Configure<OpenTelemetryOptions>(openTelemetryConfiguration);");
 
-        services.TryAddSingleton<IActivityLoggingSampler, NameBasedActivityLoggingSampler>(); logger.LogDebug("services.TryAddSingleton<IActivityLoggingSampler, NameBasedActivityLoggingSampler>();");
+        //services.TryAddSingleton<IActivityLoggingSampler, NameBasedActivityLoggingSampler>(); logger.LogDebug("services.TryAddSingleton<IActivityLoggingSampler, NameBasedActivityLoggingSampler>();");
+
+        // CORRECT:
+        services.AddLogging(loggingBuilder => loggingBuilder.AddDiginsightCore()); logger.LogDebug("services.AddLogging(loggingBuilder => loggingBuilder.AddDiginsightCore());");
+
+        // NEW: Add span duration metric recording
+        if (openTelemetryOptions.EnableMetrics)
+        {
+            services.AddSpanDurationMetricRecorder();
+            logger.LogDebug("services.AddSpanDurationMetricRecorder();");
+        }
+
 
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IActivityListenerRegistration, ActivitySourceDetectorRegistration>()); logger.LogDebug("services.TryAddEnumerable(ServiceDescriptor.Singleton<IActivityListenerRegistration, ActivitySourceDetectorRegistration>());");
 
@@ -204,7 +215,7 @@ public static partial class ObservabilityExtensions
                 dao =>
                 {
                     dao.LogBehavior = LogBehavior.Show;
-                    dao.MeterName = assemblyName;
+                    //dao.MeterName = assemblyName;
                 }
             );
 
@@ -216,7 +227,7 @@ public static partial class ObservabilityExtensions
                         IReadOnlyList<string> markers = ClassConfigurationMarkers.For(t);
                         if (markers.Contains("Diginsight.*"))
                         {
-                            dao.RecordSpanDurations = true;
+                            //dao.RecordSpanDurations = true;
                         }
                     }
                 )

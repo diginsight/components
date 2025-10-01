@@ -50,6 +50,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
         IServiceProvider serviceProvider,
         ILogger<QueryCostMetricRecorder> logger,
         IClassAwareOptionsMonitor<DiginsightActivitiesOptions> activitiesOptionsMonitor,
+        IClassAwareOptionsMonitor<IDiginsightActivitiesMetricOptions> activitiesMetricOptionsMonitor,
         IClassAwareOptionsMonitor<OpenTelemetryOptions> openTelemetryOptionsMonitor,
         IClassAwareOptionsMonitor<QueryCostMetricRecorderOptions> queryCostMetricRecorderOptions,
         IMeterFactory meterFactory
@@ -64,16 +65,16 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
 
         this.lazyMetric = new Lazy<Histogram<double>>(() =>
         {
-            IDiginsightActivitiesMetricOptions options = activitiesOptionsMonitor.CurrentValue;
+            IDiginsightActivitiesMetricOptions options = activitiesMetricOptionsMonitor.CurrentValue;
             return meterFactory.Create(options.MeterName)
                                .CreateHistogram<double>(QueryMetrics.QueryCost.Name, QueryMetrics.QueryCost.Unit, QueryMetrics.QueryCost.Description);
         });
 
-        var metricFilter = serviceProvider.GetNamedService<IMetricRecordingFilter>(metricName);
-        this.metricFilter = metricFilter ?? serviceProvider.GetRequiredService<IMetricRecordingFilter>();
+        //var metricFilter = serviceProvider.GetNamedService<IMetricRecordingFilter>(metricName);
+        this.metricFilter = serviceProvider.GetRequiredService<IMetricRecordingFilter>(); // metricFilter ?? 
 
-        var metricEnricher = serviceProvider.GetNamedService<IMetricRecordingEnricher>(metricName);
-        this.metricEnricher = metricEnricher ?? serviceProvider.GetRequiredService<IMetricRecordingEnricher>();
+        //var metricEnricher = serviceProvider.GetNamedService<IMetricRecordingEnricher>(metricName);
+        this.metricEnricher = serviceProvider.GetRequiredService<IMetricRecordingEnricher>(); // metricEnricher ?? 
     }
 
     void IActivityListenerLogic.ActivityStopped(Activity activity)
@@ -123,7 +124,8 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                 tags.Add(new KeyValuePair<string, object?>("database", activity.GetTagItem("database")?.ToString()));
                 if (metricEnricher is not null)
                 {
-                    var additionalTags = metricEnricher.ExtractTags(activity);
+                    var metric = this.lazyMetric.Value;
+                    var additionalTags = metricEnricher.ExtractTags(activity, metric);
                     foreach (var tag in additionalTags ?? [])
                     {
                         tags.Add(new KeyValuePair<string, object?>(tag.Key, tag.Value));

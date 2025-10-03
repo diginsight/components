@@ -13,6 +13,7 @@ on:
       - 'src/Diginsight.Components*/**'
   workflow_dispatch:
     inputs:
+
       environment:
         description: 'Environment to run the workflow'
         required: true
@@ -43,6 +44,18 @@ jobs:
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
     steps:
+      - name: Setup Git LFS
+        run: |
+          git lfs install --skip-smudge
+          git lfs update --force
+        continue-on-error: true
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+
       - name: Run pwsh Dump Variables
         run: |
           pwsh -File "scripts/v2/00. DumpVariables.ps1"

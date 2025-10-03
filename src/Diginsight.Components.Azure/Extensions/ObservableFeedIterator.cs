@@ -46,9 +46,12 @@ namespace Diginsight.Components.Azure
 
                 var feedResponse = await innerIterator.ReadNextAsync(cancellationToken);
                 logger.LogDebug("Query executed successfully. Retrieved {Count} documents of type '{Type}', RU consumed: {RequestCharge}", feedResponse.Count, typeof(T).Name, feedResponse.RequestCharge);
-
                 if (activity != null && feedResponse.RequestCharge > 0)
                 {
+                    activity.SetTag("query", queryText);
+                    activity.SetTag("container", container.Id);
+                    activity.SetTag("database", container.Database.Id);
+
                     activity.SetTag("query_cost", feedResponse.RequestCharge);
                 }
 
@@ -71,11 +74,9 @@ namespace Diginsight.Components.Azure
             if (container != null)
             {
                 activity.SetTag("container", container.Id);
-
                 if (container.Database != null)
                 {
                     activity.SetTag("database", container.Database.Id);
-
                     if (container.Database.Client != null) { activity.SetTag("endpoint", container.Database.Client.Endpoint?.ToString()); }
                 }
             }
@@ -134,10 +135,12 @@ namespace Diginsight.Components.Azure
                 if (responseMessage.Headers?.RequestCharge != null) { requestCharge = responseMessage.Headers.RequestCharge; }
 
                 logger.LogDebug("Query executed successfully. Retrieved documents, RU consumed: {RequestCharge}", requestCharge);
-
-                // Set query cost tag for metric collection
                 if (activity != null && requestCharge > 0)
                 {
+                    activity.SetTag("query", queryText);
+                    activity.SetTag("container", container.Id);
+                    activity.SetTag("database", container.Database.Id);
+
                     activity.SetTag("query_cost", requestCharge);
                 }
 
@@ -160,7 +163,6 @@ namespace Diginsight.Components.Azure
             if (container != null)
             {
                 activity.SetTag("container", container.Id);
-
                 if (container.Database != null)
                 {
                     activity.SetTag("database", container.Database.Id);

@@ -3,7 +3,7 @@
 
 # Introduction
 
-`Diginsight Components` include **observable** or **optimized extensions** for other technologies, achieved through integration with the **Diginsight** observability platform and **Diginsight Smartcache**.
+`Diginsight Components` include **observable** extensions **extensions** for azure technologies, achieved through integration with the **Diginsight** observability or other utility components that can be.
 
 Each component is designed to address specific functionality areas (e.g., authentication, database access) while maintaining consistent observability and diagnostics capabilities.
 

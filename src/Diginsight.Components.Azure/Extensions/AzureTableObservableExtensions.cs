@@ -9,7 +9,7 @@ namespace Diginsight.Components.Azure.Extensions
     /// <summary>
     /// Extension methods for configuring Azure Table Storage repositories in the dependency injection container.
     /// </summary>
-    public static class AzureTableRepositoryExtensions
+    public static class AzureTableObservableExtensions
     {
         /// <summary>
         /// Registers the Azure Table Repository for a specific entity type in the service collection.
@@ -33,8 +33,7 @@ namespace Diginsight.Components.Azure.Extensions
             var serviceDescriptor = new ServiceDescriptor(typeof(IAzureTableRepository<T>), serviceProvider => new AzureTableRepository<T>(
                                                                                                                    serviceProvider.GetRequiredService<TableServiceClient>(),
                                                                                                                    serviceProvider.GetRequiredService<ILogger<AzureTableRepository<T>>>(),
-                                                                                                                   tableName),
-                lifetime);
+                                                                                                                   tableName), lifetime);
 
             services.Add(serviceDescriptor);
             return services;

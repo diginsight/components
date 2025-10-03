@@ -85,8 +85,6 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                 double.TryParse(costObj.ToString(), out double cost) &&
                 cost > 0)
             {
-                var callers = GetDiginsightCallers(activity);
-                var entryMethod = callers.Last();
 
                 var queryCostMetricRecorderOptionsValue = queryCostMetricRecorderOptions.CurrentValue;
                 var addNormalizedQueryTag = queryCostMetricRecorderOptionsValue.AddNormalizedQueryTag;
@@ -100,14 +98,16 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                     var normalizedQuery = NormalizeQueryForMetrics(rawQuery);
                     tags.Add(new KeyValuePair<string, object?>("query", normalizedQuery));
                 }
+
+                var callers = GetDiginsightCallers(activity);
+                var diginsightCallers = callers.Where(a => !a.OperationName.Contains("diginsight", StringComparison.InvariantCultureIgnoreCase));
+                if (ignoreQueryCallers?.Length > 0)
+                {
+                    diginsightCallers = diginsightCallers.Where(caller => !ShouldIgnoreCaller(caller.OperationName, ignoreQueryCallers));
+                }
+
                 if (addQueryCallers != 0)
                 {
-                    var diginsightCallers = callers.Where(a => !a.OperationName.Contains("diginsight", StringComparison.InvariantCultureIgnoreCase));
-                    if (ignoreQueryCallers?.Length > 0)
-                    {
-                        diginsightCallers = diginsightCallers.Where(caller => !ShouldIgnoreCaller(caller.OperationName, ignoreQueryCallers));
-                    }
-
                     var callerIndex = 0;
                     while (callerIndex < addQueryCallers && callerIndex < diginsightCallers.Count())
                     {
@@ -116,6 +116,8 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                         callerIndex++;
                     }
                 }
+
+                var entryMethod = diginsightCallers.Last() ?? callers.Last();
                 tags.Add(new KeyValuePair<string, object?>("method", activity.OperationName));
                 tags.Add(new KeyValuePair<string, object?>("entrymethod", entryMethod?.OperationName));
                 tags.Add(new KeyValuePair<string, object?>("application", activity.GetTagItem("application")?.ToString() ?? System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name));
@@ -264,9 +266,9 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
             // Step 3: Apply length limit after normalization (to preserve more semantic meaning)
             var queryCostMetricRecorderOptionsValue = queryCostMetricRecorderOptions.CurrentValue;
             var normalizedQueryMaxLen = queryCostMetricRecorderOptionsValue.NormalizedQueryMaxLen;
-            if (normalizedQueryMaxLen >= 0 && query.Length > normalizedQueryMaxLen) 
-            { 
-                query = query.Substring(0, normalizedQueryMaxLen) + "..."; 
+            if (normalizedQueryMaxLen >= 0 && query.Length > normalizedQueryMaxLen)
+            {
+                query = query.Substring(0, normalizedQueryMaxLen) + "...";
             }
 
             return query;
@@ -294,29 +296,29 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
         query = Regex.Replace(query, @"\s+", " ").Trim();
 
         // Step 2: Apply value replacements (order matters - specific to general)
-        
+
         // Replace GUIDs first (most specific)
         query = GuidPattern.Replace(query, "{GUID}");
-        
+
         // Replace datetime values
         query = DateTimePattern.Replace(query, "{DATETIME}");
-        
+
         // Replace long string literals (but preserve short ones like "Type" values)
         query = StringLiteralPattern.Replace(query, "'{STRING}'");
-        
+
         // Replace large numbers (likely IDs, but preserve small numbers that might be meaningful)
         query = NumberPattern.Replace(query, "{NUMBER}");
 
         // Step 3: Apply CosmosDB-specific structural normalizations
-        
+
         // Normalize IN clauses with multiple values
         query = InClausePattern.Replace(query, "IN ({ITEMS})");
-        
+
         // Normalize BETWEEN clauses
         query = BetweenClausePattern.Replace(query, "BETWEEN {VALUE} AND {VALUE}");
-        
+
         // Normalize ARRAY_CONTAINS functions
-        query = ArrayContainsPattern.Replace(query, match => 
+        query = ArrayContainsPattern.Replace(query, match =>
         {
             var prefix = match.Value.Substring(0, match.Value.LastIndexOf(',') + 1);
             return $"{prefix} {{VALUE}})";
@@ -324,7 +326,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
 
         // Step 4: Normalize complex expressions while preserving query intent
         query = NormalizeWhereClause(query);
-        
+
         // Step 5: Normalize ORDER BY clauses (preserve structure but remove specifics)
         query = OrderByPattern.Replace(query, "ORDER BY {FIELDS}");
 
@@ -344,7 +346,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
     {
         // Handle complex WHERE clauses with multiple ANDs/ORs
         // This approach preserves the logical structure while normalizing values
-        
+
         // Pattern: (condition1 AND condition2 AND ...)
         var complexAndPattern = new Regex(
             @"\(\s*([^()]+)\s+AND\s+([^()]+)(?:\s+AND\s+[^()]+)*\s*\)",
@@ -431,8 +433,8 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
 
             // Look for FROM clause (case insensitive)
             var fromMatch = System.Text.RegularExpressions.Regex.Match(
-                query, 
-                @"^(.+?\bFROM\s+\w+)", 
+                query,
+                @"^(.+?\bFROM\s+\w+)",
                 RegexOptions.IgnoreCase);
 
             if (fromMatch.Success)

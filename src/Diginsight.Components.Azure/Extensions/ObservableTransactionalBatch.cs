@@ -95,9 +95,12 @@ namespace Diginsight.Components.Azure
                 var response = await innerBatch.ExecuteAsync(cancellationToken);
 
                 logger.LogDebug("⚡✅ CosmosDB ExecuteAsync transactionalBatch completed. Status: {StatusCode}, RU consumed: {RequestCharge}, Items: {Count}", response.StatusCode, response.RequestCharge, response.Count);
-
                 if (activity != null && response.RequestCharge > 0)
                 {
+                    activity.SetTag("query", $"Batch({this.partitionKey})");
+                    activity.SetTag("container", container.Id);
+                    activity.SetTag("database", container.Database.Id);
+
                     activity.SetTag("query_cost", response.RequestCharge);
                     activity.SetTag("query_status", response.StatusCode.ToString());
                     activity.SetTag("query_count", response.Count);
@@ -130,9 +133,12 @@ namespace Diginsight.Components.Azure
                 var response = await innerBatch.ExecuteAsync(requestOptions, cancellationToken);
 
                 logger.LogDebug("⚡✅ CosmosDB ExecuteAsync transactionalBatch with options completed. Status: {StatusCode}, RU consumed: {RequestCharge}, Items: {Count}", response.StatusCode, response.RequestCharge, response.Count);
-
                 if (activity != null && response.RequestCharge > 0)
                 {
+                    activity.SetTag("query", $"Batch({this.partitionKey})");
+                    activity.SetTag("container", container.Id);
+                    activity.SetTag("database", container.Database.Id);
+
                     activity.SetTag("query_cost", response.RequestCharge);
                     activity.SetTag("query_status", response.StatusCode.ToString());
                     activity.SetTag("query_count", response.Count);

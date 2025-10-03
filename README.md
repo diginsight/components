@@ -3,9 +3,11 @@
 
 # Introduction
 
-`Diginsight Components` include **observable** extensions **extensions** for azure technologies, achieved through integration with the **Diginsight** observability or other utility components that can be.
+`Diginsight Components` include **observable** extensions **extensions** for azure technologies, achieved through integration with the **Diginsight** observability.
 
-Each component is designed to address specific functionality areas (e.g., authentication, database access) while maintaining consistent observability and diagnostics capabilities.
+Also utility components are provided to enhance **applications observability** and **troubleshooting** in those technologies.
+
+Each component is designed to address specific functionality areas (e.g., authentication, data access, parallel processing) while maintaining **consistent observability and diagnostics capabilities**.
 
 # Table of Contents
 
@@ -28,16 +30,15 @@ Each component is designed to address specific functionality areas (e.g., authen
 
 # Why Diginsight Components
 
-**[Diginsight Telemetry](https://diginsight.github.io/telemetry/)** implements observability and diagnostics capabilities for .NET applications using **OpenTelemetry** and **Azure Monitor**. 
+**[Diginsight Telemetry](https://diginsight.github.io/telemetry/)** implements observability and diagnostics capabilities for .NET applications using **OpenTelemetry** and **Azure Monitor**.
+![alt text](<./src/docs/001.01a diginsight telemetry repo.png>)
+**Diginsight telemetry** can be integrated into applications to ensure **observability of the business logic**.
 
-**[Diginsight Smartcache](https://diginsight.github.io/smartcache/)** implements optimized hybrid caching for .NET applications, combining in-memory and distributed caching strategies.
+**[Diginsight Components](https://diginsight.github.io/components/)** applies the model to database access, authentication, api and http invocations etc. so that we can integrate them without worrying about making them **observable** and **easy to troubleshoot**.
+![alt text](<./src/docs/001.01b diginsight components repo.png>)
 
-![Diginsight repositories overview](<./src/docs/001.01 diginsight repositories overview.png>)
 
-**Diginsight Components** are built to take advantage of these capabilities, enhancing existing libraries with observability capabilities and performance optimization, where possible.
-
-**Diginsight Components** are built with a layered architecture that promotes modularity and flexibility. 
-
+**Diginsight Components** are built with a layered architecture that promotes modularity and flexibility.
 At the foundation, **abstractions packages** define core interfaces and contracts. 
 
 The **core components** provide essential functionality like authentication and HTTP client configuration. 
@@ -49,6 +50,7 @@ This modular approach allows you to compose exactly the functionality your appli
 # What components are available
 
 ## **Diginsight.Components.Configuration**
+
 - **Purpose**: Observable extensions for Diginsight configuration with Azure Key Vault, Console, Log4Net, and OpenTelemetry.
 - **Key features**:
   - Azure Key Vault integration.
@@ -82,6 +84,7 @@ This modular approach allows you to compose exactly the functionality your appli
   - Base contracts for other components.
 
 ## **Diginsight.Components.Azure**
+
 - **Purpose**: Azure-specific functionality and integrations.
 - **Key features**:
   - CosmosDB Observable extensions: CosmosDB Container query extensions integrated with Diginsight observability and exposing advanced metrics (e.g., query_cost).

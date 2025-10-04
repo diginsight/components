@@ -18,6 +18,12 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { entity });
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("➕ AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableUri, "Standard");
+            logger.LogDebug("➕ partitionKey:{PartitionKey}, rowKey:{RowKey}, entity:{Entity}", entity.PartitionKey, entity.RowKey, entity.Stringify());
+
             var response = tableClient.AddEntity(entity, cancellationToken);
 
             activity?.SetOutput(response);
@@ -47,6 +53,11 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🏗️ AzureTable {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, tableUri, "Standard");
+
             var response = tableClient.Create(cancellationToken);
             activity?.SetOutput(response);
             return response;
@@ -57,6 +68,11 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
+
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🏗️ AzureTable {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, tableUri, "Standard");
 
             var response = await tableClient.CreateAsync(cancellationToken);
 
@@ -70,6 +86,11 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🏗️ AzureTable {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, tableUri, "Standard");
+
             var response = tableClient.CreateIfNotExists(cancellationToken);
 
             activity?.SetOutput(response);
@@ -81,6 +102,11 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
+
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🏗️ AzureTable {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, tableUri, "Standard");
 
             var response = await tableClient.CreateIfNotExistsAsync(cancellationToken);
 
@@ -94,6 +120,11 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🗑️ AzureTable {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, tableUri, "Standard");
+
             var response = tableClient.Delete(cancellationToken);
 
             activity?.SetOutput(response);
@@ -105,6 +136,11 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
+
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🗑️ AzureTable {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, tableUri, "Standard");
 
             var response = await tableClient.DeleteAsync(cancellationToken);
 
@@ -118,6 +154,12 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { partitionKey, rowKey, ifMatch });
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🗑️ AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, "object", tableName, tableUri, "Standard");
+            logger.LogDebug("🗑️ partitionKey:{partitionKey}, rowKey:{rowKey}", partitionKey, rowKey);
+
             var response = tableClient.DeleteEntity(partitionKey, rowKey, ifMatch, cancellationToken);
 
             activity?.SetOutput(response);
@@ -129,6 +171,12 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { entity, ifMatch });
+
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🗑️ AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, entity.GetType().Name, tableName, tableUri, "Standard");
+            logger.LogDebug("🗑️ partitionKey:{PartitionKey}, rowKey:{RowKey}, entity:{Entity}", entity.PartitionKey, entity.RowKey, entity.Stringify());
 
             var response = tableClient.DeleteEntity(entity, ifMatch, cancellationToken);
 
@@ -160,6 +208,12 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { entity, ifMatch });
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🗑️ AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, entity.GetType().Name, tableName, tableUri, "Standard");
+            logger.LogDebug("🗑️ partitionKey:{PartitionKey}, rowKey:{RowKey}, entity:{Entity}", entity.PartitionKey, entity.RowKey, entity.Stringify());
+
             var response = await tableClient.DeleteEntityAsync(entity, ifMatch, cancellationToken);
 
             activity?.SetOutput(response);
@@ -171,6 +225,11 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { permissions, expiresOn });
+
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔑 AzureTable {operationName} for table:{TableName}, StorageUri:{StorageUri}, permissions:{Permissions}, expiresOn:{ExpiresOn}", operationName, tableName, tableUri, permissions, expiresOn);
 
             var response = tableClient.GenerateSasUri(permissions, expiresOn);
 
@@ -184,6 +243,11 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { builder });
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔑 AzureTable {operationName} for table:{TableName}, StorageUri:{StorageUri}, builder:{Builder}", operationName, tableName, tableUri, builder.Stringify());
+
             var response = tableClient.GenerateSasUri(builder);
 
             activity?.SetOutput(response);
@@ -196,6 +260,11 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("📋 AzureTable {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, tableUri, "Standard");
+
             var response = tableClient.GetAccessPolicies(cancellationToken);
 
             activity?.SetOutput(response);
@@ -207,6 +276,11 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("📋 AzureTable {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, tableUri, "Standard");
+
             var response = await tableClient.GetAccessPoliciesAsync(cancellationToken);
 
             activity?.SetOutput(response);
@@ -217,6 +291,12 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { partitionKey, rowKey, select });
+
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔍 AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableUri, "Standard");
+            logger.LogDebug("🔍 partitionKey:{PartitionKey}, rowKey:{RowKey}", partitionKey, rowKey);
 
             var response = tableClient.GetEntity<T>(partitionKey, rowKey, select, cancellationToken);
 
@@ -246,6 +326,13 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { partitionKey, rowKey, select });
+
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔍 AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableUri, "Standard");
+            logger.LogDebug("🔍 partitionKey:{PartitionKey}, rowKey:{RowKey}", partitionKey, rowKey);
+
             var response = tableClient.GetEntityIfExists<T>(partitionKey, rowKey, select, cancellationToken);
             activity?.SetOutput(response);
             return response;
@@ -255,6 +342,12 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { partitionKey, rowKey, select });
+
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔍 AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableUri, "Standard");
+            logger.LogDebug("🔍 partitionKey:{PartitionKey}, rowKey:{RowKey}", partitionKey, rowKey);
 
             var response = await tableClient.GetEntityIfExistsAsync<T>(partitionKey, rowKey, select, cancellationToken);
 
@@ -267,6 +360,11 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { permissions, expiresOn });
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔑 AzureTable {operationName} for table:{TableName}, StorageUri:{StorageUri}, permissions:{Permissions}, expiresOn:{ExpiresOn}", operationName, tableName, tableUri, permissions, expiresOn);
+
             var response = tableClient.GetSasBuilder(permissions, expiresOn);
 
             activity?.SetOutput(response);
@@ -277,6 +375,11 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { rawPermissions, expiresOn });
+
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔑 AzureTable {operationName} for table:{TableName}, StorageUri:{StorageUri}, rawPermissions:{RawPermissions}, expiresOn:{ExpiresOn}", operationName, tableName, tableUri, rawPermissions, expiresOn);
 
             var response = tableClient.GetSasBuilder(rawPermissions, expiresOn);
 
@@ -289,6 +392,12 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { filter, maxPerPage, select });
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔍 AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableUri, "Standard");
+            logger.LogDebug("🔍 filter:{Filter}, top:{Top}, select:{Select}", filter?.ToString() ?? "null", maxPerPage?.ToString() ?? "null", select != null ? string.Join(",", select) : "null");
+
             var response = tableClient.Query<T>(filter, maxPerPage, select, cancellationToken);
 
             activity?.SetOutput(response);
@@ -300,6 +409,12 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { filter, maxPerPage, select });
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔍 AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableUri, "Standard");
+            logger.LogDebug("🔍 filter:{Filter}, top:{Top}, select:{Select}", filter ?? "null", maxPerPage?.ToString() ?? "null", select != null ? string.Join(",", select) : "null");
+
             var response = tableClient.Query<T>(filter, maxPerPage, select, cancellationToken);
 
             activity?.SetOutput(response);
@@ -310,6 +425,12 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { filter, maxPerPage, select });
+
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔍 AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableUri, "Standard");
+            logger.LogDebug("🔍 filter:{Filter}, top:{Top}, select:{Select}", filter?.ToString() ?? "null", maxPerPage?.ToString() ?? "null", select != null ? string.Join(",", select) : "null");
 
             var response = tableClient.QueryAsync<T>(filter, maxPerPage, select, cancellationToken);
 
@@ -340,6 +461,11 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { tableAcl });
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("⚙️ AzureTable {operationName} for table:{TableName}, StorageUri:{StorageUri}, tableAcl:{TableAcl}", operationName, tableName, tableUri, tableAcl.Stringify());
+
             var response = tableClient.SetAccessPolicy(tableAcl, cancellationToken);
 
             activity?.SetOutput(response);
@@ -352,6 +478,11 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { tableAcl });
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("⚙️ AzureTable {operationName} for table:{TableName}, StorageUri:{StorageUri}, tableAcl:{TableAcl}", operationName, tableName, tableUri, tableAcl.Stringify());
+
             var response = await tableClient.SetAccessPolicyAsync(tableAcl, cancellationToken);
 
             activity?.SetOutput(response);
@@ -362,6 +493,12 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { transactionActions });
+
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("➕ AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, transactionActions.FirstOrDefault()?.Entity?.GetType()?.Name, tableName, tableUri, "Standard");
+            logger.LogDebug("➕ transactionActions:{transactionActions}", transactionActions.Stringify());
 
             var response = tableClient.SubmitTransaction(transactionActions, cancellationToken);
 
@@ -392,6 +529,12 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { entity, ifMatch, mode });
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔄 AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableUri, "Standard");
+            logger.LogDebug("🔄 existingEntity.ETag:{existingEntityETag}, entity:{entity}", ifMatch, entity.Stringify());
+
             var response = tableClient.UpdateEntity(entity, ifMatch, mode, cancellationToken);
 
             activity?.SetOutput(response);
@@ -421,6 +564,12 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { entity, mode });
 
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("⬆️ AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableUri, "Standard");
+            logger.LogDebug("⬆️ partitionKey:{PartitionKey}, rowKey:{RowKey}, entity:{Entity}", entity.PartitionKey, entity.RowKey, entity.Stringify());
+
             var response = tableClient.UpsertEntity(entity, mode, cancellationToken);
 
             activity?.SetOutput(response);
@@ -431,6 +580,12 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { entity, mode });
+
+            var tableUri = tableClient.Uri;
+            var tableName = tableClient.Name;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("⬆️ AzureTable {operationName} for type:{Type}, table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, typeof(T).Name, tableName, tableUri, "Standard");
+            logger.LogDebug("⬆️ partitionKey:{PartitionKey}, rowKey:{RowKey}, entity:{Entity}", entity.PartitionKey, entity.RowKey, entity.Stringify());
 
             var response = await tableClient.UpsertEntityAsync(entity, mode, cancellationToken);
 
@@ -444,6 +599,10 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { tableName });
 
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🏗️ AzureTableService {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, serviceUri, "Standard");
+
             var response = tableServiceClient.CreateTable(tableName, cancellationToken);
 
             activity?.SetOutput(response);
@@ -454,6 +613,10 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { tableName });
+
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🏗️ AzureTableService {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, serviceUri, "Standard");
 
             var response = await tableServiceClient.CreateTableAsync(tableName, cancellationToken);
 
@@ -466,6 +629,10 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { tableName });
 
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🏗️ AzureTableService {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, serviceUri, "Standard");
+
             var response = tableServiceClient.CreateTableIfNotExists(tableName, cancellationToken);
 
             activity?.SetOutput(response);
@@ -476,6 +643,10 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { tableName });
+
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🏗️ AzureTableService {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, serviceUri, "Standard");
 
             var response = await tableServiceClient.CreateTableIfNotExistsAsync(tableName, cancellationToken);
 
@@ -488,6 +659,10 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { tableName });
 
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🗑️ AzureTableService {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, serviceUri, "Standard");
+
             var response = tableServiceClient.DeleteTable(tableName, cancellationToken);
 
             activity?.SetOutput(response);
@@ -498,6 +673,10 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { tableName });
+
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🗑️ AzureTableService {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, serviceUri, "Standard");
 
             var response = await tableServiceClient.DeleteTableAsync(tableName, cancellationToken);
 
@@ -510,6 +689,10 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { permissions, resourceTypes, expiresOn });
 
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔑 AzureTableService {operationName} for StorageUri:{StorageUri}, permissions:{Permissions}, resourceTypes:{ResourceTypes}, expiresOn:{ExpiresOn}", operationName, serviceUri, permissions, resourceTypes, expiresOn);
+
             var response = tableServiceClient.GenerateSasUri(permissions, resourceTypes, expiresOn);
 
             activity?.SetOutput(response);
@@ -520,6 +703,10 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { builder });
+
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔑 AzureTableService {operationName} for StorageUri:{StorageUri}, builder:{Builder}", operationName, serviceUri, builder.Stringify());
 
             var response = tableServiceClient.GenerateSasUri(builder);
 
@@ -532,6 +719,10 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("📋 AzureTableService {operationName} for StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, serviceUri, "Standard");
+
             var response = tableServiceClient.GetProperties(cancellationToken);
 
             activity?.SetOutput(response);
@@ -542,6 +733,10 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
+
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("📋 AzureTableService {operationName} for StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, serviceUri, "Standard");
 
             var response = await tableServiceClient.GetPropertiesAsync(cancellationToken);
 
@@ -554,6 +749,10 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { permissions, resourceTypes, expiresOn });
 
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔑 AzureTableService {operationName} for StorageUri:{StorageUri}, permissions:{Permissions}, resourceTypes:{ResourceTypes}, expiresOn:{ExpiresOn}", operationName, serviceUri, permissions, resourceTypes, expiresOn);
+
             var response = tableServiceClient.GetSasBuilder(permissions, resourceTypes, expiresOn);
 
             activity?.SetOutput(response);
@@ -564,6 +763,10 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { rawPermissions, resourceTypes, expiresOn });
+
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔑 AzureTableService {operationName} for StorageUri:{StorageUri}, rawPermissions:{RawPermissions}, resourceTypes:{ResourceTypes}, expiresOn:{ExpiresOn}", operationName, serviceUri, rawPermissions, resourceTypes, expiresOn);
 
             var response = tableServiceClient.GetSasBuilder(rawPermissions, resourceTypes, expiresOn);
 
@@ -576,6 +779,10 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
 
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("📈 AzureTableService {operationName} for StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, serviceUri, "Standard");
+
             var response = tableServiceClient.GetStatistics(cancellationToken);
 
             activity?.SetOutput(response);
@@ -586,6 +793,10 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger);
+
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("📈 AzureTableService {operationName} for StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, serviceUri, "Standard");
 
             var response = await tableServiceClient.GetStatisticsAsync(cancellationToken);
 
@@ -598,6 +809,10 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { tableName });
 
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🎯 AzureTableService {operationName} for table:{TableName}, StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, tableName, serviceUri, "Standard");
+
             var response = tableServiceClient.GetTableClient(tableName);
 
             activity?.SetOutput(response);
@@ -608,6 +823,11 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { filter, maxPerPage });
+
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔍 AzureTableService {operationName} for StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, serviceUri, "Standard");
+            logger.LogDebug("🔍 filter:{Filter}, top:{Top}", filter ?? "null", maxPerPage?.ToString() ?? "null");
 
             var response = tableServiceClient.Query(filter, maxPerPage, cancellationToken);
 
@@ -620,6 +840,11 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { filter, maxPerPage });
 
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔍 AzureTableService {operationName} for StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, serviceUri, "Standard");
+            logger.LogDebug("🔍 filter:{Filter}, top:{Top}", filter?.ToString() ?? "null", maxPerPage?.ToString() ?? "null");
+
             var response = tableServiceClient.Query(filter, maxPerPage, cancellationToken);
 
             activity?.SetOutput(response);
@@ -630,6 +855,11 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { filter, maxPerPage });
+
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔍 AzureTableService {operationName} for StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, serviceUri, "Standard");
+            logger.LogDebug("🔍 filter:{Filter}, top:{Top}", filter?.ToString() ?? "null", maxPerPage?.ToString() ?? "null");
 
             var response = tableServiceClient.Query(filter, maxPerPage, cancellationToken);
 
@@ -642,6 +872,11 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { filter, maxPerPage });
 
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔍 AzureTableService {operationName} for StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, serviceUri, "Standard");
+            logger.LogDebug("🔍 filter:{Filter}, top:{Top}", filter ?? "null", maxPerPage?.ToString() ?? "null");
+
             var response = tableServiceClient.QueryAsync(filter, maxPerPage, cancellationToken);
 
             activity?.SetOutput(response);
@@ -652,6 +887,11 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { filter, maxPerPage });
+
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔍 AzureTableService {operationName} for StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, serviceUri, "Standard");
+            logger.LogDebug("🔍 filter:{Filter}, top:{Top}", filter?.ToString() ?? "null", maxPerPage?.ToString() ?? "null");
 
             var response = tableServiceClient.QueryAsync(filter, maxPerPage, cancellationToken);
 
@@ -664,6 +904,11 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { filter, maxPerPage });
 
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("🔍 AzureTableService {operationName} for StorageUri:{StorageUri}, DefaultRequestOptions:{DefaultRequestOptions}", operationName, serviceUri, "Standard");
+            logger.LogDebug("🔍 filter:{Filter}, top:{Top}", filter?.ToString() ?? "null", maxPerPage?.ToString() ?? "null");
+
             var response = tableServiceClient.QueryAsync(filter, maxPerPage, cancellationToken);
 
             activity?.SetOutput(response);
@@ -675,6 +920,10 @@ namespace Diginsight.Components.Azure.Extensions
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { properties });
 
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("⚙️ AzureTableService {operationName} for StorageUri:{StorageUri}, properties:{Properties}", operationName, serviceUri, properties.Stringify());
+
             var response = tableServiceClient.SetProperties(properties, cancellationToken);
 
             activity?.SetOutput(response);
@@ -685,6 +934,10 @@ namespace Diginsight.Components.Azure.Extensions
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(AzureTableObservableExtensions));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { properties });
+
+            var serviceUri = tableServiceClient.Uri;
+            var operationName = activity?.OperationName;
+            logger.LogDebug("⚙️ AzureTableService {operationName} for StorageUri:{StorageUri}, properties:{Properties}", operationName, serviceUri, properties.Stringify());
 
             var response = await tableServiceClient.SetPropertiesAsync(properties, cancellationToken);
 

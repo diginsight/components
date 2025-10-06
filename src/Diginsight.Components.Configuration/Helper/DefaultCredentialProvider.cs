@@ -1,7 +1,6 @@
 using Azure.Core;
 using Azure.Identity;
 using Diginsight.Diagnostics;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

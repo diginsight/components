@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Diginsight.Components
+﻿namespace Diginsight.Components
 {
     public interface IDebugService
     {

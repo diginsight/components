@@ -1,5 +1,4 @@
 using Diginsight.Diagnostics;
-using Diginsight.Diagnostics.AspNetCore;
 using Microsoft.AspNetCore.Http;
 using System.Diagnostics;
 

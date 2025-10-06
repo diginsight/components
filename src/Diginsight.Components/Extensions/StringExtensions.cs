@@ -2,8 +2,6 @@
 #endregion
 
 //using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-
 namespace Diginsight.Components;
 
 public static class StringExtensions {

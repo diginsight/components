@@ -1,8 +1,3 @@
-using Diginsight.Diagnostics;
-using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
 namespace Diginsight.Components.Azure.Metrics

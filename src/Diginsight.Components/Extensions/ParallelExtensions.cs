@@ -4,7 +4,6 @@
 using Diginsight.Diagnostics;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
-using System.Threading.Tasks;
 
 namespace Diginsight.Components;
 

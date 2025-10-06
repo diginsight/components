@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Diginsight.Components.Configuration;
+﻿namespace Diginsight.Components.Configuration;
 
 public static class DirectoryHelper
 {

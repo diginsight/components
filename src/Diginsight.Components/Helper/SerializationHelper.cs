@@ -1,16 +1,8 @@
 ﻿#region using
-using System;
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+
 using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+
 #endregion
 
 namespace Diginsight.Components;
@@ -49,7 +41,7 @@ internal class SerializationHelper
     /// <returns>String contenente l'xml con l'oggetto serializzato</returns>
     public static string SerializeJson<T>(T obj)
     {
-        var jsonString = System.Text.Json.JsonSerializer.Serialize(obj, defaultOptions);
+        var jsonString = JsonSerializer.Serialize(obj, defaultOptions);
         return jsonString;
     }
     #endregion
@@ -124,7 +116,7 @@ internal class SerializationHelper
     #region SerializeJson<T>(T obj)
     public static string SerializeJsonObject(object obj)
     {
-        return System.Text.Json.JsonSerializer.Serialize(obj, defaultOptions);
+        return JsonSerializer.Serialize(obj, defaultOptions);
     }
 
     /// <summary>Serializza l'oggetto in una stringa xml (DataContractSerializer)</summary>
@@ -133,7 +125,7 @@ internal class SerializationHelper
     /// <returns>String contenente l'xml con l'oggetto serializzato</returns>
     public static string SerializeJsonObject<T>(T obj)
     {
-        return System.Text.Json.JsonSerializer.Serialize<T>(obj, defaultOptions);
+        return JsonSerializer.Serialize<T>(obj, defaultOptions);
     }
     #endregion
     #region SerializeJsonObject(Type t, T obj)
@@ -143,7 +135,7 @@ internal class SerializationHelper
     /// <returns>String contenente l'xml con l'oggetto serializzato</returns>
     public static string SerializeJsonObject(Type t, object obj)
     {
-        return System.Text.Json.JsonSerializer.Serialize(obj, t);
+        return JsonSerializer.Serialize(obj, t);
     }
     #endregion
     #region DeserializeJsonObject<T>(string json)
@@ -153,7 +145,7 @@ internal class SerializationHelper
     /// <returns>Oggetto del tipo specificato</returns>
     public static T DeserializeJsonObject<T>(string json)
     {
-        return System.Text.Json.JsonSerializer.Deserialize<T>(json);
+        return JsonSerializer.Deserialize<T>(json);
     }
     #endregion
     #region DeserializeJsonObject(Type t, string json)
@@ -163,7 +155,7 @@ internal class SerializationHelper
     /// <returns>Oggetto del tipo specificato</returns>
     public static object DeserializeJsonObject(Type t, string json)
     {
-        return System.Text.Json.JsonSerializer.Deserialize(json, t, defaultOptions);
+        return JsonSerializer.Deserialize(json, t, defaultOptions);
     }
     #endregion
 

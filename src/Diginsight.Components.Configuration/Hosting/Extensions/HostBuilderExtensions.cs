@@ -1,9 +1,6 @@
 using Azure.Core;
 using Azure.Extensions.AspNetCore.Configuration.Secrets;
-using Azure.Identity;
 using Diginsight.Diagnostics;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
@@ -12,13 +9,9 @@ using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
-using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace Diginsight.Components.Configuration;
 

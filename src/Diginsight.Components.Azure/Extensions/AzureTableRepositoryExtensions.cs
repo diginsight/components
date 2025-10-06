@@ -1,4 +1,3 @@
-using Azure;
 using Azure.Data.Tables;
 using Diginsight.Components.Azure.Abstractions;
 using Diginsight.Components.Azure.Repositories;

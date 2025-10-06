@@ -1,7 +1,4 @@
-﻿using Diginsight;
-using System.Diagnostics.CodeAnalysis;
-
-namespace Diginsight.Components;
+﻿namespace Diginsight.Components;
 
 public sealed class HttpClientOptions : IHttpClientOptions
 {

@@ -1,9 +1,7 @@
 using Diginsight.Diagnostics;
 using Diginsight.Options;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
 using System.Collections.Concurrent;
 using System.Threading.Tasks.Dataflow;
 

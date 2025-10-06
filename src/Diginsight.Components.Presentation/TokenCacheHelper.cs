@@ -26,12 +26,11 @@
 //
 //------------------------------------------------------------------------------
 
-using System;
-using System.IdentityModel;
-using System.IO;
-using System.Security.Cryptography;
-using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
+using System.IO;
+using System.Reflection;
+using System.Security.Cryptography;
+
 #endregion
 
 #nullable enable    
@@ -53,7 +52,7 @@ static class TokenCacheHelper
         //using var sec = TraceLogger.BeginMethodScope(T);
 
         var tempPath = Path.GetTempPath(); // sec.LogDebug(new { tempPath });
-        var executingAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+        var executingAssembly = Assembly.GetExecutingAssembly();
         CacheFilePath = $"{tempPath}iam\\{executingAssembly.GetName().Name}.msalcache.bin3";
 
         //sec.LogDebug(new { CacheFilePath });

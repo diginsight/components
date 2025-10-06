@@ -25,25 +25,16 @@
 * THE SOFTWARE.
 *
 */
-using System;
-using System.Configuration;
-//using Microsoft.InformationProtection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Diagnostics;
+using System.Windows.Interop;
+//using Microsoft.InformationProtection;
 //using System.Windows.Interop;
-using Microsoft.Identity.Client.Extensibility;
 //using Microsoft.Extensions.Logging;
 //using System.Windows.Interop;
 //using Microsoft.Identity.Client.Broker;
-using System.Security.Principal;
-using System.Windows.Interop;
-using Microsoft.Extensions.Logging;
+
 #endregion
 namespace Diginsight.Components.Presentation
 {
@@ -168,7 +159,7 @@ namespace Diginsight.Components.Presentation
 
             try
             {
-                var authResult = default(Microsoft.Identity.Client.AuthenticationResult);
+                var authResult = default(AuthenticationResult);
                 var app = publicClientApp;
 
                 var accounts = await publicClientApp.GetAccountsAsync(); logger.LogDebug($"await app.GetAccountsAsync(); returned {accounts}");
@@ -237,7 +228,7 @@ namespace Diginsight.Components.Presentation
             {
                 Identity identity = null;
 
-                var authResult = default(Microsoft.Identity.Client.AuthenticationResult);
+                var authResult = default(AuthenticationResult);
                 var app = publicClientApp;
 
                 var accounts = await publicClientApp.GetAccountsAsync(); logger.LogDebug($"await app.GetAccountsAsync(); returned {accounts}");
@@ -307,7 +298,7 @@ namespace Diginsight.Components.Presentation
                 Identity identity = null;
                 //Identity manager = null;
 
-                var authResult = default(Microsoft.Identity.Client.AuthenticationResult);
+                var authResult = default(AuthenticationResult);
                 var app = publicClientApp;
 
                 var accounts = await publicClientApp.GetAccountsAsync(); logger.LogDebug($"await app.GetAccountsAsync(); returned {accounts}");

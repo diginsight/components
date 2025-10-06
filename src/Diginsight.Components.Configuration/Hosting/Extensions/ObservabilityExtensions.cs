@@ -1,4 +1,9 @@
 using Azure.Monitor.OpenTelemetry.Exporter;
+using Diginsight.Components.Azure;
+using Diginsight.Components.Azure.Metrics;
+using Diginsight.Diagnostics;
+using Diginsight.Diagnostics.Log4Net;
+using Diginsight.Options;
 using log4net.Appender;
 using log4net.Core;
 using Microsoft.Extensions.Configuration;
@@ -10,16 +15,9 @@ using Microsoft.Extensions.Options;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
-using System;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Diginsight.Diagnostics;
-using Diginsight.Diagnostics.Log4Net;
-using Diginsight.Options;
-using Diginsight.Components.Azure;
 
 namespace Diginsight.Components.Configuration;
 
@@ -170,7 +168,7 @@ public static partial class ObservabilityExtensions
                                     DatePattern = @".yyyyMMdd.\l\o\g",
                                     MaxSizeRollBackups = 1000,
                                     MaximumFileSize = "100MB",
-                                    Encoding = System.Text.Encoding.UTF8,
+                                    Encoding = Encoding.UTF8,
                                     LockingModel = new FileAppender.MinimalLock(),
                                     Layout = new DiginsightLayout()
                                     {
@@ -230,10 +228,10 @@ public static partial class ObservabilityExtensions
         logger.LogDebug("services.ConfigureClassAware<DiginsightActivitiesOptions>();");
 
         // Configure QueryCostMetricRecorderOptions from "Diginsight:QueryCostMetricRecorder" section
-        services.ConfigureClassAware<Diginsight.Components.Azure.Metrics.QueryCostMetricRecorderOptions>(configuration.GetSection(ConfigurationPath.Combine(diginsightConfKey, "QueryCostMetricRecorder")));
+        services.ConfigureClassAware<QueryCostMetricRecorderOptions>(configuration.GetSection(ConfigurationPath.Combine(diginsightConfKey, "QueryCostMetricRecorder")));
         services
-            .VolatilelyConfigureClassAware<Diginsight.Components.Azure.Metrics.QueryCostMetricRecorderOptions>()
-            .DynamicallyConfigureClassAware<Diginsight.Components.Azure.Metrics.QueryCostMetricRecorderOptions>();
+            .VolatilelyConfigureClassAware<QueryCostMetricRecorderOptions>()
+            .DynamicallyConfigureClassAware<QueryCostMetricRecorderOptions>();
         logger.LogDebug("services.ConfigureClassAware<QueryCostMetricRecorderOptions>();");
 
         IOpenTelemetryBuilder openTelemetryBuilder = services.AddDiginsightOpenTelemetry(); logger.LogDebug("services.AddDiginsightOpenTelemetry();");

@@ -1,13 +1,12 @@
-using Azure;
 using Diginsight.Components.Configuration;
 using Diginsight.Diagnostics;
 using Diginsight.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -59,7 +58,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
         this.queryCostMetricRecorderOptions = queryCostMetricRecorderOptions;
 
         IOpenTelemetryOptions openTelemetryOptions = openTelemetryOptionsMonitor.CurrentValue;
-        var applicationName = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name ?? "unknown";
+        var applicationName = Assembly.GetEntryAssembly()?.GetName().Name ?? "unknown";
         var metricName = QueryMetrics.QueryCost.Name;
 
         this.lazyMetric = new Lazy<Histogram<double>>(() =>
@@ -120,7 +119,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                 var entryMethod = diginsightCallers.Last() ?? callers.Last();
                 tags.Add(new KeyValuePair<string, object?>("method", activity.OperationName));
                 tags.Add(new KeyValuePair<string, object?>("entrymethod", entryMethod?.OperationName));
-                tags.Add(new KeyValuePair<string, object?>("application", activity.GetTagItem("application")?.ToString() ?? System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name));
+                tags.Add(new KeyValuePair<string, object?>("application", activity.GetTagItem("application")?.ToString() ?? Assembly.GetEntryAssembly()?.GetName().Name));
                 tags.Add(new KeyValuePair<string, object?>("container", activity.GetTagItem("container")?.ToString()));
                 tags.Add(new KeyValuePair<string, object?>("database", activity.GetTagItem("database")?.ToString()));
                 if (metricEnricher is not null)
@@ -429,10 +428,10 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                 return "{QUERY_NORMALIZATION_FAILED}";
 
             // Normalize whitespace first for easier processing
-            query = System.Text.RegularExpressions.Regex.Replace(query, @"\s+", " ").Trim();
+            query = Regex.Replace(query, @"\s+", " ").Trim();
 
             // Look for FROM clause (case insensitive)
-            var fromMatch = System.Text.RegularExpressions.Regex.Match(
+            var fromMatch = Regex.Match(
                 query,
                 @"^(.+?\bFROM\s+\w+)",
                 RegexOptions.IgnoreCase);

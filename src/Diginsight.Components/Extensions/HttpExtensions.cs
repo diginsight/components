@@ -2,16 +2,14 @@
 //using Diginsight.Components.Configuration;
 using Diginsight.Diagnostics;
 using Diginsight.Runtime;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
 using System.Net.Mime;
 using System.Runtime.CompilerServices;
-using System.Security.Policy;
 using System.Text;
+
 #endregion
 
 namespace Diginsight.Components;

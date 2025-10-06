@@ -114,16 +114,16 @@ public static class HostBuilderExtensions
                 }
 
                 var found = false; // look for the file in external folder, if found add into the builder.Source at end of ...
-                var externalConfigurationFolder = Environment.GetEnvironmentVariable("ExternalConfigurationFolder");
+                var externalConfigurationFolder = Environment.GetEnvironmentVariable("ExternalConfigurationFolder"); logger.LogDebug("externalConfigurationFolder: {externalConfigurationFolder}", externalConfigurationFolder);
                 if (string.IsNullOrEmpty(externalConfigurationFolder)) { continue; }
 
                 var externalConfigurationFolderDirectoryInfo = new DirectoryInfo(externalConfigurationFolder!);
-                var potentialAppsettingsFolder = externalConfigurationFolderDirectoryInfo.FullName;
+                var potentialAppsettingsFolder = externalConfigurationFolderDirectoryInfo.FullName; logger.LogDebug("potentialAppsettingsFolder: {potentialAppsettingsFolder}", potentialAppsettingsFolder);
                 while (currentDirectoryParts.Count() >= 0)
                 {
                     var potentialSubfolder = currentDirectoryParts.Any() ? Path.Combine(currentDirectoryParts.ToArray()) : string.Empty;
                     var potentialFolder = Path.Combine(potentialAppsettingsFolder, potentialSubfolder);
-                    var potentialFilePath = Path.Combine(potentialFolder, configurationFile);
+                    var potentialFilePath = Path.Combine(potentialFolder, configurationFile); logger.LogDebug("potentialFilePath: {potentialFilePath}", potentialFilePath);
                     if (File.Exists(potentialFilePath))
                     {
                         appsettingsFileFolder = potentialFolder;
@@ -139,6 +139,7 @@ public static class HostBuilderExtensions
                     var lastAppsettingsFile = builder.Sources.LastOrDefault(cs => cs is FileConfigurationSource && (((FileConfigurationSource)cs)?.Path?.StartsWith("appsettings", StringComparison.InvariantCultureIgnoreCase) ?? false));
                     lastAppsettingsFileIndex = lastAppsettingsFile != null ? builder.Sources.IndexOf(lastAppsettingsFile) : -1;
 
+                    logger.LogDebug("found appsettingsFilePath: {appsettingsFilePath}", appsettingsFilePath);
                     AppendLocalJsonFile(appsettingsFilePath, lastAppsettingsFileIndex, builder, isLocal);
                 }
             }

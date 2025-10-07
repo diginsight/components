@@ -81,6 +81,8 @@ public static partial class ObservabilityExtensions
         bool isLocal = hostEnvironment.IsDevelopment(); logger.LogDebug("isLocal: {isLocal}", isLocal);
         string assemblyName = Assembly.GetEntryAssembly()!.GetName().Name!; logger.LogDebug("assemblyName: {assemblyName}", assemblyName);
 
+
+
         IConfiguration openTelemetryConfiguration = configuration.GetSection("OpenTelemetry"); logger.LogDebug("openTelemetryConfiguration: {openTelemetryConfiguration}", openTelemetryConfiguration);
 
         mutableOpenTelemetryOptions = new OpenTelemetryOptions();

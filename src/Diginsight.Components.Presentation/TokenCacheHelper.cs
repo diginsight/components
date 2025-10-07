@@ -1,4 +1,3 @@
-﻿#region using
 //------------------------------------------------------------------------------
 //
 // Copyright (c) Microsoft Corporation.
@@ -31,13 +30,11 @@ using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
 
-#endregion
-
 #nullable enable    
 
 namespace Diginsight.Components.Presentation;
 
-static class TokenCacheHelper
+internal static class TokenCacheHelper
 {
     public static Type T = typeof(TokenCacheHelper);
     //private ILogger<TokenCacheHelper> logger;
@@ -45,7 +42,7 @@ static class TokenCacheHelper
     /// <summary>Path to the token cache</summary>
     //public static readonly string CacheFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location + ".msalcache.bin3";
     public static readonly string CacheFilePath; // = System.Reflection.Assembly.GetExecutingAssembly().Location + ".msalcache.bin3";
-    private static readonly object FileLock = new object();
+    private static readonly object FileLock = new ();
 
     static TokenCacheHelper()
     {
@@ -77,12 +74,11 @@ static class TokenCacheHelper
 
                 args.TokenCache.DeserializeMsalV3(unprotectData); // logger.LogDebug($"args.TokenCache.DeserializeMsalV3(unprotectData);");
             }
-            catch (Exception _)
+            catch (Exception)
             {
                 //logger.LogException(ex);
             }
         }
-
     }
 
     public static Task BeforeAccessNotificationAsync(TokenCacheNotificationArgs args)
@@ -108,7 +104,7 @@ static class TokenCacheHelper
                     File.WriteAllBytes(CacheFilePath, ProtectedData.Protect(args.TokenCache.SerializeMsalV3(), null, DataProtectionScope.CurrentUser));
                     //logger.LogDebug($"File.WriteAllBytes({CacheFilePath}, ProtectedData.Protect(args.TokenCache.SerializeMsalV3(), null, {DataProtectionScope.CurrentUser}));");
                 }
-                catch (Exception _)
+                catch (Exception)
                 {
                     //logger.LogException(ex);
                 }

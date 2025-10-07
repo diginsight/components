@@ -53,9 +53,9 @@ public sealed class DefaultCredentialProvider : ICredentialProvider
         var tenantId = configuration["TenantId"].HardTrim();
         var clientSecret = configuration["ClientSecret"].HardTrim();
         var certificateThumbprint = configuration["CertificateThumbprint"].HardTrim();
-        
+
         logger.LogDebug($"tenantId:{tenantId},clientId:{clientId},clientSecret:{clientSecret},managedIdentityClientId:{managedIdentityClientId},certificateThumbprint:{certificateThumbprint}");
-        
+
         var authorityHost = GetAuthorityHost();
 
         // Add client credentials (highest priority for configured authentication)
@@ -81,7 +81,7 @@ public sealed class DefaultCredentialProvider : ICredentialProvider
         if (environment.IsDevelopment())
         {
             // Development environment: Add developer tools for local authentication
-            
+
             // Azure CLI Credential - uses Azure CLI login for developers
             AzureCliCredentialOptions credentialOptions1 = new() { AuthorityHost = authorityHost };
             credentials.Add(new AzureCliCredential(credentialOptions1));
@@ -97,7 +97,7 @@ public sealed class DefaultCredentialProvider : ICredentialProvider
         else
         {
             // Production environment: Add Azure-native authentication methods
-            
+
             // Workload Identity Credential - for Kubernetes workload identity
             WorkloadIdentityCredentialOptions credentialOptions1 = new() { AuthorityHost = authorityHost };
             credentials.Add(new WorkloadIdentityCredential(credentialOptions1));
@@ -147,14 +147,14 @@ public sealed class DefaultCredentialProvider : ICredentialProvider
     /// which requires using the Azure China authority host instead of the public cloud.
     /// </summary>
     /// <returns>The appropriate Azure authority host URI</returns>
-    Uri GetAuthorityHost()
+    private static Uri GetAuthorityHost()
     {
         bool? isChina = null;
         if (isChina is not { } isChina0)
         {
             // Check if environment name indicates China region (ends with "cn")
             string? appsettingsEnvName = EnvironmentVariables.AppsettingsEnvironmentName;
-            isChina = isChina0 = appsettingsEnvName?.EndsWith("cn", StringComparison.OrdinalIgnoreCase) == true;
+            isChina0 = appsettingsEnvName?.EndsWith("cn", StringComparison.OrdinalIgnoreCase) == true;
         }
 
         // Default to Azure Public Cloud, switch to China if detected

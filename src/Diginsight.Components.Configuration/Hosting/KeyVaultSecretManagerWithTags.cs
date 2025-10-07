@@ -42,10 +42,8 @@ internal sealed class KeyVaultSecretManagerWithTags : KeyVaultSecretManager
                 {
                     return sb.ToString()[..^1];
                 }
-                else
-                {
-                    lastWasDash = true;
-                }
+
+                lastWasDash = true;
             }
             else
             {
@@ -82,7 +80,7 @@ internal sealed class KeyVaultSecretManagerWithTags : KeyVaultSecretManager
                 return null;
             }
 
-            string str = new string(name[..length]);
+            string str = new (name[..length]);
             name = name[length..];
 
             try

@@ -16,12 +16,12 @@ public static class WebHostingExtensions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IServiceCollection AddAspNetCoreObservability(
-    this IServiceCollection services,
-    IConfiguration configuration,
-    IHostEnvironment hostEnvironment,
-    bool configureDefaults = true,
-    TraceInstrumentationCallbacks? traceInstrumentationCallbacks = null
-)
+        this IServiceCollection services,
+        IConfiguration configuration,
+        IHostEnvironment hostEnvironment,
+        bool configureDefaults = true,
+        TraceInstrumentationCallbacks? traceInstrumentationCallbacks = null
+    )
     {
         return services.AddAspNetCoreObservability(
             configuration, hostEnvironment, out OpenTelemetryOptions _, traceInstrumentationCallbacks
@@ -40,19 +40,19 @@ public static class WebHostingExtensions
     {
         services.AddAspNetCoreObservability(
             configuration, hostEnvironment, out OpenTelemetryOptions mutableOpenTelemetryOptions, traceInstrumentationCallbacks
-        ); // configureDefaults, 
+        ); // configureDefaults,
 
         openTelemetryOptions = mutableOpenTelemetryOptions;
         return services;
     }
 
     public static IServiceCollection AddAspNetCoreObservability(
-        this IServiceCollection services,
-        IConfiguration configuration,
-        IHostEnvironment hostEnvironment,
-        out OpenTelemetryOptions mutableOpenTelemetryOptions,
-        TraceInstrumentationCallbacks? traceInstrumentationCallbacks = null
-    )
+            this IServiceCollection services,
+            IConfiguration configuration,
+            IHostEnvironment hostEnvironment,
+            out OpenTelemetryOptions mutableOpenTelemetryOptions,
+            TraceInstrumentationCallbacks? traceInstrumentationCallbacks = null
+        )
         //bool configureDefaults = true,
     {
         traceInstrumentationCallbacks ??= new TraceInstrumentationCallbacks();
@@ -72,7 +72,7 @@ public static class WebHostingExtensions
         if (!services.Any(static x => x.ServiceType == typeof(DecoratedActivityLoggingSamplerMarker)))
         {
             services.AddSingleton<DecoratedActivityLoggingSamplerMarker>();
-            services.Decorate<IActivityLoggingSampler, DecoratorHttpHeadersActivityLoggingSampler>();
+            services.Decorate<IActivityLoggingFilter, DecoratorHttpHeadersActivityLoggingFilter>();
         }
 
         ConfigurationVolatileConfigurationLoader.AddToServices(services);
@@ -81,8 +81,8 @@ public static class WebHostingExtensions
         services.Configure<DiginsightDistributedContextOptions>(
             static x =>
             {
-                x.NonBaggageKeys.Add(HttpHeadersActivityLoggingSampler.HeaderName);
-                x.NonBaggageKeys.Add(HttpHeadersMetricRecordingFilter.HeaderName);
+                x.NonBaggageKeys.Add(HttpHeadersActivityLoggingFilter.HeaderName);
+                x.NonBaggageKeys.Add(HttpHeadersSpanDurationMetricRecordingFilter.HeaderName);
             }
         );
 
@@ -93,7 +93,7 @@ public static class WebHostingExtensions
             if (!services.Any(static x => x.ServiceType == typeof(MetricRecordingDurationMetricTagsEnricherMarker)))
             {
                 services.AddSingleton<MetricRecordingDurationMetricTagsEnricherMarker>();
-                services.Decorate<IMetricRecordingFilter, DecoratorHttpHeadersMetricRecorderSettings>();
+                services.Decorate<IMetricRecordingFilter, DecoratorHttpHeadersSpanDurationMetricRecordingFilter>();
             }
 
             openTelemetryBuilder.WithMetrics(

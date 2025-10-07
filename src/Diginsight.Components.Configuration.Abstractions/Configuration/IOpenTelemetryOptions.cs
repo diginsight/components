@@ -13,6 +13,4 @@ public interface IOpenTelemetryOptions
     IEnumerable<string> Meters { get; }
 
     IEnumerable<string> ExcludedHttpHosts { get; }
-
-    IEnumerable<string> DurationMetricTags { get; }
 }

@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
 
         services.TryAddSingleton<QueryCostMetricRecorder>();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IActivityListenerRegistration, TRegistration>());
-        
+
         return services;
     }
 }

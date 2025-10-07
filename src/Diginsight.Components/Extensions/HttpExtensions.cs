@@ -1,4 +1,3 @@
-#region using
 //using Diginsight.Components.Configuration;
 using Diginsight.Diagnostics;
 using Diginsight.Runtime;
@@ -9,8 +8,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
 using System.Runtime.CompilerServices;
 using System.Text;
-
-#endregion
 
 namespace Diginsight.Components;
 
@@ -71,7 +68,7 @@ public static class HttpExtensions
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { method, url, requestBody, description });
 
         using HttpRequestMessage requestMessage = new(method, url);
-        if (requestBody != null)
+        if (requestBody is not null)
         {
             requestMessage.Content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, MediaTypeNames.Application.Json);
         }
@@ -96,13 +93,12 @@ public static class HttpExtensions
     }
 
     public static async Task<TResult?> GetAsync<TResult>(
-        this HttpResponseMessage responseMessage, 
+        this HttpResponseMessage responseMessage,
         CancellationToken cancellationToken)
     {
         string responseBody = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
-        if (responseMessage.IsSuccessStatusCode == false || string.IsNullOrEmpty(responseBody)) { return default; }
+        if (!responseMessage.IsSuccessStatusCode || string.IsNullOrEmpty(responseBody)) { return default; }
 
         return JsonConvert.DeserializeObject<TResult>(responseBody);
     }
-
 }

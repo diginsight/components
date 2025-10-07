@@ -1,6 +1,3 @@
-﻿#region using
-#endregion
-
 using Diginsight.Diagnostics;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
@@ -39,13 +36,12 @@ public static class ParallelExtensions
         var logger = Observability.LoggerFactory.CreateLogger(typeof(ParallelExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { asyncFuncs, parallelOptions });
 
-        if (asyncFuncs == null) throw new ArgumentNullException(nameof(asyncFuncs));
+        if (asyncFuncs is null) throw new ArgumentNullException(nameof(asyncFuncs));
         parallelOptions ??= new ParallelOptions();
 
         int index = 0;
         var resultsDictionary = new ConcurrentDictionary<int, T>();
         var indexedFuncs = asyncFuncs.Select(func => (Index: Interlocked.Increment(ref index) - 1, Func: func)).ToList();
-        
 
         await Parallel.ForEachAsync(indexedFuncs, parallelOptions, async (item, cancellationToken) =>
         {
@@ -53,11 +49,9 @@ public static class ParallelExtensions
             resultsDictionary[item.Index] = result;
         });
 
-        var result = indexedFuncs.OrderBy(x => x.Index).Select(x => resultsDictionary[x.Index]);
+        var result = indexedFuncs.OrderBy(static x => x.Index).Select(x => resultsDictionary[x.Index]);
 
         activity?.SetOutput(result);
         return result;
     }
-
-
 }

@@ -1,11 +1,10 @@
 using System.Security.Principal;
 
-namespace Diginsight.Components
+namespace Diginsight.Components;
+
+public interface IAuthenticationService
 {
-    public interface IAuthenticationService
-    {
-        Task<IIdentity> LoginSilentAsync();
-        Task<GenericIdentity> LoginAsync();
-        Task LogoutAsync();
-    }
+    Task<IIdentity> LoginSilentAsync();
+    Task<GenericIdentity> LoginAsync();
+    Task LogoutAsync();
 }

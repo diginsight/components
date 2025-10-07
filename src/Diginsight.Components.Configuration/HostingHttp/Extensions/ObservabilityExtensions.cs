@@ -1,4 +1,4 @@
-﻿using Diginsight.Diagnostics;
+using Diginsight.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry;
 using OpenTelemetry.Instrumentation.Http;
@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Diginsight.Components.Configuration;
 
-public static partial class ObservabilityExtensions
+internal static partial class ObservabilityExtensions
 {
     public static IServiceCollection AddHttpObservability(
         this IServiceCollection services,

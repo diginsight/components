@@ -1,10 +1,7 @@
-#region using
 //using Diginsight.Components.Configuration;
 using Diginsight.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace Diginsight.Components;
 
@@ -24,7 +21,7 @@ public static class HttpHostingExtensions
 
         builder.Services.AddKeyedScoped(clientName, (sp, _) => ActivatorUtilities.CreateInstance<ApplicationAuthenticationHandler>(sp, clientName));
         builder.AddHttpMessageHandler(sp => sp.GetRequiredKeyedService<ApplicationAuthenticationHandler>(clientName));
-        
+
         if (configureOptions is not null)
         {
             builder.Services.Configure(clientName, configureOptions);

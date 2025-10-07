@@ -1,8 +1,6 @@
-using Diginsight.Components.Configuration;
 using Diginsight.Diagnostics;
-using Diginsight.Options;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
@@ -12,67 +10,53 @@ using System.Text.RegularExpressions;
 
 namespace Diginsight.Components.Azure.Metrics;
 
-public class QueryCostMetricRecorderOptions : IDynamicallyConfigurable, IVolatilelyConfigurable
-{
-    public bool AddNormalizedQueryTag { get; set; } = false;
-    public int NormalizedQueryMaxLen { get; set; } = 500;
-    public int AddQueryCallers { get; set; } = 0;
-    public string[] IgnoreQueryCallers { get; set; } = [];
-}
-
 public sealed class QueryCostMetricRecorder : IActivityListenerLogic
 {
     // Enhanced regex patterns for better CosmosDB SQL normalization
-    private static readonly Regex GuidPattern = new Regex(@"\b[0-9a-fA-F]{8}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{12}\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    private static readonly Regex NumberPattern = new Regex(@"\b\d{4,}\b", RegexOptions.Compiled);
-    private static readonly Regex StringLiteralPattern = new Regex(@"'[^']{6,}'", RegexOptions.Compiled);
-    private static readonly Regex DateTimePattern = new Regex(@"\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(?:Z|[+-]\d{2}:\d{2})?\b", RegexOptions.Compiled);
+    private static readonly Regex GuidPattern = new (@"\b[0-9a-fA-F]{8}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{12}\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex NumberPattern = new (@"\b\d{4,}\b", RegexOptions.Compiled);
+    private static readonly Regex StringLiteralPattern = new (@"'[^']{6,}'", RegexOptions.Compiled);
+    private static readonly Regex DateTimePattern = new (@"\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(?:Z|[+-]\d{2}:\d{2})?\b", RegexOptions.Compiled);
     // CosmosDB specific patterns for more sophisticated normalization
-    private static readonly Regex PropertyAccessPattern = new Regex(@"(root\[""[^""]+\""\])\s*=\s*([""'][^""']*[""']|\{GUID\}|\{NUMBER\}|\{STRING\}|\{DATETIME\})", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    private static readonly Regex InClausePattern = new Regex(@"IN\s*\([^)]+\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    private static readonly Regex BetweenClausePattern = new Regex(@"BETWEEN\s+([""'][^""']*[""']|\{[A-Z]+\}|\d+)\s+AND\s+([""'][^""']*[""']|\{[A-Z]+\}|\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    private static readonly Regex ArrayContainsPattern = new Regex(@"ARRAY_CONTAINS\s*\([^,]+,\s*([""'][^""']*[""']|\{[A-Z]+\})\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    private static readonly Regex OrderByPattern = new Regex(@"ORDER\s+BY\s+[^()]+?(ASC|DESC)?(?:\s*,\s*[^()]+?(ASC|DESC)?)*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex PropertyAccessPattern = new (@"(root\[""[^""]+\""\])\s*=\s*([""'][^""']*[""']|\{GUID\}|\{NUMBER\}|\{STRING\}|\{DATETIME\})", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex InClausePattern = new (@"IN\s*\([^)]+\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex BetweenClausePattern = new (@"BETWEEN\s+([""'][^""']*[""']|\{[A-Z]+\}|\d+)\s+AND\s+([""'][^""']*[""']|\{[A-Z]+\}|\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex ArrayContainsPattern = new (@"ARRAY_CONTAINS\s*\([^,]+,\s*([""'][^""']*[""']|\{[A-Z]+\})\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex OrderByPattern = new (@"ORDER\s+BY\s+[^()]+?(ASC|DESC)?(?:\s*,\s*[^()]+?(ASC|DESC)?)*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private readonly ILogger logger;
-    private readonly IClassAwareOptionsMonitor<QueryCostMetricRecorderOptions> queryCostMetricRecorderOptions;
+    private readonly IOptions<QueryCostMetricRecorderOptions> recorderOptions;
     private readonly IMetricRecordingFilter? metricFilter;
     private readonly IMetricRecordingEnricher? metricEnricher;
 
-    private readonly Lazy<Histogram<double>> lazyMetric;
-    private Histogram<double> Metric => lazyMetric.Value;
+    private readonly Lazy<Histogram<double>> metricLazy;
 
     // Cache for compiled regex patterns to avoid recompilation on every evaluation
     private readonly ConcurrentDictionary<string, Regex> ignoreQueryCallersRegexCache = new();
 
     public QueryCostMetricRecorder(
-        IServiceProvider serviceProvider,
         ILogger<QueryCostMetricRecorder> logger,
-        IClassAwareOptionsMonitor<DiginsightActivitiesOptions> activitiesOptionsMonitor,
-        IClassAwareOptionsMonitor<OpenTelemetryOptions> openTelemetryOptionsMonitor,
-        IClassAwareOptionsMonitor<QueryCostMetricRecorderOptions> queryCostMetricRecorderOptions,
-        IMeterFactory meterFactory
+        IOptions<QueryCostMetricRecorderOptions> recorderOptions,
+        IMeterFactory meterFactory,
+        IMetricRecordingFilter? metricFilter = null,
+        IMetricRecordingEnricher? metricEnricher = null
     )
     {
         this.logger = logger;
-        this.queryCostMetricRecorderOptions = queryCostMetricRecorderOptions;
+        this.recorderOptions = recorderOptions;
 
-        IOpenTelemetryOptions openTelemetryOptions = openTelemetryOptionsMonitor.CurrentValue;
-        var applicationName = Assembly.GetEntryAssembly()?.GetName().Name ?? "unknown";
-        var metricName = QueryMetrics.QueryCost.Name;
+        metricLazy = new Lazy<Histogram<double>>(
+            () =>
+            {
+                IQueryCostMetricRecorderOptions options = recorderOptions.Value;
+                return meterFactory
+                    .Create(options.MeterName)
+                    .CreateHistogram<double>(options.MetricName, options.MetricUnit, options.MetricDescription);
+            }
+        );
 
-        this.lazyMetric = new Lazy<Histogram<double>>(() =>
-        {
-            IDiginsightActivitiesMetricOptions options = activitiesOptionsMonitor.CurrentValue;
-            return meterFactory.Create(options.MeterName)
-                               .CreateHistogram<double>(QueryMetrics.QueryCost.Name, QueryMetrics.QueryCost.Unit, QueryMetrics.QueryCost.Description);
-        });
-
-        var metricFilter = serviceProvider.GetNamedService<IMetricRecordingFilter>(metricName);
-        this.metricFilter = metricFilter ?? serviceProvider.GetRequiredService<IMetricRecordingFilter>();
-
-        var metricEnricher = serviceProvider.GetNamedService<IMetricRecordingEnricher>(metricName);
-        this.metricEnricher = metricEnricher ?? serviceProvider.GetRequiredService<IMetricRecordingEnricher>();
+        this.metricFilter = metricFilter;
+        this.metricEnricher = metricEnricher;
     }
 
     void IActivityListenerLogic.ActivityStopped(Activity activity)
@@ -80,15 +64,14 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
         try
         {
             // Only record for CosmosDB operations that have a query cost
-            if (activity.GetTagItem("query_cost") is object costObj &&
+            if (activity.GetTagItem("query_cost") is { } costObj &&
                 double.TryParse(costObj.ToString(), out double cost) &&
                 cost > 0)
             {
-
-                var queryCostMetricRecorderOptionsValue = queryCostMetricRecorderOptions.CurrentValue;
-                var addNormalizedQueryTag = queryCostMetricRecorderOptionsValue.AddNormalizedQueryTag;
-                var addQueryCallers = queryCostMetricRecorderOptionsValue.AddQueryCallers;
-                var ignoreQueryCallers = queryCostMetricRecorderOptionsValue.IgnoreQueryCallers;
+                IQueryCostMetricRecorderOptions recorderOptions = this.recorderOptions.Value;
+                var addNormalizedQueryTag = recorderOptions.AddNormalizedQueryTag;
+                var addQueryCallers = recorderOptions.AddQueryCallers;
+                var ignoreQueryCallers = recorderOptions.IgnoreQueryCallers;
 
                 var tags = new List<KeyValuePair<string, object?>>();
                 if (addNormalizedQueryTag)
@@ -99,8 +82,8 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                 }
 
                 var callers = GetDiginsightCallers(activity);
-                var diginsightCallers = callers.Where(a => !a.OperationName.Contains("diginsight", StringComparison.InvariantCultureIgnoreCase));
-                if (ignoreQueryCallers?.Length > 0)
+                var diginsightCallers = callers.Where(static a => !a.OperationName.Contains("diginsight", StringComparison.InvariantCultureIgnoreCase));
+                if (ignoreQueryCallers.Any())
                 {
                     diginsightCallers = diginsightCallers.Where(caller => !ShouldIgnoreCaller(caller.OperationName, ignoreQueryCallers));
                 }
@@ -122,9 +105,12 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                 tags.Add(new KeyValuePair<string, object?>("application", activity.GetTagItem("application")?.ToString() ?? Assembly.GetEntryAssembly()?.GetName().Name));
                 tags.Add(new KeyValuePair<string, object?>("container", activity.GetTagItem("container")?.ToString()));
                 tags.Add(new KeyValuePair<string, object?>("database", activity.GetTagItem("database")?.ToString()));
+
+                var metric = metricLazy.Value;
+
                 if (metricEnricher is not null)
                 {
-                    var additionalTags = metricEnricher.ExtractTags(activity);
+                    var additionalTags = metricEnricher.ExtractTags(activity, metric);
                     foreach (var tag in additionalTags ?? [])
                     {
                         tags.Add(new KeyValuePair<string, object?>(tag.Key, tag.Value));
@@ -132,7 +118,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                 }
 
                 var tagsArray = tags.ToArray();
-                Metric.Record(cost, tagsArray);
+                metric.Record(cost, tagsArray);
             }
         }
         catch (Exception exception)
@@ -148,12 +134,12 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
     /// <param name="operationName">The operation name to check</param>
     /// <param name="ignorePatterns">Array of patterns to match against</param>
     /// <returns>True if the caller should be ignored, false otherwise</returns>
-    private bool ShouldIgnoreCaller(string operationName, string[] ignorePatterns)
+    private bool ShouldIgnoreCaller(string operationName, IEnumerable<string> ignorePatterns)
     {
-        if (string.IsNullOrEmpty(operationName) || ignorePatterns?.Length == 0)
+        if (string.IsNullOrEmpty(operationName))
             return false;
 
-        foreach (var pattern in ignorePatterns!)
+        foreach (var pattern in ignorePatterns)
         {
             if (string.IsNullOrEmpty(pattern))
                 continue;
@@ -201,8 +187,8 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
     {
         if (string.IsNullOrWhiteSpace(input)) return false;
         input = input.Trim();
-        return (input.StartsWith('{') && input.EndsWith('}') && input.Contains('"')) ||
-               (input.StartsWith('[') && input.EndsWith(']') && input.Contains('"'));
+        return (!input.StartsWith('{') || !input.EndsWith('}') || !input.Contains('"')) &&
+            (!input.StartsWith('[') || !input.EndsWith(']') || !input.Contains('"'));
     }
 
     /// <summary>
@@ -241,7 +227,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
     }
 
     /// <summary>
-    /// Normalizes a CosmosDB SQL query string to reduce cardinality by replacing high-cardinality values 
+    /// Normalizes a CosmosDB SQL query string to reduce cardinality by replacing high-cardinality values
     /// with semantic placeholders while preserving query structure and intent.
     /// </summary>
     /// <param name="rawQueryData">The raw query data (may be JSON-encoded or plain text)</param>
@@ -263,11 +249,11 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
             query = NormalizeCosmosDbQuery(query);
 
             // Step 3: Apply length limit after normalization (to preserve more semantic meaning)
-            var queryCostMetricRecorderOptionsValue = queryCostMetricRecorderOptions.CurrentValue;
+            IQueryCostMetricRecorderOptions queryCostMetricRecorderOptionsValue = recorderOptions.Value;
             var normalizedQueryMaxLen = queryCostMetricRecorderOptionsValue.NormalizedQueryMaxLen;
             if (normalizedQueryMaxLen >= 0 && query.Length > normalizedQueryMaxLen)
             {
-                query = query.Substring(0, normalizedQueryMaxLen) + "...";
+                query = query[..normalizedQueryMaxLen] + "...";
             }
 
             return query;
@@ -281,7 +267,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
     }
 
     /// <summary>
-    /// Applies CosmosDB-specific normalization patterns to preserve query structure 
+    /// Applies CosmosDB-specific normalization patterns to preserve query structure
     /// while reducing cardinality through intelligent value replacement.
     /// </summary>
     /// <param name="query">The SQL query to normalize</param>
@@ -317,9 +303,9 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
         query = BetweenClausePattern.Replace(query, "BETWEEN {VALUE} AND {VALUE}");
 
         // Normalize ARRAY_CONTAINS functions
-        query = ArrayContainsPattern.Replace(query, match =>
+        query = ArrayContainsPattern.Replace(query, static match =>
         {
-            var prefix = match.Value.Substring(0, match.Value.LastIndexOf(',') + 1);
+            var prefix = match.Value[..(match.Value.LastIndexOf(',') + 1)];
             return $"{prefix} {{VALUE}})";
         });
 
@@ -336,7 +322,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
     }
 
     /// <summary>
-    /// Normalizes WHERE clause expressions to group similar query patterns 
+    /// Normalizes WHERE clause expressions to group similar query patterns
     /// while preserving logical structure.
     /// </summary>
     /// <param name="query">Query containing WHERE clause</param>
@@ -351,18 +337,18 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
             @"\(\s*([^()]+)\s+AND\s+([^()]+)(?:\s+AND\s+[^()]+)*\s*\)",
             RegexOptions.IgnoreCase);
 
-        query = complexAndPattern.Replace(query, match =>
+        query = complexAndPattern.Replace(query, static match =>
         {
             var conditions = match.Value
                 .Trim('(', ')')
-                .Split(new[] { " AND " }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(c => c.Trim())
+                .Split([ " AND " ], StringSplitOptions.RemoveEmptyEntries)
+                .Select(static c => c.Trim())
                 .ToArray();
 
             // Sort conditions to normalize order (e.g., Type conditions first, then others)
             var normalizedConditions = conditions
-                .OrderBy(c => c.Contains("\"Type\"") ? 0 : 1) // Type conditions first
-                .ThenBy(c => c) // Then alphabetically
+                .OrderBy(static c => c.Contains("\"Type\"") ? 0 : 1) // Type conditions first
+                .ThenBy(static c => c) // Then alphabetically
                 .ToArray();
 
             return $"({string.Join(" AND ", normalizedConditions)})";
@@ -373,17 +359,17 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
             @"\(\s*([^()]+)\s+OR\s+([^()]+)(?:\s+OR\s+[^()]+)*\s*\)",
             RegexOptions.IgnoreCase);
 
-        query = complexOrPattern.Replace(query, match =>
+        query = complexOrPattern.Replace(query, static match =>
         {
             var conditions = match.Value
                 .Trim('(', ')')
-                .Split(new[] { " OR " }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(c => c.Trim())
+                .Split([ " OR " ], StringSplitOptions.RemoveEmptyEntries)
+                .Select(static c => c.Trim())
                 .ToArray();
 
             var normalizedConditions = conditions
-                .OrderBy(c => c.Contains("\"Type\"") ? 0 : 1)
-                .ThenBy(c => c)
+                .OrderBy(static c => c.Contains("\"Type\"") ? 0 : 1)
+                .ThenBy(static c => c)
                 .ToArray();
 
             return $"({string.Join(" OR ", normalizedConditions)})";
@@ -443,12 +429,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
             }
 
             // If no FROM clause found, take first 50 characters as fallback
-            if (query.Length > 50)
-            {
-                return $"{query.Substring(0, 50)}... (query normalization failed)";
-            }
-
-            return $"{query} (query normalization failed)";
+            return $"{query.Truncate(50)}... (query normalization failed)";
         }
         catch
         {
@@ -461,7 +442,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
     {
         var callers = new List<Activity>();
         var current = activity;
-        while (current.Parent != null)
+        while (current.Parent is not null)
         {
             current = current.Parent;
             callers.Add(current);

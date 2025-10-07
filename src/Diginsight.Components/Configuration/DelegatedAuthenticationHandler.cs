@@ -9,7 +9,6 @@ using System.Runtime.CompilerServices;
 
 //namespace Diginsight.Components.Configuration;
 
-
 public sealed class DelegatedAuthenticationHandler : DelegatingHandler
 {
     private readonly ILogger<DelegatedAuthenticationHandler> logger;
@@ -52,10 +51,8 @@ public sealed class DelegatedAuthenticationHandler : DelegatingHandler
             .WithClientSecret(appRegistrationClientSecret)
             .Build();
 
-
         var builder = confidentialClientApplication.AcquireTokenForClient(scopes);
-        var result = await builder.ExecuteAsync(cancellationToken);
-        return result;
+        return await builder.ExecuteAsync(cancellationToken);
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -71,15 +68,11 @@ public sealed class DelegatedAuthenticationHandler : DelegatingHandler
         return await base.SendAsync(request, cancellationToken);
     }
 
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    IManagedIdentityApplication CreateManagedIdentityApplication(string clientId)
+    private IManagedIdentityApplication CreateManagedIdentityApplication(string clientId)
     {
         return ManagedIdentityApplicationBuilder.Create(
-                clientId is { } managedIdentityClientId ? ManagedIdentityId.WithUserAssignedClientId(managedIdentityClientId) : ManagedIdentityId.SystemAssigned
-            ).Build();
+            clientId is not null ? ManagedIdentityId.WithUserAssignedClientId(clientId) : ManagedIdentityId.SystemAssigned
+        ).Build();
     }
-
-
-
 }

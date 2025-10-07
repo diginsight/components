@@ -1,11 +1,7 @@
-#region using
-
 using Diginsight.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 //using Microsoft.AspNetCore.Http;
-
-#endregion
 
 namespace Diginsight.Components;
 
@@ -32,7 +28,7 @@ public class ExceptionHandlingMiddleware
         {
             var action = context.Request.Method;
             var uri = context.Request.Path;
-            var message = $"Unhandled exception '{ex.GetType().Name}' occurred processing request {action} {uri}.";
+            var message = $"Unhandled exception occurred processing request {action} {uri}.";
             logger.LogError(ex, message);
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await context.Response.WriteAsync(message);

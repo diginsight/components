@@ -1,6 +1,3 @@
-#region using
-#endregion
-
 //using Microsoft.AspNetCore.Http;
 namespace Diginsight.Components;
 
@@ -11,6 +8,6 @@ public static class StringExtensions {
 
         var len = clientSecret.Length - 3;
         if (maxLen >= 0 && maxLen < len) { len = maxLen; }
-        return clientSecret.Substring(0, 3) + new string('*', len);
+        return clientSecret[..3] + new string('*', len);
     }
 }

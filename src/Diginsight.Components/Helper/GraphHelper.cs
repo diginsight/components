@@ -1,22 +1,18 @@
-﻿#region using
-
-#endregion
-
 namespace Diginsight.Components;
 
 internal class GraphHelper
 {
-    #region constants
     private static readonly Type T = typeof(GraphHelper);
-    const string CONFIGVALUE_ISREVOKERENALBED = "IsRevokerEnabled"; const bool DEFAULTVALUE_ISREVOKERENALBED = true;
-    const string GRAPHAPI_ME = "https://graph.microsoft.com/v1.0/me";
-    const string GRAPHAPI_MANAGER = "https://graph.microsoft.com/v1.0/users/{upn}/manager";
-    const string GRAPHAPI_DECLASSIFIER_ME = "https://graph.microsoft.com/v1.0/users/{upn}/getMemberGroups";
-    const string GRAPHAPI_DECLASSIFIER_GROUPID = "https://graph.microsoft.com/v1.0/groups?$filter=displayName eq 'groupName'";
-    const string GRAPHAPI_GROUP = "https://graph.microsoft.com/v1.0/groups/?$filter=mail eq '{upn}'";
-    const string GRAPHAPI_GROUP_MEMBER = "https://graph.microsoft.com/v1.0/groups/?$filter=mail eq '{upn}'&$expand=members";
-    const string CONFIGVALUE_DATADECLASSGROUPNAME = "GFSCL_DATADECLASS_USERS";
-    #endregion
+    private const string CONFIGVALUE_ISREVOKERENALBED = "IsRevokerEnabled";
+    private const bool DEFAULTVALUE_ISREVOKERENALBED = true;
+    private const string GRAPHAPI_ME = "https://graph.microsoft.com/v1.0/me";
+    private const string GRAPHAPI_MANAGER = "https://graph.microsoft.com/v1.0/users/{upn}/manager";
+    private const string GRAPHAPI_DECLASSIFIER_ME = "https://graph.microsoft.com/v1.0/users/{upn}/getMemberGroups";
+    private const string GRAPHAPI_DECLASSIFIER_GROUPID = "https://graph.microsoft.com/v1.0/groups?$filter=displayName eq 'groupName'";
+    private const string GRAPHAPI_GROUP = "https://graph.microsoft.com/v1.0/groups/?$filter=mail eq '{upn}'";
+    private const string GRAPHAPI_GROUP_MEMBER = "https://graph.microsoft.com/v1.0/groups/?$filter=mail eq '{upn}'&$expand=members";
+
+    private const string CONFIGVALUE_DATADECLASSGROUPNAME = "GFSCL_DATADECLASS_USERS";
     //private ILogger<GraphHelper> logger;
 
     //public static async Task<UserProfile> GetMe(HttpClient client = null)

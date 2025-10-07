@@ -1,4 +1,4 @@
-﻿using Diginsight.Runtime;
+using Diginsight.Runtime;
 using System.Runtime.CompilerServices;
 
 namespace Diginsight.Components.Configuration;
@@ -18,7 +18,4 @@ public static class HttpExtensions
     {
         request.Options.Set(InvocationOptionKey, (type, memberName));
     }
-
-
-
 }

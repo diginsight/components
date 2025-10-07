@@ -23,10 +23,9 @@ namespace Diginsight.Components.Configuration;
 
 using Options = Microsoft.Extensions.Options.Options;
 
-
-public static partial class ObservabilityExtensions
+internal static partial class ObservabilityExtensions
 {
-    static Type T = typeof(ObservabilityExtensions);
+    private static readonly Type T = typeof(ObservabilityExtensions);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IServiceCollection AddObservability(
@@ -36,8 +35,7 @@ public static partial class ObservabilityExtensions
         bool configureDefaults = true
     )
     {
-        var loggerFactory = ObservabilityHelper.LoggerFactory;
-        var logger = loggerFactory.CreateLogger(T);
+        var logger = Observability.LoggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { services, configuration, hostEnvironment, configureDefaults });
 
         return services.AddObservability(configuration, hostEnvironment, out OpenTelemetryOptions _, configureDefaults);
@@ -52,8 +50,7 @@ public static partial class ObservabilityExtensions
         bool configureDefaults = true
     )
     {
-        var loggerFactory = ObservabilityHelper.LoggerFactory;
-        var logger = loggerFactory.CreateLogger(T);
+        var logger = Observability.LoggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { services, configuration, hostEnvironment, configureDefaults });
 
         services.AddObservability(configuration, hostEnvironment, out OpenTelemetryOptions mutableOpenTelemetryOptions, configureDefaults);
@@ -70,16 +67,15 @@ public static partial class ObservabilityExtensions
         bool configureDefaults = true
     )
     {
-        var loggerFactory = ObservabilityHelper.LoggerFactory;
-        var logger = loggerFactory.CreateLogger(T);
+        var logger = Observability.LoggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { services, configuration, hostEnvironment, configureDefaults });
 
         const string diginsightConfKey = "Diginsight";
 
-        bool isLocal = hostEnvironment.IsDevelopment(); logger.LogDebug("isLocal: {isLocal}", isLocal);
-        string assemblyName = Assembly.GetEntryAssembly()!.GetName().Name!; logger.LogDebug("assemblyName: {assemblyName}", assemblyName);
+        bool isLocal = hostEnvironment.IsDevelopment(); logger.LogDebug("isLocal: {IsLocal}", isLocal);
+        string assemblyName = Assembly.GetEntryAssembly()!.GetName().Name!; logger.LogDebug("assemblyName: {AssemblyName}", assemblyName);
 
-        IConfiguration openTelemetryConfiguration = configuration.GetSection("OpenTelemetry"); logger.LogDebug("openTelemetryConfiguration: {openTelemetryConfiguration}", openTelemetryConfiguration);
+        IConfiguration openTelemetryConfiguration = configuration.GetSection("OpenTelemetry"); logger.LogDebug("openTelemetryConfiguration: {OpenTelemetryConfiguration}", openTelemetryConfiguration);
 
         mutableOpenTelemetryOptions = new OpenTelemetryOptions();
         IOpenTelemetryOptions openTelemetryOptions = mutableOpenTelemetryOptions;
@@ -99,11 +95,11 @@ public static partial class ObservabilityExtensions
         openTelemetryConfiguration.Bind(mutableOpenTelemetryOptions); logger.LogDebug("openTelemetryConfiguration.Bind(mutableOpenTelemetryOptions);");
         services.Configure<OpenTelemetryOptions>(openTelemetryConfiguration); logger.LogDebug("services.Configure<OpenTelemetryOptions>(openTelemetryConfiguration);");
 
-        services.TryAddSingleton<IActivityLoggingSampler, NameBasedActivityLoggingSampler>(); logger.LogDebug("services.TryAddSingleton<IActivityLoggingSampler, NameBasedActivityLoggingSampler>();");
+        services.TryAddSingleton<IActivityLoggingFilter, OptionsBasedActivityLoggingFilter>(); logger.LogDebug("services.TryAddSingleton<IActivityLoggingFilter, OptionsBasedActivityLoggingFilter>();");
 
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IActivityListenerRegistration, ActivitySourceDetectorRegistration>()); logger.LogDebug("services.TryAddEnumerable(ServiceDescriptor.Singleton<IActivityListenerRegistration, ActivitySourceDetectorRegistration>());");
 
-        string? azureMonitorConnectionString = openTelemetryOptions.AzureMonitorConnectionString; logger.LogDebug("azureMonitorConnectionString: {azureMonitorConnectionString}", azureMonitorConnectionString);
+        string azureMonitorConnectionString = openTelemetryOptions.AzureMonitorConnectionString; logger.LogDebug("azureMonitorConnectionString: {AzureMonitorConnectionString}", azureMonitorConnectionString);
 
         services.AddLogging(
             loggingBuilder =>
@@ -112,11 +108,11 @@ public static partial class ObservabilityExtensions
 
                 loggingBuilder.ClearProviders(); logger.LogDebug("loggingBuilder.ClearProviders();");
 
-                var debugEnabled = configuration.GetValue(ConfigurationPath.Combine("Observability", "DebugEnabled"), false); logger.LogDebug("debugEnabled: {debugEnabled}", debugEnabled);
+                var debugEnabled = configuration.GetValue(ConfigurationPath.Combine("Observability", "DebugEnabled"), false); logger.LogDebug("debugEnabled: {DebugEnabled}", debugEnabled);
                 if (debugEnabled)
                 {
                     loggingBuilder.AddDiginsightDebug();
-                    //co => 
+                    //co =>
                     //{
                     //    if (configureDefaults)
                     //    {
@@ -128,7 +124,7 @@ public static partial class ObservabilityExtensions
                     logger.LogDebug("loggingBuilder.AddDiginsightDebug();");
                 }
 
-                var consoleEnabled = configuration.GetValue(ConfigurationPath.Combine("Observability", "ConsoleEnabled"), true); logger.LogDebug("consoleEnabled: {consoleEnabled}", consoleEnabled);
+                var consoleEnabled = configuration.GetValue(ConfigurationPath.Combine("Observability", "ConsoleEnabled"), true); logger.LogDebug("consoleEnabled: {ConsoleEnabled}", consoleEnabled);
                 if (consoleEnabled)
                 {
                     loggingBuilder.AddDiginsightConsole(
@@ -145,7 +141,7 @@ public static partial class ObservabilityExtensions
                     logger.LogDebug("loggingBuilder.AddDiginsightConsole();");
                 }
 
-                var log4NetEnabled = configuration.GetValue(ConfigurationPath.Combine("Observability", "Log4NetEnabled"), true); logger.LogDebug("log4NetEnabled: {log4NetEnabled}", log4NetEnabled);
+                var log4NetEnabled = configuration.GetValue(ConfigurationPath.Combine("Observability", "Log4NetEnabled"), true); logger.LogDebug("log4NetEnabled: {Log4NetEnabled}", log4NetEnabled);
                 if (log4NetEnabled)
                 {
                     loggingBuilder.AddDiginsightLog4Net(
@@ -155,7 +151,7 @@ public static partial class ObservabilityExtensions
                             string fileBaseDir = env.IsDevelopment()
                                 ? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile, Environment.SpecialFolderOption.DoNotVerify)
                                 : $"{Path.DirectorySeparatorChar}home";
-                            logger.LogDebug("fileBaseDir: {fileBaseDir}", fileBaseDir);
+                            logger.LogDebug("fileBaseDir: {FileBaseDir}", fileBaseDir);
 
                             return
                             [
@@ -195,14 +191,14 @@ public static partial class ObservabilityExtensions
         );
 
         logger.LogDebug("services.Logging();");
-        logger.LogDebug("configureDefaults: {configureDefaults}", configureDefaults);
+        logger.LogDebug("configureDefaults: {ConfigureDefaults}", configureDefaults);
         if (configureDefaults)
         {
             services.Configure<DiginsightActivitiesOptions>(
                 dao =>
                 {
                     dao.LogBehavior = LogBehavior.Show;
-                    dao.MeterName = assemblyName;
+                    dao.SpanDurationMeterName = assemblyName;
                 }
             );
 
@@ -214,7 +210,7 @@ public static partial class ObservabilityExtensions
                         IReadOnlyList<string> markers = ClassConfigurationMarkers.For(t);
                         if (markers.Contains("Diginsight.*"))
                         {
-                            dao.RecordSpanDurations = true;
+                            dao.RecordSpanDuration = true;
                         }
                     }
                 )
@@ -236,7 +232,7 @@ public static partial class ObservabilityExtensions
 
         IOpenTelemetryBuilder openTelemetryBuilder = services.AddDiginsightOpenTelemetry(); logger.LogDebug("services.AddDiginsightOpenTelemetry();");
 
-        logger.LogDebug("openTelemetryOptions.EnableMetrics: {openTelemetryOptions.EnableMetrics}", openTelemetryOptions.EnableMetrics);
+        logger.LogDebug("openTelemetryOptions.EnableMetrics: {EnableMetrics}", openTelemetryOptions.EnableMetrics);
         if (openTelemetryOptions.EnableMetrics)
         {
             var diginsightConfig = configuration.GetSection(ConfigurationPath.Combine(diginsightConfKey, "Activities"));
@@ -245,14 +241,14 @@ public static partial class ObservabilityExtensions
             var metricSpecificActivities = diginsightConfig.GetSection("MetricSpecificSpanMeasuredActivityNames").Get<MetricRecordingNameBasedFilterOptions[]>() ?? Array.Empty<MetricRecordingNameBasedFilterOptions>();
             logger.LogDebug("Found {Count} metric-specific activity configurations", metricSpecificActivities.Length);
 
-            var defaultMetricTags = diginsightConfig.GetSection("MetricTags").Get<string[]>() ?? Array.Empty<string>();
+            var defaultMetricTags = diginsightConfig.GetSection("MetricTags").Get<string[]>() ?? [ ];
             logger.LogDebug("Default MetricTags: {Tags}", string.Join(", ", defaultMetricTags));
             var metricSpecificTags = diginsightConfig.GetSection("MetricSpecificTags").Get<MetricRecordingEnricherOptions[]>() ?? Array.Empty<MetricRecordingEnricherOptions>();
             logger.LogDebug("Found {Count} metric-specific tag configurations", metricSpecificTags.Length);
 
             // MetricRecordingNameBasedFilter and MetricRecordingEnricher configurations
-            // services.TryAddSingleton<IMetricRecordingFilter, MetricRecordingNameBasedFilter>(); 
-            // services.TryAddSingleton<IMetricRecordingEnricher, MetricRecordingTagsEnricher>(); 
+            // services.TryAddSingleton<IMetricRecordingFilter, MetricRecordingNameBasedFilter>();
+            // services.TryAddSingleton<IMetricRecordingEnricher, MetricRecordingTagsEnricher>();
             var metricNames = new[] { "diginsight.span_duration", "diginsight.query_cost", "diginsight.request_size", "diginsight.response_size" };
             foreach (var metricName in metricNames)
             {
@@ -261,8 +257,8 @@ public static partial class ObservabilityExtensions
                     options.MetricName = metricName;
 
                     var activitiesToUse = new Dictionary<string, bool>(defaultMetricActivities);
-                    var metricConfig = metricSpecificActivities?.FirstOrDefault(m => m.MetricName == options.MetricName);
-                    if (metricConfig != null) { activitiesToUse.AddRange(metricConfig.ActivityNames); }
+                    var metricConfig = metricSpecificActivities.FirstOrDefault(m => m.MetricName == options.MetricName);
+                    if (metricConfig is not null) { activitiesToUse.AddRange(metricConfig.ActivityNames); }
                     options.ActivityNames = activitiesToUse;
                 });
                 services.Configure<MetricRecordingEnricherOptions>(metricName, options =>
@@ -270,8 +266,8 @@ public static partial class ObservabilityExtensions
                     options.MetricName = metricName;
 
                     var tagsToUse = new List<string>(defaultMetricTags);
-                    var metricConfig = metricSpecificTags?.FirstOrDefault(m => m.MetricName == options.MetricName);
-                    if (metricConfig != null) { tagsToUse.AddRange(metricConfig.MetricTags); }
+                    var metricConfig = metricSpecificTags.FirstOrDefault(m => m.MetricName == options.MetricName);
+                    if (metricConfig is not null) { tagsToUse.AddRange(metricConfig.MetricTags); }
                     options.MetricTags = tagsToUse;
                 });
                 services.AddNamedSingleton<IMetricRecordingFilter, MetricRecordingNameBasedFilter>(
@@ -280,8 +276,7 @@ public static partial class ObservabilityExtensions
                         var optsionsMonitor = sp.GetRequiredService<IOptionsMonitor<MetricRecordingNameBasedFilterOptions>>();
                         var namedOptsionsMonitor = new NamedOptionsMonitor<MetricRecordingNameBasedFilterOptions>(optsionsMonitor, (string)key!);
 
-                        var filter = new MetricRecordingNameBasedFilter(namedOptsionsMonitor);
-                        return filter;
+                        return new MetricRecordingNameBasedFilter(namedOptsionsMonitor);
                     }
                 );
                 services.AddNamedSingleton<IMetricRecordingEnricher, MetricRecordingTagsEnricher>(metricName, (sp, key) =>
@@ -289,8 +284,7 @@ public static partial class ObservabilityExtensions
                     var optsionsMonitor = sp.GetRequiredService<IOptionsMonitor<MetricRecordingEnricherOptions>>();
                     var namedOptsionsMonitor = new NamedOptionsMonitor<MetricRecordingEnricherOptions>(optsionsMonitor, (string)key!);
 
-                    var filter = new MetricRecordingTagsEnricher(namedOptsionsMonitor);
-                    return filter;
+                    return new MetricRecordingTagsEnricher(namedOptsionsMonitor);
                 });
             }
 
@@ -321,7 +315,7 @@ public static partial class ObservabilityExtensions
             );
         }
 
-        logger.LogDebug("openTelemetryOptions.EnableTraces: {openTelemetryOptions.EnableTraces}", openTelemetryOptions.EnableTraces);
+        logger.LogDebug("openTelemetryOptions.EnableTraces: {EnableTraces}", openTelemetryOptions.EnableTraces);
         if (openTelemetryOptions.EnableTraces)
         {
             openTelemetryBuilder.WithTracing(
@@ -352,5 +346,4 @@ public static partial class ObservabilityExtensions
 
         return services;
     }
-
 }

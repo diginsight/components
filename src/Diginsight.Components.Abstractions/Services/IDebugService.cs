@@ -1,7 +1,6 @@
-﻿namespace Diginsight.Components
+namespace Diginsight.Components;
+
+public interface IDebugService
 {
-    public interface IDebugService
-    {
-        void IfDebug(Action action);
-    } 
+    void IfDebug(Action action);
 }

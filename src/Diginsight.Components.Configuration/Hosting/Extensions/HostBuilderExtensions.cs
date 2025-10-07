@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -17,24 +16,21 @@ namespace Diginsight.Components.Configuration;
 
 public static class HostBuilderExtensions
 {
-    public static Type T = typeof(HostBuilderExtensions);
+    private static readonly Type T = typeof(HostBuilderExtensions);
 
     /// <summary>
     /// Configures the application configuration for the host builder using the specified logger factory and optional tags match function.
     /// </summary>
     /// <param name="hostBuilder">The host builder to configure.</param>
-    /// <param name="loggerFactory">The logger factory to use for logging.</param>
     /// <param name="tagsMatch">An optional function to filter configuration tags.</param>
     /// <returns>The configured <see cref="IHostBuilder"/>.</returns>
     public static IHostBuilder ConfigureAppConfiguration2(this IHostBuilder hostBuilder,
-        ILoggerFactory loggerFactory,
         Func<IDictionary<string, string>, bool>? tagsMatch = null)
     {
-        var logger = loggerFactory.CreateLogger(T);
+        var logger = Observability.LoggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { hostBuilder, tagsMatch });
-        if (ObservabilityHelper.LoggerFactory == null) { ObservabilityHelper.LoggerFactory = loggerFactory; }
 
-        return hostBuilder.ConfigureAppConfiguration((hbc, cb) => ConfigureAppConfiguration2(hbc.HostingEnvironment, cb, loggerFactory, tagsMatch));
+        return hostBuilder.ConfigureAppConfiguration((hbc, cb) => ConfigureAppConfiguration2(hbc.HostingEnvironment, cb, tagsMatch));
     }
 
     /// <summary>
@@ -42,23 +38,20 @@ public static class HostBuilderExtensions
     /// </summary>
     /// <param name="environment">The hosting environment.</param>
     /// <param name="builder">The configuration builder to configure.</param>
-    /// <param name="loggerFactory">The logger factory to use for logging.</param>
     /// <param name="tagsMatch">An optional function to filter configuration tags.</param>
     public static void ConfigureAppConfiguration2(IHostEnvironment environment,
         IConfigurationBuilder builder,
-        ILoggerFactory loggerFactory,
         Func<IDictionary<string, string>, bool>? tagsMatch = null)
     {
-        var logger = loggerFactory.CreateLogger(T);
+        var logger = Observability.LoggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { environment, builder, tagsMatch });
-        if (ObservabilityHelper.LoggerFactory == null) { ObservabilityHelper.LoggerFactory = loggerFactory; }
 
         bool isLocal = environment.IsDevelopment();
         bool isDebuggerAttached = Debugger.IsAttached;
-        logger.LogDebug($"isLocal:{isLocal}, isDebuggerAttached:{isDebuggerAttached}");
+        logger.LogDebug("isLocal:{IsLocal}, isDebuggerAttached:{IsDebuggerAttached}", isLocal, isDebuggerAttached);
 
         var runtimeEnvironmentName = environment.EnvironmentName;
-        int appsettingsFileIndex = GetJsonFileIndex($"appsettings.json", builder); logger.LogDebug($"GetJsonFileIndex($\"appsettings.json\", builder); returned {appsettingsFileIndex}");
+        int appsettingsFileIndex = GetJsonFileIndex("appsettings.json", builder); logger.LogDebug($"GetJsonFileIndex($\"appsettings.json\", builder); returned {appsettingsFileIndex}");
         int environmentAppsettingsFileIndex = GetJsonFileIndex($"appsettings.{runtimeEnvironmentName}.json", builder); logger.LogDebug($"GetJsonFileIndex($\"appsettings.{runtimeEnvironmentName}.json\", builder); returned {environmentAppsettingsFileIndex}");
 
         var appsettingsEnvironmentName = Environment.GetEnvironmentVariable("AppsettingsEnvironmentName");
@@ -84,8 +77,8 @@ public static class HostBuilderExtensions
 
         if (isLocal)
         {
-            var allConfigurationFiles = new[] { $"appsettings.json", $"appsettings.{environmentName}.json", $"appsettings.local.json", $"appsettings.{environmentName}.local.json" };
-            var localConfigurationFiles = new[] { $"appsettings.{environmentName}.json", $"appsettings.local.json", $"appsettings.{environmentName}.local.json" };
+            var allConfigurationFiles = new[] { "appsettings.json", $"appsettings.{environmentName}.json", "appsettings.local.json", $"appsettings.{environmentName}.local.json" };
+            var localConfigurationFiles = new[] { $"appsettings.{environmentName}.json", "appsettings.local.json", $"appsettings.{environmentName}.local.json" };
             var currentDirectory = Directory.GetCurrentDirectory();
             var currentDirectoryInfo = new DirectoryInfo(currentDirectory);
             var repositoryRoot = DirectoryHelper.GetRepositoryRoot(currentDirectory)!;
@@ -95,10 +88,10 @@ public static class HostBuilderExtensions
             foreach (var configurationFile in localConfigurationFiles)
             {
                 logger.LogDebug($"Checking for local file: {configurationFile}");
-                if (File.Exists(configurationFile) && !builder.Sources.Any(cs => cs is FileConfigurationSource && (((FileConfigurationSource)cs)?.Path?.Equals(configurationFile, StringComparison.InvariantCultureIgnoreCase) ?? false)))
+                if (File.Exists(configurationFile) && !builder.Sources.Any(cs => cs is FileConfigurationSource fcs && (fcs.Path?.Equals(configurationFile, StringComparison.InvariantCultureIgnoreCase) ?? false)))
                 {
-                    var lastAppsettingsFile = builder.Sources.LastOrDefault(cs => cs is FileConfigurationSource && (((FileConfigurationSource)cs)?.Path?.StartsWith("appsettings", StringComparison.InvariantCultureIgnoreCase) ?? false));
-                    lastAppsettingsFileIndex = lastAppsettingsFile != null ? builder.Sources.IndexOf(lastAppsettingsFile) : -1;
+                    var lastAppsettingsFile = builder.Sources.LastOrDefault(static cs => cs is FileConfigurationSource fcs && (fcs.Path?.StartsWith("appsettings", StringComparison.InvariantCultureIgnoreCase) ?? false));
+                    lastAppsettingsFileIndex = lastAppsettingsFile is not null ? builder.Sources.IndexOf(lastAppsettingsFile) : -1;
 
                     if (lastAppsettingsFileIndex >= 0)
                     {
@@ -110,27 +103,26 @@ public static class HostBuilderExtensions
                 var externalConfigurationFolder = Environment.GetEnvironmentVariable("ExternalConfigurationFolder");
                 if (string.IsNullOrEmpty(externalConfigurationFolder)) { continue; }
 
-                var externalConfigurationFolderDirectoryInfo = new DirectoryInfo(externalConfigurationFolder!);
+                var externalConfigurationFolderDirectoryInfo = new DirectoryInfo(externalConfigurationFolder);
                 var potentialAppsettingsFolder = externalConfigurationFolderDirectoryInfo.FullName;
-                while (currentDirectoryParts.Count() >= 0)
+                while (currentDirectoryParts.Count >= 0)
                 {
                     var potentialSubfolder = currentDirectoryParts.Any() ? Path.Combine(currentDirectoryParts.ToArray()) : string.Empty;
                     var potentialFolder = Path.Combine(potentialAppsettingsFolder, potentialSubfolder);
                     var potentialFilePath = Path.Combine(potentialFolder, configurationFile);
                     if (File.Exists(potentialFilePath))
                     {
-                        appsettingsFileFolder = potentialFolder;
                         appsettingsFilePath = potentialFilePath;
                         found = true;
                         break;
                     }
-                    if (currentDirectoryParts.Any()) { currentDirectoryParts.RemoveAt(currentDirectoryParts.Count() - 1); } else { break; }
+                    if (currentDirectoryParts.Any()) { currentDirectoryParts.RemoveAt(currentDirectoryParts.Count - 1); } else { break; }
                 }
 
                 if (found)
                 {
-                    var lastAppsettingsFile = builder.Sources.LastOrDefault(cs => cs is FileConfigurationSource && (((FileConfigurationSource)cs)?.Path?.StartsWith("appsettings", StringComparison.InvariantCultureIgnoreCase) ?? false));
-                    lastAppsettingsFileIndex = lastAppsettingsFile != null ? builder.Sources.IndexOf(lastAppsettingsFile) : -1;
+                    var lastAppsettingsFile = builder.Sources.LastOrDefault(static cs => cs is FileConfigurationSource fcs && (fcs.Path?.StartsWith("appsettings", StringComparison.InvariantCultureIgnoreCase) ?? false));
+                    lastAppsettingsFileIndex = lastAppsettingsFile is not null ? builder.Sources.IndexOf(lastAppsettingsFile) : -1;
 
                     AppendLocalJsonFile(appsettingsFilePath, lastAppsettingsFileIndex, builder, isLocal);
                 }
@@ -140,16 +132,15 @@ public static class HostBuilderExtensions
         IConfiguration configuration = builder.Build();
 
         var dumpAllValuesString = configuration["AzureKeyVault:DumpValues"] ?? "true";
-        var ok = bool.TryParse(dumpAllValuesString, out var dumpAllValues);
-        if (dumpAllValues == false) { DumpConfigurationSources(configuration); }
+        _ = bool.TryParse(dumpAllValuesString, out var dumpAllValues);
+        if (!dumpAllValues) { DumpConfigurationSources(configuration); }
 
         var kvUri = configuration["AzureKeyVault:Uri"];
         logger.LogDebug($"kvUri:{kvUri}");
         if (!string.IsNullOrEmpty(kvUri))
         {
-            TokenCredential credential;
             var credentialProvider = new DefaultCredentialProvider(environment);
-            credential = credentialProvider.Get(configuration.GetSection("AzureKeyVault"));
+            TokenCredential credential = credentialProvider.Get(configuration.GetSection("AzureKeyVault"));
 
             builder.AddAzureKeyVault(new Uri(kvUri), credential, new KeyVaultSecretManagerWithTags(DateTimeOffset.UtcNow, tagsMatch));
             logger.LogDebug($"builder.AddAzureKeyVault({kvUri})");
@@ -164,17 +155,16 @@ public static class HostBuilderExtensions
             builder.Sources.Insert(environmentVariablesIndex, kvConfigurationSource);
         }
         if (dumpAllValues) { DumpConfigurationSources(configuration); }
-
     }
 
     private static List<string> GetCurrentDirectoryParts(DirectoryInfo? currentDirectoryInfo, DirectoryInfo repositoryRootInfo)
     {
         var currentDirectoryParts = new List<string>();
-        while (currentDirectoryInfo != null && currentDirectoryInfo.Exists)
+        while (currentDirectoryInfo is not null && currentDirectoryInfo.Exists)
         {
             currentDirectoryParts.Insert(0, currentDirectoryInfo.Name);
             currentDirectoryInfo = currentDirectoryInfo.Parent;
-            if (currentDirectoryInfo == null || currentDirectoryInfo.FullName.Equals(repositoryRootInfo.FullName)) { break; }
+            if (currentDirectoryInfo is null || currentDirectoryInfo.FullName.Equals(repositoryRootInfo.FullName)) { break; }
         }
 
         return currentDirectoryParts;
@@ -183,12 +173,11 @@ public static class HostBuilderExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TBuilder ConfigureAppConfiguration2<TBuilder>(
         this TBuilder hostAppBuilder,
-        ILoggerFactory loggerFactory = null,
         Func<IDictionary<string, string>, bool>? kvTagsMatch = null
     )
         where TBuilder : IHostApplicationBuilder
     {
-        ConfigureAppConfiguration2(hostAppBuilder.Environment, hostAppBuilder.Configuration, loggerFactory, kvTagsMatch);
+        ConfigureAppConfiguration2(hostAppBuilder.Environment, hostAppBuilder.Configuration, kvTagsMatch);
         return hostAppBuilder;
     }
     /// <summary>
@@ -200,8 +189,7 @@ public static class HostBuilderExtensions
     /// <param name="isLocal">Indicates if the environment is local.</param>
     private static void AppendLocalJsonFile(string path, int index, IConfigurationBuilder builder, bool isLocal)
     {
-        var loggerFactory = ObservabilityHelper.LoggerFactory;
-        var logger = loggerFactory.CreateLogger(T);
+        var logger = Observability.LoggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { path, index, isLocal });
 
         if (!isLocal) { return; }
@@ -220,8 +208,7 @@ public static class HostBuilderExtensions
     }
     private static void AppendJsonFile(string path, int index, IConfigurationBuilder builder)
     {
-        var loggerFactory = ObservabilityHelper.LoggerFactory;
-        var logger = loggerFactory.CreateLogger(T);
+        var logger = Observability.LoggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { path, index });
 
         //if (!isLocal) { return; }
@@ -248,12 +235,11 @@ public static class HostBuilderExtensions
     /// name="builder"/>.</exception>
     private static int GetJsonFileIndex(string path, IConfigurationBuilder builder)
     {
-        var loggerFactory = ObservabilityHelper.LoggerFactory;
-        var logger = loggerFactory.CreateLogger(T);
+        var logger = Observability.LoggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { path, builder });
 
         var ret = GetSourceIndex(builder.Sources, x => x.Source is JsonConfigurationSource jsonSource &&
-                                                       string.Equals(jsonSource.Path, path, StringComparison.OrdinalIgnoreCase))
+                string.Equals(jsonSource.Path, path, StringComparison.OrdinalIgnoreCase))
             ?? -1;
 
         activity?.SetOutput(ret);
@@ -289,15 +275,12 @@ public static class HostBuilderExtensions
     /// Dumps all configuration sources loaded into the configuration builder for debugging purposes.
     /// </summary>
     /// <param name="configuration">The configuration to inspect</param>
-    /// <param name="logger">Logger for output</param>
     public static void DumpConfigurationSources(IConfiguration configuration)
     {
-        var loggerFactory = ObservabilityHelper.LoggerFactory;
-        var logger = loggerFactory?.CreateLogger(T) ?? NullLogger.Instance;
+        var logger = Observability.LoggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { configuration });
 
-        var configRoot = configuration as IConfigurationRoot;
-        if (configRoot == null) { logger.LogWarning("⚠️ Configuration is not IConfigurationRoot, cannot dump configuration sources"); return; }
+        if (configuration is not IConfigurationRoot configRoot) { logger.LogWarning("⚠️ Configuration is not IConfigurationRoot, cannot dump configuration sources"); return; }
 
         logger.LogDebug("📋 Configuration Sources Dump:");
         logger.LogDebug("═══════════════════════════════════════════════════════════════");
@@ -309,8 +292,8 @@ public static class HostBuilderExtensions
 
             var isSecretsConfig = false;
             var forceMask = false; var maxLen = -1;
-            if (provider.GetType().Name.Equals(typeof(AzureKeyVaultConfigurationProvider).Name)) { isSecretsConfig = true; }
-            if (provider is FileConfigurationSource && (((FileConfigurationSource)provider)?.Path?.Equals("secrets", StringComparison.InvariantCultureIgnoreCase) ?? false)) { isSecretsConfig = true; }
+            if (provider.GetType().Name.Equals(nameof(AzureKeyVaultConfigurationProvider))) { isSecretsConfig = true; }
+            if (provider is FileConfigurationProvider fcp && (fcp.Source.Path?.Equals("secrets", StringComparison.InvariantCultureIgnoreCase) ?? false)) { isSecretsConfig = true; }
             if (isSecretsConfig) { forceMask = true; maxLen = 50; }
 
             DumpConfigurationProvider(logger, i, provider, forceMask, maxLen);
@@ -334,7 +317,7 @@ public static class HostBuilderExtensions
             foreach (var kvp in keys ?? [])
             {
                 var isSensitiveValue = IsSensitiveValue(kvp.Key, kvp.Value);
-                logger.LogDebug("🔑 {Key}: {Value}", kvp.Key, (isSensitiveValue || forceMaskValues) ? kvp.Value?.Mask(maxLen) : kvp.Value);
+                logger.LogDebug("🔑 {Key}: {Value}", kvp.Key, isSensitiveValue || forceMaskValues ? kvp.Value?.Mask(maxLen) : kvp.Value);
             }
         }
         catch (Exception ex)
@@ -365,12 +348,7 @@ public static class HostBuilderExtensions
             "clientsecret", "apikey", "accesskey", "credential"
         };
 
-        if (sensitivePatterns.Any(pattern => lowerKey.Contains(pattern)))
-        {
-            return true;
-        }
-
-        return false;
+        return sensitivePatterns.Any(pattern => lowerKey.Contains(pattern));
     }
     /// <summary>
     /// Extracts detailed information from a configuration provider.
@@ -382,7 +360,7 @@ public static class HostBuilderExtensions
         var providerType = provider.GetType();
         var configName = providerType.Name;
         var source = "Unknown";
-        var additionalInfo = "";
+        string additionalInfo;
 
         try
         {
@@ -459,13 +437,13 @@ public static class HostBuilderExtensions
     {
         try
         {
-            var source = ((FileConfigurationProvider)provider).Source;
-            if (source != null)
+            var source = provider.Source;
+            if (source is not null)
             {
                 return source.Path ?? "Unknown JSON file";
             }
         }
-        catch { }
+        catch (Exception) { }
 
         return "JSON Configuration File";
     }
@@ -477,13 +455,15 @@ public static class HostBuilderExtensions
             var sourceField = provider.GetType().GetField("_source", BindingFlags.NonPublic | BindingFlags.Instance);
             if (sourceField?.GetValue(provider) is JsonConfigurationSource source)
             {
-                var info = new List<string>();
-                info.Add($"Optional: {source.Optional}");
-                info.Add($"ReloadOnChange: {source.ReloadOnChange}");
+                var info = new List<string>()
+                {
+                    $"Optional: {source.Optional}",
+                    $"ReloadOnChange: {source.ReloadOnChange}",
+                };
                 return string.Join(", ", info);
             }
         }
-        catch { }
+        catch (Exception) { }
 
         return "";
     }
@@ -498,7 +478,7 @@ public static class HostBuilderExtensions
                 return !string.IsNullOrEmpty(source.Prefix) ? $"Prefix: '{source.Prefix}'" : "No prefix";
             }
         }
-        catch { }
+        catch (Exception) { }
 
         return "";
     }
@@ -513,7 +493,7 @@ public static class HostBuilderExtensions
                 return $"Arguments count: {args.Length}";
             }
         }
-        catch { }
+        catch (Exception) { }
 
         return "";
     }
@@ -528,7 +508,7 @@ public static class HostBuilderExtensions
                 return $"Keys count: {data.Count}";
             }
         }
-        catch { }
+        catch (Exception) { }
 
         return "";
     }
@@ -543,7 +523,7 @@ public static class HostBuilderExtensions
                 return $"Chained configuration type: {config.GetType().Name}";
             }
         }
-        catch { }
+        catch (Exception) { }
 
         return "";
     }
@@ -554,9 +534,9 @@ public static class HostBuilderExtensions
         {
             // Try to get Key Vault URI through reflection
             var clientField = provider.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
-                .FirstOrDefault(f => f.Name.Contains("client", StringComparison.OrdinalIgnoreCase));
+                .FirstOrDefault(static f => f.Name.Contains("client", StringComparison.OrdinalIgnoreCase));
 
-            if (clientField?.GetValue(provider) is object client)
+            if (clientField?.GetValue(provider) is { } client)
             {
                 var vaultUriProperty = client.GetType().GetProperty("VaultUri");
                 if (vaultUriProperty?.GetValue(client) is Uri vaultUri)
@@ -565,7 +545,7 @@ public static class HostBuilderExtensions
                 }
             }
         }
-        catch { }
+        catch (Exception) { }
 
         return "Azure Key Vault";
     }
@@ -580,14 +560,14 @@ public static class HostBuilderExtensions
         try
         {
             var pathField = provider.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
-                .FirstOrDefault(f => f.Name.Contains("path", StringComparison.OrdinalIgnoreCase));
+                .FirstOrDefault(static f => f.Name.Contains("path", StringComparison.OrdinalIgnoreCase));
 
             if (pathField?.GetValue(provider) is string path)
             {
                 return path;
             }
         }
-        catch { }
+        catch (Exception) { }
 
         return "User Secrets";
     }
@@ -607,13 +587,13 @@ public static class HostBuilderExtensions
             foreach (var fieldName in sourceFields)
             {
                 var field = provider.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
-                if (field?.GetValue(provider) is object value)
+                if (field?.GetValue(provider) is { } value)
                 {
                     return value.ToString() ?? "Unknown";
                 }
             }
         }
-        catch { }
+        catch (Exception) { }
 
         return provider.GetType().Name;
     }
@@ -633,8 +613,6 @@ public static class HostBuilderExtensions
         public string Source { get; init; } = "";
         public string AdditionalInfo { get; init; } = "";
     }
-
-
 }
 
 

@@ -11,7 +11,6 @@ using System.Text.Json;
 
 //namespace Diginsight.Components.Configuration;
 
-
 public sealed class ApplicationAuthenticationHandler : DelegatingHandler
 {
     private readonly string clientName;
@@ -40,7 +39,7 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
             using var httpClient = httpClientFactory.CreateClient("Unauthenticated");
             httpClient.DefaultRequestHeaders.Add("Metadata", "true");
             var response = await httpClient.GetAsync("http://169.254.169.254/metadata/identity/oauth2/token?api-version=2019-08-01&resource=https://management.azure.com/", cancellationToken); logger.LogDebug(@"response = await httpClient.GetAsync(""http://169.254.169.254/metadata/identity/oauth2/token?api-version=2019-08-01&resource=https://management.azure.com/"", cancellationToken);");
-            logger.LogDebug("response = {response}", response);
+            logger.LogDebug("response = {Response}", response);
 
             if (response.IsSuccessStatusCode)
             {
@@ -54,7 +53,7 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
         }
         catch (Exception ex)
         {
-            var message = $"Unhandled exception '{ex.GetType().Name}' occurred processing {activity.OperationName}.";
+            var message = $"Unhandled exception occurred processing {activity.OperationName}.";
             logger.LogError(ex, message);
         }
 
@@ -64,7 +63,7 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
     {
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { clientName });
 
-        AuthenticationResult result = default!;
+        AuthenticationResult result = null;
         try
         {
             IAuthenticatedClientOptions options = authenticatedClientOptionsMonitor.Get(clientName);
@@ -73,7 +72,7 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
             var tenantId = options.TenantId.HardTrim();
             var clientId = options.ClientId.HardTrim();
             var clientSecret = options.ClientSecret.HardTrim();
-            logger.LogDebug("tenantId = {tenantId}, clientId = {clientId}, clientSecret = {clientSecret}", tenantId, clientId, clientSecret.Mask());
+            logger.LogDebug("tenantId = {TenantId}, clientId = {ClientId}, clientSecret = {ClientSecret}", tenantId, clientId, clientSecret.Mask());
             if (result is null && tenantId is not null && clientId is not null && clientSecret is not null)
             {
                 var confidentialClientApplication = ConfidentialClientApplicationBuilder
@@ -91,18 +90,14 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
                 tenantId = Environment.GetEnvironmentVariable("AZURE_TENANT_ID").HardTrim();
                 clientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID").HardTrim();
                 var authorityHost = Environment.GetEnvironmentVariable("AZURE_AUTHORITY_HOST").HardTrim();
-                logger.LogDebug("tenantId = {tenantId}, clientId = {clientId}, authorityHost = {authorityHost}", tenantId, clientId, authorityHost);
+                logger.LogDebug("tenantId = {TenantId}, clientId = {ClientId}, authorityHost = {AuthorityHost}", tenantId, clientId, authorityHost);
                 if (tenantId is not null && clientId is not null && authorityHost is not null)
                 {
                     IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
                         .Create(clientId)
                         .WithTenantId(tenantId)
                         .WithAuthority(authorityHost)
-                        .WithClientAssertion(static ct =>
-                        {
-                            var token = File.ReadAllTextAsync(Environment.GetEnvironmentVariable("AZURE_FEDERATED_TOKEN_FILE")!, ct);
-                            return token;
-                        })
+                        .WithClientAssertion(static ct => File.ReadAllTextAsync(Environment.GetEnvironmentVariable("AZURE_FEDERATED_TOKEN_FILE")!, ct))
                         .Build();
 
                     var builder = confidentialClientApplication.AcquireTokenForClient([scope]);
@@ -116,10 +111,10 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
                 clientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID").HardTrim();
                 var msiEndpoint = Environment.GetEnvironmentVariable("MSI_ENDPOINT").HardTrim();
                 var msiSecret = Environment.GetEnvironmentVariable("MSI_SECRET").HardTrim();
-                logger.LogDebug("tenantId = {tenantId}, clientId = {clientId}, msiEndpoint = {msiEndpoint}, msiSecret = {msiSecret}", tenantId, clientId, msiEndpoint, msiSecret.Mask());
+                logger.LogDebug("tenantId = {TenantId}, clientId = {ClientId}, msiEndpoint = {MsiEndpoint}, msiSecret = {MsiSecret}", tenantId, clientId, msiEndpoint, msiSecret.Mask());
                 if (msiEndpoint is not null && msiSecret is not null)
                 {
-                    var managedIdentityClientId = options.ManagedIdentityClientId.HardTrim(); logger.LogDebug("managedIdentityClientId: {managedIdentityClientId}", managedIdentityClientId);
+                    var managedIdentityClientId = options.ManagedIdentityClientId.HardTrim(); logger.LogDebug("managedIdentityClientId: {ManagedIdentityClientId}", managedIdentityClientId);
                     //if (managedIdentityClientId is null)
                     //{
                     //    managedIdentityClientId = (await GetManagedIdentityClientIdAsync(cancellationToken)).HardTrim();
@@ -178,13 +173,11 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
         return result;
     }
 
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    IManagedIdentityApplication CreateManagedIdentityApplication(string clientId)
+    private IManagedIdentityApplication CreateManagedIdentityApplication(string clientId)
     {
         return ManagedIdentityApplicationBuilder.Create(
-                clientId is { } managedIdentityClientId ? ManagedIdentityId.WithUserAssignedClientId(managedIdentityClientId) : ManagedIdentityId.SystemAssigned
-            ).Build();
+            clientId is not null ? ManagedIdentityId.WithUserAssignedClientId(clientId) : ManagedIdentityId.SystemAssigned
+        ).Build();
     }
-
 }

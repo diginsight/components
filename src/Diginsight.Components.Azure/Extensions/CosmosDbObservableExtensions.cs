@@ -12,20 +12,20 @@ public static class CosmosDbObservableExtensions
     public static FeedIterator<T> ToFeedIteratorObservable<T>(this IQueryable<T> query, Container? container = null)
     {
         var queryText = query?.ToString();
-        var feedIterator = query.ToFeedIterator<T>();
+        var feedIterator = query.ToFeedIterator();
         return new ObservableFeedIterator<T>(feedIterator, container, queryText);
     }
 
     public static FeedIterator<T> ToFeedIteratorObservable<T>(this Container container, IQueryable<T> query)
     {
         var queryText = query?.ToString();
-        var feedIterator = query.ToFeedIterator<T>();
+        var feedIterator = query.ToFeedIterator();
         return new ObservableFeedIterator<T>(feedIterator, container, queryText);
     }
 
     public static FeedIterator GetItemQueryStreamIteratorObservable(this Container container, QueryDefinition queryDefinition, string? continuationToken = null, QueryRequestOptions? requestOptions = null)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { queryDefinition, requestOptions });
 
@@ -52,7 +52,7 @@ public static class CosmosDbObservableExtensions
 
     public static FeedIterator<T> GetItemQueryIteratorObservable<T>(this Container container, QueryDefinition queryDefinition, string? continuationToken = null, QueryRequestOptions? requestOptions = null)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { queryDefinition, requestOptions });
 
@@ -79,7 +79,7 @@ public static class CosmosDbObservableExtensions
 
     public static FeedIterator GetItemQueryStreamIteratorObservable(this Container container, string query, string? continuationToken = null, QueryRequestOptions? requestOptions = null)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query, requestOptions });
 
@@ -106,7 +106,7 @@ public static class CosmosDbObservableExtensions
 
     public static FeedIterator<T> GetItemQueryIteratorObservable<T>(this Container container, string query = null, string continuationToken = null, QueryRequestOptions requestOptions = null)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query, requestOptions });
         try
@@ -132,7 +132,7 @@ public static class CosmosDbObservableExtensions
 
     public static FeedIterator GetItemQueryStreamIteratorObservable(this Container container, FeedRange feedRange, QueryDefinition queryDefinition, string continuationToken, QueryRequestOptions requestOptions = null)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { feedRange, queryDefinition, requestOptions });
         try
@@ -158,7 +158,7 @@ public static class CosmosDbObservableExtensions
 
     public static FeedIterator<T> GetItemQueryIteratorObservable<T>(this Container container, FeedRange feedRange, QueryDefinition queryDefinition, string continuationToken = null, QueryRequestOptions requestOptions = null)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { container, feedRange, queryDefinition, requestOptions });
 
@@ -192,7 +192,7 @@ public static class CosmosDbObservableExtensions
     /// <returns>An observable transactional batch wrapper</returns>
     public static ObservableTransactionalBatch CreateTransactionalBatchObservable(this Container container, PartitionKey partitionKey)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { partitionKey });
 
@@ -212,7 +212,7 @@ public static class CosmosDbObservableExtensions
 
     public static IOrderedQueryable<T> GetItemLinqQueryableObservable<T>(this Container container, bool allowSynchronousQueryExecution = false, string continuationToken = null, QueryRequestOptions requestOptions = null, CosmosLinqSerializerOptions linqSerializerOptions = null)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { allowSynchronousQueryExecution, continuationToken, requestOptions, linqSerializerOptions });
         try
@@ -232,7 +232,7 @@ public static class CosmosDbObservableExtensions
 
     public static IQueryable<T> GetItemLinqQueryableObservable<T>(this Container container, Func<IQueryable<T>, IQueryable<T>> trasform, bool allowSynchronousQueryExecution = false, string continuationToken = null, QueryRequestOptions requestOptions = null, CosmosLinqSerializerOptions linqSerializerOptions = null)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { allowSynchronousQueryExecution, continuationToken, requestOptions, linqSerializerOptions });
         try
@@ -254,7 +254,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<ItemResponse<T>> UpsertItemObservableAsync<T>(this Container container, T item, PartitionKey? partitionKey = null, ItemRequestOptions? requestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { item, partitionKey, requestOptions });
 
@@ -262,10 +262,10 @@ public static class CosmosDbObservableExtensions
         {
             // Log connection and upsert item information
             logger.LogDebug("🔄 CosmosDB upsert for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
-            logger.LogDebug("🔄 entity:{entity}", item.Stringify());
+            logger.LogDebug("🔄 entity:{Entity}", item.Stringify());
 
             var response = await container.UpsertItemAsync(item, partitionKey, requestOptions, cancellationToken);
-            if (activity != null && response.RequestCharge > 0)
+            if (activity is not null && response.RequestCharge > 0)
             {
                 activity.SetTag("query", $"UpsertItem('{typeof(T).Name}')");
                 activity.SetTag("container", container.Id);
@@ -284,16 +284,16 @@ public static class CosmosDbObservableExtensions
         }
     }
 
-    public static async Task<ResponseMessage> UpsertItemStreamObservableAsync(this Container container, Stream streamPayload, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<ResponseMessage> UpsertItemStreamObservableAsync(this Container container, Stream streamPayload, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { streamPayload, partitionKey, requestOptions });
         try
         {
             // Log connection and upsert item information
             logger.LogDebug("🔄 CosmosDB upsert item in database {Endpoint}, container {Container}, collection '{Collection}'", container.Database.Client.Endpoint, container.Database.Id, container.Id);
-            logger.LogDebug("🔄 partitionKey:{partitionKey}", partitionKey.ToString());
+            logger.LogDebug("🔄 partitionKey:{PartitionKey}", partitionKey.ToString());
             var response = await container.UpsertItemStreamAsync(streamPayload, partitionKey, requestOptions, cancellationToken);
 
             activity?.SetOutput(response);
@@ -306,16 +306,16 @@ public static class CosmosDbObservableExtensions
         }
     }
 
-    public static async Task<ResponseMessage> CreateItemStreamObservableAsync(this Container container, Stream streamPayload, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<ResponseMessage> CreateItemStreamObservableAsync(this Container container, Stream streamPayload, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { streamPayload, partitionKey, requestOptions });
         try
         {
             // Log connection and create item information
             logger.LogDebug("📦 CosmosDB create item in database {Endpoint}, container {Container}, collection '{Collection}'", container.Database.Client.Endpoint, container.Database.Id, container.Id);
-            logger.LogDebug("📦 partitionKey:{partitionKey}", partitionKey.ToString());
+            logger.LogDebug("📦 partitionKey:{PartitionKey}", partitionKey.ToString());
             var response = await container.CreateItemStreamAsync(streamPayload, partitionKey, requestOptions, cancellationToken);
 
             activity?.SetOutput(response);
@@ -327,18 +327,18 @@ public static class CosmosDbObservableExtensions
             throw;
         }
     }
-    public static async Task<ItemResponse<T>> CreateItemObservableAsync<T>(this Container container, T item, PartitionKey? partitionKey = null, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<ItemResponse<T>> CreateItemObservableAsync<T>(this Container container, T item, PartitionKey? partitionKey = null, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { item, partitionKey, requestOptions });
         try
         {
             // Log connection and create item information
             logger.LogDebug("📦 CosmosDB create item for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
-            logger.LogDebug("📦 entity:{entity}", item.Stringify());
+            logger.LogDebug("📦 entity:{Entity}", item.Stringify());
             var response = await container.CreateItemAsync(item, partitionKey, requestOptions, cancellationToken);
-            if (activity != null && response.RequestCharge > 0)
+            if (activity is not null && response.RequestCharge > 0)
             {
                 activity.SetTag("query", $"CreateItem('{typeof(T).Name}')");
                 activity.SetTag("container", container.Id);
@@ -357,16 +357,16 @@ public static class CosmosDbObservableExtensions
         }
     }
 
-    public static async Task<ResponseMessage> ReadItemStreamObservableAsync(this Container container, string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<ResponseMessage> ReadItemStreamObservableAsync(this Container container, string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id, partitionKey, requestOptions });
         try
         {
             // Log connection and read item information
             logger.LogDebug("🔍 CosmosDB read item for id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
-            logger.LogDebug("🔍 partitionKey:{partitionKey}", partitionKey.ToString());
+            logger.LogDebug("🔍 partitionKey:{PartitionKey}", partitionKey.ToString());
             var response = await container.ReadItemStreamAsync(id, partitionKey, requestOptions, cancellationToken);
 
             activity?.SetOutput(response);
@@ -379,18 +379,18 @@ public static class CosmosDbObservableExtensions
         }
     }
 
-    public static async Task<ItemResponse<T>> ReadItemObservableAsync<T>(this Container container, string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<ItemResponse<T>> ReadItemObservableAsync<T>(this Container container, string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id, partitionKey, requestOptions });
         try
         {
             // Log connection and read item information
             logger.LogDebug("🔍 CosmosDB read item for id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
-            logger.LogDebug("🔍 partitionKey:{partitionKey}", partitionKey.ToString());
+            logger.LogDebug("🔍 partitionKey:{PartitionKey}", partitionKey.ToString());
             var response = await container.ReadItemAsync<T>(id, partitionKey, requestOptions, cancellationToken);
-            if (activity != null && response.RequestCharge > 0)
+            if (activity is not null && response.RequestCharge > 0)
             {
                 activity.SetTag("query", $"ReadItem('{typeof(T).Name}')");
                 activity.SetTag("container", container.Id);
@@ -409,9 +409,9 @@ public static class CosmosDbObservableExtensions
         }
     }
 
-    public static async Task<ResponseMessage> ReadManyItemsStreamObservableAsync(this Container container, IReadOnlyList<(string id, PartitionKey partitionKey)> items, ReadManyRequestOptions readManyRequestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<ResponseMessage> ReadManyItemsStreamObservableAsync(this Container container, IReadOnlyList<(string id, PartitionKey partitionKey)> items, ReadManyRequestOptions readManyRequestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { items, readManyRequestOptions });
         try
@@ -429,9 +429,9 @@ public static class CosmosDbObservableExtensions
             throw;
         }
     }
-    public static async Task<FeedResponse<T>> ReadManyItemsObservableAsync<T>(this Container container, IReadOnlyList<(string id, PartitionKey partitionKey)> items, ReadManyRequestOptions readManyRequestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<FeedResponse<T>> ReadManyItemsObservableAsync<T>(this Container container, IReadOnlyList<(string id, PartitionKey partitionKey)> items, ReadManyRequestOptions readManyRequestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { items, readManyRequestOptions });
 
@@ -440,7 +440,7 @@ public static class CosmosDbObservableExtensions
             // Log connection and read many items information
             logger.LogDebug("🔍 CosmosDB read many items for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             var response = await container.ReadManyItemsAsync<T>(items, readManyRequestOptions, cancellationToken);
-            if (activity != null && response.RequestCharge > 0)
+            if (activity is not null && response.RequestCharge > 0)
             {
                 activity.SetTag("query", $"ReadManyItems('{typeof(T).Name}')");
                 activity.SetTag("container", container.Id);
@@ -459,19 +459,19 @@ public static class CosmosDbObservableExtensions
         }
     }
 
-    public static async Task<ItemResponse<T>> PatchItemObservableAsync<T>(this Container container, string id, PartitionKey partitionKey, IReadOnlyList<PatchOperation> patchOperations, PatchItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<ItemResponse<T>> PatchItemObservableAsync<T>(this Container container, string id, PartitionKey partitionKey, IReadOnlyList<PatchOperation> patchOperations, PatchItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id, partitionKey, patchOperations, requestOptions });
         try
         {
             // Log connection and patch item information
             logger.LogDebug("✂️ CosmosDB patch item for class '{Type}' with id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
-            logger.LogDebug("✂️ partitionKey:{partitionKey}", partitionKey.ToString());
-            logger.LogDebug("✂️ patchOperations:{patchOperations}", string.Join(", ", patchOperations.Select(po => po.ToString())));
+            logger.LogDebug("✂️ partitionKey:{PartitionKey}", partitionKey.ToString());
+            logger.LogDebug("✂️ patchOperations:{PatchOperations}", string.Join(", ", patchOperations.Select(static po => po.ToString())));
             var response = await container.PatchItemAsync<T>(id, partitionKey, patchOperations, requestOptions, cancellationToken);
-            if (activity != null && response.RequestCharge > 0)
+            if (activity is not null && response.RequestCharge > 0)
             {
                 activity.SetTag("query", $"ReadManyItems('{typeof(T).Name}')");
                 activity.SetTag("container", container.Id);
@@ -490,17 +490,17 @@ public static class CosmosDbObservableExtensions
         }
     }
 
-    public static async Task<ResponseMessage> PatchItemStreamObservableAsync(this Container container, string id, PartitionKey partitionKey, IReadOnlyList<PatchOperation> patchOperations, PatchItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<ResponseMessage> PatchItemStreamObservableAsync(this Container container, string id, PartitionKey partitionKey, IReadOnlyList<PatchOperation> patchOperations, PatchItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id, partitionKey, patchOperations, requestOptions });
         try
         {
             // Log connection and patch item information
             logger.LogDebug("✂️ CosmosDB patch item for id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
-            logger.LogDebug("✂️ partitionKey:{partitionKey}", partitionKey.ToString());
-            logger.LogDebug("✂️ patchOperations:{patchOperations}", string.Join(", ", patchOperations.Select(po => po.ToString())));
+            logger.LogDebug("✂️ partitionKey:{PartitionKey}", partitionKey.ToString());
+            logger.LogDebug("✂️ patchOperations:{PatchOperations}", string.Join(", ", patchOperations.Select(static po => po.ToString())));
             var response = await container.PatchItemStreamAsync(id, partitionKey, patchOperations, requestOptions, cancellationToken);
 
             activity?.SetOutput(response);
@@ -515,7 +515,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<ResponseMessage> DeleteItemStreamObservableAsync(this Container container, string id, PartitionKey partitionKey, ItemRequestOptions? requestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id, partitionKey, requestOptions });
 
@@ -523,7 +523,7 @@ public static class CosmosDbObservableExtensions
         {
             // Log connection and delete item information
             logger.LogDebug("🗑️ CosmosDB delete item for id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
-            logger.LogDebug("🗑️ partitionKey:{partitionKey}", partitionKey.ToString());
+            logger.LogDebug("🗑️ partitionKey:{PartitionKey}", partitionKey.ToString());
 
             var response = await container.DeleteItemStreamAsync(id, partitionKey, requestOptions, cancellationToken);
 
@@ -537,18 +537,18 @@ public static class CosmosDbObservableExtensions
         }
     }
 
-    public static async Task<ItemResponse<T>> DeleteItemObservableAsync<T>(this Container container, string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<ItemResponse<T>> DeleteItemObservableAsync<T>(this Container container, string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id, partitionKey, requestOptions });
         try
         {
             // Log connection and delete item information
             logger.LogDebug("🗑️ CosmosDB delete item for class '{Type}' with id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
-            logger.LogDebug("🗑️ partitionKey:{partitionKey}", partitionKey.ToString());
+            logger.LogDebug("🗑️ partitionKey:{PartitionKey}", partitionKey.ToString());
             var response = await container.DeleteItemAsync<T>(id, partitionKey, requestOptions, cancellationToken);
-            if (activity != null && response.RequestCharge > 0)
+            if (activity is not null && response.RequestCharge > 0)
             {
                 activity.SetTag("query", $"DeleteItem('{typeof(T).Name}')");
                 activity.SetTag("container", container.Id);
@@ -567,9 +567,9 @@ public static class CosmosDbObservableExtensions
         }
     }
 
-    public static async Task<ResponseMessage> DeleteAllItemsByPartitionKeyStreamObservableAsync(this Container container, PartitionKey partitionKey, RequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<ResponseMessage> DeleteAllItemsByPartitionKeyStreamObservableAsync(this Container container, PartitionKey partitionKey, RequestOptions requestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { partitionKey, requestOptions });
         try
@@ -588,16 +588,16 @@ public static class CosmosDbObservableExtensions
         }
     }
 
-    public static async Task<ResponseMessage> ReplaceItemStreamObservableAsync(this Container container, Stream streamPayload, string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<ResponseMessage> ReplaceItemStreamObservableAsync(this Container container, Stream streamPayload, string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { streamPayload, id, partitionKey, requestOptions });
         try
         {
             // Log connection and replace item information
             logger.LogDebug("🔄 CosmosDB replace item for id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
-            logger.LogDebug("🔄 partitionKey:{partitionKey}", partitionKey.ToString());
+            logger.LogDebug("🔄 partitionKey:{PartitionKey}", partitionKey.ToString());
             var response = await container.ReplaceItemStreamAsync(streamPayload, id, partitionKey, requestOptions, cancellationToken);
 
             activity?.SetOutput(response);
@@ -609,18 +609,18 @@ public static class CosmosDbObservableExtensions
             throw;
         }
     }
-    public static async Task<ItemResponse<T>> ReplaceItemObservableAsync<T>(this Container container, T item, string id, PartitionKey? partitionKey = null, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<ItemResponse<T>> ReplaceItemObservableAsync<T>(this Container container, T item, string id, PartitionKey? partitionKey = null, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { item, id, partitionKey, requestOptions });
         try
         {
             // Log connection and replace item information
             logger.LogDebug("🔄 CosmosDB replace item for class '{Type}' with id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
-            logger.LogDebug("🔄 entity:{entity}", item.Stringify());
+            logger.LogDebug("🔄 entity:{Entity}", item.Stringify());
             var response = await container.ReplaceItemAsync(item, id, partitionKey, requestOptions, cancellationToken);
-            if (activity != null && response.RequestCharge > 0)
+            if (activity is not null && response.RequestCharge > 0)
             {
                 activity.SetTag("query", $"ReplaceItem('{typeof(T).Name}')");
                 activity.SetTag("container", container.Id);
@@ -639,9 +639,9 @@ public static class CosmosDbObservableExtensions
         }
     }
 
-    public static async Task<FeedResponse<T>> ReadNextObservableAsync<T>(this FeedIterator<T> feedIterator, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<FeedResponse<T>> ReadNextObservableAsync<T>(this FeedIterator<T> feedIterator, CancellationToken cancellationToken = default)
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { feedIterator }, logLevel: LogLevel.Trace);
 
@@ -651,7 +651,7 @@ public static class CosmosDbObservableExtensions
         {
             var feedResponse = await feedIterator.ReadNextAsync(cancellationToken).ConfigureAwait(false);
             logger.LogDebug("Query executed successfully. Retrieved {Count} documents of type '{Type}', RU consumed: {RequestCharge}", feedResponse.Count, typeof(T).Name, feedResponse.RequestCharge);
-            if (activity != null && feedResponse.RequestCharge > 0)
+            if (activity is not null && feedResponse.RequestCharge > 0)
             {
                 //activity.SetTag("query", $"ReadNext('{typeof(T).Name}')");
                 //activity.SetTag("container", container.Id);
@@ -669,17 +669,17 @@ public static class CosmosDbObservableExtensions
         }
     }
 
-    public static async Task<TransactionalBatchResponse> ExecuteObservableAsync(this TransactionalBatch transactionalBatch, CancellationToken cancellationToken = default(CancellationToken)) {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+    public static async Task<TransactionalBatchResponse> ExecuteObservableAsync(this TransactionalBatch transactionalBatch, CancellationToken cancellationToken = default) {
+        var loggerFactory = Observability.LoggerFactory;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new {  });
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger);
         try
         {
             // Log connection and delete item information
-            logger.LogDebug("⚡ CosmosDB ExecuteObservableAsync item for transactionalBatch '{transactionalBatch}", transactionalBatch.ToString()); // ' with id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'
+            logger.LogDebug("⚡ CosmosDB ExecuteObservableAsync item for transactionalBatch '{TransactionalBatch}", transactionalBatch.ToString()); // ' with id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'
             //logger.LogDebug("⚡ partitionKey:{partitionKey}", partitionKey.ToString());
             var response = await transactionalBatch.ExecuteAsync(cancellationToken);
-            if (activity != null && response.RequestCharge > 0)
+            if (activity is not null && response.RequestCharge > 0)
             {
                 //activity.SetTag("query", $"ReadNext('{typeof(T).Name}'");
                 //activity.SetTag("container", container.Id);

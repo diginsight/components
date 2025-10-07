@@ -13,9 +13,7 @@
     <PackageProjectUrl>https://github.com/diginsight/telemetry_samples</PackageProjectUrl>
 
     <MicrosoftIdentityWebVersion>3.9.4</MicrosoftIdentityWebVersion>
-    <DiginsightDiagnosticsVersion>2.0.0.23</DiginsightDiagnosticsVersion>
-    <DiginsightCoreVersion>3.6.0.0-alpha.4</DiginsightCoreVersion>
-    <DiginsightSmartCacheVersion>3.6.0.0-alpha.3</DiginsightSmartCacheVersion>
+    <DiginsightCoreVersion>3.6.0.0-alpha.5</DiginsightCoreVersion>
     <PackageTags>diginsight;telemetry</PackageTags>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

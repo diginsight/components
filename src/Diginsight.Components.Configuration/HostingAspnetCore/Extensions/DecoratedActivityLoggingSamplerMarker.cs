@@ -1,0 +1,3 @@
+﻿namespace Diginsight.Components.Configuration;
+
+internal sealed class DecoratedActivityLoggingSamplerMarker;

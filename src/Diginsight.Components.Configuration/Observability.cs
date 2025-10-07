@@ -1,22 +1,19 @@
+using Diginsight.Diagnostics;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Diginsight.Components.Configuration;
 
 internal static class Observability
 {
-    public static readonly ActivitySource ActivitySource = new(Assembly.GetExecutingAssembly().GetName().Name!);
-    public static ILoggerFactory LoggerFactory { get; set; } = null!;
-    static Observability() => ObservabilityRegistry.RegisterComponent(factory => LoggerFactory = factory);
-}
-internal static class ObservabilityHelper
-{
-    internal static ILoggerFactory LoggerFactory = default!;
+    public static readonly ActivitySource ActivitySource = new (Assembly.GetExecutingAssembly().GetName().Name!);
 
-    internal static ILoggerFactory ConfigureLoggerFactory()
+    public static ILoggerFactory LoggerFactory
     {
-        return LoggerFactory;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => LoggerFactoryStaticAccessor.LoggerFactory ?? NullLoggerFactory.Instance;
     }
 }
-

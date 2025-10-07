@@ -15,8 +15,8 @@ public class QueryCostMetricRecorderRegistration : IActivityListenerRegistration
     public bool ShouldListenTo(ActivitySource activitySource)
     {
         // Listen to Diginsight activities that might contain CosmosDB operations
-        return activitySource.Name.StartsWith("Diginsight") || 
-               activitySource.Name.Contains("CosmosDB") ||
-               activitySource.Name.Contains("Azure");
+        return activitySource.Name.StartsWith("Diginsight") ||
+            activitySource.Name.Contains("CosmosDB") ||
+            activitySource.Name.Contains("Azure");
     }
 }

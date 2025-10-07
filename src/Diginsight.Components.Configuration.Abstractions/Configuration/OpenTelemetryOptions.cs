@@ -15,7 +15,4 @@ public sealed class OpenTelemetryOptions : IOpenTelemetryOptions
 
     public ICollection<string> ExcludedHttpHosts { get; } = new List<string>();
     IEnumerable<string> IOpenTelemetryOptions.ExcludedHttpHosts => ExcludedHttpHosts;
-
-    public ICollection<string> DurationMetricTags { get; } = new List<string>();
-    IEnumerable<string> IOpenTelemetryOptions.DurationMetricTags => DurationMetricTags;
 }

@@ -105,5 +105,10 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- Force use of only public NuGet feed -->
+  <PropertyGroup>
+    <RestoreAdditionalProjectSources></RestoreAdditionalProjectSources>
+    <RestoreAdditionalProjectFallbackFolders></RestoreAdditionalProjectFallbackFolders>
+  </PropertyGroup>
 
 </Project>

@@ -54,9 +54,9 @@ public sealed class DefaultCredentialProvider : ICredentialProvider
         var tenantId = configuration["TenantId"].HardTrim();
         var clientSecret = configuration["ClientSecret"].HardTrim();
         var certificateThumbprint = configuration["CertificateThumbprint"].HardTrim();
-        
+
         logger.LogDebug($"tenantId:{tenantId},clientId:{clientId},clientSecret:{clientSecret},managedIdentityClientId:{managedIdentityClientId},certificateThumbprint:{certificateThumbprint}");
-        
+
         var authorityHost = GetAuthorityHost();
 
         // Add client credentials (highest priority for configured authentication)
@@ -81,8 +81,6 @@ public sealed class DefaultCredentialProvider : ICredentialProvider
         // Environment-specific credential chain
         if (environment.IsDevelopment())
         {
-            // Development environment: Add developer tools for local authentication
-            
             // Azure CLI Credential - uses Azure CLI login for developers
             AzureCliCredentialOptions credentialOptions1 = new() { AuthorityHost = authorityHost };
             credentials.Add(new AzureCliCredential(credentialOptions1));
@@ -98,7 +96,7 @@ public sealed class DefaultCredentialProvider : ICredentialProvider
         else
         {
             // Production environment: Add Azure-native authentication methods
-            
+
             // Workload Identity Credential - for Kubernetes workload identity
             WorkloadIdentityCredentialOptions credentialOptions1 = new() { AuthorityHost = authorityHost };
             credentials.Add(new WorkloadIdentityCredential(credentialOptions1));

@@ -97,11 +97,11 @@ public static class WebHostingExtensions
 
         if (openTelemetryOptions.EnableMetrics)
         {
-            if (!services.Any(static x => x.ServiceType == typeof(MetricRecordingDurationMetricTagsEnricherMarker)))
-            {
-                services.AddSingleton<MetricRecordingDurationMetricTagsEnricherMarker>();
-                services.Decorate<IMetricRecordingFilter, DecoratorHttpHeadersMetricRecorderSettings>();
-            }
+            //if (!services.Any(static x => x.ServiceType == typeof(MetricRecordingDurationMetricTagsEnricherMarker)))
+            //{
+            //    services.AddSingleton<MetricRecordingDurationMetricTagsEnricherMarker>();
+            //    services.Decorate<IMetricRecordingFilter, DecoratorHttpHeadersMetricRecorderSettings>();
+            //}
 
             openTelemetryBuilder.WithMetrics(
                 static meterProviderBuilder =>

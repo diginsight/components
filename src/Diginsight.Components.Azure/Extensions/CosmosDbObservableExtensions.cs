@@ -19,7 +19,7 @@ namespace Diginsight.Components.Azure;
 
 public static class CosmosDbObservableExtensions
 {
-    public static FeedIterator<T> ToFeedIteratorObservable<T>(this IQueryable<T> query, Container? container = null)
+    public static FeedIterator<T> ToFeedIteratorObservable<T>(this IQueryable<T> query, Container container)
     {
         var queryText = query?.ToString();
         var feedIterator = query.ToFeedIterator<T>();

@@ -20,7 +20,7 @@ namespace Diginsight.Components.Azure
             this.queryDefinition = queryDefinition;
         }
 
-        internal ObservableFeedIterator(FeedIterator<T> iterator, Container? container, string queryText = null) 
+        internal ObservableFeedIterator(FeedIterator<T> iterator, Container? container, string queryText = null)
         {
             innerIterator = iterator ?? throw new ArgumentNullException(nameof(iterator));
             this.container = container;
@@ -33,25 +33,16 @@ namespace Diginsight.Components.Azure
         {
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(ObservableFeedIterator<T>));
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new {
-                    query = queryDefinition?.QueryText ?? queryText, 
-                    container = container?.Id,
-                    database = container?.Database?.Id
-                },
-                logLevel: LogLevel.Trace);
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }, logLevel: LogLevel.Trace);
 
             try
             {
-                SetActivityTags(activity);
-
                 var feedResponse = await innerIterator.ReadNextAsync(cancellationToken);
                 logger.LogDebug("Query executed successfully. Retrieved {Count} documents of type '{Type}', RU consumed: {RequestCharge}", feedResponse.Count, typeof(T).Name, feedResponse.RequestCharge);
+
                 if (activity != null && feedResponse.RequestCharge > 0)
                 {
-                    activity.SetTag("query", queryText);
-                    activity.SetTag("container", container.Id);
-                    activity.SetTag("database", container.Database.Id);
-
+                    SetActivityTags(activity);
                     activity.SetTag("query_cost", feedResponse.RequestCharge);
                 }
 
@@ -68,7 +59,7 @@ namespace Diginsight.Components.Azure
         {
             if (activity == null) return;
 
-            var query = queryDefinition?.QueryText ?? queryText; 
+            var query = queryDefinition?.QueryText ?? queryText;
             if (!string.IsNullOrEmpty(query)) { activity.SetTag("query", query); }
 
             if (container != null)
@@ -80,12 +71,6 @@ namespace Diginsight.Components.Azure
                     if (container.Database.Client != null) { activity.SetTag("endpoint", container.Database.Client.Endpoint?.ToString()); }
                 }
             }
-
-            //// Set application information
-            //if (!string.IsNullOrEmpty(application))
-            //{
-            //    activity.SetTag("application", application);
-            //}
         }
 
         void IDisposable.Dispose() => innerIterator?.Dispose();
@@ -98,7 +83,7 @@ namespace Diginsight.Components.Azure
         private readonly QueryDefinition? queryDefinition;
         private readonly string? queryText; // For string-based queries
 
-        internal ObservableFeedIterator( FeedIterator iterator, Container? container, QueryDefinition? queryDefinition = null)
+        internal ObservableFeedIterator(FeedIterator iterator, Container? container, QueryDefinition? queryDefinition = null)
         {
             innerIterator = iterator ?? throw new ArgumentNullException(nameof(iterator));
             this.container = container;
@@ -118,18 +103,10 @@ namespace Diginsight.Components.Azure
         {
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(ObservableFeedIterator));
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger,
-                () => new {
-                    query = queryDefinition?.QueryText ?? queryText, 
-                    container = container?.Id,
-                    database = container?.Database?.Id
-                },
-                logLevel: LogLevel.Trace);
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }, logLevel: LogLevel.Trace);
 
             try
             {
-                SetActivityTags(activity);
-
                 var responseMessage = await innerIterator.ReadNextAsync(cancellationToken);
                 double requestCharge = 0;
                 if (responseMessage.Headers?.RequestCharge != null) { requestCharge = responseMessage.Headers.RequestCharge; }
@@ -137,9 +114,7 @@ namespace Diginsight.Components.Azure
                 logger.LogDebug("Query executed successfully. Retrieved documents, RU consumed: {RequestCharge}", requestCharge);
                 if (activity != null && requestCharge > 0)
                 {
-                    activity.SetTag("query", queryText);
-                    activity.SetTag("container", container.Id);
-                    activity.SetTag("database", container.Database.Id);
+                    SetActivityTags(activity);
 
                     activity.SetTag("query_cost", requestCharge);
                 }
@@ -157,7 +132,7 @@ namespace Diginsight.Components.Azure
         {
             if (activity == null) return;
 
-            var query = queryDefinition?.QueryText ?? queryText; 
+            var query = queryDefinition?.QueryText ?? queryText;
             if (!string.IsNullOrEmpty(query)) { activity.SetTag("query", query); }
 
             if (container != null)
@@ -166,7 +141,6 @@ namespace Diginsight.Components.Azure
                 if (container.Database != null)
                 {
                     activity.SetTag("database", container.Database.Id);
-
                     if (container.Database.Client != null) { activity.SetTag("endpoint", container.Database.Client.Endpoint?.ToString()); }
                 }
             }

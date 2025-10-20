@@ -1,3 +1,4 @@
+using Azure;
 using Diginsight.Components.Azure.Metrics;
 using Diginsight.Diagnostics;
 using Diginsight.Stringify;
@@ -5,7 +6,9 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,6 +17,7 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using static Newtonsoft.Json.JsonConvert;
 
 namespace Diginsight.Components.Azure;
 
@@ -275,6 +279,8 @@ public static class CosmosDbObservableExtensions
             logger.LogDebug("🔄 entity:{entity}", item.Stringify());
 
             var response = await container.UpsertItemAsync(item, partitionKey, requestOptions, cancellationToken);
+            logger.LogDebug("CosmosDB upsert completed. RU consumed: {RequestCharge}", response.RequestCharge);
+
             if (activity != null && response.RequestCharge > 0)
             {
                 activity.SetTag("query", $"UpsertItem('{typeof(T).Name}')");
@@ -348,6 +354,7 @@ public static class CosmosDbObservableExtensions
             logger.LogDebug("📦 CosmosDB create item for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("📦 entity:{entity}", item.Stringify());
             var response = await container.CreateItemAsync(item, partitionKey, requestOptions, cancellationToken);
+            logger.LogDebug("CosmosDB create completed. RU consumed: {RequestCharge}", response.RequestCharge);
             if (activity != null && response.RequestCharge > 0)
             {
                 activity.SetTag("query", $"CreateItem('{typeof(T).Name}')");
@@ -400,6 +407,7 @@ public static class CosmosDbObservableExtensions
             logger.LogDebug("🔍 CosmosDB read item for id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔍 partitionKey:{partitionKey}", partitionKey.ToString());
             var response = await container.ReadItemAsync<T>(id, partitionKey, requestOptions, cancellationToken);
+            logger.LogDebug("CosmosDB read item completed. RU consumed: {RequestCharge}", response.RequestCharge);
             if (activity != null && response.RequestCharge > 0)
             {
                 activity.SetTag("query", $"ReadItem('{typeof(T).Name}')");
@@ -450,6 +458,7 @@ public static class CosmosDbObservableExtensions
             // Log connection and read many items information
             logger.LogDebug("🔍 CosmosDB read many items for class '{Type}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             var response = await container.ReadManyItemsAsync<T>(items, readManyRequestOptions, cancellationToken);
+            logger.LogDebug("CosmosDB read many items completed. RU consumed: {RequestCharge}", response.RequestCharge);
             if (activity != null && response.RequestCharge > 0)
             {
                 activity.SetTag("query", $"ReadManyItems('{typeof(T).Name}')");
@@ -481,6 +490,7 @@ public static class CosmosDbObservableExtensions
             logger.LogDebug("✂️ partitionKey:{partitionKey}", partitionKey.ToString());
             logger.LogDebug("✂️ patchOperations:{patchOperations}", string.Join(", ", patchOperations.Select(po => po.ToString())));
             var response = await container.PatchItemAsync<T>(id, partitionKey, patchOperations, requestOptions, cancellationToken);
+            logger.LogDebug("CosmosDB patch item completed. RU consumed: {RequestCharge}", response.RequestCharge);
             if (activity != null && response.RequestCharge > 0)
             {
                 activity.SetTag("query", $"ReadManyItems('{typeof(T).Name}')");
@@ -558,6 +568,7 @@ public static class CosmosDbObservableExtensions
             logger.LogDebug("🗑️ CosmosDB delete item for class '{Type}' with id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🗑️ partitionKey:{partitionKey}", partitionKey.ToString());
             var response = await container.DeleteItemAsync<T>(id, partitionKey, requestOptions, cancellationToken);
+            logger.LogDebug("CosmosDB delete item completed. RU consumed: {RequestCharge}", response.RequestCharge);
             if (activity != null && response.RequestCharge > 0)
             {
                 activity.SetTag("query", $"DeleteItem('{typeof(T).Name}')");
@@ -630,6 +641,7 @@ public static class CosmosDbObservableExtensions
             logger.LogDebug("🔄 CosmosDB replace item for class '{Type}' with id '{Id}' in database {Endpoint}, container {Container}, collection '{Collection}'", typeof(T).Name, id, container.Database.Client.Endpoint, container.Database.Id, container.Id);
             logger.LogDebug("🔄 entity:{entity}", item.Stringify());
             var response = await container.ReplaceItemAsync(item, id, partitionKey, requestOptions, cancellationToken);
+            logger.LogDebug("CosmosDB replace item completed. RU consumed: {RequestCharge}", response.RequestCharge);
             if (activity != null && response.RequestCharge > 0)
             {
                 activity.SetTag("query", $"ReplaceItem('{typeof(T).Name}')");
@@ -679,10 +691,11 @@ public static class CosmosDbObservableExtensions
         }
     }
 
-    public static async Task<TransactionalBatchResponse> ExecuteObservableAsync(this TransactionalBatch transactionalBatch, CancellationToken cancellationToken = default(CancellationToken)) {
+    public static async Task<TransactionalBatchResponse> ExecuteObservableAsync(this TransactionalBatch transactionalBatch, CancellationToken cancellationToken = default(CancellationToken))
+    {
         var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new {  });
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { });
         try
         {
             // Log connection and delete item information

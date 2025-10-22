@@ -34,7 +34,7 @@ public static class TimeSpanParser
 {
     private static readonly Regex DurationRegex = new(
         @"^(?:(\d+(?:\.\d+)?)Y)?(?:(\d+(?:\.\d+)?)M)?(?:(\d+(?:\.\d+)?)W)?(?:(\d+(?:\.\d+)?)D)?(?:(\d+(?:\.\d+)?)H)?(?:(\d+(?:\.\d+)?)m)?(?:(\d+(?:\.\d+)?)S)?$",
-        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        RegexOptions.Compiled); //  | RegexOptions.IgnoreCase
 
     /// <summary>
     /// Default duration period used when no expression is provided (1 month).
@@ -186,7 +186,7 @@ public static class TimeSpanParser
         if (TimeSpan.TryParse(expression, out TimeSpan standardTimeSpan))
             return referenceDate - standardTimeSpan;
 
-        var match = DurationRegex.Match(expression.Trim().ToUpperInvariant());
+        var match = DurationRegex.Match(expression.Trim());
         if (!match.Success)
             throw new ArgumentException($"Invalid duration expression: {expression}. Use format like '6M', '1.5Y', '2W3D'");
 

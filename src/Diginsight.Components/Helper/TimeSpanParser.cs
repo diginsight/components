@@ -50,7 +50,7 @@ public static class TimeSpanParser
 {
     private static readonly Regex DurationRegex = new(
         @"^(?:(\d+(?:\.\d+)?)Y)?(?:(\d+(?:\.\d+)?)M)?(?:(\d+(?:\.\d+)?)W)?(?:(\d+(?:\.\d+)?)D)?(?:(\d+(?:\.\d+)?)H)?(?:(\d+(?:\.\d+)?)m)?(?:(\d+(?:\.\d+)?)S)?$",
-        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        RegexOptions.Compiled); //  | RegexOptions.IgnoreCase
 
     /// <summary>
     /// Default duration period used when no expression is provided (1 month).

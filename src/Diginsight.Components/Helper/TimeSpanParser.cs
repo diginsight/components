@@ -228,7 +228,7 @@ public static class TimeSpanParser
             return standardTimeSpan;
         }
 
-        var expressionMatch = DurationRegex.Match(expression.Trim().ToUpperInvariant());
+        var expressionMatch = DurationRegex.Match(expression.Trim());
         if (!expressionMatch.Success)
             throw new ArgumentException($"Invalid duration expression: {expression}. Use format like '6M', '1.5Y', '2W3D'");
 
@@ -355,7 +355,7 @@ public static class TimeSpanParser
 
         var result = referenceDate;
 
-        var expressionMatch = DurationRegex.Match(expression.Trim().ToUpperInvariant());
+        var expressionMatch = DurationRegex.Match(expression.Trim());
         if (!expressionMatch.Success)
             throw new ArgumentException($"Invalid duration expression: {expression}. Use format like '6M', '1.5Y', '2W3D'");
 
@@ -447,7 +447,7 @@ public static class TimeSpanParser
     /// </remarks>
     private static TimeSpan ParseToTimeSpan(string expression)
     {
-        var match = DurationRegex.Match(expression.Trim().ToUpperInvariant());
+        var match = DurationRegex.Match(expression.Trim());
         if (!match.Success)
             throw new ArgumentException($"Invalid duration expression: {expression}. Use format like '6M', '1.5Y', '2W3D'");
 

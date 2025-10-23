@@ -3,6 +3,22 @@ using System.Text.RegularExpressions;
 namespace Diginsight.Components;
 
 /// <summary>
+/// Defines the parsing strategy for duration expressions.
+/// </summary>
+public enum ParsingType
+{
+    /// <summary>
+    /// Uses approximate conversions (1 year = 365.25 days, 1 month = 30.44 days).
+    /// </summary>
+    Generic,
+
+    /// <summary>
+    /// Uses calendar-accurate calculations with actual month/year handling relative to a reference date.
+    /// </summary>
+    CalendarAccurate
+}
+
+/// <summary>
 /// Provides parsing and calculation functionality for extended TimeSpan expressions that include calendar-based units.
 /// </summary>
 /// <remarks>
@@ -40,6 +56,7 @@ public static class TimeSpanParser
     /// Default duration period used when no expression is provided (1 month).
     /// </summary>
     public const string DefaultPeriod = "1M";
+
 
     /// <summary>
     /// Parses an extended TimeSpan expression into a <see cref="TimeSpan"/> using approximate conversions.
@@ -87,7 +104,6 @@ public static class TimeSpanParser
         if (string.IsNullOrWhiteSpace(expression))
             return ParseToTimeSpan(DefaultPeriod);
 
-        // Try standard TimeSpan.Parse first for backward compatibility
         if (TimeSpan.TryParse(expression, out TimeSpan standardTimeSpan))
             return standardTimeSpan;
 
@@ -137,6 +153,151 @@ public static class TimeSpanParser
     }
 
     /// <summary>
+    /// Parses an extended TimeSpan expression into a <see cref="TimeSpan"/> using the specified parsing strategy.
+    /// </summary>
+    /// <param name="expression">
+    /// Duration expression to parse. Supports extended format (e.g., "6M", "1.5Y", "2W3D") 
+    /// or standard <see cref="TimeSpan"/> format (e.g., "01:30:00"). 
+    /// If null or whitespace, returns <see cref="DefaultPeriod"/>.
+    /// </param>
+    /// <param name="parsingType">
+    /// The parsing strategy to use. 
+    /// <see cref="ParsingType.Generic"/> uses approximate conversions.
+    /// <see cref="ParsingType.CalendarAccurate"/> uses calendar-accurate calculations relative to a reference date.
+    /// </param>
+    /// <param name="referenceDateTimeOffset">
+    /// Reference date used for <see cref="ParsingType.CalendarAccurate"/> evaluation.
+    /// Ignored when <paramref name="parsingType"/> is <see cref="ParsingType.Generic"/>.
+    /// </param>
+    /// <param name="sign">
+    /// Direction of the calculation for <see cref="ParsingType.CalendarAccurate"/> evaluation.
+    /// Use -1 for backward in time, 1 for forward in time.
+    /// Ignored when <paramref name="parsingType"/> is <see cref="ParsingType.Generic"/>.
+    /// </param>
+    /// <returns>
+    /// A <see cref="TimeSpan"/> representing the duration.
+    /// For <see cref="ParsingType.Generic"/>, returns approximate duration using average values.
+    /// For <see cref="ParsingType.CalendarAccurate"/>, returns the actual duration between the reference date
+    /// and the date after applying the expression in the specified direction.
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the expression format is invalid.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// When using <see cref="ParsingType.CalendarAccurate"/>, the method calculates the actual calendar difference
+    /// by applying the expression to the reference date and computing the resulting <see cref="TimeSpan"/>.
+    /// This provides accurate results that account for varying month lengths and leap years.
+    /// </para>
+    /// <para>
+    /// When using <see cref="ParsingType.Generic"/>, the method uses approximate conversions:
+    /// <list type="bullet">
+    /// <item><description>1 Year = 365.25 days (accounts for leap years)</description></item>
+    /// <item><description>1 Month = 30.44 days (average month length: 365.25 / 12)</description></item>
+    /// <item><description>1 Week = 7 days</description></item>
+    /// </list>
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// var now = DateTimeOffset.Now;
+    /// 
+    /// // Generic parsing (approximate)
+    /// var approxSixMonths = TimeSpanParser.Parse("6M", ParsingType.Generic, now, -1);
+    /// 
+    /// // Calendar-accurate parsing
+    /// var exactSixMonthsBack = TimeSpanParser.Parse("6M", ParsingType.CalendarAccurate, now, -1);
+    /// var exactOneYearForward = TimeSpanParser.Parse("1Y", ParsingType.CalendarAccurate, now, 1);
+    /// </code>
+    /// </example>
+    public static TimeSpan Parse(string expression, ParsingType parsingType, DateTimeOffset referenceDateTimeOffset, int sign)
+    {
+        if (string.IsNullOrWhiteSpace(expression))
+            expression = DefaultPeriod;
+
+        if (parsingType == ParsingType.Generic)
+        {
+            // Use the original Parse logic for Generic parsing
+            return Parse(expression);
+        }
+
+        // CalendarAccurate parsing
+        if (TimeSpan.TryParse(expression, out TimeSpan standardTimeSpan))
+        {
+            // For standard TimeSpan format, just return it (no calendar dependency)
+            return standardTimeSpan;
+        }
+
+        var expressionMatch = DurationRegex.Match(expression.Trim().ToUpperInvariant());
+        if (!expressionMatch.Success)
+            throw new ArgumentException($"Invalid duration expression: {expression}. Use format like '6M', '1.5Y', '2W3D'");
+
+        // Apply the expression once to get the target date
+        var targetDate = GetExpressionNextOccurrence(referenceDateTimeOffset, expressionMatch, sign);
+
+        // Calculate the actual TimeSpan difference
+        return referenceDateTimeOffset - targetDate;
+    }
+
+    /// <summary>
+    /// Attempts to parse an extended TimeSpan expression without throwing exceptions, using the specified parsing strategy.
+    /// </summary>
+    /// <param name="expression">Duration expression to parse.</param>
+    /// <param name="parsingType">
+    /// The parsing strategy to use. 
+    /// <see cref="ParsingType.Generic"/> uses approximate conversions.
+    /// <see cref="ParsingType.CalendarAccurate"/> uses calendar-accurate calculations relative to a reference date.
+    /// </param>
+    /// <param name="referenceDateTimeOffset">
+    /// Reference date used for <see cref="ParsingType.CalendarAccurate"/> evaluation.
+    /// Ignored when <paramref name="parsingType"/> is <see cref="ParsingType.Generic"/>.
+    /// </param>
+    /// <param name="sign">
+    /// Direction of the calculation for <see cref="ParsingType.CalendarAccurate"/> evaluation.
+    /// Use -1 for backward in time, 1 for forward in time.
+    /// Ignored when <paramref name="parsingType"/> is <see cref="ParsingType.Generic"/>.
+    /// </param>
+    /// <param name="result">
+    /// When this method returns, contains the parsed <see cref="TimeSpan"/> if parsing succeeded,
+    /// or <see cref="TimeSpan.Zero"/> if parsing failed.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if the expression was successfully parsed; otherwise, <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    /// This method wraps <see cref="Parse(string, ParsingType, DateTimeOffset, int)"/> and catches all exceptions,
+    /// making it safe for scenarios where invalid input is expected.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// var now = DateTimeOffset.Now;
+    /// 
+    /// if (TimeSpanParser.TryParse("6M", ParsingType.CalendarAccurate, now, -1, out var duration))
+    /// {
+    ///   Console.WriteLine($"Duration: {duration.TotalDays} days");
+    /// }
+    /// else
+    /// {
+    ///     Console.WriteLine("Invalid expression");
+    /// }
+    /// </code>
+    /// </example>
+    public static bool TryParse(string expression, ParsingType parsingType, DateTimeOffset referenceDateTimeOffset, int sign, out TimeSpan result)
+    {
+        result = TimeSpan.Zero;
+
+        try
+        {
+            result = Parse(expression, parsingType, referenceDateTimeOffset, sign);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
     /// Calculates a date/time by applying an extended duration expression to a reference date,
     /// using calendar-accurate operations for months and years.
     /// </summary>
@@ -145,12 +306,14 @@ public static class TimeSpanParser
     /// Duration expression (e.g., "6M", "1Y", "2W3D"). If null or whitespace, uses <see cref="DefaultPeriod"/>.
     /// </param>
     /// <param name="occurrence">
-    /// Multiplier for the expression (typically used for recurring calculations).
-    /// Currently not implemented in the method body - the expression is applied once.
+    /// Number of times to apply the duration expression.
+    /// Negative values move backward in time (e.g., -1 = one period ago, -2 = two periods ago).
+    /// Positive values move forward in time (e.g., 1 = one period ahead, 2 = two periods ahead).
+    /// Zero returns the reference date unchanged.
     /// </param>
     /// <returns>
-    /// A <see cref="DateTimeOffset"/> representing the calculated date/time by subtracting
-    /// the duration from the reference date.
+    /// A <see cref="DateTimeOffset"/> representing the calculated date/time by applying
+    /// the duration from the reference date the specified number of times.
     /// </returns>
     /// <exception cref="ArgumentException">
     /// Thrown when the expression format is invalid.
@@ -162,19 +325,23 @@ public static class TimeSpanParser
     /// varying month lengths and leap years.
     /// </para>
     /// <para>
+    /// The duration is applied iteratively for the specified number of occurrences, ensuring
+    /// calendar accuracy for each step (important for months/years which have variable lengths).
+    /// </para>
+    /// <para>
     /// Smaller units (weeks, days, hours, minutes, seconds) are applied using <see cref="TimeSpan"/> arithmetic.
     /// Fractional years are converted to months, and fractional months are converted to days using
     /// an average of 30.44 days per month.
-    /// </para>
-    /// <para>
-    /// The duration is subtracted from the reference date (moving backward in time).
     /// </para>
     /// </remarks>
     /// <example>
     /// <code>
     /// var today = DateTimeOffset.Now;
-    /// var sixMonthsAgo = ExtendedTimeSpanParser.CalculateExpressionOccurrence(today, "6M", 1);
-    /// var oneYearAgo = ExtendedTimeSpanParser.CalculateExpressionOccurrence(today, "1Y", 1);
+    /// var sixMonthsAgo = TimeSpanParser.GetExpressionOccurrence(today, "6M", -1);
+    /// var oneYearAgo = TimeSpanParser.GetExpressionOccurrence(today, "1Y", -1);
+    /// var twoYearsAgo = TimeSpanParser.GetExpressionOccurrence(today, "1Y", -2);
+    /// var sixMonthsAhead = TimeSpanParser.GetExpressionOccurrence(today, "6M", 1);
+    /// var oneYearAhead = TimeSpanParser.GetExpressionOccurrence(today, "1Y", 1);
     /// </code>
     /// </example>
     public static DateTimeOffset GetExpressionOccurrence(DateTimeOffset referenceDate, string expression, int occurrence)
@@ -184,13 +351,37 @@ public static class TimeSpanParser
 
         // Try standard TimeSpan.Parse first
         if (TimeSpan.TryParse(expression, out TimeSpan standardTimeSpan))
-            return referenceDate - standardTimeSpan;
-
-        var match = DurationRegex.Match(expression.Trim().ToUpperInvariant());
-        if (!match.Success)
-            throw new ArgumentException($"Invalid duration expression: {expression}. Use format like '6M', '1.5Y', '2W3D'");
+            return referenceDate - TimeSpan.FromTicks(standardTimeSpan.Ticks * occurrence);
 
         var result = referenceDate;
+
+        var expressionMatch = DurationRegex.Match(expression.Trim().ToUpperInvariant());
+        if (!expressionMatch.Success)
+            throw new ArgumentException($"Invalid duration expression: {expression}. Use format like '6M', '1.5Y', '2W3D'");
+
+        // Determine direction: negative occurrence means go backward, positive means go forward
+        int sign = occurrence < 0 ? 1 : -1;
+        int absoluteOccurrence = Math.Abs(occurrence);
+
+        // Apply the expression iteratively for calendar-accurate calculations
+        for (int i = 0; i < absoluteOccurrence; i++)
+        {
+            result = GetExpressionNextOccurrence(result, expressionMatch, sign);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Applies a single occurrence of the duration expression to the given date.
+    /// </summary>
+    /// <param name="date">The date to apply the duration to.</param>
+    /// <param name="match">The regex match containing the parsed duration components.</param>
+    /// <param name="sign">The direction of the calculation: -1 for backward in time, +1 for forward in time.</param>
+    /// <returns>The date after applying the duration once.</returns>
+    private static DateTimeOffset GetExpressionNextOccurrence(DateTimeOffset date, Match match, int sign)
+    {
+        var result = date;
 
         // Apply calendar-accurate operations for years and months
         if (match.Groups[1].Success) // Years
@@ -199,12 +390,12 @@ public static class TimeSpanParser
             int wholeYears = (int)years;
             double fractionalYears = years - wholeYears;
 
-            result = result.AddYears(-wholeYears);
+            result = result.AddYears(sign * -wholeYears);
             if (fractionalYears > 0)
             {
                 // Convert fractional years to months for better accuracy
                 int additionalMonths = (int)(fractionalYears * 12);
-                result = result.AddMonths(-additionalMonths);
+                result = result.AddMonths(sign * -additionalMonths);
             }
         }
 
@@ -214,12 +405,12 @@ public static class TimeSpanParser
             int wholeMonths = (int)months;
             double fractionalMonths = months - wholeMonths;
 
-            result = result.AddMonths(-wholeMonths);
+            result = result.AddMonths(sign * -wholeMonths);
             if (fractionalMonths > 0)
             {
                 // Convert fractional months to days
                 int additionalDays = (int)(fractionalMonths * 30.44);
-                result = result.AddDays(-additionalDays);
+                result = result.AddDays(sign * -additionalDays);
             }
         }
 
@@ -241,7 +432,7 @@ public static class TimeSpanParser
         if (match.Groups[7].Success) // Seconds
             timeSpanOffset = timeSpanOffset.Add(TimeSpan.FromSeconds(double.Parse(match.Groups[7].Value)));
 
-        return result - timeSpanOffset;
+        return result - TimeSpan.FromTicks(sign * timeSpanOffset.Ticks);
     }
 
     /// <summary>
@@ -297,22 +488,22 @@ public static class TimeSpanParser
     {
         /// <summary>Six months duration: "6M"</summary>
         public const string SixMonths = "6M";
-        
+
         /// <summary>One and a half years duration: "1.5Y"</summary>
         public const string OneAndHalfYears = "1.5Y";
-        
+
         /// <summary>Six weeks duration: "6W"</summary>
         public const string SixWeeks = "6W";
-        
+
         /// <summary>One year and six months duration: "1Y6M"</summary>
         public const string OneYearSixMonths = "1Y6M";
-        
+
         /// <summary>Two weeks and three days duration: "2W3D"</summary>
         public const string TwoWeeksThreeDays = "2W3D";
-        
+
         /// <summary>Three months and two weeks duration: "3M2W"</summary>
         public const string ThreeMonthsTwoWeeks = "3M2W";
-        
+
         /// <summary>One year, two months, and five days duration: "1Y2M5D"</summary>
         public const string OneYearTwoMonthsFiveDays = "1Y2M5D";
     }

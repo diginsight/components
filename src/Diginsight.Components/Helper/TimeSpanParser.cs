@@ -49,7 +49,7 @@ public enum ParsingType
 public static class TimeSpanParser
 {
     private static readonly Regex DurationRegex = new(
-        @"^(?:(\d+(?:\.\d+)?)Y)?(?:(\d+(?:\.\d+)?)M)?(?:(\d+(?:\.\d+)?)W)?(?:(\d+(?:\.\d+)?)D)?(?:(\d+(?:\.\d+)?)H)?(?:(\d+(?:\.\d+)?)m)?(?:(\d+(?:\.\d+)?)S)?$",
+        @"^(?:(\d+(?:\.\d+)?)[Yy])?(?:(\d+(?:\.\d+)?)M)?(?:(\d+(?:\.\d+)?)[Ww])?(?:(\d+(?:\.\d+)?)[Dd])?(?:(\d+(?:\.\d+)?)[Hh])?(?:(\d+(?:\.\d+)?)m)?(?:(\d+(?:\.\d+)?)[Ss])?$",
         RegexOptions.Compiled); //  | RegexOptions.IgnoreCase
 
     /// <summary>

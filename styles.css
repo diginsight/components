@@ -41,3 +41,20 @@ html[data-bs-theme="dark"] .navbar-brand {
 html[data-bs-theme="dark"] .navbar-brand:hover {
   color: white !important;
 }
+
+/* Override Bootstrap's orange highlight color with light pastel yellow */
+:root {
+  --bs-highlight-bg: #fffacd !important; /* Light pastel yellow (LemonChiffon) */
+}
+
+/* Alternative light yellow colors you can use instead:
+   #fffffb - Very light cream yellow
+   #ffffcc - Light yellow
+   #fffec4 - Pastel yellow
+   #fff9c4 - Another light pastel yellow
+   #fffacd - LemonChiffon (current choice)
+*/
+
+mark, .mark {
+  background-color: var(--bs-highlight-bg) !important;
+}

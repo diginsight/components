@@ -4,6 +4,7 @@ using Diginsight.Diagnostics;
 using Diginsight.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
@@ -68,7 +69,7 @@ public static class HttpExtensions
         HttpMethod method, string url, object? requestBody, string description, CancellationToken cancellationToken
     )
     {
-        var loggerFactory = Observability.LoggerFactory;
+        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
         var logger = loggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { method, url, requestBody, description });
 

@@ -420,9 +420,11 @@ public static class CosmosDbObservableExtensions
             activity?.SetOutput(response);
             return response;
         }
-        catch (Exception ex)
+        catch (CosmosException ex)
         {
-            logger.LogError(ex, "❌ Error reading item from CosmosDB for id {Id}", id);
+            //logger.LogError(ex, "❌ Error reading item from CosmosDB for id {Id}", id);
+            logger.LogDebug($"❌ Error reading item '{id}': {ex.StatusCode} - {ex.Message.Replace("\r\n", "\\r\\n")}");
+            activity?.SetOutput(ex);
             throw;
         }
     }

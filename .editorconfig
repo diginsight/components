@@ -1,4 +1,4 @@
-root = true
+﻿root = true
 
 # All files
 [*]
@@ -39,6 +39,12 @@ charset = utf-8
 
 # Markdown
 [*.md]
+end_of_line = crlf
+trim_trailing_whitespace = false
+charset = utf-8
+
+# Prompt files (treat as markdown)
+[*.prompt]
 end_of_line = crlf
 trim_trailing_whitespace = false
 charset = utf-8

@@ -64,11 +64,15 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
 
         this.lazyMetric = new Lazy<Histogram<double>>(() =>
         {
-            IDiginsightActivitiesMetricOptions options = activitiesOptionsMonitor.CurrentValue;
-            return meterFactory.Create(options.MeterName)
-                               .CreateHistogram<double>(QueryMetrics.QueryCost.Name, QueryMetrics.QueryCost.Unit, QueryMetrics.QueryCost.Description);
+            IMetricRecordingOptions options = activitiesOptionsMonitor.CurrentValue;
+            return meterFactory.Create(options.MeterName)  // Or create your own meter name
+                               .CreateHistogram<double>(
+                                   QueryMetrics.QueryCost.Name,
+                                   QueryMetrics.QueryCost.Unit,
+                                   QueryMetrics.QueryCost.Description);
         });
 
+        // Filter and enricher code remains the same - already using correct interfaces
         var metricFilter = serviceProvider.GetNamedService<IMetricRecordingFilter>(metricName);
         this.metricFilter = metricFilter ?? serviceProvider.GetRequiredService<IMetricRecordingFilter>();
 
@@ -85,18 +89,18 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                 double.TryParse(costObj.ToString(), out double cost) &&
                 cost > 0)
             {
-
                 var queryCostMetricRecorderOptionsValue = queryCostMetricRecorderOptions.CurrentValue;
                 var addNormalizedQueryTag = queryCostMetricRecorderOptionsValue.AddNormalizedQueryTag;
                 var addQueryCallers = queryCostMetricRecorderOptionsValue.AddQueryCallers;
                 var ignoreQueryCallers = queryCostMetricRecorderOptionsValue.IgnoreQueryCallers;
 
-                var tags = new List<KeyValuePair<string, object?>>();
+                var tags = new TagList();
+
                 if (addNormalizedQueryTag)
                 {
                     var rawQuery = activity.GetTagItem("query")?.ToString();
                     var normalizedQuery = NormalizeQueryForMetrics(rawQuery);
-                    tags.Add(new KeyValuePair<string, object?>("query", normalizedQuery));
+                    tags.Add("query", normalizedQuery);
                 }
 
                 var callers = GetDiginsightCallers(activity);
@@ -112,28 +116,31 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                     while (callerIndex < addQueryCallers && callerIndex < diginsightCallers.Count())
                     {
                         var caller = diginsightCallers.ElementAt(callerIndex);
-                        tags.Add(new KeyValuePair<string, object?>($"caller{callerIndex + 1}", caller.OperationName));
+                        tags.Add($"caller{callerIndex + 1}", caller.OperationName);
                         callerIndex++;
                     }
                 }
 
                 var entryMethod = diginsightCallers.Last() ?? callers.Last();
-                tags.Add(new KeyValuePair<string, object?>("method", activity.OperationName));
-                tags.Add(new KeyValuePair<string, object?>("entrymethod", entryMethod?.OperationName));
-                tags.Add(new KeyValuePair<string, object?>("application", activity.GetTagItem("application")?.ToString() ?? System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name));
-                tags.Add(new KeyValuePair<string, object?>("container", activity.GetTagItem("container")?.ToString()));
-                tags.Add(new KeyValuePair<string, object?>("database", activity.GetTagItem("database")?.ToString()));
+                tags.Add("method", activity.OperationName);
+                tags.Add("entrymethod", entryMethod?.OperationName);
+                tags.Add("application", activity.GetTagItem("application")?.ToString() ?? System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name);
+                tags.Add("container", activity.GetTagItem("container")?.ToString());
+                tags.Add("database", activity.GetTagItem("database")?.ToString());
+
                 if (metricEnricher is not null)
                 {
-                    var additionalTags = metricEnricher.ExtractTags(activity);
-                    foreach (var tag in additionalTags ?? [])
+                    // ✅ Call ExtractTags with activity and instrument
+                    var additionalTags = metricEnricher.ExtractTags(activity, Metric);  // Pass the Metric (Instrument)
+
+                    // ✅ Add extracted tags to TagList
+                    foreach (var tag in additionalTags)
                     {
-                        tags.Add(new KeyValuePair<string, object?>(tag.Key, tag.Value));
+                        tags.Add(tag.Key, tag.Value);
                     }
                 }
 
-                var tagsArray = tags.ToArray();
-                Metric.Record(cost, tagsArray);
+                Metric.Record(cost, tags);
             }
         }
         catch (Exception exception)

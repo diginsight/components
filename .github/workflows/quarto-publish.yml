@@ -23,15 +23,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      with:
-        lfs: true
       
-    - name: Verify LFS files
-      run: |
-        echo "Checking if LFS files are available:"
-        ls -la diginsight-repos-overview.png
-        file diginsight-repos-overview.png || echo "file command not available"
-        
     - name: Setup Quarto
       uses: quarto-dev/quarto-actions/setup@v2
       with:
@@ -67,9 +59,6 @@ jobs:
       if: false  # Set to true if you use R
       with:
         r-version: '4.3.0'
-
-    - name: Install TinyTeX
-      run: quarto install tinytex
         
     - name: Render Quarto Project
       run: quarto render

@@ -103,7 +103,7 @@ public static partial class ObservabilityExtensions
         openTelemetryConfiguration.Bind(mutableOpenTelemetryOptions); logger.LogDebug("openTelemetryConfiguration.Bind(mutableOpenTelemetryOptions);");
         services.Configure<OpenTelemetryOptions>(openTelemetryConfiguration); logger.LogDebug("services.Configure<OpenTelemetryOptions>(openTelemetryConfiguration);");
 
-        services.TryAddSingleton<IActivityLoggingSampler, NameBasedActivityLoggingSampler>(); logger.LogDebug("services.TryAddSingleton<IActivityLoggingSampler, NameBasedActivityLoggingSampler>();");
+        services.TryAddSingleton<IActivityLoggingFilter, OptionsBasedActivityLoggingFilter>(); logger.LogDebug("services.TryAddSingleton<IActivityLoggingFilter, OptionsBasedActivityLoggingFilter>();");
 
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IActivityListenerRegistration, ActivitySourceDetectorRegistration>()); logger.LogDebug("services.TryAddEnumerable(ServiceDescriptor.Singleton<IActivityListenerRegistration, ActivitySourceDetectorRegistration>());");
 
@@ -206,7 +206,11 @@ public static partial class ObservabilityExtensions
                 dao =>
                 {
                     dao.LogBehavior = LogBehavior.Show;
-                    dao.MeterName = assemblyName;
+                    dao.RecordSpanDuration = true;             // Singular
+                    dao.SpanDurationMeterName = assemblyName;  // SpanDuration prefix
+                    dao.SpanDurationMetricName = "diginsight.span_duration";
+                    dao.SpanDurationMetricDescription = "Duration of application spans";
+                    // dao.MetricUnit removed - no longer used
                 }
             );
 
@@ -218,7 +222,7 @@ public static partial class ObservabilityExtensions
                         IReadOnlyList<string> markers = ClassConfigurationMarkers.For(t);
                         if (markers.Contains("Diginsight.*"))
                         {
-                            dao.RecordSpanDurations = true;
+                            dao.RecordSpanDuration = true;
                         }
                     }
                 )
@@ -246,12 +250,12 @@ public static partial class ObservabilityExtensions
             var diginsightConfig = configuration.GetSection(ConfigurationPath.Combine(diginsightConfKey, "Activities"));
 
             var defaultMetricActivities = diginsightConfig.GetSection("SpanMeasuredActivityNames").Get<IDictionary<string, bool>>() ?? new Dictionary<string, bool>();
-            var metricSpecificActivities = diginsightConfig.GetSection("MetricSpecificSpanMeasuredActivityNames").Get<MetricRecordingNameBasedFilterOptions[]>() ?? Array.Empty<MetricRecordingNameBasedFilterOptions>();
+            var metricSpecificActivities = diginsightConfig.GetSection("MetricSpecificSpanMeasuredActivityNames").Get<OptionsBasedMetricRecordingFilterOptions[]>() ?? Array.Empty<OptionsBasedMetricRecordingFilterOptions>();
             logger.LogDebug("Found {Count} metric-specific activity configurations", metricSpecificActivities.Length);
 
             var defaultMetricTags = diginsightConfig.GetSection("MetricTags").Get<string[]>() ?? Array.Empty<string>();
             logger.LogDebug("Default MetricTags: {Tags}", string.Join(", ", defaultMetricTags));
-            var metricSpecificTags = diginsightConfig.GetSection("MetricSpecificTags").Get<MetricRecordingEnricherOptions[]>() ?? Array.Empty<MetricRecordingEnricherOptions>();
+            var metricSpecificTags = diginsightConfig.GetSection("MetricSpecificTags").Get<OptionsBasedMetricRecordingEnricherOptions[]>() ?? Array.Empty<OptionsBasedMetricRecordingEnricherOptions>();
             logger.LogDebug("Found {Count} metric-specific tag configurations", metricSpecificTags.Length);
 
             // MetricRecordingNameBasedFilter and MetricRecordingEnricher configurations
@@ -260,7 +264,7 @@ public static partial class ObservabilityExtensions
             var metricNames = new[] { "diginsight.span_duration", "diginsight.query_cost", "diginsight.request_size", "diginsight.response_size" };
             foreach (var metricName in metricNames)
             {
-                services.Configure<MetricRecordingNameBasedFilterOptions>(metricName, options =>
+                services.Configure<OptionsBasedMetricRecordingFilterOptions>(metricName, options =>
                 {
                     options.MetricName = metricName;
 
@@ -269,7 +273,7 @@ public static partial class ObservabilityExtensions
                     if (metricConfig != null) { activitiesToUse.AddRange(metricConfig.ActivityNames); }
                     options.ActivityNames = activitiesToUse;
                 });
-                services.Configure<MetricRecordingEnricherOptions>(metricName, options =>
+                services.Configure<OptionsBasedMetricRecordingEnricherOptions>(metricName, options =>
                 {
                     options.MetricName = metricName;
 
@@ -278,23 +282,23 @@ public static partial class ObservabilityExtensions
                     if (metricConfig != null) { tagsToUse.AddRange(metricConfig.MetricTags); }
                     options.MetricTags = tagsToUse;
                 });
-                services.AddNamedSingleton<IMetricRecordingFilter, MetricRecordingNameBasedFilter>(
+                services.AddNamedSingleton<IMetricRecordingFilter, OptionsBasedMetricRecordingFilter>(
                     metricName, (sp, key) =>
                     {
-                        var optsionsMonitor = sp.GetRequiredService<IOptionsMonitor<MetricRecordingNameBasedFilterOptions>>();
-                        var namedOptsionsMonitor = new NamedOptionsMonitor<MetricRecordingNameBasedFilterOptions>(optsionsMonitor, (string)key!);
+                        var optionsMonitor = sp.GetRequiredService<IOptionsMonitor<OptionsBasedMetricRecordingFilterOptions>>();
+                        var namedOptionsMonitor = new NamedOptionsMonitor<OptionsBasedMetricRecordingFilterOptions>(optionsMonitor, (string)key!);
 
-                        var filter = new MetricRecordingNameBasedFilter(namedOptsionsMonitor);
+                        var filter = new OptionsBasedMetricRecordingFilter(namedOptionsMonitor);
                         return filter;
                     }
                 );
-                services.AddNamedSingleton<IMetricRecordingEnricher, MetricRecordingTagsEnricher>(metricName, (sp, key) =>
+                services.AddNamedSingleton<IMetricRecordingEnricher, OptionsBasedMetricRecordingEnricher>(metricName, (sp, key) =>
                 {
-                    var optsionsMonitor = sp.GetRequiredService<IOptionsMonitor<MetricRecordingEnricherOptions>>();
-                    var namedOptsionsMonitor = new NamedOptionsMonitor<MetricRecordingEnricherOptions>(optsionsMonitor, (string)key!);
+                    var optionsMonitor = sp.GetRequiredService<IOptionsMonitor<OptionsBasedMetricRecordingEnricherOptions>>();
+                    var namedOptionsMonitor = new NamedOptionsMonitor<OptionsBasedMetricRecordingEnricherOptions>(optionsMonitor, (string)key!);
 
-                    var filter = new MetricRecordingTagsEnricher(namedOptsionsMonitor);
-                    return filter;
+                    var enricher = new OptionsBasedMetricRecordingEnricher(namedOptionsMonitor);
+                    return enricher;
                 });
             }
 

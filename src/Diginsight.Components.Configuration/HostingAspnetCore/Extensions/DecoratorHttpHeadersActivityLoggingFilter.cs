@@ -1,4 +1,4 @@
-﻿using Diginsight.Diagnostics;
+using Diginsight.Diagnostics;
 using Diginsight.Diagnostics.AspNetCore;
 using Microsoft.AspNetCore.Http;
 using System.Diagnostics;
@@ -7,12 +7,12 @@ namespace Diginsight.Components.Configuration;
 
 internal sealed class DecoratedActivityLoggingSamplerMarker;
 
-internal sealed class DecoratorHttpHeadersActivityLoggingSampler : HttpHeadersActivityLoggingSampler
+internal sealed class DecoratorHttpHeadersActivityLoggingFilter : HttpHeadersActivityLoggingFilter
 {
-    private readonly IActivityLoggingSampler decoratee;
+    private readonly IActivityLoggingFilter decoratee;
 
-    public DecoratorHttpHeadersActivityLoggingSampler(
-        IActivityLoggingSampler decoratee, IHttpContextAccessor httpContextAccessor
+    public DecoratorHttpHeadersActivityLoggingFilter(
+        IActivityLoggingFilter decoratee, IHttpContextAccessor httpContextAccessor
     )
         : base(httpContextAccessor)
     {

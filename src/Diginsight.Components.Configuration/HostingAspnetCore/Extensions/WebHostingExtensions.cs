@@ -60,7 +60,6 @@ public static class WebHostingExtensions
         out OpenTelemetryOptions mutableOpenTelemetryOptions,
         TraceInstrumentationCallbacks? traceInstrumentationCallbacks = null
     )
-        //bool configureDefaults = true,
     {
         traceInstrumentationCallbacks ??= new TraceInstrumentationCallbacks();
 
@@ -79,7 +78,7 @@ public static class WebHostingExtensions
         if (!services.Any(static x => x.ServiceType == typeof(DecoratedActivityLoggingSamplerMarker)))
         {
             services.AddSingleton<DecoratedActivityLoggingSamplerMarker>();
-            services.Decorate<IActivityLoggingSampler, DecoratorHttpHeadersActivityLoggingSampler>();
+            services.Decorate<IActivityLoggingFilter, DecoratorHttpHeadersActivityLoggingFilter>();
         }
 
         ConfigurationVolatileConfigurationLoader.AddToServices(services);
@@ -88,8 +87,8 @@ public static class WebHostingExtensions
         services.Configure<DiginsightDistributedContextOptions>(
             static x =>
             {
-                x.NonBaggageKeys.Add(HttpHeadersActivityLoggingSampler.HeaderName);
-                x.NonBaggageKeys.Add(HttpHeadersMetricRecordingFilter.HeaderName);
+                x.NonBaggageKeys.Add(HttpHeadersActivityLoggingFilter.HeaderName);
+                x.NonBaggageKeys.Add(HttpHeadersSpanDurationMetricRecordingFilter.HeaderName);
             }
         );
 

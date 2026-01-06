@@ -61,7 +61,9 @@ jobs:
         r-version: '4.3.0'
         
     - name: Render Quarto Project
-      run: quarto render
+      env:
+        QUARTO_PRINT_STACK: true
+      run: quarto render --to html
       
     - name: Setup Pages
       uses: actions/configure-pages@v4

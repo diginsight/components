@@ -41,7 +41,7 @@ website:
       - text: "Home"
         href: /
       - text: "Concepts"
-        href: src/docs/01. Concepts/00.01 - Observability Concepts.md
+        href: src/docs/01. Concepts/00.01 - Configuration Extensions.md
       - text: "Advanced articles"
         href: src/docs/02. Advanced/13.00 - Customize entities rendering on diginsight log streams.md
       - text: "About"

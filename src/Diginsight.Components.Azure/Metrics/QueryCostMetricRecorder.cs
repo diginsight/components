@@ -37,6 +37,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
 
     private readonly ILogger logger;
     private readonly IClassAwareOptionsMonitor<QueryCostMetricRecorderOptions> queryCostMetricRecorderOptions;
+    private readonly IClassAwareOptionsMonitor<DiginsightActivitiesOptions> activitiesOptionsMonitor;
     private readonly IMetricRecordingFilter? metricFilter;
     private readonly IMetricRecordingEnricher? metricEnricher;
 
@@ -57,6 +58,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
     {
         this.logger = logger;
         this.queryCostMetricRecorderOptions = queryCostMetricRecorderOptions;
+        this.activitiesOptionsMonitor = activitiesOptionsMonitor;
 
         IOpenTelemetryOptions openTelemetryOptions = openTelemetryOptionsMonitor.CurrentValue;
         var applicationName = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name ?? "unknown";
@@ -84,6 +86,11 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
     {
         try
         {
+            Histogram<double> metric = lazyMetric.Value;
+            IMetricRecordingOptions metricOptions = activitiesOptionsMonitor.Get(activity.GetCallerType()).Freeze();
+            if (!(metricFilter?.ShouldRecord(activity, metric) ?? metricOptions.Record))
+                return;
+
             // Only record for CosmosDB operations that have a query cost
             if (activity.GetTagItem("query_cost") is object costObj &&
                 double.TryParse(costObj.ToString(), out double cost) &&

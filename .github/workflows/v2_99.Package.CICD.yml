@@ -29,15 +29,15 @@ jobs:
     uses: ./.github/workflows/v2_01.GetCompositeVariables.yml
     secrets: inherit
 
-  getKeyVaultSecrets:
-    needs: installActions
-    uses: ./.github/workflows/v2_02.GetKeyVaultSecrets.yml
-    secrets: inherit
+  # getKeyVaultSecrets:
+  #   needs: installActions
+  #   uses: ./.github/workflows/v2_02.GetKeyVaultSecrets.yml
+  #   secrets: inherit
 
   build:
     needs:
       - getCompositeVariables
-      - getKeyVaultSecrets
+      # - getKeyVaultSecrets
     runs-on: self-hosted
 
     env:
@@ -152,7 +152,7 @@ jobs:
   publishNugetPackage:
     needs:
       - getCompositeVariables
-      - getKeyVaultSecrets
+      # - getKeyVaultSecrets
       - build
     strategy:
       matrix:
@@ -187,7 +187,7 @@ jobs:
   upload2AzureFolder:
     needs:
       - getCompositeVariables
-      - getKeyVaultSecrets
+      # - getKeyVaultSecrets
       - build
     strategy:
       matrix:

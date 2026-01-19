@@ -12,7 +12,9 @@ namespace Diginsight.Components
         /// <param name="configuration"></param>
         public static IServiceCollection AddParallelService(this IServiceCollection services, IConfiguration configuration)
         {
-            services.ConfigureClassAware<ParallelServiceOptions>(configuration.GetSection("Diginsight:Components"));
+            services.ConfigureClassAware<ParallelServiceOptions>(configuration.GetSection("Diginsight:Components"))
+                    .DynamicallyConfigureClassAware<ParallelServiceOptions>();
+
             services.AddSingleton<IParallelService, ParallelService>();
 
             return services;

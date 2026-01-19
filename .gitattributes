@@ -24,36 +24,21 @@
 # Batch files must use CRLF
 *.bat text eol=crlf encoding=utf-8
 *.cmd text eol=crlf encoding=utf-8
-# Git LFS configuration for large binary files
-*.psd filter=lfs diff=lfs merge=lfs -text
-*.ai filter=lfs diff=lfs merge=lfs -text
-*.png filter=lfs diff=lfs merge=lfs -text
-*.xlsx filter=lfs diff=lfs merge=lfs -text
-*.ico filter=lfs diff=lfs merge=lfs -text
-*.bmp filter=lfs diff=lfs merge=lfs -text
-*.pdf filter=lfs diff=lfs merge=lfs -text
-*.jpg filter=lfs diff=lfs merge=lfs -text
-*.pdb filter=lfs diff=lfs merge=lfs -text
-*.exe filter=lfs diff=lfs merge=lfs -text
-*.dll filter=lfs diff=lfs merge=lfs -text
-*.jpeg filter=lfs diff=lfs merge=lfs -text
-*.docx filter=lfs diff=lfs merge=lfs -text
-*.rtf filter=lfs diff=lfs merge=lfs -text
-# Additional binary files that don't need LFS (smaller files)
+# Binary files (no LFS - standard Git tracking)
+*.png binary
+*.jpg binary
+*.jpeg binary
 *.gif binary
+*.ico binary
+*.bmp binary
+*.psd binary
+*.ai binary
+*.pdf binary
+*.xlsx binary
+*.docx binary
+*.rtf binary
+*.exe binary
+*.dll binary
+*.pdb binary
 *.so binary
 *.dylib binary
-*.png !text !filter !merge !diff
-*.jpg !text !filter !merge !diff
-*.jpeg !text !filter !merge !diff
-*.exe !text !filter !merge !diff
-*.ico !text !filter !merge !diff
-*.bmp !text !filter !merge !diff
-*.psd !text !filter !merge !diff
-*.ai !text !filter !merge !diff
-*.pdf !text !filter !merge !diff
-*.xlsx !text !filter !merge !diff
-*.docx !text !filter !merge !diff
-*.rtf !text !filter !merge !diff
-*.pdb !text !filter !merge !diff
-*.dll !text !filter !merge !diff

@@ -15,6 +15,8 @@ public interface IOpenTelemetryOptions
 
     double TracingSamplingRatio { get; }
 
+    bool EnablePayloadTagging { get; }
+
     IEnumerable<string> ActivitySources { get; }
     IEnumerable<string> Meters { get; }
 

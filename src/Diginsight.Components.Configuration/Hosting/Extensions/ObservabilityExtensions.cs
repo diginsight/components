@@ -204,6 +204,7 @@ public static partial class ObservabilityExtensions
                 dao =>
                 {
                     dao.LogBehavior = LogBehavior.Show;
+                    dao.EnablePayloadTagging = openTelemetryOptions.EnablePayloadTagging;
                     dao.RecordSpanDuration = true;             // Singular
                     dao.SpanDurationMeterName = assemblyName;  // SpanDuration prefix
                     dao.SpanDurationMetricName = "diginsight.span_duration";

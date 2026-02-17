@@ -13,6 +13,7 @@ public sealed class OpenTelemetryOptions : IOpenTelemetryOptions
     public bool EnableTraces { get; set; }
     public bool EnableMetrics { get; set; }
     public double TracingSamplingRatio { get; set; }
+    public bool EnablePayloadTagging { get; set; }
 
     public ICollection<string> ActivitySources { get; } = new List<string>();
     IEnumerable<string> IOpenTelemetryOptions.ActivitySources => ActivitySources;

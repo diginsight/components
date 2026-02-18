@@ -665,33 +665,26 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<FeedResponse<T>> ReadNextObservableAsync<T>(this FeedIterator<T> feedIterator, CancellationToken cancellationToken = default(CancellationToken))
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
-        var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, logLevel: LogLevel.Trace);
-        // var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
-        // var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
-        // using var activity = Observability.ActivitySource.StartMethodActivity(logger, logLevel: LogLevel.Trace);
+        //var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        //var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
+        //using var activity = Observability.ActivitySource.StartMethodActivity(logger, logLevel: LogLevel.Trace);
 
         if (feedIterator is ObservableFeedIterator<T> observableFeedIterator) { return await observableFeedIterator.ReadNextAsync(cancellationToken).ConfigureAwait(false); }
 
         try
         {
             var feedResponse = await feedIterator.ReadNextAsync(cancellationToken).ConfigureAwait(false);
-            logger.LogDebug("Query executed successfully. Retrieved {Count} documents of type '{Type}', RU consumed: {RequestCharge}", feedResponse.Count, typeof(T).Name, feedResponse.RequestCharge);
-            if (activity != null && feedResponse.RequestCharge > 0)
-            {
-                //activity.SetTag("query", $"ReadNext('{typeof(T).Name}')");
-                //activity.SetTag("container", container.Id);
-                //activity.SetTag("database", container.Database.Id);
-
-                activity.SetTag("query_cost", feedResponse.RequestCharge);
-            }
+            //logger.LogDebug("Query executed successfully. Retrieved {Count} documents of type '{Type}', RU consumed: {RequestCharge}", feedResponse.Count, typeof(T).Name, feedResponse.RequestCharge);
+            //if (activity != null && feedResponse.RequestCharge > 0)
+            //{
+            //    activity.SetTag("query_cost", feedResponse.RequestCharge);
+            //}
 
             return feedResponse;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "❌ Error executing CosmosDB query");
+            //logger.LogError(ex, "❌ Error executing CosmosDB query");
             throw;
         }
     }
@@ -709,10 +702,6 @@ public static class CosmosDbObservableExtensions
             var response = await transactionalBatch.ExecuteAsync(cancellationToken);
             if (activity != null && response.RequestCharge > 0)
             {
-                //activity.SetTag("query", $"ReadNext('{typeof(T).Name}'");
-                //activity.SetTag("container", container.Id);
-                //activity.SetTag("database", container.Database.Id);
-
                 activity.SetTag("query_cost", response.RequestCharge);
             }
 
@@ -725,21 +714,4 @@ public static class CosmosDbObservableExtensions
             throw;
         }
     }
-
-    //public static async IAsyncEnumerable<T> GetAsyncItems<T>(this FeedIterator<T> feedIterator)
-    //{
-    //    while (feedIterator.HasMoreResults)
-    //    {
-    //        foreach (var item in await feedIterator.ReadNextAsync())
-    //        {
-    //            yield return item;
-    //        }
-    //    }
-    //}
-
-    //public static async Task<IEnumerable<T>> GetItemsAsync<T>(this FeedIterator<T> feedIterator)
-    //{
-    //    var items = await feedIterator.GetAsyncItems().ToListAsync();
-    //    return items;
-    //}
 }

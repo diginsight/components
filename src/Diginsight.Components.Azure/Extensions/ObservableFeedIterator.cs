@@ -13,7 +13,9 @@ namespace Diginsight.Components.Azure
         private readonly QueryDefinition? queryDefinition;
         private readonly string? queryText; // For string-based queries
 
-        internal ObservableFeedIterator(FeedIterator<T> iterator, Container? container, QueryDefinition? queryDefinition = null) // string? queryText = null
+        internal ObservableFeedIterator(FeedIterator<T> iterator,
+                                        Container? container, QueryDefinition?
+                                        queryDefinition = null) // string? queryText = null
         {
             innerIterator = iterator ?? throw new ArgumentNullException(nameof(iterator));
             this.container = container;
@@ -31,9 +33,6 @@ namespace Diginsight.Components.Azure
 
         public override async Task<FeedResponse<T>> ReadNextAsync(CancellationToken cancellationToken = default)
         {
-            var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
-            var logger = loggerFactory.CreateLogger(typeof(ObservableFeedIterator<T>));
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, logLevel: LogLevel.Trace); // , () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }
             //var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             //var logger = loggerFactory.CreateLogger(typeof(ObservableFeedIterator<T>));
             //using var activity = Observability.ActivitySource.StartMethodActivity(logger, logLevel: LogLevel.Trace); // , () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }
@@ -41,19 +40,19 @@ namespace Diginsight.Components.Azure
             try
             {   
                 var feedResponse = await innerIterator.ReadNextAsync(cancellationToken);
-                logger.LogDebug("Query executed successfully. Retrieved {Count} documents of type '{Type}', RU consumed: {RequestCharge}", feedResponse.Count, typeof(T).Name, feedResponse.RequestCharge);
+                //logger.LogDebug("Query executed successfully. Retrieved {Count} documents of type '{Type}', RU consumed: {RequestCharge}", feedResponse.Count, typeof(T).Name, feedResponse.RequestCharge);
 
-                if (activity != null && feedResponse.RequestCharge > 0)
-                {
-                    SetActivityTags(activity);
-                    activity.SetTag("query_cost", feedResponse.RequestCharge);
-                }
+                //if (activity != null && feedResponse.RequestCharge > 0)
+                //{
+                //    SetActivityTags(activity);
+                //    activity.SetTag("query_cost", feedResponse.RequestCharge);
+                //}
 
                 return feedResponse;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "❌ Error executing CosmosDB query");
+                //logger.LogError(ex, "❌ Error executing CosmosDB query");
                 throw;
             }
         }
@@ -104,9 +103,6 @@ namespace Diginsight.Components.Azure
 
         public override async Task<ResponseMessage> ReadNextAsync(CancellationToken cancellationToken = default)
         {
-            var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
-            var logger = loggerFactory.CreateLogger(typeof(ObservableFeedIterator));
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }, logLevel: LogLevel.Trace);
             //var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             //var logger = loggerFactory.CreateLogger(typeof(ObservableFeedIterator));
             //using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }, logLevel: LogLevel.Trace);
@@ -117,19 +113,19 @@ namespace Diginsight.Components.Azure
                 double requestCharge = 0;
                 if (responseMessage.Headers?.RequestCharge != null) { requestCharge = responseMessage.Headers.RequestCharge; }
 
-                logger.LogDebug("Query executed successfully. Retrieved documents, RU consumed: {RequestCharge}", requestCharge);
-                if (activity != null && requestCharge > 0)
-                {
-                    SetActivityTags(activity);
+                //logger.LogDebug("Query executed successfully. Retrieved documents, RU consumed: {RequestCharge}", requestCharge);
+                //if (activity != null && requestCharge > 0)
+                //{
+                //    SetActivityTags(activity);
 
-                    activity.SetTag("query_cost", requestCharge);
-                }
+                //    activity.SetTag("query_cost", requestCharge);
+                //}
 
                 return responseMessage;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "❌ Error executing CosmosDB query");
+                //logger.LogError(ex, "❌ Error executing CosmosDB query");
                 throw;
             }
         }

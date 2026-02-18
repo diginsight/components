@@ -667,7 +667,10 @@ public static class CosmosDbObservableExtensions
     {
         var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
         var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { feedIterator }, logLevel: LogLevel.Trace);
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, logLevel: LogLevel.Trace);
+        // var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+        // var logger = loggerFactory.CreateLogger(typeof(CosmosDbObservableExtensions));
+        // using var activity = Observability.ActivitySource.StartMethodActivity(logger, logLevel: LogLevel.Trace);
 
         if (feedIterator is ObservableFeedIterator<T> observableFeedIterator) { return await observableFeedIterator.ReadNextAsync(cancellationToken).ConfigureAwait(false); }
 

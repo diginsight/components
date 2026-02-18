@@ -33,10 +33,13 @@ namespace Diginsight.Components.Azure
         {
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(ObservableFeedIterator<T>));
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }, logLevel: LogLevel.Trace);
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, logLevel: LogLevel.Trace); // , () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }
+            //var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+            //var logger = loggerFactory.CreateLogger(typeof(ObservableFeedIterator<T>));
+            //using var activity = Observability.ActivitySource.StartMethodActivity(logger, logLevel: LogLevel.Trace); // , () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }
 
             try
-            {
+            {   
                 var feedResponse = await innerIterator.ReadNextAsync(cancellationToken);
                 logger.LogDebug("Query executed successfully. Retrieved {Count} documents of type '{Type}', RU consumed: {RequestCharge}", feedResponse.Count, typeof(T).Name, feedResponse.RequestCharge);
 
@@ -104,6 +107,9 @@ namespace Diginsight.Components.Azure
             var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(typeof(ObservableFeedIterator));
             using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }, logLevel: LogLevel.Trace);
+            //var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
+            //var logger = loggerFactory.CreateLogger(typeof(ObservableFeedIterator));
+            //using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }, logLevel: LogLevel.Trace);
 
             try
             {

@@ -14,6 +14,8 @@ using System.Runtime.CompilerServices;
 
 public sealed class DelegatedAuthenticationHandler : DelegatingHandler
 {
+    private static readonly Type TClass = typeof(DelegatedAuthenticationHandler);
+
     private readonly ILogger<DelegatedAuthenticationHandler> logger;
     private readonly IOptionsMonitor<AuthenticatedClientOptions> authenticatedClientOptionsMonitor;
 
@@ -26,7 +28,7 @@ public sealed class DelegatedAuthenticationHandler : DelegatingHandler
 
     public async Task<AuthenticationResult> AcquiresTokenForClientAsync(string clientName, CancellationToken cancellationToken)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { clientName });
+        using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { clientName });
 
         IAuthenticatedClientOptions aco = authenticatedClientOptionsMonitor.Get(clientName);
         if (aco.Scope is not { } joinedScopes ||
@@ -62,7 +64,7 @@ public sealed class DelegatedAuthenticationHandler : DelegatingHandler
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { request });
+        using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { request });
 
         if (request.Headers.Authorization is null)
         {

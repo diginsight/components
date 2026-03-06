@@ -9,6 +9,8 @@ namespace Diginsight.Components.Azure
 {
     public class ObservableTransactionalBatch : TransactionalBatch
     {
+        private static readonly Type TClass = typeof(ObservableTransactionalBatch);
+
         private readonly TransactionalBatch innerBatch;
         private readonly Container? container;
         private readonly PartitionKey? partitionKey;
@@ -80,7 +82,7 @@ namespace Diginsight.Components.Azure
 
         public override async Task<TransactionalBatchResponse> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new {
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, () => new {
                 container = container?.Id,
                 database = container?.Database?.Id
             });
@@ -117,7 +119,7 @@ namespace Diginsight.Components.Azure
 
         public override async Task<TransactionalBatchResponse> ExecuteAsync(TransactionalBatchRequestOptions? requestOptions, CancellationToken cancellationToken = default)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new {
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, () => new {
                 container = container?.Id,
                 database = container?.Database?.Id,
                 hasRequestOptions = requestOptions != null

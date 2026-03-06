@@ -20,6 +20,8 @@ namespace Diginsight.Components
 
     public class ParallelService : IParallelService
     {
+        private static readonly Type TClass = typeof(ParallelService);
+
         private const int LOWCONCURRENCY_DEFAULT = 3;
         private const int MEDIUMCONCURRENCY_DEFAULT = 6;
         private const int HIGHCONCURRENCY_DEFAULT = 12;
@@ -74,7 +76,7 @@ namespace Diginsight.Components
 
         public void ForEach<TSource>(IEnumerable<TSource> source, ParallelOptions parallelOptions, Action<TSource> body)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { source, parallelOptions });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, () => new { source, parallelOptions });
 
             if (source?.Any() != true) { return; }
 
@@ -85,7 +87,7 @@ namespace Diginsight.Components
 
         public async Task ForEachAsync<TSource>(IEnumerable<TSource> source, ParallelOptions parallelOptions, Func<TSource, Task> body)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { source, parallelOptions });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, () => new { source, parallelOptions });
 
             if (source?.Any() != true) { return; }
 
@@ -114,7 +116,7 @@ namespace Diginsight.Components
 
         async Task IParallelService.WhenAllAsync(IEnumerable<Func<Task>> taskFactories, ParallelOptions parallelOptions)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { taskFactories, parallelOptions });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, () => new { taskFactories, parallelOptions });
 
             if (taskFactories?.Any() != true) { return; }
 
@@ -122,7 +124,7 @@ namespace Diginsight.Components
         }
         async Task<IEnumerable<T>> IParallelService.WhenAllAsync<T>(IEnumerable<Func<Task<T>>> taskFactories, ParallelOptions parallelOptions)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { taskFactories, parallelOptions });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, () => new { taskFactories, parallelOptions });
             if (taskFactories?.Any() != true) { return default(IEnumerable<T>)!; }
 
             var taskFactoryList = taskFactories.ToList();
@@ -141,7 +143,7 @@ namespace Diginsight.Components
         // Tuple decomposition overloads
         async Task<(T1, T2)> IParallelService.WhenAllAsync<T1, T2>(Func<Task<T1>> taskFactory1, Func<Task<T2>> taskFactory2, ParallelOptions parallelOptions)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { taskFactory1, taskFactory2, parallelOptions });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, () => new { taskFactory1, taskFactory2, parallelOptions });
 
             var results = await ((IParallelService)this).WhenAllAsync(new Func<Task<object>>[]
             {
@@ -154,7 +156,7 @@ namespace Diginsight.Components
         }
         async Task<(T1, T2, T3)> IParallelService.WhenAllAsync<T1, T2, T3>(Func<Task<T1>> taskFactory1, Func<Task<T2>> taskFactory2, Func<Task<T3>> taskFactory3, ParallelOptions parallelOptions)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { taskFactory1, taskFactory2, taskFactory3, parallelOptions });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, () => new { taskFactory1, taskFactory2, taskFactory3, parallelOptions });
 
             var results = await ((IParallelService)this).WhenAllAsync(new Func<Task<object>>[]
             {
@@ -168,7 +170,7 @@ namespace Diginsight.Components
         }
         async Task<(T1, T2, T3, T4)> IParallelService.WhenAllAsync<T1, T2, T3, T4>(Func<Task<T1>> taskFactory1, Func<Task<T2>> taskFactory2, Func<Task<T3>> taskFactory3, Func<Task<T4>> taskFactory4, ParallelOptions parallelOptions)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { taskFactory1, taskFactory2, taskFactory3, taskFactory4, parallelOptions });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, () => new { taskFactory1, taskFactory2, taskFactory3, taskFactory4, parallelOptions });
 
             var results = await ((IParallelService)this).WhenAllAsync(new Func<Task<object>>[]
             {

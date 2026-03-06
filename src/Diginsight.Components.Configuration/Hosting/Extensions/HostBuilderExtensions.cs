@@ -38,7 +38,7 @@ public static class HostBuilderExtensions
         Func<IDictionary<string, string>, bool>? tagsMatch = null)
     {
         var logger = loggerFactory.CreateLogger(T);
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { hostBuilder, tagsMatch });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { hostBuilder, tagsMatch });
         if (ObservabilityHelper.LoggerFactory == null) { ObservabilityHelper.LoggerFactory = loggerFactory; }
 
         return hostBuilder.ConfigureAppConfiguration((hbc, cb) => ConfigureAppConfiguration2(hbc.HostingEnvironment, cb, loggerFactory, tagsMatch));
@@ -57,7 +57,7 @@ public static class HostBuilderExtensions
         Func<IDictionary<string, string>, bool>? tagsMatch = null)
     {
         var logger = loggerFactory.CreateLogger(T);
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { environment, builder, tagsMatch });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { environment, builder, tagsMatch });
         if (ObservabilityHelper.LoggerFactory == null) { ObservabilityHelper.LoggerFactory = loggerFactory; }
 
         bool isLocal = environment.IsDevelopment();
@@ -210,7 +210,7 @@ public static class HostBuilderExtensions
     {
         var loggerFactory = ObservabilityHelper.LoggerFactory;
         var logger = loggerFactory.CreateLogger(T);
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { path, index, isLocal });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { path, index, isLocal });
 
         if (!isLocal) { return; }
 
@@ -230,7 +230,7 @@ public static class HostBuilderExtensions
     {
         var loggerFactory = ObservabilityHelper.LoggerFactory;
         var logger = loggerFactory.CreateLogger(T);
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { path, index });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { path, index });
 
         //if (!isLocal) { return; }
 
@@ -258,7 +258,7 @@ public static class HostBuilderExtensions
     {
         var loggerFactory = ObservabilityHelper.LoggerFactory;
         var logger = loggerFactory.CreateLogger(T);
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { path, builder });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { path, builder });
 
         var ret = GetSourceIndex(builder.Sources, x => x.Source is JsonConfigurationSource jsonSource &&
                                                        string.Equals(jsonSource.Path, path, StringComparison.OrdinalIgnoreCase))
@@ -302,7 +302,7 @@ public static class HostBuilderExtensions
     {
         var loggerFactory = ObservabilityHelper.LoggerFactory;
         var logger = loggerFactory?.CreateLogger(T) ?? NullLogger.Instance;
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { configuration });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { configuration });
 
         var configRoot = configuration as IConfigurationRoot;
         if (configRoot == null) { logger.LogWarning("⚠️ Configuration is not IConfigurationRoot, cannot dump configuration sources"); return; }

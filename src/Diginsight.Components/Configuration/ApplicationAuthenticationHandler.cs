@@ -16,6 +16,8 @@ using System.Text.Json;
 
 public sealed class ApplicationAuthenticationHandler : DelegatingHandler
 {
+    private static readonly Type TClass = typeof(ApplicationAuthenticationHandler);
+
     private readonly string clientName;
     private readonly ILogger<ApplicationAuthenticationHandler> logger;
     private readonly IOptionsMonitor<AuthenticatedClientOptions> authenticatedClientOptionsMonitor;
@@ -35,7 +37,7 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
 
     public async Task<string?> GetManagedIdentityClientIdAsync(CancellationToken cancellationToken)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { clientName });
+        using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { clientName });
 
         try
         {
@@ -64,7 +66,7 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
     }
     public async Task<AuthenticationResult> AcquiresTokenForClientAsync(CancellationToken cancellationToken)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { clientName });
+        using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { clientName });
 
         AuthenticationResult result = default!;
         try
@@ -167,7 +169,7 @@ public sealed class ApplicationAuthenticationHandler : DelegatingHandler
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { request });
+        using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { request });
 
         if (request.Headers.Authorization is null)
         {

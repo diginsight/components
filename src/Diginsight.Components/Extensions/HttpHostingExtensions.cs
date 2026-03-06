@@ -9,6 +9,8 @@ namespace Diginsight.Components;
 
 public static class HttpHostingExtensions
 {
+    private static readonly Type T = typeof(HttpHostingExtensions);
+
     private static ILogger? cachedLogger;
     private static ILogger? logger => cachedLogger ??= Observability.LoggerFactory?.CreateLogger(typeof(HttpHostingExtensions));
 
@@ -16,7 +18,7 @@ public static class HttpHostingExtensions
         this IHttpClientBuilder builder, Action<AuthenticatedClientOptions>? configureOptions = null
     )
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { builder, configureOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, new { builder, configureOptions });
 
         string clientName = builder.Name;
 

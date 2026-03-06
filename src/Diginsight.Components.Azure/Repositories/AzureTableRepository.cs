@@ -27,6 +27,8 @@ namespace Diginsight.Components.Azure.Repositories
     public class AzureTableRepository<T> : IAzureTableRepository<T>, IAzureTableRepository 
         where T : class, ITableEntity, new()
     {
+        private static readonly Type TClass = typeof(AzureTableRepository<T>);
+
         private readonly TableServiceClient tableServiceClient;
         private readonly ILogger<AzureTableRepository<T>> logger;
         private readonly string tableName;
@@ -53,7 +55,7 @@ namespace Diginsight.Components.Azure.Repositories
 
         private async Task<TableClient> InitializeTableClientAsync()
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { tableName });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { tableName });
 
             var client = tableServiceClient.GetTableClientObservable(tableName);
             await client.CreateIfNotExistsObservableAsync();
@@ -65,7 +67,7 @@ namespace Diginsight.Components.Azure.Repositories
         /// <inheritdoc />
         public async Task<IEnumerable<T>> QueryAsync(string? filter = null, int? top = null, IEnumerable<string>? select = null)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { filter, top, select });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { filter, top, select });
 
             try
             {
@@ -95,7 +97,7 @@ namespace Diginsight.Components.Azure.Repositories
         /// <inheritdoc />
         public async Task<IEnumerable<object>> QueryAsJsonAsync(string? filter = null, int? top = null, IEnumerable<string>? select = null, PropertyNamingPolicy? namingPolicy = null)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { filter, top, select, namingPolicy });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { filter, top, select, namingPolicy });
 
             try
             {
@@ -141,7 +143,7 @@ namespace Diginsight.Components.Azure.Repositories
         /// <inheritdoc />
         public async Task<T?> GetAsync(string partitionKey, string rowKey)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { partitionKey, rowKey });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { partitionKey, rowKey });
             try
             {
                 var tableClient = await GetTableClientAsync();
@@ -166,7 +168,7 @@ namespace Diginsight.Components.Azure.Repositories
         /// <inheritdoc />
         public async Task<T> CreateAsync(T entity)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { entity });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { entity });
 
             try
             {
@@ -202,7 +204,7 @@ namespace Diginsight.Components.Azure.Repositories
         /// <inheritdoc />
         public async Task<Dictionary<string, object?>> CreateDynamicAsync(Dictionary<string, object> entityData)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { entityData });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { entityData });
             try
             {
                 var tableClient = await GetTableClientAsync();
@@ -267,7 +269,7 @@ namespace Diginsight.Components.Azure.Repositories
         /// <inheritdoc />
         public async Task<Dictionary<string, object?>> CreateAsJsonAsync(string jsonString, PropertyNamingPolicy? namingPolicy = PropertyNamingPolicy.CamelCase)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { jsonString, namingPolicy });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { jsonString, namingPolicy });
 
             if (string.IsNullOrWhiteSpace(jsonString))
             {
@@ -358,7 +360,7 @@ namespace Diginsight.Components.Azure.Repositories
         /// <inheritdoc />
         public async Task<IEnumerable<T>> CreateBatchAsync(IEnumerable<T> entities)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { entities });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { entities });
 
             if (entities == null || !entities.Any())
             {
@@ -413,7 +415,7 @@ namespace Diginsight.Components.Azure.Repositories
         /// <inheritdoc />
         public async Task<IEnumerable<Dictionary<string, object?>>> CreateAsJsonBatchAsync(string jsonString, PropertyNamingPolicy? namingPolicy = PropertyNamingPolicy.CamelCase)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { jsonString, namingPolicy });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { jsonString, namingPolicy });
 
             if (string.IsNullOrWhiteSpace(jsonString))
             {
@@ -540,7 +542,7 @@ namespace Diginsight.Components.Azure.Repositories
         /// <inheritdoc />
         public async Task UpdateAsync(string partitionKey, string rowKey, T entity)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { partitionKey, rowKey, entity });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { partitionKey, rowKey, entity });
 
             try
             {
@@ -562,7 +564,7 @@ namespace Diginsight.Components.Azure.Repositories
         /// <inheritdoc />
         public async Task UpdateDynamicAsync(string partitionKey, string rowKey, Dictionary<string, object> entityData)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { partitionKey, rowKey, entityData });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { partitionKey, rowKey, entityData });
 
             try
             {
@@ -624,7 +626,7 @@ namespace Diginsight.Components.Azure.Repositories
         /// <inheritdoc />
         public async Task UpdateAsJsonAsync(string partitionKey, string rowKey, string jsonString, PropertyNamingPolicy? namingPolicy = PropertyNamingPolicy.CamelCase)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { partitionKey, rowKey, jsonString, namingPolicy });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { partitionKey, rowKey, jsonString, namingPolicy });
 
             if (string.IsNullOrWhiteSpace(jsonString))
             {
@@ -703,7 +705,7 @@ namespace Diginsight.Components.Azure.Repositories
         /// <inheritdoc />
         public async Task DeleteAsync(string partitionKey, string rowKey)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { partitionKey, rowKey });
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, new { partitionKey, rowKey });
 
             try
             {

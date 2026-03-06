@@ -10,6 +10,8 @@ namespace Diginsight.Components;
 
 public class ExceptionHandlingMiddleware
 {
+    private static readonly Type TClass = typeof(ExceptionHandlingMiddleware);
+
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionHandlingMiddleware> logger;
 
@@ -21,7 +23,7 @@ public class ExceptionHandlingMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger);
+        using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger);
 
         try
         {

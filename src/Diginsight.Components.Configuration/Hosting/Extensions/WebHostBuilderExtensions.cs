@@ -13,7 +13,7 @@ public static class WebHostBuilderExtensions
         Console.WriteLine("Starting ConfigureAppConfiguration2...");
 
         var logger = loggerFactory.CreateLogger(T);
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger);
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger);
         if (ObservabilityHelper.LoggerFactory == null) { ObservabilityHelper.LoggerFactory = loggerFactory; }
 
         return hostBuilder.ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) => HostBuilderExtensions.ConfigureAppConfiguration2(webHostBuilderContext.HostingEnvironment, configurationBuilder, ObservabilityHelper.LoggerFactory, tagsMatch));

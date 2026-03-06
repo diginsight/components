@@ -19,6 +19,8 @@ namespace Diginsight.Components.Configuration;
 /// </summary>
 public sealed class DefaultCredentialProvider : ICredentialProvider
 {
+    private static readonly Type TClass = typeof(DefaultCredentialProvider);
+
     private readonly IHostEnvironment environment;
     private readonly ILogger logger;
 
@@ -51,7 +53,7 @@ public sealed class DefaultCredentialProvider : ICredentialProvider
     /// <returns>A ChainedTokenCredential that tries multiple authentication methods in order</returns>
     public TokenCredential Get(IConfiguration configuration)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { configuration });
+        using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, () => new { configuration });
 
         ICollection<TokenCredential> credentials = new List<TokenCredential>();
 

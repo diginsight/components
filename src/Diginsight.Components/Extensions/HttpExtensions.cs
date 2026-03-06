@@ -18,6 +18,8 @@ namespace Diginsight.Components;
 
 public static class HttpExtensions
 {
+    private static readonly Type T = typeof(HttpExtensions);
+
     private static ILogger? cachedLogger;
     private static ILogger? logger => cachedLogger ??= Observability.LoggerFactory?.CreateLogger(typeof(HttpExtensions));
 
@@ -69,7 +71,7 @@ public static class HttpExtensions
         HttpMethod method, string url, object? requestBody, string description, CancellationToken cancellationToken
     )
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { method, url, requestBody, description });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, new { method, url, requestBody, description });
 
         using HttpRequestMessage requestMessage = new(method, url);
         if (requestBody != null)

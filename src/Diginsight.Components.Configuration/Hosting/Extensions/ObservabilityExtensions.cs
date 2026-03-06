@@ -40,7 +40,7 @@ public static partial class ObservabilityExtensions
     {
         var loggerFactory = ObservabilityHelper.LoggerFactory;
         var logger = loggerFactory.CreateLogger(T);
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { services, configuration, hostEnvironment, configureDefaults });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { services, configuration, hostEnvironment, configureDefaults });
 
         return services.AddObservability(configuration, hostEnvironment, out OpenTelemetryOptions _, configureDefaults);
     }
@@ -56,7 +56,7 @@ public static partial class ObservabilityExtensions
     {
         var loggerFactory = ObservabilityHelper.LoggerFactory;
         var logger = loggerFactory.CreateLogger(T);
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { services, configuration, hostEnvironment, configureDefaults });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { services, configuration, hostEnvironment, configureDefaults });
 
         services.AddObservability(configuration, hostEnvironment, out OpenTelemetryOptions mutableOpenTelemetryOptions, configureDefaults);
 
@@ -74,7 +74,7 @@ public static partial class ObservabilityExtensions
     {
         var loggerFactory = ObservabilityHelper.LoggerFactory;
         var logger = loggerFactory.CreateLogger(T);
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { services, configuration, hostEnvironment, configureDefaults });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { services, configuration, hostEnvironment, configureDefaults });
 
         const string diginsightConfKey = "Diginsight";
 

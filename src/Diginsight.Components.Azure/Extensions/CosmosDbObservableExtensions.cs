@@ -22,6 +22,8 @@ namespace Diginsight.Components.Azure;
 
 public static class CosmosDbObservableExtensions
 {
+    private static readonly Type T = typeof(CosmosDbObservableExtensions);
+
     // Cached logger: returns null until Observability.LoggerFactory is assigned; callers use ?. to skip logging.
     private static ILogger? cachedLogger;
     private static ILogger? logger => cachedLogger ??= Observability.LoggerFactory?.CreateLogger(typeof(CosmosDbObservableExtensions));
@@ -42,7 +44,7 @@ public static class CosmosDbObservableExtensions
 
     public static FeedIterator GetItemQueryStreamIteratorObservable(this Container container, QueryDefinition queryDefinition, string? continuationToken = null, QueryRequestOptions? requestOptions = null)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { queryDefinition, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { queryDefinition, requestOptions });
 
         try
         {
@@ -67,7 +69,7 @@ public static class CosmosDbObservableExtensions
 
     public static FeedIterator<T> GetItemQueryIteratorObservable<T>(this Container container, QueryDefinition queryDefinition, string? continuationToken = null, QueryRequestOptions? requestOptions = null)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { queryDefinition, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(CosmosDbObservableExtensions.T, logger, () => new { queryDefinition, requestOptions });
 
         try
         {
@@ -92,7 +94,7 @@ public static class CosmosDbObservableExtensions
 
     public static FeedIterator GetItemQueryStreamIteratorObservable(this Container container, string query, string? continuationToken = null, QueryRequestOptions? requestOptions = null)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { query, requestOptions });
 
         try
         {
@@ -117,7 +119,7 @@ public static class CosmosDbObservableExtensions
 
     public static FeedIterator<T> GetItemQueryIteratorObservable<T>(this Container container, string query = null, string continuationToken = null, QueryRequestOptions requestOptions = null)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(CosmosDbObservableExtensions.T, logger, () => new { query, requestOptions });
         try
         {
             // Log connection and query information
@@ -141,7 +143,7 @@ public static class CosmosDbObservableExtensions
 
     public static FeedIterator GetItemQueryStreamIteratorObservable(this Container container, FeedRange feedRange, QueryDefinition queryDefinition, string continuationToken, QueryRequestOptions requestOptions = null)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { feedRange, queryDefinition, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { feedRange, queryDefinition, requestOptions });
         try
         {
             // Log connection and query information
@@ -165,7 +167,7 @@ public static class CosmosDbObservableExtensions
 
     public static FeedIterator<T> GetItemQueryIteratorObservable<T>(this Container container, FeedRange feedRange, QueryDefinition queryDefinition, string continuationToken = null, QueryRequestOptions requestOptions = null)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { container, feedRange, queryDefinition, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(CosmosDbObservableExtensions.T, logger, () => new { container, feedRange, queryDefinition, requestOptions });
 
         try
         {
@@ -197,7 +199,7 @@ public static class CosmosDbObservableExtensions
     /// <returns>An observable transactional batch wrapper</returns>
     public static ObservableTransactionalBatch CreateTransactionalBatchObservable(this Container container, PartitionKey partitionKey)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { partitionKey });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { partitionKey });
 
         try
         {
@@ -215,7 +217,7 @@ public static class CosmosDbObservableExtensions
 
     public static IOrderedQueryable<T> GetItemLinqQueryableObservable<T>(this Container container, bool allowSynchronousQueryExecution = false, string continuationToken = null, QueryRequestOptions requestOptions = null, CosmosLinqSerializerOptions linqSerializerOptions = null)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { allowSynchronousQueryExecution, continuationToken, requestOptions, linqSerializerOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(CosmosDbObservableExtensions.T, logger, () => new { allowSynchronousQueryExecution, continuationToken, requestOptions, linqSerializerOptions });
         try
         {
             var queryable = container.GetItemLinqQueryable<T>(allowSynchronousQueryExecution, continuationToken, requestOptions, linqSerializerOptions);
@@ -233,7 +235,7 @@ public static class CosmosDbObservableExtensions
 
     public static IQueryable<T> GetItemLinqQueryableObservable<T>(this Container container, Func<IQueryable<T>, IQueryable<T>> trasform, bool allowSynchronousQueryExecution = false, string continuationToken = null, QueryRequestOptions requestOptions = null, CosmosLinqSerializerOptions linqSerializerOptions = null)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { allowSynchronousQueryExecution, continuationToken, requestOptions, linqSerializerOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(CosmosDbObservableExtensions.T, logger, () => new { allowSynchronousQueryExecution, continuationToken, requestOptions, linqSerializerOptions });
         try
         {
             var collectionQueryable = container.GetItemLinqQueryable<T>(allowSynchronousQueryExecution, continuationToken, requestOptions, linqSerializerOptions);
@@ -253,7 +255,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<ItemResponse<T>> UpsertItemObservableAsync<T>(this Container container, T item, PartitionKey? partitionKey = null, ItemRequestOptions? requestOptions = null, CancellationToken cancellationToken = default)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { item, partitionKey, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(CosmosDbObservableExtensions.T, logger, () => new { item, partitionKey, requestOptions });
 
         try
         {
@@ -285,7 +287,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<ResponseMessage> UpsertItemStreamObservableAsync(this Container container, Stream streamPayload, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { streamPayload, partitionKey, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { streamPayload, partitionKey, requestOptions });
         try
         {
             // Log connection and upsert item information
@@ -305,7 +307,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<ResponseMessage> CreateItemStreamObservableAsync(this Container container, Stream streamPayload, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { streamPayload, partitionKey, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { streamPayload, partitionKey, requestOptions });
         try
         {
             // Log connection and create item information
@@ -324,7 +326,7 @@ public static class CosmosDbObservableExtensions
     }
     public static async Task<ItemResponse<T>> CreateItemObservableAsync<T>(this Container container, T item, PartitionKey? partitionKey = null, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { item, partitionKey, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(CosmosDbObservableExtensions.T, logger, () => new { item, partitionKey, requestOptions });
         try
         {
             // Log connection and create item information
@@ -353,7 +355,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<ResponseMessage> ReadItemStreamObservableAsync(this Container container, string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id, partitionKey, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { id, partitionKey, requestOptions });
         try
         {
             // Log connection and read item information
@@ -373,7 +375,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<ItemResponse<T>> ReadItemObservableAsync<T>(this Container container, string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id, partitionKey, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(CosmosDbObservableExtensions.T, logger, () => new { id, partitionKey, requestOptions });
         try
         {
             // Log connection and read item information
@@ -404,7 +406,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<ResponseMessage> ReadManyItemsStreamObservableAsync(this Container container, IReadOnlyList<(string id, PartitionKey partitionKey)> items, ReadManyRequestOptions readManyRequestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { items, readManyRequestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { items, readManyRequestOptions });
         try
         {
             // Log connection and read many items information
@@ -422,7 +424,7 @@ public static class CosmosDbObservableExtensions
     }
     public static async Task<FeedResponse<T>> ReadManyItemsObservableAsync<T>(this Container container, IReadOnlyList<(string id, PartitionKey partitionKey)> items, ReadManyRequestOptions readManyRequestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { items, readManyRequestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(CosmosDbObservableExtensions.T, logger, () => new { items, readManyRequestOptions });
 
         try
         {
@@ -451,7 +453,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<ItemResponse<T>> PatchItemObservableAsync<T>(this Container container, string id, PartitionKey partitionKey, IReadOnlyList<PatchOperation> patchOperations, PatchItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id, partitionKey, patchOperations, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(CosmosDbObservableExtensions.T, logger, () => new { id, partitionKey, patchOperations, requestOptions });
         try
         {
             // Log connection and patch item information
@@ -481,7 +483,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<ResponseMessage> PatchItemStreamObservableAsync(this Container container, string id, PartitionKey partitionKey, IReadOnlyList<PatchOperation> patchOperations, PatchItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id, partitionKey, patchOperations, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { id, partitionKey, patchOperations, requestOptions });
         try
         {
             // Log connection and patch item information
@@ -502,7 +504,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<ResponseMessage> DeleteItemStreamObservableAsync(this Container container, string id, PartitionKey partitionKey, ItemRequestOptions? requestOptions = null, CancellationToken cancellationToken = default)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id, partitionKey, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { id, partitionKey, requestOptions });
 
         try
         {
@@ -524,7 +526,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<ItemResponse<T>> DeleteItemObservableAsync<T>(this Container container, string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { id, partitionKey, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(CosmosDbObservableExtensions.T, logger, () => new { id, partitionKey, requestOptions });
         try
         {
             // Log connection and delete item information
@@ -553,7 +555,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<ResponseMessage> DeleteAllItemsByPartitionKeyStreamObservableAsync(this Container container, PartitionKey partitionKey, RequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { partitionKey, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { partitionKey, requestOptions });
         try
         {
             // Log connection and delete all items by partition key information
@@ -572,7 +574,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<ResponseMessage> ReplaceItemStreamObservableAsync(this Container container, Stream streamPayload, string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { streamPayload, id, partitionKey, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { streamPayload, id, partitionKey, requestOptions });
         try
         {
             // Log connection and replace item information
@@ -591,7 +593,7 @@ public static class CosmosDbObservableExtensions
     }
     public static async Task<ItemResponse<T>> ReplaceItemObservableAsync<T>(this Container container, T item, string id, PartitionKey? partitionKey = null, ItemRequestOptions requestOptions = null, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { item, id, partitionKey, requestOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(CosmosDbObservableExtensions.T, logger, () => new { item, id, partitionKey, requestOptions });
         try
         {
             // Log connection and replace item information
@@ -620,7 +622,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<FeedResponse<T>> ReadNextObservableAsync<T>(this FeedIterator<T> feedIterator, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, logLevel: LogLevel.Trace);
+        using var activity = Observability.ActivitySource.StartMethodActivity(CosmosDbObservableExtensions.T, logger, logLevel: LogLevel.Trace);
 
         if (feedIterator is ObservableFeedIterator<T> observableFeedIterator) { return await observableFeedIterator.ReadNextAsync(cancellationToken).ConfigureAwait(false); }
 
@@ -644,7 +646,7 @@ public static class CosmosDbObservableExtensions
 
     public static async Task<TransactionalBatchResponse> ExecuteObservableAsync(this TransactionalBatch transactionalBatch, CancellationToken cancellationToken = default(CancellationToken))
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { });
+        using var activity = Observability.ActivitySource.StartMethodActivity(T, logger, () => new { });
         try
         {
             // Log connection and delete item information

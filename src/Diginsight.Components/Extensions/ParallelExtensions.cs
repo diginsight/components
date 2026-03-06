@@ -10,12 +10,14 @@ namespace Diginsight.Components;
 
 public static class ParallelExtensions
 {
+    private static readonly Type T = typeof(ParallelExtensions);
+
     private static ILogger? cachedLogger;
     private static ILogger? logger => cachedLogger ??= Observability.LoggerFactory?.CreateLogger(typeof(ParallelExtensions));
 
     public static async Task<IEnumerable<R>> ForEachAsync<T, R>(this IEnumerable<T> source, Func<T, Task<R>> body, ParallelOptions options)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { body, options });
+        using var activity = Observability.ActivitySource.StartMethodActivity(ParallelExtensions.T, logger, new { body, options });
 
         var tasks = new List<Task<R>>();
 
@@ -39,7 +41,7 @@ public static class ParallelExtensions
 
     public static async Task<IEnumerable<T>> WhenAllAsync<T>(this IEnumerable<Func<Task<T>>> asyncFuncs, ParallelOptions parallelOptions = null)
     {
-        using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { asyncFuncs, parallelOptions });
+        using var activity = Observability.ActivitySource.StartMethodActivity(ParallelExtensions.T, logger, new { asyncFuncs, parallelOptions });
 
         if (asyncFuncs == null) throw new ArgumentNullException(nameof(asyncFuncs));
         parallelOptions ??= new ParallelOptions();

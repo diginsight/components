@@ -7,6 +7,8 @@ namespace Diginsight.Components.Azure
 {
     public class ObservableFeedIterator<T> : FeedIterator<T>, IDisposable
     {
+        private static readonly Type TClass = typeof(ObservableFeedIterator<T>);
+
         private static ILogger? cachedLogger;
         private static ILogger? logger => cachedLogger ??= Observability.LoggerFactory?.CreateLogger(typeof(ObservableFeedIterator<T>));
 
@@ -35,7 +37,7 @@ namespace Diginsight.Components.Azure
 
         public override async Task<FeedResponse<T>> ReadNextAsync(CancellationToken cancellationToken = default)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, logLevel: LogLevel.Trace); // , () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, logLevel: LogLevel.Trace); // , () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }
 
             try
             {   
@@ -80,6 +82,8 @@ namespace Diginsight.Components.Azure
 
     public class ObservableFeedIterator : FeedIterator, IDisposable
     {
+        private static readonly Type TClass = typeof(ObservableFeedIterator);
+
         private static ILogger? cachedLogger;
         private static ILogger? logger => cachedLogger ??= Observability.LoggerFactory?.CreateLogger(typeof(ObservableFeedIterator));
 
@@ -106,7 +110,7 @@ namespace Diginsight.Components.Azure
 
         public override async Task<ResponseMessage> ReadNextAsync(CancellationToken cancellationToken = default)
         {
-            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }, logLevel: LogLevel.Trace);
+            using var activity = Observability.ActivitySource.StartMethodActivity(TClass, logger, () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }, logLevel: LogLevel.Trace);
 
             try
             {

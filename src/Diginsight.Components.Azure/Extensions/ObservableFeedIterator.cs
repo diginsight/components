@@ -1,13 +1,15 @@
 using Diginsight.Diagnostics;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using System.Diagnostics;
 
 namespace Diginsight.Components.Azure
 {
     public class ObservableFeedIterator<T> : FeedIterator<T>, IDisposable
     {
+        private static ILogger? cachedLogger;
+        private static ILogger? logger => cachedLogger ??= Observability.LoggerFactory?.CreateLogger(typeof(ObservableFeedIterator<T>));
+
         private readonly FeedIterator<T> innerIterator;
         private readonly Container? container;
         private readonly QueryDefinition? queryDefinition;
@@ -33,26 +35,24 @@ namespace Diginsight.Components.Azure
 
         public override async Task<FeedResponse<T>> ReadNextAsync(CancellationToken cancellationToken = default)
         {
-            //var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
-            //var logger = loggerFactory.CreateLogger(typeof(ObservableFeedIterator<T>));
-            //using var activity = Observability.ActivitySource.StartMethodActivity(logger, logLevel: LogLevel.Trace); // , () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, logLevel: LogLevel.Trace); // , () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }
 
             try
             {   
                 var feedResponse = await innerIterator.ReadNextAsync(cancellationToken);
-                //logger.LogDebug("Query executed successfully. Retrieved {Count} documents of type '{Type}', RU consumed: {RequestCharge}", feedResponse.Count, typeof(T).Name, feedResponse.RequestCharge);
+                logger?.LogDebug("Query executed successfully. Retrieved {Count} documents of type '{Type}', RU consumed: {RequestCharge}", feedResponse.Count, typeof(T).Name, feedResponse.RequestCharge);
 
-                //if (activity != null && feedResponse.RequestCharge > 0)
-                //{
-                //    SetActivityTags(activity);
-                //    activity.SetTag("query_cost", feedResponse.RequestCharge);
-                //}
+                if (activity != null && feedResponse.RequestCharge > 0)
+                {
+                    SetActivityTags(activity);
+                    activity?.SetTag("query_cost", feedResponse.RequestCharge);
+                }
 
                 return feedResponse;
             }
             catch (Exception ex)
             {
-                //logger.LogError(ex, "❌ Error executing CosmosDB query");
+                //logger?.LogError(ex, "❌ Error executing CosmosDB query");
                 throw;
             }
         }
@@ -62,15 +62,15 @@ namespace Diginsight.Components.Azure
             if (activity == null) return;
 
             var query = queryDefinition?.QueryText ?? queryText;
-            if (!string.IsNullOrEmpty(query)) { activity.SetTag("query", query); }
+            if (!string.IsNullOrEmpty(query)) { activity?.SetTag("query", query); }
 
             if (container != null)
             {
-                activity.SetTag("container", container.Id);
+                activity?.SetTag("container", container.Id);
                 if (container.Database != null)
                 {
-                    activity.SetTag("database", container.Database.Id);
-                    if (container.Database.Client != null) { activity.SetTag("endpoint", container.Database.Client.Endpoint?.ToString()); }
+                    activity?.SetTag("database", container.Database.Id);
+                    if (container.Database.Client != null) { activity?.SetTag("endpoint", container.Database.Client.Endpoint?.ToString()); }
                 }
             }
         }
@@ -80,6 +80,9 @@ namespace Diginsight.Components.Azure
 
     public class ObservableFeedIterator : FeedIterator, IDisposable
     {
+        private static ILogger? cachedLogger;
+        private static ILogger? logger => cachedLogger ??= Observability.LoggerFactory?.CreateLogger(typeof(ObservableFeedIterator));
+
         private readonly FeedIterator innerIterator;
         private readonly Container? container;
         private readonly QueryDefinition? queryDefinition;
@@ -103,9 +106,7 @@ namespace Diginsight.Components.Azure
 
         public override async Task<ResponseMessage> ReadNextAsync(CancellationToken cancellationToken = default)
         {
-            //var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
-            //var logger = loggerFactory.CreateLogger(typeof(ObservableFeedIterator));
-            //using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }, logLevel: LogLevel.Trace);
+            using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { query = queryDefinition?.QueryText ?? queryText, container = container?.Id, database = container?.Database?.Id }, logLevel: LogLevel.Trace);
 
             try
             {
@@ -113,19 +114,19 @@ namespace Diginsight.Components.Azure
                 double requestCharge = 0;
                 if (responseMessage.Headers?.RequestCharge != null) { requestCharge = responseMessage.Headers.RequestCharge; }
 
-                //logger.LogDebug("Query executed successfully. Retrieved documents, RU consumed: {RequestCharge}", requestCharge);
-                //if (activity != null && requestCharge > 0)
-                //{
-                //    SetActivityTags(activity);
+                logger?.LogDebug("Query executed successfully. Retrieved documents, RU consumed: {RequestCharge}", requestCharge);
+                if (activity != null && requestCharge > 0)
+                {
+                    SetActivityTags(activity);
 
-                //    activity.SetTag("query_cost", requestCharge);
-                //}
+                    activity?.SetTag("query_cost", requestCharge);
+                }
 
                 return responseMessage;
             }
             catch (Exception ex)
             {
-                //logger.LogError(ex, "❌ Error executing CosmosDB query");
+                //logger?.LogError(ex, "❌ Error executing CosmosDB query");
                 throw;
             }
         }
@@ -135,15 +136,15 @@ namespace Diginsight.Components.Azure
             if (activity == null) return;
 
             var query = queryDefinition?.QueryText ?? queryText;
-            if (!string.IsNullOrEmpty(query)) { activity.SetTag("query", query); }
+            if (!string.IsNullOrEmpty(query)) { activity?.SetTag("query", query); }
 
             if (container != null)
             {
-                activity.SetTag("container", container.Id);
+                activity?.SetTag("container", container.Id);
                 if (container.Database != null)
                 {
-                    activity.SetTag("database", container.Database.Id);
-                    if (container.Database.Client != null) { activity.SetTag("endpoint", container.Database.Client.Endpoint?.ToString()); }
+                    activity?.SetTag("database", container.Database.Id);
+                    if (container.Database.Client != null) { activity?.SetTag("endpoint", container.Database.Client.Endpoint?.ToString()); }
                 }
             }
         }

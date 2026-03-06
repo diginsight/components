@@ -156,7 +156,7 @@ public static class HostBuilderExtensions
         if (!string.IsNullOrEmpty(kvUri))
         {
             TokenCredential credential;
-            var credentialProvider = new DefaultCredentialProvider(environment);
+            var credentialProvider = new DefaultCredentialProvider(environment, logger);
             credential = credentialProvider.Get(configuration.GetSection("AzureKeyVault"));
 
             builder.AddAzureKeyVault(new Uri(kvUri), credential, new KeyVaultSecretManagerWithTags(DateTimeOffset.UtcNow, tagsMatch));

@@ -6,12 +6,25 @@ namespace Diginsight.Components.Configuration;
 
 internal sealed class ActivitySourceDetectorRegistration : IActivityListenerRegistration
 {
+    private readonly ActivitySourceDetector detector;
+
     public IActivityListenerLogic Logic { get; }
 
     public ActivitySourceDetectorRegistration(IServiceProvider serviceProvider)
     {
-        Logic = ActivatorUtilities.CreateInstance<ActivitySourceDetector>(serviceProvider);
+        detector = ActivatorUtilities.CreateInstance<ActivitySourceDetector>(serviceProvider);
+        Logic = detector;
     }
 
-    public bool ShouldListenTo(ActivitySource activitySource) => true;
+    /// <summary>
+    /// Detects the activity source by logging its name, then returns <c>false</c>
+    /// so this listener does NOT cause activities to be created.
+    /// <see cref="ActivityListener.ShouldListenTo"/> is called exactly once per
+    /// (source, listener) pair, making it an ideal detection point.
+    /// </summary>
+    public bool ShouldListenTo(ActivitySource activitySource)
+    {
+        detector.DetectSource(activitySource.Name);
+        return false;
+    }
 }

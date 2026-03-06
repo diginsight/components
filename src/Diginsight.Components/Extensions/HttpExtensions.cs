@@ -4,7 +4,6 @@ using Diginsight.Diagnostics;
 using Diginsight.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
@@ -19,7 +18,8 @@ namespace Diginsight.Components;
 
 public static class HttpExtensions
 {
-    private static readonly Type T = typeof(HttpExtensions);
+    private static ILogger? cachedLogger;
+    private static ILogger? logger => cachedLogger ??= Observability.LoggerFactory?.CreateLogger(typeof(HttpExtensions));
 
     private static readonly HttpRequestOptionsKey<(Type Type, string MemberName)> InvocationOptionKey = new("Invocation");
     private static readonly HttpRequestOptionsKey<UserAssertion> UserAssertionOptionKey = new("UserAssertion");
@@ -69,8 +69,6 @@ public static class HttpExtensions
         HttpMethod method, string url, object? requestBody, string description, CancellationToken cancellationToken
     )
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
-        var logger = loggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { method, url, requestBody, description });
 
         using HttpRequestMessage requestMessage = new(method, url);

@@ -3,21 +3,19 @@
 using Diginsight.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 #endregion
 
 namespace Diginsight.Components;
 
 public static class HttpHostingExtensions
 {
-    private static readonly Type T = typeof(HttpHostingExtensions);
+    private static ILogger? cachedLogger;
+    private static ILogger? logger => cachedLogger ??= Observability.LoggerFactory?.CreateLogger(typeof(HttpHostingExtensions));
 
     public static IHttpClientBuilder AddApplicationPermissionAuthentication(
         this IHttpClientBuilder builder, Action<AuthenticatedClientOptions>? configureOptions = null
     )
     {
-        var loggerFactory = Observability.LoggerFactory ?? NullLoggerFactory.Instance;
-        var logger = loggerFactory.CreateLogger(T);
         using var activity = Observability.ActivitySource.StartMethodActivity(logger, new { builder, configureOptions });
 
         string clientName = builder.Name;

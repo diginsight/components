@@ -15,13 +15,18 @@ internal sealed class ActivitySourceDetector : IActivityListenerLogic
         this.logger = logger;
     }
 
-    public void ActivityStarted(Activity activity)
+    /// <summary>
+    /// Detects and logs a newly-seen activity source name.
+    /// Called from <see cref="ActivitySourceDetectorRegistration.ShouldListenTo"/>
+    /// so that detection happens without requiring activities to be created.
+    /// </summary>
+    public void DetectSource(string activitySourceName)
     {
-        string activitySourceName = activity.Source.Name;
-
         if (seenActivitySources.TryAdd(activitySourceName, default))
         {
             logger.LogDebug("New activity source detected: {ActivitySource}", activitySourceName);
         }
     }
+
+    public void ActivityStarted(Activity activity) { }
 }

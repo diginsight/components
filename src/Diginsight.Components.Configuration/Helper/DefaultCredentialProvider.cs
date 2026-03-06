@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Diginsight.Components.Configuration;
@@ -20,16 +19,25 @@ namespace Diginsight.Components.Configuration;
 /// </summary>
 public sealed class DefaultCredentialProvider : ICredentialProvider
 {
-    private Type T = typeof(DefaultCredentialProvider);
     private readonly IHostEnvironment environment;
+    private readonly ILogger logger;
 
     /// <summary>
     /// Initializes a new instance of the DefaultCredentialProvider.
     /// </summary>
     /// <param name="environment">The host environment to determine development vs production behavior</param>
-    public DefaultCredentialProvider(IHostEnvironment environment)
+    /// <param name="logger">Logger instance for diagnostic output</param>
+    public DefaultCredentialProvider(IHostEnvironment environment, ILogger<DefaultCredentialProvider> logger)
+        : this(environment, (ILogger)logger) { }
+
+    /// <summary>
+    /// Initializes a new instance of the DefaultCredentialProvider with an untyped logger.
+    /// Used in early host-building scenarios where DI is not yet available.
+    /// </summary>
+    public DefaultCredentialProvider(IHostEnvironment environment, ILogger logger)
     {
         this.environment = environment;
+        this.logger = logger;
     }
 
     /// <summary>
@@ -43,8 +51,7 @@ public sealed class DefaultCredentialProvider : ICredentialProvider
     /// <returns>A ChainedTokenCredential that tries multiple authentication methods in order</returns>
     public TokenCredential Get(IConfiguration configuration)
     {
-        var logger = Observability.LoggerFactory?.CreateLogger(T) ?? NullLogger.Instance;
-        using var activity = Observability.ActivitySource?.StartMethodActivity(logger, () => new { configuration });
+        using var activity = Observability.ActivitySource.StartMethodActivity(logger, () => new { configuration });
 
         ICollection<TokenCredential> credentials = new List<TokenCredential>();
 
@@ -55,7 +62,7 @@ public sealed class DefaultCredentialProvider : ICredentialProvider
         var clientSecret = configuration["ClientSecret"].HardTrim();
         var certificateThumbprint = configuration["CertificateThumbprint"].HardTrim();
 
-        logger.LogDebug($"tenantId:{tenantId},clientId:{clientId},clientSecret:{clientSecret},managedIdentityClientId:{managedIdentityClientId},certificateThumbprint:{certificateThumbprint}");
+        logger.LogDebug("tenantId:{TenantId},clientId:{ClientId},clientSecret:{ClientSecret},managedIdentityClientId:{ManagedIdentityClientId},certificateThumbprint:{CertificateThumbprint}", tenantId, clientId, clientSecret, managedIdentityClientId, certificateThumbprint);
 
         var authorityHost = GetAuthorityHost();
 

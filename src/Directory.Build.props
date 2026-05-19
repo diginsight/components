@@ -6,7 +6,7 @@
     <WarningAsErrors>nullable</WarningAsErrors>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
 
-		<Authors>diginsight</Authors>
+    <Authors>diginsight</Authors>
 		<Product>Diginsight</Product>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>

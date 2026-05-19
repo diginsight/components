@@ -54,7 +54,7 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Restore Samples # Step 3: Restore dependencies and build the Samples solution/project
-        run: dotnet restore --interactive src/Diginsight.Components.sln
+        run: dotnet restore --interactive src/Diginsight.Components.slnx
 
       - name: Copy AuthenticationSampleApi appsettings.*.json from components.internal
         run: |
@@ -65,7 +65,7 @@ jobs:
           cp components.internal/src/Samples/AuthenticationSampleServerApi/appsettings.*.json src/Samples/AuthenticationSampleServerApi/
 
       - name: Build Samples
-        run: dotnet build src/Diginsight.Components.sln --configuration Release
+        run: dotnet build src/Diginsight.Components.slnx --configuration Release
 
       - name: Publish AuthenticationSampleApi
         run:  dotnet publish src/Samples/AuthenticationSampleApi/AuthenticationSampleApi.csproj --configuration Release --framework net8.0 --output ./publish/AuthenticationSampleApi

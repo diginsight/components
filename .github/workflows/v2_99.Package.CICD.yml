@@ -103,13 +103,13 @@ jobs:
           $csprojFiles | %{ (Get-Content $_.FullName) -replace $pattern, $replacement | Set-Content $_.FullName }
 
       - name: Restore dependencies
-        run: dotnet restore src/Diginsight.Components.Build.sln --locked-mode --force --force-evaluate --interactive
+        run: dotnet restore src/Diginsight.Components.Build.slnx --locked-mode --force --force-evaluate --interactive
 
       - name: Build DLL Debug
-        run: dotnet build src/Diginsight.Components.Build.sln --configuration Debug --no-restore
+        run: dotnet build src/Diginsight.Components.Build.slnx --configuration Debug --no-restore
 
       - name: Build DLL Release
-        run: dotnet build src/Diginsight.Components.Build.sln --configuration Release --no-restore
+        run: dotnet build src/Diginsight.Components.Build.slnx --configuration Release --no-restore
 
       - name: Copy bin folder to artifactFolder Release
         run: |

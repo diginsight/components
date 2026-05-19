@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/50. Tests/" />
+  <Folder Name="/Solution Items/">
+    <File Path="../../telemetry_samples/.filenesting.json" />
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+  </Folder>
+  <Folder Name="/_ext/" />
+  <Project Path="Diginsight.Components.Abstractions/Diginsight.Components.Abstractions.csproj" />
+  <Project Path="Diginsight.Components.Azure.Abstractions/Diginsight.Components.Azure.Abstractions.csproj" />
+  <Project Path="Diginsight.Components.Azure/Diginsight.Components.Azure.csproj" />
+  <Project Path="Diginsight.Components.Configuration.Abstractions/Diginsight.Components.Configuration.Abstractions.csproj" />
+  <Project Path="Diginsight.Components.Configuration/Diginsight.Components.Configuration.csproj" />
+  <Project Path="Diginsight.Components.Presentation.Abstractions/Diginsight.Components.Presentation.Abstractions.csproj" />
+  <Project Path="Diginsight.Components.Presentation/Diginsight.Components.Presentation.csproj" />
+  <Project Path="Diginsight.Components/Diginsight.Components.csproj" />
+</Solution>

@@ -15,7 +15,7 @@ jobs:
 
     env:
       versionPrefix: '0.8.0'
-      solutionsFilter: '*.sln'
+      solutionsFilter: '*.slnx'
       projectsFilter: '*.csproj'
       projectBaseName: Diginsight
       buildPlatform: 'Any CPU'
@@ -26,7 +26,7 @@ jobs:
       - name: Process Composite Variables
         id: composite_variables
         run: |
-          $env:solution="./${env:projectBaseName}.sln" 
+          $env:solution="./${env:projectBaseName}.slnx" 
           write-host "env:solution=$env:solution"
           echo "solution=$env:solution" >> $github_env
           echo "::set-output name=solution::$env:solution"

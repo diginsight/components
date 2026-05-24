@@ -30,7 +30,7 @@
     <PackageReference Include="Asp.Versioning.Http" Version="8.*" />
     <PackageReference Include="Asp.Versioning.Http.Client" Version="8.*" />
 
-    <PackageReference Include="RestSharp" Version="112.*" />
+    <PackageReference Include="RestSharp" Version="114.*" />
 
     <PackageReference Include="Scrutor" Version="$(ScrutorVersion)" />
 

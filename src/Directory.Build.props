@@ -12,7 +12,7 @@
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/diginsight/telemetry_samples</PackageProjectUrl>
 
-		<MicrosoftIdentityWebVersion>3.9.4</MicrosoftIdentityWebVersion>
+		<MicrosoftIdentityWebVersion>4.9.0</MicrosoftIdentityWebVersion>
 		<DiginsightDiagnosticsVersion>2.0.0.23</DiginsightDiagnosticsVersion>
 		<DiginsightCoreVersion>3.7.*</DiginsightCoreVersion>
 		<DiginsightSmartCacheVersion>3.7.*</DiginsightSmartCacheVersion>

@@ -249,65 +249,76 @@ public static partial class ObservabilityExtensions
             var diginsightConfig = configuration.GetSection(ConfigurationPath.Combine(diginsightConfKey, "Activities"));
 
             var defaultMetricActivities = diginsightConfig.GetSection("SpanMeasuredActivityNames").Get<IDictionary<string, bool>>() ?? new Dictionary<string, bool>();
-            var metricSpecificActivities = diginsightConfig.GetSection("MetricSpecificSpanMeasuredActivityNames").Get<OptionsBasedMetricRecordingFilterOptions[]>() ?? Array.Empty<OptionsBasedMetricRecordingFilterOptions>();
+            logger.LogDebug("Found {Count} default metric activity configurations", defaultMetricActivities.Count);
+
+            var metricSpecificActivitiesSection = diginsightConfig.GetSection("MetricSpecificSpanMeasuredActivityNames");
+            var metricSpecificActivities = metricSpecificActivitiesSection.Get<MetricRecordingFilterConfiguration[]>() ?? [];
             logger.LogDebug("Found {Count} metric-specific activity configurations", metricSpecificActivities.Length);
 
             var defaultMetricTags = diginsightConfig.GetSection("MetricTags").Get<string[]>() ?? Array.Empty<string>();
             logger.LogDebug("Default MetricTags: {Tags}", string.Join(", ", defaultMetricTags));
-            var metricSpecificTags = diginsightConfig.GetSection("MetricSpecificTags").Get<OptionsBasedMetricRecordingEnricherOptions[]>() ?? Array.Empty<OptionsBasedMetricRecordingEnricherOptions>();
+
+            var metricSpecificTagsSection = diginsightConfig.GetSection("MetricSpecificTags");
+            var metricSpecificTags = metricSpecificTagsSection.Get<MetricRecordingEnricherConfiguration[]>() ?? [];
             logger.LogDebug("Found {Count} metric-specific tag configurations", metricSpecificTags.Length);
 
-            // MetricRecordingNameBasedFilter and MetricRecordingEnricher configurations
-            // services.TryAddSingleton<IMetricRecordingFilter, MetricRecordingNameBasedFilter>(); 
-            // services.TryAddSingleton<IMetricRecordingEnricher, MetricRecordingTagsEnricher>(); 
-            var metricNames = new[] { "diginsight.span_duration", "diginsight.query_cost", "diginsight.request_size", "diginsight.response_size" };
-            foreach (var metricName in metricNames)
-            {
-                services.Configure<OptionsBasedMetricRecordingFilterOptions>(metricName, options =>
+            services.Configure<OptionsBasedMetricRecordingFilterOptions>(
+                options =>
                 {
-                    options.MetricName = metricName;
-
-                    var activitiesToUse = new Dictionary<string, bool>(defaultMetricActivities);
-                    var metricConfig = metricSpecificActivities?.FirstOrDefault(m => m.MetricName == options.MetricName);
-                    if (metricConfig != null) { activitiesToUse.AddRange(metricConfig.ActivityNames); }
-                    options.ActivityNames = activitiesToUse;
-                });
-                services.Configure<OptionsBasedMetricRecordingEnricherOptions>(metricName, options =>
-                {
-                    options.MetricName = metricName;
-
-                    var tagsToUse = new List<string>(defaultMetricTags);
-                    var metricConfig = metricSpecificTags?.FirstOrDefault(m => m.MetricName == options.MetricName);
-                    if (metricConfig != null) { tagsToUse.AddRange(metricConfig.MetricTags); }
-                    options.MetricTags = tagsToUse;
-                });
-                services.AddNamedSingleton<IMetricRecordingFilter, OptionsBasedMetricRecordingFilter>(
-                    metricName, (sp, key) =>
+                    foreach (var (activityName, record) in defaultMetricActivities)
                     {
-                        var optionsMonitor = sp.GetRequiredService<IOptionsMonitor<OptionsBasedMetricRecordingFilterOptions>>();
-                        var namedOptionsMonitor = new NamedOptionsMonitor<OptionsBasedMetricRecordingFilterOptions>(optionsMonitor, (string)key!);
+                        options.ActivityNames[activityName] = record;
+                    }
+                }
+            );
 
-                        var filter = new OptionsBasedMetricRecordingFilter(namedOptionsMonitor);
-                        return filter;
+            foreach (var metricConfig in metricSpecificActivities)
+            {
+                string metricName = GetRequiredMetricName(metricConfig.MetricName, metricSpecificActivitiesSection.Path);
+                services.Configure<OptionsBasedMetricRecordingFilterOptions>(
+                    metricName,
+                    options =>
+                    {
+                        foreach (var (activityName, record) in metricConfig.ActivityNames)
+                        {
+                            options.ActivityNames[activityName] = record;
+                        }
                     }
                 );
-                services.AddNamedSingleton<IMetricRecordingEnricher, OptionsBasedMetricRecordingEnricher>(metricName, (sp, key) =>
-                {
-                    var optionsMonitor = sp.GetRequiredService<IOptionsMonitor<OptionsBasedMetricRecordingEnricherOptions>>();
-                    var namedOptionsMonitor = new NamedOptionsMonitor<OptionsBasedMetricRecordingEnricherOptions>(optionsMonitor, (string)key!);
-
-                    var enricher = new OptionsBasedMetricRecordingEnricher(namedOptionsMonitor);
-                    return enricher;
-                });
             }
 
-            // Conditionally decorate only the "query_cost" enricher
-            //services.DecorateNamed<IMetricRecordingEnricher, MetricRecordingDurationMetricTagsEnricher>("diginsight.query_cost");
+            services.Configure<OptionsBasedMetricRecordingEnricherOptions>(
+                options =>
+                {
+                    foreach (string metricTag in defaultMetricTags)
+                    {
+                        options.MetricTags.Add(metricTag);
+                    }
+                }
+            );
+
+            foreach (var metricConfig in metricSpecificTags)
+            {
+                string metricName = GetRequiredMetricName(metricConfig.MetricName, metricSpecificTagsSection.Path);
+                services.Configure<OptionsBasedMetricRecordingEnricherOptions>(
+                    metricName,
+                    options =>
+                    {
+                        foreach (string metricTag in metricConfig.MetricTags)
+                        {
+                            options.MetricTags.Add(metricTag);
+                        }
+                    }
+                );
+            }
+
+            services.TryAddSingleton<IMetricRecordingFilter, OptionsBasedMetricRecordingFilter>();
+            services.TryAddSingleton<IMetricRecordingEnricher, OptionsBasedMetricRecordingEnricher>();
 
             services.AddSpanDurationMetricRecorder(); logger.LogDebug("services.AddSpanDurationMetricRecorder();");
             services.AddCosmosDbQueryCostMetricRecorder(); logger.LogDebug("services.AddCosmosDbQueryCostMetricRecorder();");
 
-            logger.LogDebug("services.AddNamedSingleton and DecorateNamed for IMetricRecordingEnricher");
+            logger.LogDebug("Configured metric recorders with default and metric-specific filtering and enrichment");
 
             openTelemetryBuilder.WithMetrics(
                 meterProviderBuilder =>
@@ -358,6 +369,18 @@ public static partial class ObservabilityExtensions
         }
 
         return services;
+    }
+
+    private static string GetRequiredMetricName(string? metricName, string configurationSectionPath)
+    {
+        if (string.IsNullOrWhiteSpace(metricName))
+        {
+            throw new InvalidOperationException(
+                $"Configuration section '{configurationSectionPath}' contains an entry with a missing or whitespace-only MetricName."
+            );
+        }
+
+        return metricName;
     }
 
 }

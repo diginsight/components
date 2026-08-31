@@ -1,5 +1,7 @@
 <Solution>
-  <Folder Name="/50. Tests/" />
+  <Folder Name="/50. Tests/">
+    <Project Path="Diginsight.Components.Configuration.Tests/Diginsight.Components.Configuration.Tests.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path="../../telemetry_samples/.filenesting.json" />
     <File Path=".editorconfig" />

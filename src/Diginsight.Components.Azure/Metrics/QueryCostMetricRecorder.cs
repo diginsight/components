@@ -2,7 +2,6 @@ using Azure;
 using Diginsight.Components.Configuration;
 using Diginsight.Diagnostics;
 using Diginsight.Options;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
@@ -53,16 +52,14 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
         IClassAwareOptionsMonitor<DiginsightActivitiesOptions> activitiesOptionsMonitor,
         IClassAwareOptionsMonitor<OpenTelemetryOptions> openTelemetryOptionsMonitor,
         IClassAwareOptionsMonitor<QueryCostMetricRecorderOptions> queryCostMetricRecorderOptions,
-        IMeterFactory meterFactory
+        IMeterFactory meterFactory,
+        IMetricRecordingFilter? metricFilter = null,
+        IMetricRecordingEnricher? metricEnricher = null
     )
     {
         this.logger = logger;
         this.queryCostMetricRecorderOptions = queryCostMetricRecorderOptions;
         this.activitiesOptionsMonitor = activitiesOptionsMonitor;
-
-        IOpenTelemetryOptions openTelemetryOptions = openTelemetryOptionsMonitor.CurrentValue;
-        var applicationName = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name ?? "unknown";
-        var metricName = QueryMetrics.QueryCost.Name;
 
         this.lazyMetric = new Lazy<Histogram<double>>(() =>
         {
@@ -74,12 +71,8 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
                                    QueryMetrics.QueryCost.Description);
         });
 
-        // Filter and enricher code remains the same - already using correct interfaces
-        var metricFilter = serviceProvider.GetNamedService<IMetricRecordingFilter>(metricName);
-        this.metricFilter = metricFilter ?? serviceProvider.GetRequiredService<IMetricRecordingFilter>();
-
-        var metricEnricher = serviceProvider.GetNamedService<IMetricRecordingEnricher>(metricName);
-        this.metricEnricher = metricEnricher ?? serviceProvider.GetRequiredService<IMetricRecordingEnricher>();
+                this.metricFilter = metricFilter;
+                this.metricEnricher = metricEnricher;
     }
 
     void IActivityListenerLogic.ActivityStopped(Activity activity)
@@ -137,10 +130,7 @@ public sealed class QueryCostMetricRecorder : IActivityListenerLogic
 
                 if (metricEnricher is not null)
                 {
-                    // ✅ Call ExtractTags with activity and instrument
-                    var additionalTags = metricEnricher.ExtractTags(activity, Metric);  // Pass the Metric (Instrument)
-
-                    // ✅ Add extracted tags to TagList
+                    var additionalTags = metricEnricher.ExtractTags(activity, Metric);
                     foreach (var tag in additionalTags)
                     {
                         tags.Add(tag.Key, tag.Value);

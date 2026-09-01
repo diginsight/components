@@ -29,6 +29,10 @@ jobs:
   
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
+        env:
+          # The self-hosted runner service runs as NETWORK SERVICE and cannot write to the default
+          # install root (C:\Program Files\dotnet). The tool cache is runner-owned and persists.
+          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
         with:
           dotnet-version: 9.0.x
       - uses: nuget/setup-nuget@v1

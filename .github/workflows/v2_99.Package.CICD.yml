@@ -4,25 +4,32 @@ on:
   push:
     branches:
       - main
+    # Keep in sync with the pull_request list below (GitHub Actions does not support YAML anchors).
     paths:
       - 'src/Diginsight.Components*/**'
+      - '!src/Diginsight.Components*/**.md'
       - 'src/Directory.Build.props'
       - 'src/Directory.Build.targets'
       - 'src/NuGet.Config'
+      - 'src/global.json'
       - 'src/*.slnx'
       - 'eng/**'
-      - '.github/workflows/**'
+      - '!eng/**.md'
+      - '.github/workflows/v2_*.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'src/Diginsight.Components*/**'
+      - '!src/Diginsight.Components*/**.md'
       - 'src/Directory.Build.props'
       - 'src/Directory.Build.targets'
       - 'src/NuGet.Config'
+      - 'src/global.json'
       - 'src/*.slnx'
       - 'eng/**'
-      - '.github/workflows/**'
+      - '!eng/**/*.md'
+      - '.github/workflows/v2_*.yml'
   workflow_dispatch:
     inputs:
       dryRun:

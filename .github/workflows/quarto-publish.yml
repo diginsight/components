@@ -3,8 +3,36 @@ name: Render and Deploy Quarto Site to GitHub Pages
 on:
   push:
     branches: [main]
+    # Keep in sync with the pull_request list below (GitHub Actions does not support YAML anchors).
+    paths:
+      - '**.md'
+      - '**.qmd'
+      - '**.css'
+      - '**.scss'
+      - '_quarto.yml'
+      - 'src/_quarto.yml'
+      - 'header-includes.html'
+      - '*.svg'
+      - 'images/**'
+      - 'src/docs/**'
+      - '.github/workflows/quarto-publish.yml'
+      # docs/ is the rendered output (output-dir in _quarto.yml), never an input.
+      - '!docs/**'
   pull_request:
     branches: [main]
+    paths:
+      - '**.md'
+      - '**.qmd'
+      - '**.css'
+      - '**.scss'
+      - '_quarto.yml'
+      - 'src/_quarto.yml'
+      - 'header-includes.html'
+      - '*.svg'
+      - 'images/**'
+      - 'src/docs/**'
+      - '.github/workflows/quarto-publish.yml'
+      - '!docs/**'
   workflow_dispatch:
 
 permissions:

@@ -14,10 +14,9 @@
 
 		<MicrosoftIdentityWebVersion>4.9.0</MicrosoftIdentityWebVersion>
 		<DiginsightDiagnosticsVersion>2.0.0.23</DiginsightDiagnosticsVersion>
-		<DiginsightCoreVersion>3.7.*</DiginsightCoreVersion>
-		<DiginsightSmartCacheVersion>3.7.*</DiginsightSmartCacheVersion>
-		<!--<DiginsightCoreVersion>3.7.1.13</DiginsightCoreVersion>
-		<DiginsightSmartCacheVersion>3.7.1.13</DiginsightSmartCacheVersion>-->
+		<!-- Exact pins: eng/Download-PackageRelease.ps1 resolves a GitHub Release per version. -->
+		<DiginsightCoreVersion>3.8.0.1</DiginsightCoreVersion>
+		<DiginsightSmartCacheVersion>3.8.0.1</DiginsightSmartCacheVersion>
     <PackageTags>diginsight;telemetry</PackageTags>
 
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>

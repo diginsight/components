@@ -59,7 +59,12 @@ BenchmarkDotNet.Artifacts/
 # .NET Core
 project.lock.json
 project.fragment.lock.json
-artifacts/
+# Scoped so artifacts/packages/.gitkeep stays tracked: git cannot re-include a path
+# whose parent directory is excluded.
+/artifacts/*
+!/artifacts/packages/
+/artifacts/packages/*
+!/artifacts/packages/.gitkeep
 
 # StyleCop
 StyleCopReport.xml
@@ -190,6 +195,8 @@ PublishScripts/
 **/[Pp]ackages/*
 # except build/, which is used as an MSBuild target.
 !**/[Pp]ackages/build/
+# and except the local-release source marker, which the rule above would otherwise re-exclude.
+!/artifacts/packages/.gitkeep
 # Uncomment if necessary however generally it will be regenerated when needed
 #!**/[Pp]ackages/repositories.config
 # NuGet v3's project.json files produces more ignorable files

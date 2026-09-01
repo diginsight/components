@@ -1,0 +1,231 @@
+name: 03.BuildPackages
+
+on:
+  workflow_call:
+    inputs:
+      assemblyVersion:
+        description: 'Assembly/package version to build'
+        required: true
+        type: string
+      sourceTag:
+        description: 'Release tag matching the assembly version'
+        required: true
+        type: string
+      dryRun:
+        description: 'Build and validate without creating a release'
+        required: false
+        default: false
+        type: boolean
+    outputs:
+      artifactName:
+        description: 'Name of the immutable package artifact'
+        value: ${{ jobs.build.outputs.artifactName }}
+      releaseVerified:
+        description: 'Whether the GitHub Release was created and remotely verified'
+        value: ${{ jobs.build.outputs.releaseVerified }}
+
+permissions: {}
+
+defaults:
+  run:
+    shell: pwsh
+
+env:
+  SOLUTION_SLN: src/Diginsight.Components.Build.slnx
+  DOTNET_NOLOGO: 1
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+jobs:
+  build:
+    name: Build and Release (Windows / WPF)
+    # Diginsight.Components.Presentation targets net*-windows with WPF, so this cannot move to a
+    # GitHub-hosted Linux runner. The NuGet push runs elsewhere (see 04.PublishPackages).
+    runs-on: self-hosted
+
+    permissions:
+      contents: write
+
+    outputs:
+      artifactName: ${{ steps.context.outputs.artifact-name }}
+      releaseVerified: ${{ steps.result.outputs.release-verified }}
+
+    env:
+      PACKAGE_VERSION: ${{ inputs.assemblyVersion }}
+      SOURCE_TAG: ${{ inputs.sourceTag }}
+      STAGE_PATH: artifacts/release/${{ inputs.sourceTag }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |-
+            8.x
+            9.x
+            10.x
+
+      - name: Resolve release context
+        id: context
+        run: |
+          $resolved = ./eng/Publish-Packages.ps1 -Command ResolveVersion -Tag $env:SOURCE_TAG
+          if ($resolved -cne $env:PACKAGE_VERSION) {
+            throw "Tag '$env:SOURCE_TAG' resolves to '$resolved', not '$env:PACKAGE_VERSION'."
+          }
+          "artifact-name=release-packages" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Test release tooling
+        run: ./eng/tests/Publish-Packages.Tests.ps1
+
+      - name: Test upstream bootstrap tooling
+        run: ./eng/tests/Download-PackageRelease.Tests.ps1
+
+      - name: Remove previous Release outputs
+        run: |
+          Get-ChildItem src -Directory -Recurse |
+            Where-Object Name -eq bin |
+            ForEach-Object {
+              $releasePath = Join-Path $_.FullName Release
+              if (Test-Path -LiteralPath $releasePath) {
+                Remove-Item -LiteralPath $releasePath -Recurse -Force
+              }
+            }
+          if (Test-Path -LiteralPath artifacts/release) {
+            Remove-Item -LiteralPath artifacts/release -Recurse -Force
+          }
+
+      # Makes the build independent of NuGet.org and corporate proxy propagation latency.
+      - name: Download upstream Diginsight releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: ./eng/Download-PackageRelease.ps1
+
+      - name: Restore
+        run: dotnet restore $env:SOLUTION_SLN --locked-mode -v minimal
+
+      - name: Verify working tree is unchanged
+        run: |
+          $changes = @(git status --porcelain)
+          if ($changes.Count -ne 0) {
+            $changes | Write-Host
+            throw 'Bootstrap or restore modified tracked files.'
+          }
+
+      - name: Build
+        run: dotnet build $env:SOLUTION_SLN --no-restore -c Release -v minimal "-p:Version=$env:PACKAGE_VERSION"
+
+      - name: Stage and validate packages
+        run: ./eng/Publish-Packages.ps1 -Command Stage -Tag $env:SOURCE_TAG -SourceRoot ./src -StagePath $env:STAGE_PATH
+
+      - name: Upload immutable package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.context.outputs.artifact-name }}
+          path: artifacts/release/${{ inputs.sourceTag }}/*
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Create, complete, and verify GitHub Release
+        id: release
+        if: ${{ github.event_name != 'pull_request' && !inputs.dryRun }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $stagePath = (Resolve-Path $env:STAGE_PATH).Path
+          $repository = $env:GITHUB_REPOSITORY
+          $viewJson = & gh release view $env:SOURCE_TAG --repo $repository --json isDraft,assets 2>$null
+          $releaseExists = $LASTEXITCODE -eq 0
+
+          if ($releaseExists) {
+            $release = $viewJson | ConvertFrom-Json
+            if ($release.isDraft) {
+              throw "Release '$env:SOURCE_TAG' already exists as a draft; refusing to mutate it."
+            }
+          }
+          else {
+            # The version is computed, not hand-tagged, so gh creates the tag at this commit.
+            gh release create $env:SOURCE_TAG --repo $repository --target $env:GITHUB_SHA --title $env:SOURCE_TAG --notes "Automated package release for $env:SOURCE_TAG."
+            if ($LASTEXITCODE -ne 0) {
+              throw "Could not create release '$env:SOURCE_TAG'."
+            }
+            $release = [pscustomobject]@{ assets = @(); isDraft = $false }
+          }
+
+          $expectedFiles = @(Get-ChildItem -LiteralPath $stagePath -File | Sort-Object -Property Name)
+          $expectedNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+          foreach ($file in $expectedFiles) {
+            [void] $expectedNames.Add($file.Name)
+          }
+
+          $existingPath = Join-Path $env:RUNNER_TEMP 'existing-release-assets'
+          Remove-Item -LiteralPath $existingPath -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path $existingPath -Force | Out-Null
+          $existingNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+          foreach ($asset in @($release.assets)) {
+            $name = [string] $asset.name
+            if (-not $expectedNames.Contains($name)) {
+              throw "Release contains unexpected asset '$name'."
+            }
+            [void] $existingNames.Add($name)
+            gh release download $env:SOURCE_TAG --repo $repository --pattern $name --dir $existingPath
+            if ($LASTEXITCODE -ne 0) {
+              throw "Could not download existing asset '$name'."
+            }
+            $localHash = (Get-FileHash -LiteralPath (Join-Path $stagePath $name) -Algorithm SHA256).Hash
+            $remoteHash = (Get-FileHash -LiteralPath (Join-Path $existingPath $name) -Algorithm SHA256).Hash
+            if ($localHash -cne $remoteHash) {
+              throw "Existing release asset '$name' has different bytes; refusing to overwrite it."
+            }
+          }
+
+          foreach ($file in $expectedFiles) {
+            if (-not $existingNames.Contains($file.Name)) {
+              gh release upload $env:SOURCE_TAG --repo $repository $file.FullName
+              if ($LASTEXITCODE -ne 0) {
+                throw "Could not upload missing asset '$($file.Name)'."
+              }
+            }
+          }
+
+          $verificationPath = Join-Path $env:RUNNER_TEMP 'verified-release-assets'
+          Remove-Item -LiteralPath $verificationPath -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path $verificationPath -Force | Out-Null
+          gh release download $env:SOURCE_TAG --repo $repository --dir $verificationPath
+          if ($LASTEXITCODE -ne 0) {
+            throw "Could not download release '$env:SOURCE_TAG' for final verification."
+          }
+          ./eng/Publish-Packages.ps1 -Command Validate -Tag $env:SOURCE_TAG -StagePath $verificationPath
+          ./eng/Publish-Packages.ps1 -Command Compare -Tag $env:SOURCE_TAG -ReferencePath $stagePath -StagePath $verificationPath
+          "release-verified=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Set release verification result
+        id: result
+        env:
+          PUBLISHING: ${{ github.event_name != 'pull_request' && !inputs.dryRun }}
+          REMOTE_VERIFIED: ${{ steps.release.outputs.release-verified }}
+        run: |
+          if ($env:PUBLISHING -ne 'true') {
+            $verified = 'false'
+          }
+          elseif ($env:REMOTE_VERIFIED -eq 'true') {
+            $verified = 'true'
+          }
+          else {
+            throw 'A publishing run did not verify its GitHub Release.'
+          }
+          "release-verified=$verified" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Build and release summary
+        if: always()
+        env:
+          RELEASE_VERIFIED: ${{ steps.result.outputs.release-verified }}
+        run: |
+          @(
+            "### Package build"
+            "- Source tag: ``$env:SOURCE_TAG``"
+            "- Package version: ``$env:PACKAGE_VERSION``"
+            "- GitHub Release verified: ``$env:RELEASE_VERIFIED``"
+          ) | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8

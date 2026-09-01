@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "repository": "diginsight/components",
+  "solution": "src/Diginsight.Components.Build.slnx",
+  "stagingPath": "artifacts/release",
+  "packages": [
+    {
+      "id": "Diginsight.Components",
+      "symbolsRequired": true
+    },
+    {
+      "id": "Diginsight.Components.Abstractions",
+      "symbolsRequired": true
+    },
+    {
+      "id": "Diginsight.Components.Azure",
+      "symbolsRequired": true
+    },
+    {
+      "id": "Diginsight.Components.Azure.Abstractions",
+      "symbolsRequired": true
+    },
+    {
+      "id": "Diginsight.Components.Configuration",
+      "symbolsRequired": true
+    },
+    {
+      "id": "Diginsight.Components.Configuration.Abstractions",
+      "symbolsRequired": true
+    },
+    {
+      "id": "Diginsight.Components.Presentation",
+      "symbolsRequired": true
+    },
+    {
+      "id": "Diginsight.Components.Presentation.Abstractions",
+      "symbolsRequired": true
+    }
+  ]
+}

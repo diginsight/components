@@ -1,0 +1,13 @@
+This folder is the "local-release" NuGet package source declared in src/NuGet.Config.
+
+DO NOT DELETE THIS FILE.
+
+NuGet fails with NU1301 when a configured folder source does not exist, and that error cannot be
+suppressed with NoWarn, RestoreNoWarn, or WarningsNotAsErrors. Removing this marker breaks every
+restore in the repository, for everyone, including people who never use eng/Download-PackageRelease.ps1.
+
+The .nupkg files here are produced by:
+
+    ./eng/Download-PackageRelease.ps1
+
+and are intentionally not tracked by git.

@@ -6,68 +6,46 @@ on:
       assemblyVersion:
         description: 'assembly Version for the current build'
         value: ${{ jobs.main.outputs.assemblyVersion }}
+      sourceTag:
+        description: 'Release tag matching the assembly version'
+        value: ${{ jobs.main.outputs.sourceTag }}
+
+permissions: {}
+
+defaults:
+  run:
+    shell: pwsh
 
 jobs:
   main:
     runs-on: self-hosted
     outputs:
       assemblyVersion: ${{ steps.get_assembly_version.outputs.assemblyVersion }}
+      sourceTag: ${{ steps.get_assembly_version.outputs.sourceTag }}
 
     env:
       versionPrefix: '0.8.0'
-      solutionsFilter: '*.slnx'
-      projectsFilter: '*.csproj'
-      projectBaseName: Diginsight
-      buildPlatform: 'Any CPU'
-      buildConfiguration: 'Release'
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY_V3 }}
 
     steps:
-      - name: Process Composite Variables
-        id: composite_variables
-        run: |
-          $env:solution="./${env:projectBaseName}.slnx" 
-          write-host "env:solution=$env:solution"
-          echo "solution=$env:solution" >> $github_env
-          echo "::set-output name=solution::$env:solution"
-
-      - name: Dump Composite Variables
-        id: dump_composite_variables
-        run: |
-          Write-Host "steps.composite_variables.outputs.solution: ${{ steps.composite_variables.outputs.solution }}"
-          echo "solution=$env:solution"
-
-      - name: Get build number
-        env:
-          BUILD_NUMBER_OFFSET: ${{ vars.BUILD_NUMBER_OFFSET }}
-        id: get_build_number
-        run: |
-            $env:VERSION_PREFIX="${{ vars.VERSION_PREFIX || env.versionPrefix }}"
-            $env:BUILD_NUMBER="${{ github.run_number }}"
-            Write-Host "VERSION_PREFIX=$env:VERSION_PREFIX"
-            Write-Host "BUILD_NUMBER=$env:BUILD_NUMBER"
-            Write-Host "BUILD_NUMBER_OFFSET=$env:BUILD_NUMBER_OFFSET"
-            $env:BUILD_NUMBER_ADJUSTED=[int]$env:BUILD_NUMBER + [int]$env:BUILD_NUMBER_OFFSET
-            echo "BUILD_NUMBER=$env:BUILD_NUMBER" >> $GITHUB_ENV
-            echo "::set-output name=BUILD_NUMBER::$env:BUILD_NUMBER"
-            echo "VERSION_PREFIX=$env:VERSION_PREFIX" >> $GITHUB_ENV
-            echo "::set-output name=VERSION_PREFIX::$env:VERSION_PREFIX"
-
       - name: Get Assembly Version
-        env:
-          BUILD_NUMBER_OFFSET: ${{ vars.BUILD_NUMBER_OFFSET }}
         id: get_assembly_version
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+          BUILD_NUMBER_OFFSET: ${{ vars.BUILD_NUMBER_OFFSET }}
+          VERSION_PREFIX: ${{ vars.VERSION_PREFIX || env.versionPrefix }}
         run: |
-            Write-Host "get_build_number.outputs.VERSION_PREFIX: ${{ steps.get_build_number.outputs.VERSION_PREFIX }}"
-            $env:VERSION_PREFIX="${{ steps.get_build_number.outputs.VERSION_PREFIX }}"
-            Write-Host "get_build_number.outputs.BUILD_NUMBER: ${{ steps.get_build_number.outputs.BUILD_NUMBER }}"
-            $env:BUILD_NUMBER="${{ steps.get_build_number.outputs.BUILD_NUMBER }}"
-            Write-Host "BUILD_NUMBER_OFFSET=$env:BUILD_NUMBER_OFFSET"
-            $env:BUILD_NUMBER_ADJUSTED=[int]$env:BUILD_NUMBER + [int]$env:BUILD_NUMBER_OFFSET
-            Write-Host "env:BUILD_NUMBER_ADJUSTED=$env:BUILD_NUMBER_ADJUSTED"
-            Write-Host "env:VERSION_PREFIX: $env:VERSION_PREFIX"
-            Write-Host "env:BUILD_NUMBER: $env:BUILD_NUMBER"
-            $env:ASSEMBLY_VERSION="$env:VERSION_PREFIX.$env:BUILD_NUMBER_ADJUSTED"
-            Write-Host "$env:ASSEMBLY_VERSION: $env:ASSEMBLY_VERSION"
-            echo "assemblyVersion=$env:ASSEMBLY_VERSION" >> $GITHUB_OUTPUT
-            echo "::set-output name=assemblyVersion::$env:ASSEMBLY_VERSION"
+          $offset = if ([string]::IsNullOrWhiteSpace($env:BUILD_NUMBER_OFFSET)) { 0 } else { [int] $env:BUILD_NUMBER_OFFSET }
+          $build = [int] $env:BUILD_NUMBER + $offset
+          $assemblyVersion = "$env:VERSION_PREFIX.$build"
+
+          # Consumed by eng/Publish-Packages.ps1, which requires a lowercase 'v' prefix.
+          $sourceTag = "v$assemblyVersion"
+
+          Write-Host "VERSION_PREFIX      = $env:VERSION_PREFIX"
+          Write-Host "BUILD_NUMBER        = $env:BUILD_NUMBER"
+          Write-Host "BUILD_NUMBER_OFFSET = $offset"
+          Write-Host "assemblyVersion     = $assemblyVersion"
+          Write-Host "sourceTag           = $sourceTag"
+
+          "assemblyVersion=$assemblyVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "sourceTag=$sourceTag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8

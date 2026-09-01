@@ -164,6 +164,22 @@ dotnet add package Diginsight.Components.Azure
 dotnet add package Diginsight.Components
 ```
 
+Every version is also published as a GitHub Release carrying the same `.nupkg` and `.snupkg` bytes,
+plus `SHA256SUMS` and `release-manifest.json`. Use those assets when a version has not yet
+propagated to your NuGet feed.
+
+## 🔧 **Building this repository**
+
+```powershell
+./eng/Download-PackageRelease.ps1
+dotnet restore src/Diginsight.Components.Build.slnx
+```
+
+The first command downloads and verifies the pinned `diginsight/telemetry` and
+`diginsight/smartcache` releases into `artifacts/packages`, which is a declared package source. It
+is only needed while a pinned upstream version has not reached the corporate proxy. See
+[eng/README.md](eng/README.md) for the full runbook.
+
 ## ⚙️ **Basic Setup**
 
 ```csharp

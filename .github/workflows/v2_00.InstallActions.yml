@@ -7,7 +7,7 @@ on:
         required: false
         type: string
     secrets:
-      NUGET_API_KEY_V3:
+      NUGET_API_KEY:
         required: false
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
     runs-on: self-hosted
 
     env:
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY_V3 }}
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
     steps:
       - uses: actions/checkout@v4
@@ -37,7 +37,7 @@ jobs:
           dotnet-version: 9.0.x
       - uses: nuget/setup-nuget@v1
         with:
-          nuget-api-key: ${{ secrets.NUGET_API_KEY_V3 }}
+          nuget-api-key: ${{ secrets.NUGET_API_KEY }}
           nuget-version: '5.x'
 
       - name: Run pwsh Dump Variables

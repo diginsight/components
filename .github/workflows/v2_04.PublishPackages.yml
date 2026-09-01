@@ -16,7 +16,7 @@ on:
         required: true
         type: string
     secrets:
-      NUGET_API_KEY_V3:
+      NUGET_API_KEY:
         required: true
 
 permissions: {}
@@ -64,7 +64,7 @@ jobs:
 
       - name: Publish NuGet Packages
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY_V3 }}
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: ./eng/Publish-Packages.ps1 -Command PublishNuGet -Tag $env:SOURCE_TAG -StagePath ./artifacts/publish
 
       - name: NuGet publication summary

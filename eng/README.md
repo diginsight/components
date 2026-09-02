@@ -6,6 +6,7 @@ corporate proxy propagation latency, in both directions:
 | Direction | Script | Purpose |
 |-----------|--------|---------|
 | **Consume** | `Download-PackageRelease.ps1` | Download and verify upstream Diginsight releases into the local package source |
+| **Consume** | `Download-Dependencies.cmd` | Thin wrapper around the above, so the download is invokable from `cmd` and Windows PowerShell 5.1 too |
 | **Produce** | `Publish-Packages.ps1` | Stage, validate, verify, and publish this repository's packages |
 
 Both require PowerShell 7 or later. The consumer script also requires the GitHub CLI (`gh`).
@@ -16,6 +17,15 @@ Both require PowerShell 7 or later. The consumer script also requires the GitHub
 ./eng/Download-PackageRelease.ps1
 dotnet restore src/Diginsight.Components.Build.slnx
 ```
+
+From `cmd`, or from a Windows PowerShell 5.1 prompt where `#requires -Version 7.0` would fail:
+
+```text
+eng\Download-Dependencies.cmd
+```
+
+Both forms download **every** upstream listed in `upstream-releases.json`; pass a repository URL to
+limit them to one.
 
 The first command fills `artifacts/packages` with the `.nupkg` files of the pinned upstream
 versions. That folder is declared as the `local-release` package source in `src/NuGet.Config`, so a
@@ -37,6 +47,12 @@ a plain restore works with an empty `artifacts/packages`.
 
 The versions themselves live **only** in `src/Directory.Build.props` and are read with
 `dotnet msbuild -getProperty:`. They are never duplicated here.
+
+A pin may be **exact** (`3.8.0.1`) or **floating** (`3.8.*`, `1.*`, `*`). A floating pin is resolved
+against the upstream's release list and always selects the newest matching **stable** release — a
+prerelease is never selected by a floating pin. Use an exact pin where reproducibility matters (this
+repository restores with `--locked-mode`); use a floating pin where following the newest upstream
+release automatically is worth more.
 
 Every upstream is downloaded and fully verified before `artifacts/packages` is touched, so a failure
 on any upstream leaves the local source exactly as it was.
